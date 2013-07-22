@@ -26,49 +26,7 @@
             <link rel="apple-touch-icon-precomposed" href="protected/extensiones/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png"/>
             <link rel="shortcut icon" href="protected/extensiones/bootstrap/assets/ico/favicon.png"/> 
 
-<<<<<<< HEAD
-<body>
 
-<div class="container" id="page">
-	        <?php
-        $this->widget('bootstrap.widgets.TbNavbar', array(
-            'type' => 'inverse', // null or 'inverse'
-            'brand' => 'RENOC',
-            'brandUrl' => '#',
-            'collapse' => true, // requires bootstrap-responsive.css
-            'items' => array(
-                array(
-                    'class' => 'bootstrap.widgets.TbMenu',
-                    'items' => array(
-                        array('label' => 'Home', 'url' => array('/site/index'), 'active' => true),
-                        array('label' => 'Contact', 'url' => array('/site/contact'), 'active' => true),
-                        array('label' => 'Login', 'url' => array('/site/login'), 'visible' => Yii::app()->user->isGuest),
-                        array('label' => 'Dropdown', 'url' => '#', 'items' => array(
-                                array('label' => 'Action', 'url' => '#'),
-                                array('label' => 'Another action', 'url' => '#'),
-                                array('label' => 'Something else here', 'url' => '#'),
-                                '---',
-                                array('label' => 'NAV HEADER'),
-                                array('label' => 'Separated link', 'url' => '#'),
-                                array('label' => 'One more separated link', 'url' => '#'),
-                            )),
-                    ),
-                ),
-                '<form class="navbar-search pull-left" action=""><input type="text" class="search-query span2" placeholder="Search"></form>',
-                array(
-                    'class' => 'bootstrap.widgets.TbMenu',
-                    'htmlOptions' => array('class' => 'pull-right'),
-                    'items' => array(
-                        array('label' => 'Link', 'url' => '#'),
-                        array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest),
-                        array('label' => 'Dropdown', 'url' => '#', 'items' => array(
-                                array('label' => 'Action', 'url' => '#'),
-                                array('label' => 'Another action', 'url' => '#'),
-                                array('label' => 'Something else here', 'url' => '#'),
-                                '---',
-                                array('label' => 'Separated link', 'url' => '#'),
-                            )),
-=======
     </head>
     <body>
         <div class="container" id="page">
@@ -86,7 +44,7 @@
                         'items' => array(
                             array('label' => 'Leandro', 'url' => '#'),
                         ),
->>>>>>> 58ba9fcb5639c4c51a5e1bbeee17d0bd351f0f87
+
                     ),
                 ),
             ));
@@ -98,17 +56,17 @@
             </div> 
             <div style="border:10px solid white;background:white;text-align:rigth;
                  width:970px; height:70px;
-                 position:relative;  overflow:hidden;" class="row">
+                 position:relative;  overflow:hidden;" class="">
                 
             </div>
             <div class="row">
-                <div style="border:10px solid white;background:green;text-align:rigth;
-                          width:5px; height:550px;" class="span4" >
+                <div id="barraVerde" style="border:10px solid white;background:green;text-align:rigth;
+                          width:5px; height:450px; margin-left: 172px; margin-bottom: 128px;" class="span4" >
                           
         
                 <div  class="span8">
                     <div  style=" left:130px;  border:10px solid white;background:#F2F2F2;text-align:rigth;
-                          width:875px; height:550px;
+                          width:875px; height:550px; margin-left:-128px;
                           position:relative;  overflow:hidden;" id="fondo">   
 <?php if (isset($this->breadcrumbs)): ?>
     <?php
@@ -129,14 +87,14 @@
                             </ul> 
                         </div>
 <?php echo $content; ?>
-                        <div  style=" background:#D8D8D8; height:520px; width:880px;
-                              position:absolute; top:0; lefth:0;" id="capa">
-                            <div     style=" float:lefth;
-                                     margin:10px; width:600px; height:135px;" id="one"> 
+                        <div id="capa" style=" background:#D8D8D8; height:400px; width:600px;
+                              position:absolute; top:0; lefth:0; padding-top: 30px;" >
+                            <div  id="one"   style=" float:lefth;
+                                     margin:10px; width:600px; height:135px;" > 
                                 <ul class="thumbnails">
                                     <li class="span3">
                                         <div style=" float:lefth; margin:10px;
-                                             width:600px; height:105px;" href="#" class="alert alert-success">
+                                             width:600px; height:105px; margin-left: 5em;" href="#" class="">
                                             <h1> 
                                                 <a href="/index.php?r=site/contact" rel="tooltip" 
                                                    title="esto ayuda a algo blab bla bcuiscuiwucuguigcuigwuiguiwg<br<jhefvioejhfioheriofh" 
@@ -151,7 +109,7 @@
                                      width:400px; height:135px;" id="two"><ul class="thumbnails">
                                     <li class="span3">
                                         <div style="float:lefth; margin:10px;
-                                             width:600px; height:105px;" href="#" class="alert alert-block">
+                                             width:600px; height:105px; margin-left: 5em;" href="#" class="">
                                             <h1> 
                                                 <a href="index.php?r=site/contact" rel="tooltip" 
                                                    title="esto ayuda a algo blab bla bcuiscuiwucuguigcuigwuiguiwg<br<jhefvioejhfioheriofh"
@@ -164,8 +122,8 @@
                                      margin:10px;
                                      width:400px; height:135px;" id="three"><ul class="thumbnails">
                                     <li class="span3">
-                                        <div style="float:lefth; margin:10px;
-                                             width:600px; height:105px;" href="#" class="alert alert-info">
+                                        <div style="float:lefth; margin:10px; margin-left: 5em;
+                                             width:600px; height:105px;" href="#" class="">
                                             <h1> 
                                                 <a href="/index.php?r=site/contact" rel="tooltip" 
                                                    title="esto ayuda a algo blab bla bcuiscuiwucuguigcuigwuiguiwg<br<jhefvioejhfioheriofh" 
