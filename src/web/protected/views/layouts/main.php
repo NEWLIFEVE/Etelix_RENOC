@@ -39,7 +39,7 @@
 	        <?php
         $this->widget('bootstrap.widgets.TbNavbar', array(
             'type' => 'inverse', // null or 'inverse'
-            'brand' => 'Project name',
+            'brand' => 'RENOC',
             'brandUrl' => '#',
             'collapse' => true, // requires bootstrap-responsive.css
             'items' => array(
