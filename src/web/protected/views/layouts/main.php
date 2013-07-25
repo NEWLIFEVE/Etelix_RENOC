@@ -11,6 +11,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
         <![endif]-->
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
+         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 
@@ -24,12 +25,12 @@
             <link rel="apple-touch-icon-precomposed" sizes="114x114" href="protected/extensiones/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png"/>
             <link rel="apple-touch-icon-precomposed" sizes="72x72" href="protected/extensiones/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png"/>
             <link rel="apple-touch-icon-precomposed" href="protected/extensiones/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png"/>
-            <link rel="shortcut icon" href="protected/extensiones/bootstrap/assets/ico/favicon.png"/> 
-
+            <link rel="shortcut icon" href="protected/extensions/bootstrap/assets/ico/favicon.png"/> 
+            
 
     </head>
     <body>
-        <div class="container" id="page">
+        <div class="container" style="padding:-30px;">
             <!--menu-->
             <?php
             $this->widget('bootstrap.widgets.TbNavbar', array(
@@ -54,20 +55,15 @@
             <div id="header">
                 <div id="logo"></div>
             </div> 
-            <div style="border:10px solid white;background:white;text-align:rigth;
-                 width:970px; height:70px;
-                 position:relative;  overflow:hidden;" class="">
+            <div id="espacio"  class="">
                 
             </div>
             <div class="row">
-                <div id="barraVerde" style="border:10px solid white;background:green;text-align:rigth;
-                          width:5px; height:450px; margin-left: 172px; margin-bottom: 128px;" class="span4" >
+                <div id="barraVerde" class="span4" >
                           
         
                 <div  class="span8">
-                    <div  style=" left:130px;  border:10px solid white;background:#F2F2F2;text-align:rigth;
-                          width:875px; height:550px; margin-left:-128px;
-                          position:relative;  overflow:hidden;" id="fondo">   
+                    <div id="fondo" >   
 <?php if (isset($this->breadcrumbs)): ?>
     <?php
     $this->widget('zii.widgets.CBreadcrumbs', array(
@@ -75,77 +71,69 @@
     ));
     ?><!-- breadcrumbs -->
                         <?php endif ?>
-                        <div     style="float:lefth;
-                                 margin:10px;
-                                 width:400px; height:5px;" id="three"><ul class="thumbnails">
+                        <div  id="three"><ul class="thumbnails">
                                 <li class="span1">
-                                    <div id="icono" style="float:lefth; margin:10px;
-                                         width:500px; height:75px;" href="#" class=" ">
+                                    <div id="icono"  href="#" class=" ">
                                         <rigth>  <h1> <a href="index.php" class="icon-backward "></a></h1></rigth>
                                     </div>
                                 </li>
                             </ul> 
                         </div>
 <?php echo $content; ?>
-                        <div id="capa" style=" background:#D8D8D8; height:400px; width:600px;
-                              position:absolute; top:0; lefth:0; padding-top: 30px;" >
-                            <div  id="one"   style=" float:lefth;
-                                     margin:10px; width:600px; height:135px;" > 
+                        <div id="capa">
+                            <div  id="one" > 
                                 <ul class="thumbnails">
                                     <li class="span3">
-                                        <div style=" float:lefth; margin:10px;
-                                             width:600px; height:105px; margin-left: 5em;" href="#" class="">
-                                            <h1> 
-                                                <a href="/index.php?r=site/contact" rel="tooltip" 
-                                                   title="esto ayuda a algo blab bla bcuiscuiwucuguigcuigwuiguiwg<br<jhefvioejhfioheriofh" 
-                                                   class="tooltip-test">RUTINARIOS &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;</a><A> > </a>
+                                        <div id="claseboot" href="#" class="">
+                                            <h1> RUTINARIOS &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;
+                                                <a href="#" rel="tooltip" 
+                                                   title="esta es la consulta basica por hora y fecha" 
+                                                   class="tooltip-test"> > </a>
                                             </h1>
                                         </div>
                                     </li>
                                 </ul>             
                             </div>
-                            <div     style="float:lefth;
-                                     margin:10px;
-                                     width:400px; height:135px;" id="two"><ul class="thumbnails">
+                            <div id="two"><ul class="thumbnails">
                                     <li class="span3">
-                                        <div style="float:lefth; margin:10px;
-                                             width:600px; height:105px; margin-left: 5em;" href="#" class="">
-                                            <h1> 
-                                                <a href="index.php?r=site/contact" rel="tooltip" 
-                                                   title="esto ayuda a algo blab bla bcuiscuiwucuguigcuigwuiguiwg<br<jhefvioejhfioheriofh"
-                                                   class="tooltip-test">ESPECIFICOS &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  &nbsp;</a><A> > </a>
+                                        <div id="claseboot" href="#" class="">
+                                            <h1> ESPECIFICOS &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  &nbsp;
+                                                <a href="#" rel="tooltip" 
+                                                   title="aqui se muestra informacion de data por fecha y hora especifica"
+                                                   class="tooltip-test"> > </a>
                                             </h1>
                                         </div>
                                     </li>
                                 </ul>  </div>
-                            <div     style="float:lefth;
-                                     margin:10px;
-                                     width:400px; height:135px;" id="three"><ul class="thumbnails">
+                            <div  id="three"><ul class="thumbnails">
                                     <li class="span3">
-                                        <div style="float:lefth; margin:10px; margin-left: 5em;
-                                             width:600px; height:105px;" href="#" class="">
-                                            <h1> 
-                                                <a href="/index.php?r=site/contact" rel="tooltip" 
-                                                   title="esto ayuda a algo blab bla bcuiscuiwucuguigcuigwuiguiwg<br<jhefvioejhfioheriofh" 
-                                                   class="tooltip-test">PERSONALIZADOS &nbsp; &nbsp;&nbsp; </a> <A> > </a>
+                                        <div id="claseboot" href="#" class="">
+                                            <h1> PERSONALIZADOS &nbsp; &nbsp;&nbsp;
+                                                <a href="#" rel="tooltip" 
+                                                   title="puede realizar una busqueda filtrada de data, por fecha, operadora, entre otras" 
+                                                   class="tooltip-test"> > </a>
                                             </h1>
                                         </div>
                                     </li>
                                 </ul>  </div>
-                            <div     
-                                id="four"></div>
+                            <div id="four"> </div>
+                            
+                            
+                            <div id="segundacapa" ></div>
                         </div>
                     </div>
                 </div>
                 
             </div>
         </div><!-- page -->
+         </div><!--container-->
         <div class="clear"></div>
 
-        <div id="footer">
-            Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-            All Rights Reserved.<br/>
-<?php echo Yii::powered(); ?>
+        <div id="footer" style=" background:#151515; height:40px; width:1400px;
+                      margin: -57px;        position:absolute; top:600; padding-lefth:-130; padding-top: 0px;"  >
+            Copyright &copy; <?php echo date('Y'); ?> ETELIX DEV.<br/>
+                        All Rights Reserved.   <br/>
+
         </div><!-- footer -->
         <script>
             var TRACK = (function() {
@@ -189,7 +177,7 @@
                 clearInterval(fade_timer);
                 if (going_left) {
                     going_left = false;
-                    swap(three, one, -880);
+                    swap(three, one, -1480);
                 } else {
                     going_left = true;
                     swap(two, 0);
