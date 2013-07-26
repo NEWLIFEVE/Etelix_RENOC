@@ -1,26 +1,84 @@
 
+
+.div { 
+    position:absolute; 
+    width:1200px; 
+    height:550px;
+    font-size:36px; 
+    text-align:center;
+    color:silver; 
+    background:white;
+    padding-top:25px;
+    top:0; 
+    left:0; 
+    display:none;
+    border:0px solid white;
+    padding-top: 100px;
+}
+
+.span { display:none; }
+
+
+
+
+.infobox {
+    position:relative;
+    border:0px solid #000; 
+    width:73px;
+    padding:5px;
+    }
+.infobox img {
+ position:relative;
+ z-index:2;
+    }
+.infobox .more {
+ display:none;
+    }
+.infobox:hover .more {
+ display:block;
+    position:absolute;
+    z-index:1;
+    left:-1px;
+    top:-1px;
+    width:458px;
+    padding:78px 5px 5px;
+    border:0px solid #900;
+    background-color:#FFEFEF;
+    }
+
+
 #espacio{
     border:10px solid white;
     background:white;
     text-align:rigth;
-    width:970px;
+    width:880px;
     height:70px;
     position:relative;  
-    overflow:hidden;	
+    overflow:hidden;
+    margin-left: 172px; 
 }
 #barraVerde{
     border:10px solid white;
-    background:green;
+    background:white;
     text-align:rigth;
     width:5px; 
     height:450px; 
     margin-left: 172px; 
     margin-bottom: 128px;	
 }
+#barraVerde1{
+    border:0px solid white;
+    background:green;
+    text-align:rigth;
+    width:5px; 
+    height:300px; 
+    margin-left: 181px; 
+    margin-bottom: 128px;	
+}
 #fondo{
     left:130px;  
     border:10px solid white;
-    background:#F2F2F2;
+    background:white;
     text-align:rigth;
     width:875px; 
     height:500px;
@@ -30,14 +88,17 @@
 }
 #three{
     float:lefth;
-    margin:10px;
-    width:400px; height:5px;	
+    margin:0px;
+    width:5px; 
+    height:5px;
+    margin-left: 10px;
 }
 #icono{
     float:lefth; 
     margin:10px;
     width:500px; 
-    height:75px;	
+    height:75px;
+    margin-left:-70px;
 }
 #capa{
     background:#D8D8D8; 
@@ -53,37 +114,183 @@
     margin:10px;
     width:600px; 
     height:135px;
+    margin-left: 10px;
 }
 #claseboot{
     float:lefth; 
-    margin:10px;
-    width:600px; 
-    height:105px; 
+    margin:0px;
+    width:458px; 
+    height:75px; 
     margin-left: 5em;
 }
 #two{
     float:lefth;
     margin:10px;
-    width:400px; 
+    width:420px; 
     height:135px;
+    margin-left: 18px;
 }
 #segundacapa{
-    background:#F2F2F2; 
+    background:white; 
     height:400px; 
     width:600px;
     position:absolute; 
     top:0; 
-    margin-left: 550px; 
+    margin-left: 650px; 
     lefth:0;
     padding-top: 30px;
 }
+#barraVerdeC{
+    background:green; 
+    height:400px; 
+    width:5px;
+    position:absolute; 
+    top:0; 
+    margin-left: 3px; 
+    lefth:0;
+    padding-top: 30px;
+}
+#barrablanca{
+    background:white; 
+    height:400px; 
+    width:15px;
+    position:absolute; 
+    top:0; 
+    margin-left: 8px; 
+    lefth:0;
+    padding-top: 30px;
+}
+#footer1{
+    background:#151515; 
+    height:40px; 
+    width:1400px;
+    margin: -57px;        
+    position:absolute; 
+    top:600; 
+    padding-lefth:-130; 
+    padding-top: 0px;
+}
+
+#instruccion{
+    border:0px solid red;
+    text-align:rigth;
+    width:215px; 
+    height:32px; 
+    margin-top: -43px; 
+    margin-left: 103px;
+    margin-bottom: 0spx;
+    font-size: 21px;
+    color: #848484;
+}
+#datepicker{
+    border:0px solid black;
+  
+    width:350px; 
+    height:300px; 
+    margin-top: 0px; 
+    margin-left: 25px;
+    margin-bottom: 0px;
+    font-size: 21px;
+    color: #848484;
+    
+}
+
+
+#exportar{
+    border:px solid black;
+    text-align:rigth;
+    width:41px; 
+    height:41px; 
+    margin-top: 303px; 
+    margin-left: -83px; 
+    margin-bottom: 0spx;
+    
+}
+
+#selecFecha{
+    border: 0px solid black;
+    height: 28px;
+    margin-left: -228px;
+    margin-top: 307px;
+    width: 144px;
+}
+#exportar1{
+    border:px solid black;
+    text-align:rigth;
+    width:48px; 
+    height:41px;
+    margin-top: 298px; 
+    margin-left: -275px; 
+    margin-bottom: 0spx;
+}
+#barraVerde2{
+    border:1px solid white;
+    background:green;
+    text-align:rigth;
+    width:5px; 
+    height:300px; 
+    margin-left: 78px;
+    margin-bottom: 0spx;  
+}
+#tablagris{
+    border:2px solid white;
+    text-align:center;
+    width:300px; 
+    height:301px; 
+    margin-left: 90px;
+    margin-bottom: 0spx; 
+    color: #848484;
+}
+#tdtodos{
+   border:2px solid white; background:#FAFAFA; 
+}
+#td1{
+   border:2px solid white; background:#F2F2F2; 
+}
+#td2{
+   border:2px solid white; background:#E6E6E6; 
+}
+#td3{
+   border:2px solid white; background:#D8D8D8; 
+}
+#td4{
+   border:2px solid white; background:#BDBDBD; 
+}
+#td5{
+   border:2px solid white; background:#A4A4A4; 
+}
+
+.Rotate-90
+{
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+ 
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+ 
+  font-size: 40px;
+  
+  width: 200px;
+  heigh: 5px;
+  position: absolute;
+  margin-left: 10px;
+  margin-top:151px; 
+  border:0px solid red;
+}
+
 body
 {
     margin: 0;
     padding: 0;
     color: #555;
     font: normal 10pt Arial,Helvetica,sans-serif;
-    background: #EFEFEF;
+    background: #whites;
 }
 
 #page
