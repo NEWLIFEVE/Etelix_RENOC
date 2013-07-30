@@ -11,8 +11,6 @@ $this->pageTitle = Yii::app()->name;
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <link rel="stylesheet" href="/resources/demos/style.css" />
- 
-
     </head>
     <body>
         <div id="container">
@@ -37,9 +35,9 @@ $this->pageTitle = Yii::app()->name;
                                     <li class="span3">
                                         <div id="claseboot" href="#" class="a">
                                             <h1> RUTINARIOS &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;
-                                                <a href="#" rel="tooltip" 
+                                                <a id="flecha" href="#"  rel="tooltip" 
                                                    title="esta es la consulta basica por hora y fecha" 
-                                                   class="tooltip-test "> > </a>
+                                                   class="tooltip-test ">></a>
                                             </h1>
                                         </div>
                                     </li>
@@ -49,7 +47,7 @@ $this->pageTitle = Yii::app()->name;
                                     <li class="span3">
                                         <div id="claseboot" href="index.php" class="a">
                                             <h1> ESPECIFICOS &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  &nbsp;
-                                                <a href="index.php" rel="tooltip" 
+                                                <a id="flecha" href="index.php" rel="tooltip" 
                                                    title="aqui se muestra informacion de data por fecha y hora especifica"
                                                    class="tooltip-test"> > </a>
                                             </h1>
@@ -58,9 +56,9 @@ $this->pageTitle = Yii::app()->name;
                                 </ul>  </div>
                             <div  id="three"><ul class="thumbnails">
                                     <li class="span3">
-                                        <div id="claseboot" href="#" class="a">
+                                        <div id="claseboot" href="index.php?r=usersRenoc/view&id=1" class="a">
                                             <h1> PERSONALIZADOS &nbsp;  &nbsp;&nbsp;
-                                                <a href="#" rel="tooltip" 
+                                                <a id="flecha" href="index.php?r=usersRenoc/view&id=1" rel="tooltip" 
                                                    title="puede realizar una busqueda filtrada de data, por fecha, operadora, entre otras" 
                                                    class="tooltip-test"> > </a>
                                             </h1>
@@ -95,25 +93,30 @@ $this->pageTitle = Yii::app()->name;
 
                     <div id="datepicker" class="span6">
                     </div>
-                    
 
-                    
+
+
                     <div id="exportar"  class="span1">
                         <a href="#" rel="tooltip" 
                            title="presione el icono para enviar los reportes seleccionados a su correo electronico" 
-                           class="tooltip-test"><img src="/assets/e3ecaab1/img/mail.png"  width="35px" height="35px"> 
+                           class="tooltip-test"><img src="/assets/e3ecaab1/img/mail.png"  width="95px" height="95px" onclick="miFuncion()"
+                                                  value="Activar Función"> 
                         </a>
                     </div>
                     <div id="exportar1"  class="span1">
                         <a href="#" rel="tooltip" 
                            title="con esta opcion, exporta los registros seleccionados a documentos en formato excel" 
-                           class="tooltip-test"><img src="/assets/e3ecaab1/img/excel.png"  width="55px" height="55px">
+                           class="tooltip-test"><img src="/assets/e3ecaab1/img/excel.png"  width="75px" height="75px"onclick="miFuncion()"
+                                                  value="Activar Función">
                         </a>
                     </div>
                     <div id="barraVerde2" class="span2" >
                     </div>
+                    <div id="instruccion2" class="span1">
+                        Seleccione tipos de reportes
+                    </div>  
                     <div id="tablagris" class="span2" >
-                        
+
                         <table class="">
                             <tr><td><h3><label class="checkbox">
                                             <input type="checkbox" onclick="marcar(this);" />
@@ -135,8 +138,9 @@ $this->pageTitle = Yii::app()->name;
                                         <input type="checkbox"> 
                                     </label></td><td id="td5"><h4>Otros</h4></td></tr>
                             <tr> <td></td> <td>
-                            <input type="text" id="datepicker_value"/>
-                            </td></tr>
+                                    <input type="hidden"  id="datepicker_value"/>
+
+                                </td></tr>
                         </table>
                     </div>    
 
@@ -146,6 +150,6 @@ $this->pageTitle = Yii::app()->name;
         <!-- page -->
         <!--container-->   
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-                                      
+
 </body>
 </html>

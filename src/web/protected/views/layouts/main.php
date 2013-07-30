@@ -33,6 +33,8 @@
         <div class="container" style="padding:-30px;">
             <!--menu-->
             <?php
+            
+            $admin = (isset(Yii::app()->user->perfil) and Yii::app()->user->perfil == 'ADMIN') ? true : false ;    
             $this->widget('bootstrap.widgets.TbNavbar', array(
                 'type' => 'inverse', // null or 'inverse'
                 'brand' => 'RENOC',
@@ -43,24 +45,29 @@
                         'class' => 'bootstrap.widgets.TbMenu',
                         'htmlOptions' => array('class' => 'pull-right'),
                         'items' => array(
-                            array('label' => 'Leandro', 'url' => '#', 'items' => array(
-                                    array('label' => 'Action', 'url' => '#'),
-                                    array('label' => 'Cerrar Sesion', 'url' => 'index.php'),
-                                )),
+array('label'=>'Usuarios', 'url'=>array('/usersRenoc/admin'), 'visible' => $admin),
+array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+array('label'=>'Salir ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+                            
+                            
                         ),
                     ),
                 ),
             ));
             ?>
+            <div style="text-align: right;">
+<?php if(!Yii::app()->user->isGuest and isset(Yii::app()->user->last_login)){
+echo "Ultimo Acceso: ".Yii::app()->dateFormatter->format("d-M-y h:m a", Yii::app()->user->last_login);} ?>
+</div>
             <!--fin de menu-->
             <?php echo Yii::app()->bootstrap->init(); ?>
             <div id="header">
                 <div id="logo"></div>
             </div> 
-            <?php echo $content; ?>
+ <?php echo $content; ?>
         </div>
         <div class="clear"></div>
-        <div id="footer1">
+        <div id="footer">
             Copyright &copy; <?php echo date('Y'); ?> ETELIX DEV.<br/>
             All Rights Reserved.   <br/>
         </div><!-- footer1 -->
@@ -89,3 +96,4 @@
         <script src="protected/extensions/bootstrap/assets/js/application.js"/>
     </body>
 </html>
+

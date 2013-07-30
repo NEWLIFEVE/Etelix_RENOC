@@ -36,3 +36,4 @@ class CDbException extends CException
 		parent::__construct($message,$code);
 	}
 }
+
