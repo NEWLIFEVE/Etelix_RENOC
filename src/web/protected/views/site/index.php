@@ -99,14 +99,14 @@ $this->pageTitle = Yii::app()->name;
                     <div id="exportar"  class="span1">
                         <a href="#" rel="tooltip" 
                            title="presione el icono para enviar los reportes seleccionados a su correo electronico" 
-                           class="tooltip-test"><img src="/assets/e3ecaab1/img/mail.png"  width="95px" height="95px" onclick="miFuncion()"
+                           class="tooltip-test"><img src="/images/mail.png"  width="95px" height="95px" onclick="miFuncion()"
                                                   value="Activar Función"> 
                         </a>
                     </div>
                     <div id="exportar1"  class="span1">
                         <a href="#" rel="tooltip" 
                            title="con esta opcion, exporta los registros seleccionados a documentos en formato excel" 
-                           class="tooltip-test"><img src="/assets/e3ecaab1/img/excel.png"  width="75px" height="75px"onclick="miFuncion()"
+                           class="tooltip-test"><img src="/images/excel.png"  width="75px" height="75px"onclick="miFuncion()"
                                                   value="Activar Función">
                         </a>
                     </div>
