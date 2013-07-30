@@ -7,8 +7,11 @@
  */
 class UserIdentity extends CUserIdentity
 {
+	private $_id;
+	const ERROR_EMAIL_INVALID=3;
+	const ERROR_STATUS_INACTIV=4;
 	/**
-	 * Authenticates a user.
+	 * Autentica un usuario.
 	 * The example implementation makes sure if the username and password
 	 * are both 'demo'.
 	 * In practical applications, this should be changed to authenticate
@@ -17,17 +20,39 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
-		$users=array(
-			// username => password
-			'demo'=>'demo',
-			'admin'=>'admin',
-		);
-		if(!isset($users[$this->username]))
-			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		elseif($users[$this->username]!==$this->password)
+		if (strpos($this->username,"@")) {
+			$user=  UsersRenoc::model()->findByAttributes(array('email'=>$this->username));
+		} else {
+			$user=UsersRenoc::model()->findByAttributes(array('username'=>$this->username));
+		}
+		if($user===null){
+			if (strpos($this->username,"@")) {
+				$this->errorCode=self::ERROR_EMAIL_INVALID;
+			} else {
+				$this->errorCode=self::ERROR_USERNAME_INVALID;
+			}
+		}
+		else if(UserHelp::encrypting($this->password)!==$user->password)
+		{
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
-		else
+		}
+		else if($user->status!==true){
+			$this->errorCode=self::ERROR_STATUS_INACTIV;
+		}
+		else 
+		{
+			$this->_id=$user->id;
+			$this->username=$user->username;
 			$this->errorCode=self::ERROR_NONE;
-		return !$this->errorCode;
+		}
+		return $this->errorCode;
+	}
+
+	/**
+    * @return integer el ID del usuario autenticado
+    */
+	public function getId()
+	{
+		return $this->_id;
 	}
 }

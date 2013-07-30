@@ -1,75 +1,24 @@
 
 
-#titlelogin{
-    
-    border: 10px solid #585858;
-    height: 430px;
-    margin-bottom: 171px;
-    margin-left: 370px;
-    width: 380px;
-    font-size: 30px;
-    text-align:center;
-    
-}
-
-#minifooter{
-    border: 0px solid red;
-    font-size: 10px;
-    height: 28px;
-    margin-bottom: 171px;
-    margin-left: 388px;
-    margin-top: -158px;
-    text-align: left;
-    width: 344px  
-}
-#ingresen{
-    font-size: 40px;
-    text-align:center;
-    
-}
-#login-form1{
-    position:absolute; 
-    border: 10px solid black;
-    height: 382px;
-    margin-bottom: 171px;
-    margin-left: 379px;
-    margin-top: -573px;
-    width: 361px;
-    text-align:center;
-}
-#login{
-    background: none repeat scroll 0 0 white;
-    border: 0px solid red;
-    height: 382px;
-    margin-bottom: 171px;
-    margin-left: 379px;
-    margin-top: -573px;
-    width: 361px;
-    text-align:center;
-    box-shadow: 2px 8px 7px black;
-}
-
 .div { 
     position:absolute; 
-    width:1350px; 
-    height:600px;
+    width:1200px; 
+    height:550px;
     font-size:36px; 
     text-align:center;
     color:silver; 
+    background:white;
     padding-top:25px;
     top:0; 
     left:0; 
     display:none;
     border:0px solid white;
-    padding-top: 100px;   
-background: #F2F2F2;
-/*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#F2F2F2), to(white));
-background: -moz-linear-gradient(white, white);
-background: linear-gradient(#F2F2F2, white);
--pie-background: linear-gradient(#F2F2F2, white);   */
+    padding-top: 100px;
 }
 
 .span { display:none; }
+
+
 
 
 .infobox {
@@ -101,7 +50,7 @@ background: linear-gradient(#F2F2F2, white);
 #espacio{
     border:10px solid white;
     background:white;
-    text-align:rigth;
+    text-align:right;
     width:880px;
     height:70px;
     position:relative;  
@@ -111,7 +60,7 @@ background: linear-gradient(#F2F2F2, white);
 #barraVerde{
     border:10px solid white;
     background:white;
-    text-align:rigth;
+    text-align:right;
     width:5px; 
     height:450px; 
     margin-left: 172px; 
@@ -120,17 +69,17 @@ background: linear-gradient(#F2F2F2, white);
 #barraVerde1{
     border:0px solid white;
     background:green;
-    text-align:rigth;
+    text-align:right;
     width:5px; 
     height:300px; 
     margin-left: 181px; 
-    margin-bottom: 128px;
+    margin-bottom: 128px;	
 }
 #fondo{
     left:130px;  
     border:10px solid white;
     background:white;
-    text-align:rigth;
+    text-align:right;
     width:875px; 
     height:500px;
     margin-left:-128px;
@@ -138,52 +87,45 @@ background: linear-gradient(#F2F2F2, white);
     overflow:hidden;	
 }
 #three{
-    float:lefth;
+    float:left;
     margin:0px;
     width:5px; 
     height:5px;
-    margin-left: 10px;
+    padding-top: 10px;
+       padd-left: 200px;
 }
 #icono{
-    float:lefth; 
+    float:left; 
     margin:10px;
     width:500px; 
     height:75px;
     margin-left:-70px;
 }
-#flecha{
-    color: #848484;
-    text-decoration:none; 
-}
-#enlacerenoc{
-    color: green;
-    
-}
 #capa{
-    background:#F2F2F2; 
+    background:#D8D8D8; 
     height:400px; 
     width:600px;
     position:absolute; 
     top:0; 
+    left:0;
     padding-top: 30px;
-    color: #848484;
 }
 #one{
-    float:lefth;
+    float:left;
     margin:10px;
     width:600px; 
     height:135px;
     margin-left: 10px;
 }
 #claseboot{
-    float:lefth; 
+    float:left; 
     margin:0px;
     width:458px; 
     height:75px; 
     margin-left: 5em;
 }
 #two{
-    float:lefth;
+    float:left;
     margin:10px;
     width:420px; 
     height:135px;
@@ -196,7 +138,7 @@ background: linear-gradient(#F2F2F2, white);
     position:absolute; 
     top:0; 
     margin-left: 650px; 
-    lefth:0;
+    left:0;
     padding-top: 30px;
 }
 #barraVerdeC{
@@ -206,7 +148,7 @@ background: linear-gradient(#F2F2F2, white);
     position:absolute; 
     top:0; 
     margin-left: 3px; 
-    lefth:0;
+    left:0;
     padding-top: 30px;
 }
 #barrablanca{
@@ -214,46 +156,36 @@ background: linear-gradient(#F2F2F2, white);
     height:400px; 
     width:15px;
     position:absolute; 
-    top:0; 
+    top:564px; 
     margin-left: 8px; 
-    lefth:0;
+    left:0;
     padding-top: 30px;
 }
 #footer1{
     background:#151515; 
     height:40px; 
-    width:1433px;
-    margin: 0px;        
+    width:1400px;
+    margin: -57px;        
     position:absolute; 
-    top:600; 
-    padding-lefth:-130; 
+    top:600px; 
+    padding-left: 130px; 
     padding-top: 0px;
 }
 
 #instruccion{
     border:0px solid red;
-    text-align:rigth;
+    text-align:right;
     width:215px; 
     height:32px; 
     margin-top: -43px; 
     margin-left: 103px;
-    margin-bottom: 0spx;
+    margin-bottom: 0px;
     font-size: 21px;
     color: #848484;
-}
-
-#instruccion2{
-    border: 0px solid red;
-    color: #848484;
-    font-size: 21px;
-    height: 32px;
-    margin-left: 95px;
-    margin-top: -44px;
-    width: 280px
 }
 #datepicker{
     border:0px solid black;
-  
+    text-align:right;
     width:350px; 
     height:300px; 
     margin-top: 0px; 
@@ -266,48 +198,40 @@ background: linear-gradient(#F2F2F2, white);
 
 
 #exportar{
-    border:px solid black;
-    text-align:rigth;
-    width:60px; 
-    height:60px; 
+    border:0px solid black;
+    text-align:right;
+    width:41px; 
+    height:41px; 
     margin-top: 303px; 
     margin-left: -83px; 
-    margin-bottom: 0spx;
+    margin-bottom: 0px;
     
 }
-
-#selecFecha{
-    border: 0px solid black;
-    height: 28px;
-    margin-left: -228px;
-    margin-top: 307px;
-    width: 144px;
-}
 #exportar1{
-    border:px solid black;
-    text-align:rigth;
-    width:60px; 
-    height:60px;
-    margin-top: 303px; 
+    border:0px solid black;
+    text-align:right;
+    width:48px; 
+    height:41px;
+    margin-top: 298px; 
     margin-left: -275px; 
-    margin-bottom: 0spx;
+    margin-bottom: 0px;
 }
 #barraVerde2{
     border:1px solid white;
     background:green;
-    text-align:rigth;
+    text-align:right;
     width:5px; 
     height:300px; 
     margin-left: 78px;
-    margin-bottom: 0spx;  
+    margin-bottom: 0px;  
 }
 #tablagris{
     border:2px solid white;
-    text-align:center;
+    text-align:right;
     width:300px; 
     height:301px; 
     margin-left: 90px;
-    margin-bottom: 0spx; 
+    margin-bottom: 0px; 
     color: #848484;
 }
 #tdtodos{
@@ -346,20 +270,11 @@ background: linear-gradient(#F2F2F2, white);
   font-size: 40px;
   
   width: 200px;
-  heigh: 5px;
+  height: 5px;
   position: absolute;
   margin-left: 10px;
   margin-top:151px; 
   border:0px solid red;
-}
-
-#bodylogin
-{
-    margin: 0;
-    padding: 0;
-    color: #555;
-    font: normal 10pt Arial,Helvetica,sans-serif;
-    background: #585858;
 }
 
 body
@@ -388,7 +303,7 @@ body
 
 #content
 {
-    padding: 15px;
+    padding: 20px;
 }
 
 #sidebar
@@ -398,16 +313,11 @@ body
 
 #footer
 {
-    background:#151515; 
-    padding: 3px;
-    margin: -55px 20px;
+    padding: 10px;
+    margin: 10px 20px;
     font-size: 0.8em;
     text-align: center;
     border-top: 1px solid #C9E0ED;
-    margin-left: 0px;
-    width:1343px;
-
-
 }
 
 #logo
@@ -597,91 +507,9 @@ div.search-form
     background: #80CFFF;
 }
 
-/*.....................................................................*/
-/*estilos de chekbox*/
-/*.roundedTwo input[type=checkbox]:checked + label:after {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity=100);
-	opacity: 1;
+
+
+root { 
+    display: block;
 }
 
- SQUARED ONE 
-.squaredOne {
-	width: 28px;
-	height: 28px;
-	background: #fcfff4;
-
-	background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -o-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -ms-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=0 );
-	margin: 20px auto;
-	-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	-moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	position: relative;
-}
-
-
-.squaredOne label {
-	cursor: pointer;
-	position: absolute;
-	width: 21px;
-	height: 21px;
-	left: px;
-	top: 4px;
-
-	-webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-	-moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-	box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-
-	background: -webkit-linear-gradient(top, #222 0%, #45484d 100%);
-	background: -moz-linear-gradient(top, #222 0%, #45484d 100%);
-	background: -o-linear-gradient(top, #222 0%, #45484d 100%);
-	background: -ms-linear-gradient(top, #222 0%, #45484d 100%);
-	background: linear-gradient(top, #222 0%, #45484d 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#222', endColorstr='#45484d',GradientType=0 );
-}
-
-.squaredOne label:after {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-	filter: alpha(opacity=0);
-	opacity: 0;
-	content: '';
-	position: absolute;
-	width: 16px;
-	height: 16px;
-	background: #00bf00;
-
-	background: -webkit-linear-gradient(top, #00bf00 0%, #009400 100%);
-	background: -moz-linear-gradient(top, #00bf00 0%, #009400 100%);
-	background: -o-linear-gradient(top, #00bf00 0%, #009400 100%);
-	background: -ms-linear-gradient(top, #00bf00 0%, #009400 100%);
-	background: linear-gradient(top, #00bf00 0%, #009400 100%);
-
-	top: 2px;
-	left: 2px;
-
-	-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	-moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-}
-
-.squaredOne label:hover::after {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
-	filter: alpha(opacity=30);
-	opacity: 0.3;
-}
-
-.squaredOne input[type=checkbox]:checked + label:after {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: alpha(opacity=100);
-	opacity: 1;
-}
-para luego
-<div class="squaredOne">
-	<input type="checkbox" value="None" id="squaredOne" name="check" />
-	<label for="squaredOne"></label>
-</div>*/
