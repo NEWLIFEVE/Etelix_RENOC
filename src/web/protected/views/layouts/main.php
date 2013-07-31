@@ -8,7 +8,13 @@
         <meta name="language" content="en" />
         <!-- blueprint CSS framework -->
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui.css" media="jquery" />
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom-ui.css" media="ui" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
+        
+                <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />-->
+            <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui.css"/>
+            <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom-ui.css"/>
         <!--[if lt IE 8]>
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
         <![endif]-->
@@ -25,7 +31,7 @@
         <link rel="apple-touch-icon-precomposed" sizes="114x114" href="protected/extensions/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png"/>
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="protected/extensions/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png"/>
         <link rel="apple-touch-icon-precomposed" href="protected/extensions/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png"/>
-        <link rel="shortcut icon" href="protected/extensions/bootstrap/assets/ico/favicon.png"/> 
+        <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/> 
 
 
     </head>
@@ -67,10 +73,10 @@ echo "Ultimo Acceso: ".Yii::app()->dateFormatter->format("d-M-y h:m a", Yii::app
  <?php echo $content; ?>
         </div>
         <div class="clear"></div>
-        <div id="footer">
+<!--        <div id="footer">
             Copyright &copy; <?php echo date('Y'); ?> ETELIX DEV.<br/>
             All Rights Reserved.   <br/>
-        </div><!-- footer1 -->
+        </div> footer1 -->
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
         <script src="protected/extensions/bootstrap/assets/js/bootstrap-tooltip.js"/>
         <script src="http://code.jquery.com/jquery.js"></script>

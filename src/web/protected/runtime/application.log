@@ -4784,3 +4784,50 @@ Stack trace:
 REQUEST_URI=/index.php?r=site/invocarUsandoAjaxPrueba2
 in C:\xampp\htdocs\Etelix_RENOC\src\web\protected\controllers\SiteController.php (159)
 in C:\xampp\htdocs\Etelix_RENOC\src\web\index.php (13)
+2013/07/30 18:26:36 [error] [php] htmlspecialchars() expects parameter 1 to be string, array given (C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\helpers\CHtml.php:98)
+Stack trace:
+#0 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\helpers\CHtml.php(153): renderAttributes()
+#1 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\helpers\CHtml.php(1983): tag()
+#2 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\helpers\CHtml.php(1257): activeInputField()
+#3 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\widgets\CActiveForm.php(657): activeTextField()
+#4 C:\xampp\htdocs\Etelix_RENOC\src\web\protected\views\site\login.php(39): CActiveForm->textField()
+#5 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CBaseController.php(126): require()
+#6 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CBaseController.php(95): SiteController->renderInternal()
+#7 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(869): SiteController->renderFile()
+#8 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(782): SiteController->renderPartial()
+#9 C:\xampp\htdocs\Etelix_RENOC\src\web\protected\controllers\SiteController.php(54): SiteController->render()
+#10 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\actions\CInlineAction.php(49): SiteController->actionIndex()
+#11 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#12 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(286): SiteController->runAction()
+#13 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(265): SiteController->runActionWithFilters()
+#14 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CWebApplication.php(282): SiteController->run()
+#15 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#16 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#17 C:\xampp\htdocs\Etelix_RENOC\src\web\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php
+in C:\xampp\htdocs\Etelix_RENOC\src\web\protected\views\site\login.php (39)
+in C:\xampp\htdocs\Etelix_RENOC\src\web\protected\controllers\SiteController.php (54)
+in C:\xampp\htdocs\Etelix_RENOC\src\web\index.php (13)
+2013/07/30 18:39:09 [error] [exception.CException] exception 'CException' with message 'Propiedad "TbButton"."style" no se encuentra definida.' in C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\base\CComponent.php:173
+Stack trace:
+#0 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CWidgetFactory.php(161): CComponent->__set('style', 'margin-left:mar...')
+#1 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CBaseController.php(146): CWidgetFactory->createWidget(Object(SiteController), 'bootstrap.widge...', Array)
+#2 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CBaseController.php(172): CBaseController->createWidget('bootstrap.widge...', Array)
+#3 C:\xampp\htdocs\Etelix_RENOC\src\web\protected\views\site\login.php(56): CBaseController->widget('bootstrap.widge...', Array)
+#4 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CBaseController.php(126): require('C:\xampp\htdocs...')
+#5 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CBaseController.php(95): CBaseController->renderInternal('C:\xampp\htdocs...', Array, true)
+#6 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(869): CBaseController->renderFile('C:\xampp\htdocs...', Array, true)
+#7 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(782): CController->renderPartial('login', Array, true)
+#8 C:\xampp\htdocs\Etelix_RENOC\src\web\protected\controllers\SiteController.php(54): CController->render('login', Array)
+#9 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\actions\CInlineAction.php(49): SiteController->actionIndex()
+#10 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#11 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#12 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#13 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CWebApplication.php(282): CController->run('')
+#14 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('')
+#15 C:\xampp\htdocs\Etelix_RENOC\src\web\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#16 C:\xampp\htdocs\Etelix_RENOC\src\web\index.php(13): CApplication->run()
+#17 {main}
+REQUEST_URI=/index.php
+HTTP_REFERER=http://renoc.local:8080/index.php
+---
