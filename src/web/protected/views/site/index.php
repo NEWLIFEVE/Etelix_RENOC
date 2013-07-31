@@ -122,7 +122,6 @@ $this->pageTitle = Yii::app()->name;
                     </div>
 
 
-
                     <div id="mail"  class="span1">
                         <a href="#" rel="tooltip" 
                            title="Enviar Reportes a su Correo Electronico" 
