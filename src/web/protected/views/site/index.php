@@ -142,8 +142,10 @@ $this->pageTitle = Yii::app()->name;
 
                                 </td></tr>
                         </table>
-                    </div>    
-
+                    </div> 
+                    <a href="#" style="display:block; color:#000033; font-family:Tahoma; font-size:12px;"     
+onclick="getOutput(); return false;"> test </a>
+<span id="output"></span>
                 </span>
             </div>
         </div> 

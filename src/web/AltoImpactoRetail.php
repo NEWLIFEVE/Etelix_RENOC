@@ -1,3 +1,27 @@
+<!--**********************start****insercion de datos desde el html por medio del jquery**************************-->
+   <?php
+//    $clientes = $_POST['variable1'];
+//    $destinos = $_POST['variable2'];
+//    $fechaActualVenezuela  = $_POST['variable3'];
+//    $listado = $clientes + $fechaActualVenezuela + $destinos;
+//     
+//    echo 'El resultado de la suma fue: '.$clientes;
+?>
+
+<?php
+    $val1 = $_POST['variable1'];
+   
+if ($val1 = 1) {
+    echo '.$clientes ';
+} elseif ($val1 == 2) {
+    echo '.$destinos';
+} else {
+    echo '.$fechaActualVenezuela';
+}
+?>
+
+<!--**********************fin****insercion de datos desde el html por medio del jquery**************************-->
+
 <?php
 /************************ FUNCIONES - COMIENZO ***********************/
 

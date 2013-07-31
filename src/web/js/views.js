@@ -78,9 +78,154 @@ $("#datepicker").datepicker({
    }
 });
       });
-      
-            $(function() {
+  
+  
+//  .......................pruebas..PRUEBAS....................................
+//   function miFuncion() {
+//    alert ("no estas cansado");
+//
+//    };
+//    
+//    function getRequest() {
+//    var req = false;
+//    try{
+//        // most browsers
+//        req = new XMLHttpRequest();
+//    } catch (e){
+//        // IE
+//        try{
+//            req = new ActiveXObject("Msxml2.XMLHTTP");
+//        } catch (e) {
+//            // try an older version
+//            try{
+//                req = new ActiveXObject("Microsoft.XMLHTTP");
+//            } catch (e){
+//                return false;
+//            }
+//        }
+//    }
+//    return req;
+//}
+//
+//function getOutput() {
+//  var ajax = getRequest();
+//  ajax.onreadystatechange = function(){
+//      if(ajax.readyState == 4){
+//          document.getElementById('output').innerHTML = ajax.responseText;
+//      }
+//  }
+//  ajax.open("GET", "http://renoc.local/AltoImpacto.php", true);
+//  ajax.send(null);
+//}
+//    
+//    
+////          // esperamos que el DOM cargue
+//        $(document).ready(function() { 
+//            // definimos las opciones del plugin AJAX FORM
+//            var opciones= {
+//                               beforeSubmit: mostrarLoader, //funcion que se ejecuta antes de enviar el form
+//                               success: mostrarRespuesta, //funcion que se ejecuta una vez enviado el formulario
+//							   
+//            };
+//             //asignamos el plugin ajaxForm al formulario myForm y le pasamos las opciones
+//            $('#myForm').ajaxForm(opciones) ; 
+//            
+//             //lugar donde defino las funciones que utilizo dentro de "opciones"
+//             function mostrarLoader(){
+//                      $("#loader_gif").fadeIn("slow");
+//             };
+//             function mostrarRespuesta (responseText){
+//				           alert("Mensaje enviado: "+responseText);
+//                          $("#loader_gif").fadeOut("slow");
+//                          $("#ajax_loader").append("<br>Mensaje: "+responseText);
+//             };
+//   
+//        }); 
 
-      });
-
- 
+////      $.ajax({
+//  url: "http://renoc.local/AltoImpactoRetail.php",
+//  data: {'json':'datas'},
+//  contentType: "application/json; charset=utf-8",
+//  dataFilter: function(data) {
+//    var resp = eval('(' + data + ')');
+//    return resp;
+//  },
+//  success: function(response, status, xhr){
+//    $('#idd').html(response.property);
+//  $('#resultado').load('http://renoc.local/AltoImpactoRetail.php');
+//  }
+//   
+//   
+//});  
+//    
+//    
+//    
+//    
+//    
+//    
+//$(document).ready(function(){
+//   $("#enlaceajax").click(function(evento){
+//      evento.preventDefault();
+//      $("#destino").load("index.php", {nombre: "Pepe", edad: 45}, function(){
+//         alert("recibidos los datos por ajax");
+//      });
+//   });
+//})
+//
+////$(document).ready(function(){
+////   $("#enlaceajax").click(function(evento){
+////      evento.preventDefault();
+////      $("#destino").load("http://renoc.local/AltoImpactoRetail.php");
+////   });
+////});
+//$(function(){
+//    $("#JqAjaxForm").submit(function(e){
+//       e.preventDefault();
+// 
+//        dataString = $("#JqAjaxForm").serialize();
+//     
+//        $.ajax({
+//        type: "POST",
+//        url: "funciones.php",
+//        data: dataString,
+//        dataType: "json",
+//        success: function(data) {
+//         
+//            if(data.email_check == "invalid"){
+//                $("#message_ajax").html("<div class='errorMessage'>Sorry " + data.name + ", " + data.email + " is NOT a valid e-mail address. Try again.</div>");
+//            } else {
+//                $("#message_ajax").html("<div class='successMessage'>" + data.email + " is a valid e-mail address. Thank you, " + data.name + ".</div>");
+//            }
+//          
+//        }
+//           
+//        });         
+//         
+//    });
+//});
+//
+//
+//$(document).ready( function(){
+// 
+//// Detect if hyperlink has been clicked //
+//$("a[title=submit_button]").click( function(){
+// 
+//// Pass the form values to the php file	
+//$.post('pass_value.php', $("#form").serialize(), function(ret){
+// 
+//	// Detect if values have been passed back	
+//	if(ret!=""){
+//	// alert windows shows the returned value from php
+//	alert("Value passed back from the php file... " + ret);
+//	}
+// 
+//});
+// 
+//// Important stops the page refreshing
+//return false;
+// 
+//}); 
+//});
+//
+//
+//
