@@ -167,7 +167,7 @@ $email = "
     <br/>
     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
         <tr>
-           <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+           <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                 Client RP
             </th>     
             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -216,9 +216,9 @@ $margin=$margin-100;
 
     if($par%2!=0){
         if($par==1){
-            $email .= "<tr style='background-color:#FFC8AE;'>";
+            $email .= "<tr style='background-color:#FFC8AE; color:#584E4E;'>";
         }else{
-            $email .= "<tr style='background-color:#AFD699;'>";
+            $email .= "<tr style='background-color:#AFD699; color:#584E4E;'>";
         }
     
 
@@ -265,10 +265,10 @@ $margin=$margin-100;
     elseif($par%2==0){
         
         if ($par==4){
-            $email .= "<tr style='background-color:#F8B6C9;'>";
+            $email .= "<tr style='background-color:#F8B6C9; color:#584E4E;'>";
             $par=0;
         }else{
-            $email .= "<tr style='background-color:#B3A5CF;'>";      
+            $email .= "<tr style='background-color:#B3A5CF; color:#584E4E;'>";      
         }
     $email .="
             <td style='text-align: left;' class='fecha'>
@@ -507,7 +507,7 @@ $email .="
     >Por Destinos</h2>
     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
         <tr>
-               <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+               <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                 Destination RP
             </th>     
             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>

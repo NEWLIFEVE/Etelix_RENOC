@@ -141,7 +141,7 @@ $email = "
     <br/>
     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
         <tr>
-            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                 Client
             </th>     
             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -481,7 +481,7 @@ $email .="
     >Por Proveedores (Compras)</h2>
     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
         <tr>
-            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                 Supplier
             </th>     
             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -816,7 +816,7 @@ $email .="
     >Por Destinos</h2>
     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
         <tr>
-            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+            <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                 Destination
             </th>     
             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>

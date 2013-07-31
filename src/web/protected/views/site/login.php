@@ -21,7 +21,7 @@ $this->breadcrumbs=array(
 <br>
 <br><br>
 <br>
-<font color="Gray" FACE="small fonts" size="5">Ingrese sus Datos</font>
+<font color="Gray"  size="5">Ingrese sus Datos</font>
 <br>
 <br>
 <br>
@@ -35,12 +35,14 @@ $this->breadcrumbs=array(
 	),
 )); ?>
 	<div class="row login">
+            <div id="barraVerdeUser" ></div>
                <?php echo $form->labelEx($model,''); ?>
 		<?php echo $form->textField($model,'username'); ?>
 		<?php echo $form->error($model,'username'); ?>
 	</div>
 
 	<div class="row login">
+            <div id="barraVerdePass" ></div>
 		<?php echo $form->labelEx($model,''); ?>
 		<?php echo $form->passwordField($model,'password'); ?>
 		<?php echo $form->error($model,'password'); ?>
@@ -50,10 +52,13 @@ $this->breadcrumbs=array(
 	</div>
     
 	<div class="row rememberMe">
-		<?php echo $form->checkBox($model,'rememberMe'); ?>
+            <div class="botonLogin">
+		<?php echo $form->checkBox($model,'rememberMe', array('class'=>'custom-checkboxLogin')); ?>
 		<?php echo $form->label($model,'rememberMe'); ?>
 		<?php echo $form->error($model,'rememberMe'); ?>
+            
             <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'type'=>'success', 'label'=>'Ingresar >')); ?> 
+            </div>
 	</div>
 <?php $this->endWidget(); ?>
 </div><!-- form -->
