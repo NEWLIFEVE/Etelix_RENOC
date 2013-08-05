@@ -1,4 +1,4 @@
-<?php
+<?php //
 /************************ FUNCIONES - COMIENZO ***********************/
 
 function format_decimal($num){
@@ -8,7 +8,37 @@ function format_decimal($num){
     $numsub = substr($numtext,0,$position+3); 
     return $numsub;
 }
+function formatearFecha($fecha, $tipo=NULL) {
 
+        if($tipo==NULL){
+            
+            $arrayFecha = explode("/", $fecha);
+
+            if (strlen($arrayFecha[0]) == 1) {
+                $arrayFecha[0] = "0" . $arrayFecha[0];
+            }
+            if (strlen($arrayFecha[1]) == 1) {
+                $arrayFecha[1] = "0" . $arrayFecha[1];
+            }
+
+            $fechaFinal = $arrayFecha[2] . "-" . $arrayFecha[0] . "-" . $arrayFecha[1];
+            return $fechaFinal;
+        }
+        
+        if($tipo=='etelixPeru'){
+            
+            $arrayFecha = explode(" ", $fecha);
+            return $arrayFecha[0];
+            
+        }
+        
+    }
+
+if (isset($_GET['fecha'])){
+
+$fecha_mod = formatearFecha($_GET['fecha']);
+echo $fecha_mod;
+}
 /*----------------------- FUNCIONES - FIN ---------------------------*/
 
 /************************ PARAMETROS BASE DE DATOS - COMIENZO ***********************/
@@ -26,6 +56,7 @@ function format_decimal($num){
 
     //$conection = mysql_connect($server, $username, $password);
     $conection = pg_connect("host=67.215.160.89 port=5432 dbname=sori user=postgres password=Nsusfd8263");
+    //$conection = pg_connect("host=192.168.1.239 port=5432 dbname=sori user=postgres password=123");
     
     //mysql_select_db($dataBase, $conection);
 
@@ -38,7 +69,7 @@ function format_decimal($num){
 $sqlClientes = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CALLS as CompleteCalls, x.MINUTOS as Minutos,x.PDD as Pdd, x.COST as Cost, x.REVENUE as Revenue, x.MARGEN as Margin
         FROM   (SELECT c.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS, sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
                 FROM balance b, carrier c
-                WHERE b.date_balance = '2013-07-22' AND b.type= 1 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
+                WHERE b.date_balance = '$fecha_mod' AND b.type= 1 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
                 GROUP BY c.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10
@@ -47,7 +78,7 @@ $sqlClientes = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CALLS
 $sqlClientesTotal = "SELECT 'TOTAL', sum(x.TOTALCALLS) as TotalCalls, sum(x.CALLS) as CompleteCalls, sum(x.MINUTOS) as Minutos,sum(x.PDD) as Pdd, sum(x.COST) as Cost, sum(x.REVENUE) as Revenue, sum(x.MARGEN) as Margin
         FROM   (SELECT c.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS, sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
                 FROM balance b, carrier c
-                WHERE b.date_balance = '2013-07-22' AND b.type= 1 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
+                WHERE b.date_balance = '$fecha_mod' AND b.type= 1 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
                 GROUP BY c.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10;
@@ -55,12 +86,12 @@ $sqlClientesTotal = "SELECT 'TOTAL', sum(x.TOTALCALLS) as TotalCalls, sum(x.CALL
 $sqlClientesTotalCompleto = "SELECT 'TOTAL', sum(complete_calls+incomplete_calls) as TotalCalls, sum(complete_calls) as CompleteCalls, sum(minutes) as Minutos,sum(PDD) as Pdd, sum(COST) as Cost, 
 sum(REVENUE) as Revenue, sum(margin) as Margin
         FROM balance
-        WHERE date_balance ='2013-07-22' AND type= 1 AND id_destination_int is not NULL;";
+        WHERE date_balance ='$fecha_mod' AND type= 1 AND id_destination_int is not NULL;";
 
 $sqlProveedores = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CALLS as CompleteCalls, x.MINUTOS as Minutos,x.PDD as Pdd, x.COST as Cost, x.REVENUE as Revenue, x.MARGEN as Margin
         FROM   (SELECT c.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS,sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
                 FROM balance b, carrier c
-                WHERE b.date_balance = '2013-07-22' AND b.type= 0 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
+                WHERE b.date_balance = '$fecha_mod' AND b.type= 0 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
                 GROUP BY c.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10
@@ -69,7 +100,7 @@ $sqlProveedores = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CA
 $sqlProveedoresTotal = "SELECT 'TOTAL', sum(x.TOTALCALLS) as TotalCalls, sum(x.CALLS) as CompleteCalls, sum(x.MINUTOS) as Minutos,sum(x.PDD) as Pdd, sum(x.COST) as Cost, sum(x.REVENUE) as Revenue, sum(x.MARGEN) as Margin
         FROM   (SELECT c.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS,sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
                 FROM balance b, carrier c
-                WHERE b.date_balance = '2013-07-22' AND b.type= 0 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
+                WHERE b.date_balance = '$fecha_mod' AND b.type= 0 AND b.id_destination_int is not NULL AND b.id_carrier = c.id 
                 GROUP BY c.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10;
@@ -77,11 +108,11 @@ $sqlProveedoresTotal = "SELECT 'TOTAL', sum(x.TOTALCALLS) as TotalCalls, sum(x.C
 $sqlProveedoresTotalCompleto = "SELECT 'TOTAL', sum(complete_calls+incomplete_calls) as TotalCalls, sum(complete_calls) as CompleteCalls, sum(minutes) as Minutos,sum(PDD) as Pdd, sum(COST) as Cost, 
 sum(REVENUE) as Revenue, sum(margin) as Margin
         FROM balance
-        WHERE date_balance ='2013-07-22' AND type= 0 AND id_destination_int is not NULL;";
+        WHERE date_balance ='$fecha_mod' AND type= 0 AND id_destination_int is not NULL;";
 $sqlDestinos = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CALLS as CompleteCalls, x.MINUTOS as Minutos,x.PDD as Pdd, x.COST as Cost, x.REVENUE as Revenue, x.MARGEN as Margin
         FROM   (SELECT d.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS,sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
                 FROM balance b, destination d
-                WHERE b.date_balance = '2013-07-22' AND b.type=1 AND b.id_destination is not NULL AND b.id_destination = d.id 
+                WHERE b.date_balance = '$fecha_mod' AND b.type=1 AND b.id_destination is not NULL AND b.id_destination = d.id 
                 GROUP BY d.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10
@@ -89,14 +120,14 @@ $sqlDestinos = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CALLS
 $sqlDestinosTotal = "SELECT 'TOTAL', sum(x.TOTALCALLS) as TotalCalls, sum(x.CALLS) as CompleteCalls, sum(x.MINUTOS) as Minutos,sum(x.PDD) as Pdd, sum(x.COST) as Cost, sum(x.REVENUE) as Revenue, sum(x.MARGEN) as Margin
         FROM   (SELECT d.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS,sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
                 FROM balance b, destination d
-                WHERE b.date_balance = '2013-07-22' AND b.type=1 AND b.id_destination is not NULL AND b.id_destination = d.id 
+                WHERE b.date_balance = '$fecha_mod' AND b.type=1 AND b.id_destination is not NULL AND b.id_destination = d.id 
                 GROUP BY d.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10";
 $sqlDestinosTotalCompleto = "SELECT 'TOTAL', sum(complete_calls+incomplete_calls) as TotalCalls, sum(complete_calls) as CompleteCalls, sum(minutes) as Minutos,sum(PDD) as Pdd, sum(COST) as Cost, 
 sum(REVENUE) as Revenue, sum(margin) as Margin
         FROM balance
-        WHERE date_balance ='2013-07-22' AND type= 1 AND id_destination_int is not NULL;";
+        WHERE date_balance ='$fecha_mod' AND type= 1 AND id_destination_int is not NULL;";
 /*----------------------- SENTENCIAS SQL - FIN  ------------------------------------*/
 
 

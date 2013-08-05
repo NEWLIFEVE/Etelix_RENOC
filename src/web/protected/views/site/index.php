@@ -4,59 +4,43 @@
 $this->pageTitle = Yii::app()->name;
 ?>
 <script>
-
+    
     $(function() {
         
-//        $("#mail").click(function() {
-//          alert("Enviar por Correo");
-////          $.ajax({
-////                url: '../../AltoImpacto.php',
-////                //data: str,
-////                type: 'post',
-////                success: function(data){
-////                    alert('aqui voy');
-////                    alert(data);
-////                }
-////            });
-//        });
-        $("#excel").click(function() {
-          alert("Exportar a Excel");
+        
+                $("#mail").click(function() {
+          
+                var fecha = $("#datepicker_value").val();
+                if(fecha!=""){
+                if($("#AI10").is(":checked")){                    
+                    alert("Selecciono AltoImpacto +10$ para la Fecha:"+fecha);
+                    $.ajax({
+                        url: 'PHPMailer_5.2.4/AltoImpacto.php',
+                        data: "fecha="+fecha,
+                        type: 'get',
+                        success: function(data){
+                            //alert (data);
+                            $('#respuestaAI').html(data);
+                        }
+                    });
+                }
+                if($("#AIR").is(":checked")){                    
+                    alert("Selecciono AltoImpactoRetail +1$ para la Fecha:"+fecha);
+                    $.ajax({
+                        url: 'PHPMailer_5.2.4/AltoImpactoRetail.php',
+                        data: "fecha="+fecha,
+                        type: 'get',
+                        success: function(data){
+                            //alert (data);
+                            $('#respuestaAIR').html(data);
+                        }
+                    });
+                }
+                }else{
+                alert('seleccione una fecha');
+                }
         });
-         });
-
         
-    $(function() {
-                function siRespuesta(r) {
-                    $('#respuesta').html(r); // Mostrar la respuesta del servidor en el div con el id "respuesta"
-                }
-
-                function siError(e) {
-                    alert('Ocurrió un error al realizar la petición: ' + e.statusText);
-                }
-
-                function peticion(e) {
-                    alert('entre');
-// Obtener valores de los campos de texto
-//                    var parametros = {
-//                        fecha: $('#datepicker_value').val()
-//                    };
-                    var fecha = $('#datepicker_value').val();
-                    alert(fecha);
-// Realizar la petición
-                    var post = $.post(
-                            "http://renoc.local/AltoImpactoRetail.php", // Script que se ejecuta en el servidor
-                            fecha,
-                            siRespuesta, // Función que se ejecuta cuando el servidor responde
-                            'html' // Tipo de respuesta del servidor
-                            );
-
-                    /* Registrar evento de la petición (hay mas)
-                     (no es obligatorio implementarlo, pero es muy recomendable para detectar errores) */
-
-                    post.error(siError); // Si ocurrió un error al ejecutar la petición se ejecuta "siError"
-                }
-
-                $('#mail').click(peticion); // Registrar evento al boton "Calcular" con la funcion "peticion"
             });
         
    
@@ -263,7 +247,8 @@ $this->pageTitle = Yii::app()->name;
  <!--/**********************************************FIN CAPA RUTINARIOS*****************************************************************************************/-->                   
  
         </div> 
-        <div id="respuesta"></div>
+        <div id="respuestaAI"></div>
+        <div id="respuestaAIR"></div>
         <div id="footer">
             Copyright &copy; <?php echo date('Y'); ?> SACET 
             All Rights Reserved. 
