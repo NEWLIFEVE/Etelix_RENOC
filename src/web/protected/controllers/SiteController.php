@@ -72,6 +72,16 @@ class SiteController extends Controller
 	/**
 	 * Displays the contact page
 	 */
+        
+        public function actionRutinarios(){
+            $this->render('rutinarios');
+        }
+        public function actionPersonalizados(){
+            $this->render('personalizados');
+        }
+        public function actionEspecificos(){
+            $this->render('especificos');
+        }
 	public function actionContact()
 	{
 		$model=new ContactForm;
