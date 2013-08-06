@@ -77,9 +77,14 @@ echo "Ultimo Acceso: ".Yii::app()->dateFormatter->format("d-M-y h:m a", Yii::app
             Copyright &copy; <?php echo date('Y'); ?> ETELIX DEV.<br/>
             All Rights Reserved.   <br/>
         </div> footer1 -->
-        <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
+            <script>
+                
+                var baseurl="<?php print Yii::app()->request->baseUrl;?>";
+                
+            </script>
+  
         <script src="protected/extensions/bootstrap/assets/js/bootstrap-tooltip.js"/>
-        <script src="http://code.jquery.com/jquery.js"></script>
+        <!--<script src="http://code.jquery.com/jquery.js"></script>-->
         <script src="protected/extensions/bootstrap/assets/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="http://platform.twitter.com/widgets.js"/>
         <script src="protected/extensions/bootstrap/assets/js/jquery.js"/>
@@ -100,6 +105,7 @@ echo "Ultimo Acceso: ".Yii::app()->dateFormatter->format("d-M-y h:m a", Yii::app
         <script src="protected/extensions/bootstrap/assets/js/holder/holder.js"/>
         <script src="protected/extensions/bootstrap/assets/js/google-code-prettify/prettify.js"/>
         <script src="protected/extensions/bootstrap/assets/js/application.js"/>
+<!--              <script src="<?php // echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>-->
     </body>
 </html>
 

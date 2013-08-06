@@ -1,3 +1,4 @@
+ //       ---------------------------------ARRASTRAR EL PANEL PRINCIPAL DE RENOC------------------------------------------------ 
  var TRACK = (function() {
                 var p = document.createElement('p');
                 document.body.appendChild(p);
@@ -38,26 +39,48 @@
             };
             
             
+//------------------------------------ANIMACION DE ARRASTRAR Y DE RESALTAR LUEGO DE ARRASTRAR -------------------------------
+    function slide(){
+//        clearInterval(fade_timer);
+//                if (going_left) {
+//                    going_left = false;
+//                    swap(three, one, -1480);
+//                } else {
+//                    going_left = true;
+//                    swap(two, 0);
+//                } 
+            $('#capa').animate({
+                opacity: 0.25,
+                left: "-=50",
+                width: "slide"
+              }, 500, function() {
+                  $(this).fadeOut()
+                $('.div').fadeIn(500, function () {
+                $('.capaOculta').fadeIn(300);
+                }); 
+              });
+                   
+    }
 
-            
-$('.a').on('click',function () {
-document.getElementById('fondo').onclick = function(){
-          clearInterval(fade_timer);
-                if (going_left) {
-                    going_left = false;
-                    swap(three, one, -1480);
-                } else {
-                    going_left = true;
-                    swap(two, 0);
-                } 
-$('.div').fadeIn(500, function () {
-$('.span').fadeIn(300);
-});
-return false;
+//document.getElementById('fondo').onclick = function(){
+//          clearInterval(fade_timer);
+//                if (going_left) {
+//                    going_left = false;
+//                    swap(three, one, -1480);
+//                } else {
+//                    going_left = true;
+//                    swap(two, 0);
+//                } 
+//$('.div').fadeIn(500, function () {
+//$('.capaOculta').fadeIn(300);
+//});
+//return false;
+////----------------------FIN--------------ANIMACION DE ARRASTRAR Y DE RESALTAR LUEGO DE ARRASTRAR -------------------------------
+//};
+//       -------------FIN--------------------ARRASTRAR EL PANEL PRINCIPAL DE RENOC------------------------------------------------ 
 
-};});
 
-
+//       ---------------------------------MARCAR TODOS LOS CHECKBOX DE RUTINARIOS------------------------------------------------ 
 
  function marcar(source)
     {
@@ -70,7 +93,9 @@ return false;
             }
         }
     };
-            
+    //       -----------------FIN----------------MARCAR TODOS LOS CHECKBOX DE RUTINARIOS------------------------------------------------ 
+    //       
+//       ---------------------------------DATEPICKER DE RUTINARIOS------------------------------------------------     
       $(function() {
 $("#datepicker").datepicker({
    onSelect: function(dateText, inst) {
@@ -78,154 +103,108 @@ $("#datepicker").datepicker({
    }
 });
       });
-  
-  
-//  .......................pruebas..PRUEBAS....................................
-//   function miFuncion() {
-//    alert ("no estas cansado");
-//
-//    };
-//    
-//    function getRequest() {
-//    var req = false;
-//    try{
-//        // most browsers
-//        req = new XMLHttpRequest();
-//    } catch (e){
-//        // IE
-//        try{
-//            req = new ActiveXObject("Msxml2.XMLHTTP");
-//        } catch (e) {
-//            // try an older version
-//            try{
-//                req = new ActiveXObject("Microsoft.XMLHTTP");
-//            } catch (e){
-//                return false;
-//            }
-//        }
-//    }
-//    return req;
-//}
-//
-//function getOutput() {
-//  var ajax = getRequest();
-//  ajax.onreadystatechange = function(){
-//      if(ajax.readyState == 4){
-//          document.getElementById('output').innerHTML = ajax.responseText;
-//      }
-//  }
-//  ajax.open("GET", "http://renoc.local/AltoImpacto.php", true);
-//  ajax.send(null);
-//}
-//    
-//    
-////          // esperamos que el DOM cargue
-//        $(document).ready(function() { 
-//            // definimos las opciones del plugin AJAX FORM
-//            var opciones= {
-//                               beforeSubmit: mostrarLoader, //funcion que se ejecuta antes de enviar el form
-//                               success: mostrarRespuesta, //funcion que se ejecuta una vez enviado el formulario
-//							   
-//            };
-//             //asignamos el plugin ajaxForm al formulario myForm y le pasamos las opciones
-//            $('#myForm').ajaxForm(opciones) ; 
-//            
-//             //lugar donde defino las funciones que utilizo dentro de "opciones"
-//             function mostrarLoader(){
-//                      $("#loader_gif").fadeIn("slow");
-//             };
-//             function mostrarRespuesta (responseText){
-//				           alert("Mensaje enviado: "+responseText);
-//                          $("#loader_gif").fadeOut("slow");
-//                          $("#ajax_loader").append("<br>Mensaje: "+responseText);
-//             };
-//   
-//        }); 
+      //       -------------FIN--------------------DATEPICKER DE RUTINARIOS------------------------------------------------ 
+      
+      
+//     ------------------------------AQUI VA LA FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
+   
+    $(function() {
+        
+        
+                $("#mail").click(function() {
+                    
+                var fecha = $("#datepicker_value").val();
+                alert(fecha);
+                if(fecha!=""){
+                if($("#AI10").is(":checked")){                    
+                    alert("Selecciono AltoImpacto +10$ para la Fecha:"+fecha);
+                    $.ajax({
+                        url: 'PHPMailer_5.2.4/AltoImpacto.php',
+                        data: "fecha="+fecha,
+                        type: 'get',
+                        success: function(data){
+                            //alert (data);
+                            $('#respuestaAI').html(data);
+                        }
+                    });
+                }
+                if($("#AIR").is(":checked")){                    
+                    alert("Selecciono AltoImpactoRetail +1$ para la Fecha:"+fecha);
+//                    $.ajax({
+//                        url: 'PHPMailer_5.2.4/AltoImpactoRetail.php',
+//                        data: "fecha="+fecha,
+//                        type: 'get',
+//                        success: function(data){
+//                            //alert (data);
+//                            $('#respuestaAIR').html(data);
+//                        }
+//                    });
+                }
+                }else{
+                alert('seleccione una fecha');
+                }
+        });
+        
+            });
 
-////      $.ajax({
-//  url: "http://renoc.local/AltoImpactoRetail.php",
-//  data: {'json':'datas'},
-//  contentType: "application/json; charset=utf-8",
-//  dataFilter: function(data) {
-//    var resp = eval('(' + data + ')');
-//    return resp;
-//  },
-//  success: function(response, status, xhr){
-//    $('#idd').html(response.property);
-//  $('#resultado').load('http://renoc.local/AltoImpactoRetail.php');
-//  }
-//   
-//   
-//});  
-//    
-//    
-//    
-//    
-//    
-//    
-//$(document).ready(function(){
-//   $("#enlaceajax").click(function(evento){
-//      evento.preventDefault();
-//      $("#destino").load("index.php", {nombre: "Pepe", edad: 45}, function(){
-//         alert("recibidos los datos por ajax");
-//      });
-//   });
-//})
+//    $(function() {
+//                function siRespuesta(r) {
+//                    $('#respuesta').html(r); // Mostrar la respuesta del servidor en el div con el id "respuesta"
+//                }
 //
-////$(document).ready(function(){
-////   $("#enlaceajax").click(function(evento){
-////      evento.preventDefault();
-////      $("#destino").load("http://renoc.local/AltoImpactoRetail.php");
-////   });
-////});
-//$(function(){
-//    $("#JqAjaxForm").submit(function(e){
-//       e.preventDefault();
-// 
-//        dataString = $("#JqAjaxForm").serialize();
-//     
-//        $.ajax({
-//        type: "POST",
-//        url: "funciones.php",
-//        data: dataString,
-//        dataType: "json",
-//        success: function(data) {
-//         
-//            if(data.email_check == "invalid"){
-//                $("#message_ajax").html("<div class='errorMessage'>Sorry " + data.name + ", " + data.email + " is NOT a valid e-mail address. Try again.</div>");
-//            } else {
-//                $("#message_ajax").html("<div class='successMessage'>" + data.email + " is a valid e-mail address. Thank you, " + data.name + ".</div>");
-//            }
-//          
-//        }
-//           
-//        });         
-//         
-//    });
-//});
+//                function siError(e) {
+//                    alert('Ocurrió un error al realizar la petición: ' + e.statusText);
+//                }
 //
+//                function peticion(e) {
+//                    alert('entre');
+//// Obtener valores de los campos de texto
+////                    var parametros = {
+////                        fecha: $('#datepicker_value').val()
+////                    };
+//                    var fecha = $('#datepicker_value').val();
+//                    alert(fecha);
+//// Realizar la petición
+//                    var post = $.post(
+//                            "http://renoc.local/AltoImpactoRetail.php", // Script que se ejecuta en el servidor
+//                            fecha,
+//                            siRespuesta, // Función que se ejecuta cuando el servidor responde
+//                            'html' // Tipo de respuesta del servidor
+//                            );
 //
-//$(document).ready( function(){
-// 
-//// Detect if hyperlink has been clicked //
-//$("a[title=submit_button]").click( function(){
-// 
-//// Pass the form values to the php file	
-//$.post('pass_value.php', $("#form").serialize(), function(ret){
-// 
-//	// Detect if values have been passed back	
-//	if(ret!=""){
-//	// alert windows shows the returned value from php
-//	alert("Value passed back from the php file... " + ret);
-//	}
-// 
-//});
-// 
-//// Important stops the page refreshing
-//return false;
-// 
-//}); 
-//});
+//                    /* Registrar evento de la petición (hay mas)
+//                     (no es obligatorio implementarlo, pero es muy recomendable para detectar errores) */
 //
+//                    post.error(siError); // Si ocurrió un error al ejecutar la petición se ejecuta "siError"
+//                }
 //
-//
+//                $('#mail').click(peticion); // Registrar evento al boton "Calcular" con la funcion "peticion"
+//            });
+            
+//     --------------FIN--------------- FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
+        
+     
+//---------------------------FUNCION PARA ABRIR LOS ENLACES DE RUTINARIOS, ESPECIFICOS Y PERSONALIZADOS---------------------------
+            
+$(document).ready(function() {
+    $("#one").click(function(event) {
+        $(".div").load('site/rutinarios',slide());
+        
+    }
+    );
+    $("#two").click(function(event) {
+          
+        $(".div").load('site/especificos');
+ 
+    }
+    );
+    $("#three").click(function(event) {
+        
+        $(".div").load( 'site/personalizados');
+        
+    }
+    );
+
+});
+//-------------------FIN--------FUNCION PARA ABRIR LOS ENLACES DE RUTINARIOS, ESPECIFICOS Y PERSONALIZADOS---------------------------
+           

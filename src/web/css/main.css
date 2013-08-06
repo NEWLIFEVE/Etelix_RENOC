@@ -56,7 +56,7 @@ div.row{
 
 .div { 
     position:absolute; 
-    width:1350px; 
+    width:1030px; 
     height:600px;
     font-size:36px; 
     text-align:center;
@@ -67,6 +67,7 @@ div.row{
     display:none;
     border:0px solid white;
     padding-top: 50px;   
+    margin-left: 3em;
     /*background: #F2F2F2;*/
 /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#F2F2F2), to(white));
 background: -moz-linear-gradient(white, white);
@@ -74,7 +75,9 @@ background: linear-gradient(#F2F2F2, white);
 -pie-background: linear-gradient(#F2F2F2, white);   */
 }
 
-.span { display:none; }
+.capaOculta { 
+    display:none; 
+}
 
 
 .infobox {
