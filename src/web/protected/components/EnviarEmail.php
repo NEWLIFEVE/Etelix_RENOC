@@ -1,9 +1,20 @@
 <?php
-class EnviarEmail extends CApplicationComponent{
 
-        public function enviar(){
+class EnviarEmail extends CApplicationComponent {
+    //***************************************************************************
+    // Initialization
+    //***************************************************************************
 
-        if(isset($_POST ['html']) && isset($_POST ['correoUsuario'])){
+    /**
+     * Init method for the application component mode.
+     */
+    public function init() {
+        
+    }
+
+    public function enviar($html, $user, $asunto) {
+
+        if (isset($html) && isset($html)) {
             $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
             $mailer->Host = 'smtp.gmail.com';
             $mailer->Port = '587';
@@ -11,23 +22,21 @@ class EnviarEmail extends CApplicationComponent{
             $mailer->SMTPSecure = 'tls';
             $mailer->Username = 'sinca.test@gmail.com';
             $mailer->SMTPAuth = true;
-            $mailer->Password ="sincatest";
+            $mailer->Password = "sincatest";
             $mailer->IsSMTP();
             $mailer->IsHTML(true);
             $mailer->From = 'sinca.test@gmail.com';
             $mailer->AddReplyTo('sinca.test@gmail.com');
-            $mailer->AddAddress($_POST ['correoUsuario']);
-            $mailer->FromName = 'SINCA';
+            $mailer->AddAddress($user);
+            $mailer->FromName = 'RENOC';
             $mailer->CharSet = 'UTF-8';
-            $mailer->Subject = Yii::t('', $_POST['asunto']);
-            $message = $_POST['html'];
+            $mailer->Subject = Yii::t('', $asunto);
+            $message = $html;
             $mailer->Body = $message;
             $mailer->Send();
         }
-
-
     }
-    
+
 }
 
 ?>
