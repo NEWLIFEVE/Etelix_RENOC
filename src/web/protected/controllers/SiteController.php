@@ -140,9 +140,15 @@ class SiteController extends Controller
 		$this->redirect(Yii::app()->homeUrl);
 	}
 
-	public function actionEnviaremail()
+	public function actionEnviarmail()
 	{
-
+            $fecha = $_POST['fecha'];
+            if (isset($_POST['AI10'])){
+                $correos = Yii::app()->reportes->AltoIMpacto($fecha);
+            }
+            
+            Yii::app()->mail->enviar($correos[$i],'mark182182@gmail.com');
+            
 	}
 	public function actionExportExcel()
 	{

@@ -1,12 +1,14 @@
 <?php
 /* @var $this SiteController */
 $this->pageTitle = Yii::app()->name;
+
+
 ?>
 <html>
     <head>
     </head>
     <body>
-
+        
         <div id="container">
             <div id="espacio"  class="hidden-phone hidden-tablet visible-desktop"> 
             </div>

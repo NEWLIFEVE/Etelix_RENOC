@@ -31,6 +31,15 @@ return array(
     ),
     // application components
     'components' => array(
+        'reportes' => array(
+            'class'=>"application.components.Reportes",
+        ),
+        'mail' => array(
+            'class'=>"application.components.EnviarEmail",
+        ),
+        'format' => array(
+            'class'=>"application.components.Formatter",
+        ),
         'bootstrap' => array(
             'class' => 'application.extensions.bootstrap.components.Bootstrap', // assuming you extracted bootstrap under extensions
         ),
@@ -81,6 +90,7 @@ return array(
                  */
                 ),
             ),
+
         ),
         // application-level parameters that can be accessed
         // using Yii::app()->params['paramName']

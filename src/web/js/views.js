@@ -1,42 +1,42 @@
  //       ---------------------------------ARRASTRAR EL PANEL PRINCIPAL DE RENOC------------------------------------------------ 
- var TRACK = (function() {
-                var p = document.createElement('p');
-                document.body.appendChild(p);
-                return function(str) {
-                    p.innerHTML = str;
-                }
-            }());
-            var fade_timer,
-                    going_left = true,
-                    a = document.getElementById('a'),
-                    capa = document.getElementById('capa'),
-                    one = document.getElementById('one'),
-                    two = document.getElementById('two'),
-                    three = document.getElementById('three'),
-                    set_opacity = function(elem, o) {
-                elem.style.opacity = o;
-                elem.style.filter = 'alpha(opacity=' + o * 100 + ')';
-            },
-                    swap = function(fade_in, fade_out, end_left) {
-                var start_time = +new Date(), total_time = 750, end_time = start_time + total_time,
-                        start_left = parseFloat(capa.style.left) || 0, total_left = end_left - start_left,
-                        in_start_o = parseFloat(fade_in.style.opacity) || 0, in_total_o = 1 - in_start_o,
-                        out_start_o = parseFloat(fade_out.style.opacity) || 1, out_total_o = -out_start_o;
-
-                fade_timer = setInterval(function() {
-                    var percent = +new Date(),
-                            current_time = percent > end_time ? 1 : (percent - start_time) / total_time;
-                    percent = (1 - Math.cos(current_time * Math.PI)) / 2;
-
-                    set_opacity(fade_in, in_start_o + percent * in_total_o);
-                    set_opacity(fade_out, out_start_o + percent * out_total_o);
-                    capa.style.left = (start_left + percent * total_left) + 'px';
-
-                    if (current_time === 1) {
-                        clearInterval(fade_timer);
-                    }
-                }, 40);
-            };
+// var TRACK = (function() {
+//                var p = document.createElement('p');
+//                document.body.appendChild(p);
+//                return function(str) {
+//                    p.innerHTML = str;
+//                }
+//            }());
+//            var fade_timer,
+//                    going_left = true,
+//                    a = document.getElementById('a'),
+//                    capa = document.getElementById('capa'),
+//                    one = document.getElementById('one'),
+//                    two = document.getElementById('two'),
+//                    three = document.getElementById('three'),
+//                    set_opacity = function(elem, o) {
+//                elem.style.opacity = o;
+//                elem.style.filter = 'alpha(opacity=' + o * 100 + ')';
+//            },
+//                    swap = function(fade_in, fade_out, end_left) {
+//                var start_time = +new Date(), total_time = 750, end_time = start_time + total_time,
+//                        start_left = parseFloat(capa.style.left) || 0, total_left = end_left - start_left,
+//                        in_start_o = parseFloat(fade_in.style.opacity) || 0, in_total_o = 1 - in_start_o,
+//                        out_start_o = parseFloat(fade_out.style.opacity) || 1, out_total_o = -out_start_o;
+//
+//                fade_timer = setInterval(function() {
+//                    var percent = +new Date(),
+//                            current_time = percent > end_time ? 1 : (percent - start_time) / total_time;
+//                    percent = (1 - Math.cos(current_time * Math.PI)) / 2;
+//
+//                    set_opacity(fade_in, in_start_o + percent * in_total_o);
+//                    set_opacity(fade_out, out_start_o + percent * out_total_o);
+//                    capa.style.left = (start_left + percent * total_left) + 'px';
+//
+//                    if (current_time === 1) {
+//                        clearInterval(fade_timer);
+//                    }
+//                }, 40);
+//            };
             
             
 //------------------------------------ANIMACION DE ARRASTRAR Y DE RESALTAR LUEGO DE ARRASTRAR -------------------------------
@@ -106,7 +106,7 @@ $("#datepicker").datepicker({
       //       -------------FIN--------------------DATEPICKER DE RUTINARIOS------------------------------------------------ 
       
       
-//     ------------------------------AQUI VA LA FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
+//------------------------------AQUI VA LA FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
    
     $(function() {
         
@@ -119,7 +119,8 @@ $("#datepicker").datepicker({
                 if($("#AI10").is(":checked")){                    
                     alert("Selecciono AltoImpacto +10$ para la Fecha:"+fecha);
                     $.ajax({
-                        url: 'PHPMailer_5.2.4/AltoImpacto.php',
+                        //url: 'PHPMailer_5.2.4/AltoImpacto.php',
+                        url: 'site/Enviarmail',
                         data: "fecha="+fecha,
                         type: 'get',
                         success: function(data){
