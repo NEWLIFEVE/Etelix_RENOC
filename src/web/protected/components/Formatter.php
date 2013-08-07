@@ -1,6 +1,17 @@
 <?php
-class Formatter  extends CApplicationComponent{
-    
+
+class Formatter  extends CApplicationComponent{   
+   //***************************************************************************
+   // Initialization
+   //***************************************************************************
+
+   /**
+    * Init method for the application component mode.
+    */
+   
+    public function init() {}
+
+
     public function format_decimal($num){        
         $english_format_number2 = number_format($num, 10, ',', '.');
         $numtext=strval($english_format_number2);
