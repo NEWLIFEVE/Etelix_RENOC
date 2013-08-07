@@ -3,10 +3,29 @@
 $this->layout=$this->getLayoutFile('menuContent');
 
 ?>
-<!--/**********************************************INICIO CAPA RUTINARIOS*****************************************************************************************/-->                   
 <html>
     <head>
-    </head>
+        <script>
+
+//   $(function() {
+//        $("#mail").click(function() {
+// 
+// var fecha = $("#datepicker_value").val();
+//                alert(fecha);
+//                if(fecha!="") 
+//                {
+//                if($("#AI10").is(":checked")){                    
+//                    alert("Selecciono AltoImpacto +10$ para la Fecha:"+fecha);
+//                    $.ajax({
+//                        url: "<?php // echo Yii::app()->createURL('controllers/SiteController.php?action=Enviaremail') ?>",
+//                        type: 'POST',
+//                        data: { 'fecha' : datepicker_value }
+//                });
+// }};
+//});
+//});
+//  
+        </script>
     <body>
                 <div class="capaOculta">
                     <div  id="atras"><ul class="thumbnails">
@@ -128,13 +147,12 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </div> 
                 </div>
         <div id="respuesta"></div> 
+        
+        <p id="rData">
+</p>
+  
         <script src="/js/jquery-ui.js"></script>
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 
 </body>
 </html>
- <!--/**********************************************FIN CAPA RUTINARIOS*****************************************************************************************/-->                   
-
-        <!--<script src="/js/jquery-1.9.1.js"></script>-->
-        
-<!--        <script type="text/javascript" src="jquery-1.3.2.min.js"></script>-->

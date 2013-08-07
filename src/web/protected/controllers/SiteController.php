@@ -142,10 +142,15 @@ class SiteController extends Controller
 
 	public function actionEnviaremail()
 	{
-
-	}
+          
+        }
 	public function actionExportExcel()
 	{
 
 	}
+        public function actionPrueba()
+        {
+            $this->render('prueba');
+        }
+ 
 }
