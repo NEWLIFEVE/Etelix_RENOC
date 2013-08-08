@@ -92,6 +92,7 @@ class SiteController extends Controller {
                 $this->refresh();
             }
         }
+
         $this->render('contact', array('model' => $model));
     }
 
@@ -126,9 +127,9 @@ class SiteController extends Controller {
         $this->redirect(Yii::app()->homeUrl);
     }
 
-    public function actionEnviarmail() {
+    public function actionEnviarMail() {
         $fecha = '07/22/2013';
-        $user = 'mark182182@gmail.com';
+        $user = 'angelo08121987@gmail.com';
         $asunto = 'TEST ACTION';
 //            $fecha = $_POST['fecha'];
 //            if (isset($_POST['AI10'])){
@@ -136,7 +137,7 @@ class SiteController extends Controller {
 //            }
         $correos = Yii::app()->reportes->AltoIMpacto($fecha);
         Yii::app()->mail->enviar($correos, $user, $asunto);
-        $this->render('personalizados');
+//        $this->render('personalizados');
     }
 
     public function actionExportExcel() {

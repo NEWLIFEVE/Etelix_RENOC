@@ -1,6 +1,5 @@
-<?php //
+ <?php //   	
 /************************ FUNCIONES - COMIENZO ***********************/
-
 function format_decimal($num){
     $english_format_number2 = number_format($num, 10, ',', '.');
     $numtext=strval($english_format_number2);
@@ -1372,7 +1371,7 @@ $email .= "
 
 /************************ ENVIO DE CORREO ELECTRONICO - COMIENZO ********************/
 
-//    require_once('class.phpmailer.php');
+    require_once('class.phpmailer.php');
 //    $mailer = new PHPMailer(TRUE);
 //    $mailer->IsSMTP();
 //    try{
@@ -1398,7 +1397,7 @@ $email .= "
 //        $mailer->ClearAddresses();
 //        $mailer->AddAddress('cabinasperu@etelix.com');
 //        $mailer->Send();
-//
+
 //    }
 //    catch(phpmailerException $e){
 //        echo $e->errorMessage(); //Pretty error messages from PHPMailer
@@ -1409,4 +1408,6 @@ $email .= "
 echo $email;
 
 /*----------------------- ENVIO DE CORREO ELECTRONICO - FIN ------------------------*/
+
+
 ?>
