@@ -27,12 +27,12 @@ $this->layout=$this->getLayoutFile('menuContent');
     <div id="datepicker" class="span6">
     </div>
     <div id="mail" class="span1">
-        <a href="#" rel="tooltip" title="Enviar Reportes a su Correo Electronico" class="tooltip-test">
+        <a href="/" rel="tooltip" title="Enviar Reportes a su Correo Electronico" class="tooltip-test">
             <img src="/images/mail.png" width="95px" height="95px" value="Activar Función">
         </a>
     </div>
     <div id="excel" class="span1">
-        <a href="#" rel="tooltip" title="Exportar Reportes en Excel" class="tooltip-test">
+        <a href="/" rel="tooltip" title="Exportar Reportes en Excel" class="tooltip-test">
             <img src="/images/excel.png" width="75px" height="75px" value="Activar Función">
         </a>
     </div>
@@ -42,6 +42,7 @@ $this->layout=$this->getLayoutFile('menuContent');
         Seleccione los Reportes
     </div>
     <div id="tablagris" class="span2">
+        <form id="formRutinarios">
         <table>
             <tr>
                 <td width="47">
@@ -66,7 +67,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="AIR" id="AIR" class="custom-checkbox" name="AIR">
+                        <input type="checkbox" value="true" id="AIR" class="custom-checkbox" name="AIR">
                         <label for="AIR">
                             <h4>
                             </h4>
@@ -84,7 +85,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="AI10" id="AI10" class="custom-checkbox" name="AI10">
+                        <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="AI10">
                         <label for="AI10">
                             <h4>
                             </h4>
@@ -102,7 +103,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="PN" id="PN" class="custom-checkbox" name="PN">
+                        <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="PN">
                         <label for="PN">
                             <h4>
                             </h4>
@@ -120,7 +121,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="otros" id="otros" class="custom-checkbox" name="otros"> 
+                        <input type="checkbox" value="true" id="otros" class="custom-checkbox" name="otros"> 
                         <label for="otros">
                             <h4>
                             </h4>
@@ -138,7 +139,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="otros2" id="otros2" class="custom-checkbox" name="otros2"> 
+                        <input type="checkbox" value="true" id="otros2" class="custom-checkbox" name="otros2"> 
                         <label for="otros2">
                             <h4>
                             </h4>
@@ -157,10 +158,11 @@ $this->layout=$this->getLayoutFile('menuContent');
                 <td>
                 </td> 
                 <td>
-                    <input type="hidden"  id="datepicker_value"/>                                        
+                    <input name="fecha" type="hidden"  id="datepicker_value"/>                                        
                 </td>
             </tr>
         </table>
+        </form>
     </div> 
 </div>
 <div id="respuesta">

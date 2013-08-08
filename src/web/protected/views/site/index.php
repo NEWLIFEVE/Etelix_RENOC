@@ -57,33 +57,9 @@ $this->pageTitle = Yii::app()->name;
                             </li>
                         </ul> 
                     </div>
-                    <div id="segundacapa">
-                    </div>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-        <div id="footer">
-            Copyright &copy; <?php echo date('Y'); ?> SACET 
-            All Rights Reserved. 
-        </div> 
-        <!-- page -->
-        <!--container-->   
-        <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-</body>
-</html>
-        <!--        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-                    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui.css"/>
-                    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom-ui.css"/>-->
-        <meta charset="utf-8"/>
-        <link rel="stylesheet" href="/resources/demos/style.css" />
-        <script src="/js/jquery-1.9.1.js"></script>
-        <script src="/js/jquery-ui.js"></script>
-<!--        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>-->
- <script src=“http://code.jquery.com/jquery-1.5.js“></script>
-
-=======
     </div>
 </div> 
 <div class="div">
@@ -93,7 +69,6 @@ $this->pageTitle = Yii::app()->name;
 </div>
 <!-- page -->
 <!--container-->
->>>>>>> 8eeff929de888375c05e22864a9f301d18172c1c
 
 
 
