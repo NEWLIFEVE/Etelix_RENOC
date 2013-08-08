@@ -1,3 +1,20 @@
+var selector=function(id)
+{
+    this.variable=id;
+}
+selector.prototype.run=function()
+{
+    this.objeto=$(this.variable);
+    this.objeto.datepicker(
+    {
+        onSelect: function(dateText, inst)
+        {
+            $("#datepicker_value").val(dateText);
+        }
+    });
+}
+
+
 var navegar=function()
 {
     this.enlaces='a#flecha-forward, a#flecha-backward';
@@ -59,16 +76,17 @@ function marcar(source)
         }
     }
 };
+
 var ventana=new navegar();
+var fecha=new selector("#datepicker");
 $(document).on('ready',function()
 {
     ventana.run();
-    $("#datepicker").datepicker(
-    {
-        onSelect: function(dateText, inst)
-        {
-            $("#datepicker_value").val(dateText);
-        }
-    });
+    fecha.run();
     marcar();
+    $(this).ajaxComplete(function()
+    {
+        fecha.run();
+        marcar();
+    });
 });
