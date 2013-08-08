@@ -1,12 +1,14 @@
 <?php
 /* @var $this SiteController */
 $this->pageTitle = Yii::app()->name;
+
+
 ?>
 <html>
     <head>
     </head>
     <body>
-
+        
         <div id="container">
             <div id="espacio"  class="hidden-phone hidden-tablet visible-desktop"> 
             </div>
@@ -88,7 +90,8 @@ $this->pageTitle = Yii::app()->name;
         <script src="/js/jquery-ui.js"></script>
 <!--        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>-->
-        <script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+ <script src=“http://code.jquery.com/jquery-1.5.js“></script>
+
 
 
 

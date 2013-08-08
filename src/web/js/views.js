@@ -1,44 +1,4 @@
- //       ---------------------------------ARRASTRAR EL PANEL PRINCIPAL DE RENOC------------------------------------------------ 
-// var TRACK = (function() {
-//                var p = document.createElement('p');
-//                document.body.appendChild(p);
-//                return function(str) {
-//                    p.innerHTML = str;
-//                }
-//            }());
-//            var fade_timer,
-//                    going_left = true,
-//                    a = document.getElementById('a'),
-//                    capa = document.getElementById('capa'),
-//                    one = document.getElementById('one'),
-//                    two = document.getElementById('two'),
-//                    three = document.getElementById('three'),
-//                    set_opacity = function(elem, o) {
-//                elem.style.opacity = o;
-//                elem.style.filter = 'alpha(opacity=' + o * 100 + ')';
-//            },
-//                    swap = function(fade_in, fade_out, end_left) {
-//                var start_time = +new Date(), total_time = 750, end_time = start_time + total_time,
-//                        start_left = parseFloat(capa.style.left) || 0, total_left = end_left - start_left,
-//                        in_start_o = parseFloat(fade_in.style.opacity) || 0, in_total_o = 1 - in_start_o,
-//                        out_start_o = parseFloat(fade_out.style.opacity) || 1, out_total_o = -out_start_o;
-//
-//                fade_timer = setInterval(function() {
-//                    var percent = +new Date(),
-//                            current_time = percent > end_time ? 1 : (percent - start_time) / total_time;
-//                    percent = (1 - Math.cos(current_time * Math.PI)) / 2;
-//
-//                    set_opacity(fade_in, in_start_o + percent * in_total_o);
-//                    set_opacity(fade_out, out_start_o + percent * out_total_o);
-//                    capa.style.left = (start_left + percent * total_left) + 'px';
-//
-//                    if (current_time === 1) {
-//                        clearInterval(fade_timer);
-//                    }
-//                }, 40);
-//            };
-//            
-            
+         
 //------------------------------------ANIMACION DE ARRASTRAR Y DE RESALTAR LUEGO DE ARRASTRAR -------------------------------
     function slide(){
 //        clearInterval(fade_timer);
@@ -106,7 +66,62 @@ $("#datepicker").datepicker({
       //       -------------FIN--------------------DATEPICKER DE RUTINARIOS------------------------------------------------ 
       
       
-//     ------------------------------AQUI VA LA FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
+//------------------------------AQUI VA LA FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
+   
+//   
+//          
+////cuando hagamos submit al formulario con id id_del_formulario
+////se procesara este script javascript
+//$("#mail").click(function() {
+//alert('hoola');
+//$("#formRutinarios")(function(e)
+//{  alert('hoola222');
+//    e.preventDefault();
+//    var fecha = $("#datepicker_value").val();
+//    alert(fecha);
+//    if (fecha != "")
+//    {
+//        if ($("#AI10").is(":checked"))
+//        {
+//            alert("Selecciono AltoImpacto +10$ para la Fecha:" + fecha);
+//            $.ajax
+//                    (
+//                       {
+//                            url: $(this).attr("/site/SiteController/EnviarMail"), //action del formulario, ej:
+//                            //http://localhost/mi_proyecto/mi_controlador/mi_funcion
+//                            type: $(this).attr("post"), //el método post o get del formulario
+//                            data: $(this).serialize(), //obtenemos todos los datos del formulario
+//                            error: function()
+//                            {
+//                                    //si hay un error mostramos un mensaje
+//                            },
+//                            success: function(data)
+//                            {
+//                                    alert(data); //hacemos algo cuando finalice todo correctamente
+//                            }
+//                        }
+//                    );
+//        }
+//
+//    }
+//    ;
+//});
+//});
+            $(function() 
+            {
+                var formulario = $("#formRutinarios").serialize();
+                alert("Selecciono AltoImpacto +10$ para la Fecha:" + fecha);
+                $.ajax({
+                    url: $(this).attr("/site/SiteController/EnviarMail"),
+                    data: "fecha=" + fecha,
+                    type: $(this).attr("post"),
+                    $("#results").text(formulario);
+                     })
+            }
+            );
+
+   
+   
    
     $(function() {
                 $("#mail").click(function() {
@@ -116,12 +131,18 @@ $("#datepicker").datepicker({
                 if($("#AI10").is(":checked")){                    
                     alert("Selecciono AltoImpacto +10$ para la Fecha:"+fecha);
                     $.ajax({
-                        url: 'site/prueba',
+
+                       url: $(this).attr("/site/SiteController/EnviarMail"),
+
+                        //url: 'PHPMailer_5.2.4/AltoImpacto.php',
+                     //   url: 'site/Enviarmail',
+
                         data: "fecha="+fecha,
-                        type: 'get',
+                       type: $(this).attr("post"),
+                       data: $(this).serialize(), 
                         success: function(data){
                             alert (data);
-//                            $('#respuestaAI').html(data);
+//                           $('#respuestaAI').html(data);
                         }
                     });
                 }
@@ -142,47 +163,7 @@ $("#datepicker").datepicker({
                 }
         });
         
-            });
-
-//    $(function() {
-//                function siRespuesta(r) {
-//                    $('#respuesta').html(r); // Mostrar la respuesta del servidor en el div con el id "respuesta"
-//                }
-//
-//                function siError(e) {
-//                    alert('Ocurrió un error al realizar la petición: ' + e.statusText);
-//                }
-//
-//                function peticion(e) {
-//                    alert('entre');
-//// Obtener valores de los campos de texto
-////                    var parametros = {
-////                        fecha: $('#datepicker_value').val()
-////                    };
-//                    var fecha = $('#datepicker_value').val();
-//                    alert(fecha);
-//// Realizar la petición
-//                    var post = $.post(
-//                            "http://renoc.local/AltoImpactoRetail.php", // Script que se ejecuta en el servidor
-//                            fecha,
-//                            siRespuesta, // Función que se ejecuta cuando el servidor responde
-//                            'html' // Tipo de respuesta del servidor
-//                            );
-//
-//                    /* Registrar evento de la petición (hay mas)
-//                     (no es obligatorio implementarlo, pero es muy recomendable para detectar errores) */
-//
-//                    post.error(siError); // Si ocurrió un error al ejecutar la petición se ejecuta "siError"
-//                }
-//
-//                $('#mail').click(peticion); // Registrar evento al boton "Calcular" con la funcion "peticion"
-//            });
-            
-//     --------------FIN--------------- FUNCION PARA  ENVIAR DATOS AL PHP DE ENVIAR POR E-MAIL---------------   
-        
-     
-//---------------------------FUNCION PARA ABRIR LOS ENLACES DE RUTINARIOS, ESPECIFICOS Y PERSONALIZADOS---------------------------
-            
+            });     
 $(document).ready(function() {
     $("#one").click(function(event) {
         $(".div").load('site/rutinarios',slide());
