@@ -84,15 +84,26 @@ ajax.prototype.run=function()
     $('#mail,#excel').on('click',function(e)
     {
         e.preventDefault();
-        var tipo=$(this).attr('id');
-        if(tipo=="mail")
+        var numero=$('input[type="checkbox"]').filter(function()
         {
-            self.getForm();
-            self.enviarMail();
+            return $(this).is(':checked');
+        });
+        if(numero.length>0)
+        {
+            var tipo=$(this).attr('id');
+            if(tipo=="mail")
+            {
+                self.getForm();
+                self.enviarMail();
+            }
+            else
+            {
+                alert("Excel aun en desarrollo");
+            }
         }
         else
         {
-            alert("Excel aun en desarrollo");
+            alert("Debe seleccionar al menos un tipo de reporte");
         }
     });
 }
@@ -109,7 +120,7 @@ ajax.prototype.enviarMail=function()
         data:this.formulario,
         type:'POST'
     };
-    $.ajax(opciones).done(function(datos)
+    this.envio=$.ajax(opciones).done(function(datos)
     {
         alert(datos);
     }).fail(function()
