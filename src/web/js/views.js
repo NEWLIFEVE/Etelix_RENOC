@@ -46,21 +46,21 @@ navegar.prototype.pisaAqui=function()
     });
 }
 
-            $(function() 
-            {
-                var formulario = $("#formRutinarios").serialize();
-                alert("Selecciono AltoImpacto +10$ para la Fecha:" + fecha);
-                $.ajax({
-                    url: $(this).attr("/site/SiteController/EnviarMail"),
-                    data: "fecha=" + fecha,
-                    type: $(this).attr("post"),
-                    $("#results").text(formulario);
-                     })
-            }
-            );
-
-   
-   
+//            $(function() 
+//            {
+//                var formulario = $("#formRutinarios").serialize();
+//                alert("Selecciono AltoImpacto +10$ para la Fecha:" + fecha);
+//                $.ajax({
+//                    url: $(this).attr("/site/SiteController/EnviarMail"),
+//                    data: "fecha=" + fecha,
+//                    type: $(this).attr("post"),
+//                    $("#results").text(formulario);
+//                     })
+//            }
+//            );
+//
+//   
+//   
    
     $(function() {
                 $("#mail").click(function() {
