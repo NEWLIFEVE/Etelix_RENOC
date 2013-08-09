@@ -161,7 +161,7 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user = 'angelo08121987@gmail.com';
+        $user = 'mmzmm3z@gmail.com';
         if(isset($_POST['fecha']))
             $fecha=$_POST['fecha'];
         $asunto = 'Correo de prueba de la fecha: '.$fecha;
