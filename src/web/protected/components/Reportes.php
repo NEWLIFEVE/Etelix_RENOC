@@ -110,31 +110,35 @@ class reportes extends CApplicationComponent {
                                         sum(REVENUE) as Revenue, sum(margin) as Margin
                                                FROM balance b, carrier c, destination_int d
 
-                                               WHERE b.date_balance = '2013-08-06' AND 
+                                               WHERE b.date_balance = '$fecha_mod' AND 
                                                b.id_destination_int is not NULL AND 
                                                b.id_carrier_supplier = c.id and 
                                                c.name not like 'Unknow%' and 
                                                b.id_destination_int=d.id and d.name not like 'Unknow%';";
-        
+/*REVISAR DESTINOS****************************************************************************************************************/        
         $sqlDestinos = "SELECT x.CLIENTE as Cliente, x.TOTALCALLS as TotalCalls, x.CALLS as CompleteCalls, x.MINUTOS as Minutos,x.PDD as Pdd, x.COST as Cost, x.REVENUE as Revenue, x.MARGEN as Margin
         FROM   (SELECT d.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS,sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
-                FROM balance b, destination d
-                WHERE b.date_balance = '$fecha_mod' AND b.type=1 AND b.id_destination is not NULL AND b.id_destination = d.id 
+                FROM balance b, destination d, carrier c
+                WHERE b.date_balance = '$fecha_mod' AND b.id_destination is not NULL AND b.id_destination = d.id and d.name not like 'Unk%' and b.id_carrier_supplier = c.id and c.name not like 'Unk%'
                 GROUP BY d.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10
         ORDER BY x.MARGEN DESC";
+        
         $sqlDestinosTotal = "SELECT 'TOTAL', sum(x.TOTALCALLS) as TotalCalls, sum(x.CALLS) as CompleteCalls, sum(x.MINUTOS) as Minutos,sum(x.PDD) as Pdd, sum(x.COST) as Cost, sum(x.REVENUE) as Revenue, sum(x.MARGEN) as Margin
         FROM   (SELECT d.name as CLIENTE,sum(b.complete_calls) as CALLS,sum(b.complete_calls+b.incomplete_calls) as TOTALCALLS, sum(b.minutes) as MINUTOS,sum(b.pdd_calls) as PDD, sum(b.cost) as COST, sum(b.revenue) as REVENUE, CASE  WHEN sum(b.margin)>10 THEN sum(b.margin) ELSE 0 END as MARGEN
-                FROM balance b, destination d
-                WHERE b.date_balance = '$fecha_mod' AND b.type=1 AND b.id_destination is not NULL AND b.id_destination = d.id 
+FROM balance b, destination d, carrier c
+                WHERE b.date_balance = '$fecha_mod' AND b.id_destination is not NULL AND b.id_destination = d.id and d.name not like 'Unk%' and b.id_carrier_supplier = c.id and c.name not like 'Unk%'
+                
                 GROUP BY d.name
                 ORDER BY MARGEN DESC) x
         WHERE x.MARGEN > 10";
-        $sqlDestinosTotalCompleto = "SELECT 'TOTAL', sum(complete_calls+incomplete_calls) as TotalCalls, sum(complete_calls) as CompleteCalls, sum(minutes) as Minutos,sum(PDD) as Pdd, sum(COST) as Cost, 
-sum(REVENUE) as Revenue, sum(margin) as Margin
-        FROM balance
-        WHERE date_balance ='$fecha_mod' AND type= 1 AND id_destination_int is not NULL;";
+        $sqlDestinosTotalCompleto = "SELECT 'TOTAL', sum(b.complete_calls+b.incomplete_calls) as TotalCalls, sum(b.complete_calls) as CompleteCalls, sum(b.minutes) as Minutos,sum(b.PDD) as Pdd, sum(b.cost) as Cost, 
+sum(b.revenue) as Revenue, sum(b.margin) as Margin
+FROM balance b, destination d, carrier c
+                WHERE b.date_balance = '$fecha_mod' AND 
+                b.id_destination is not NULL AND b.id_destination = d.id 
+                and d.name not like 'Unk%' and b.id_carrier_supplier = c.id and c.name not like 'Unk%'";
         /* ----------------------- SENTENCIAS SQL - FIN  ------------------------------------ */
 
 
@@ -171,7 +175,7 @@ sum(REVENUE) as Revenue, sum(margin) as Margin
     <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0;
         padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline;
         background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-        Alto Impacto (+10$)
+        Alto Impacto (+10$) ".$fecha_mod."
     </h1>
     <h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif;
         margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline;
