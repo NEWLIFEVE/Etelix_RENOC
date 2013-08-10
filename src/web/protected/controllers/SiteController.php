@@ -163,21 +163,38 @@ class SiteController extends Controller
         $correos=null;
         $user = 'mmzmm3z@gmail.com';
         if(isset($_POST['fecha']))
-            $fecha=$_POST['fecha'];
-        $asunto = 'Correo de prueba de la fecha: '.$fecha;
-
-        if(isset($_POST['AIR']))
-            $correos.="Alto Impacto Retail (+1$)<br>";
-        if(isset($_POST['AI10']))
-            $asunto="Alto Impacto (+10$)";
-            $correos = Yii::app()->reportes->AltoIMpacto($fecha);
-        if(isset($_POST['PN']))
-            $correos.="Posicion Neta<br>";
-        if(isset($_POST['otros']))
-            $correos.="Otros<br>";
-        if(isset($_POST['otros2']))
-            $correos.="Otros 2<br>";
-        Yii::app()->mail->enviar($correos, $user, $asunto);
+        {
+            $fecha=(string)$_POST['fecha'];
+            if(isset($_POST['lista']['AIR']))
+            {
+                $correos['altoImpactoRetail']['asunto']="Alto Impacto Retail (+1$) de día ".$fecha;
+                $correos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+            }
+            if(isset($_POST['lista']['AI10']))
+            {
+                $correos['altoImpacto']['asunto']="Alto Impacto (+10$) del día ".$fecha;
+                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+            } 
+            if(isset($_POST['lista']['PN']))
+            {
+                $correos['posicionNeta']['asunto']="Posicion Neta de día ".$fecha;
+                $correos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+            }
+            if(isset($_POST['lista']['otros']))
+            {
+                $correos['otros']['asunto']="Otros de día ".$fecha;
+                $correos['otros']['cuerpo']="Prueba de Otros";
+            }
+            if(isset($_POST['lista']['otros2']))
+            {
+                $correos['otros2']['asunto']="Otros 2 de día ".$fecha;
+                $correos['otros2']['cuerpo']="Prueba de Otros 2";
+            } 
+        }
+        foreach($correos as $key => $correo)
+        {
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
+        }
         echo "Su correo fue enviado exitosamente :)";
     }
 
