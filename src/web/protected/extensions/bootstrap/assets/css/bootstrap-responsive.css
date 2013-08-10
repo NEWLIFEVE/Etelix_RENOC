@@ -108,7 +108,7 @@
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 980px) {
   .row {
     margin-left: -30px;
     *zoom: 1;
@@ -125,7 +125,7 @@
   [class*="span"] {
     float: left;
     min-height: 1px;
-    margin-left: 30px;
+    margin-left: 80px;
   }
   .container,
   .navbar-static-top .container,

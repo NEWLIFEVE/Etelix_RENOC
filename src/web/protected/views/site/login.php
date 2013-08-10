@@ -1,18 +1,31 @@
 <?php
 /* @var $this SiteController */
 /* @var $model LoginForm */
-/* @var $form CActiveForm  */
+/* @var $form CActiveForm
+ *  /*<?php echo $form->labelEx($model,'username'); ?>  <?php echo $form->labelEx($model,'password'); ?>
+ */
 
 $this->pageTitle=Yii::app()->name . ' - Login';
 $this->breadcrumbs=array(
 	'Login',
 );
 ?>
+<html><head></head>
 
-<h1>Login</h1>
+<body id="bodylogin">
+    <div id="titlelogin">
+<font color="white">RE</font><font color="green">NOC</font>
+</div>
+<div id="login">
 
-<p>Please fill out the following form with your login credentials:</p>
-
+<br>
+<br><br>
+<br>
+<font color="Gray"  size="5">Ingrese sus Datos</font>
+<br>
+<br>
+<br>
+<div id="logprin">
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'login-form',
@@ -21,33 +34,40 @@ $this->breadcrumbs=array(
 		'validateOnSubmit'=>true,
 	),
 )); ?>
-
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'username'); ?>
+	<div class="row login">
+            <div id="barraVerdeUser" ></div>
+               <?php echo $form->labelEx($model,''); ?>
 		<?php echo $form->textField($model,'username'); ?>
 		<?php echo $form->error($model,'username'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'password'); ?>
+	<div class="row login">
+            <div id="barraVerdePass" ></div>
+		<?php echo $form->labelEx($model,''); ?>
 		<?php echo $form->passwordField($model,'password'); ?>
 		<?php echo $form->error($model,'password'); ?>
-		<p class="hint">
+<!--		<p class="hint">
 			Hint: You may login with <kbd>demo</kbd>/<kbd>demo</kbd> or <kbd>admin</kbd>/<kbd>admin</kbd>.
-		</p>
+		</p>-->
 	</div>
-
+    
 	<div class="row rememberMe">
-		<?php echo $form->checkBox($model,'rememberMe'); ?>
+            <div class="botonLogin">
+		<?php echo $form->checkBox($model,'rememberMe', array('class'=>'custom-checkboxLogin')); ?>
 		<?php echo $form->label($model,'rememberMe'); ?>
 		<?php echo $form->error($model,'rememberMe'); ?>
+            
+            <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'type'=>'success', 'label'=>'Ingresar >')); ?> 
+            </div>
 	</div>
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton('Login'); ?>
-	</div>
-
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+</div>
+</div>
+    
+    <div id="minifooter">
+      <font color="white">Copyrigth 2013 by</font> <a id="enlacerenoc" href="http://www.sacet.com.ve/">www.sacet.com.ve</a>
+      <font color="white"> Legal privacy</font>
+    </div>
+   </body>
+   </html>

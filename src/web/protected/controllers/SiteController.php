@@ -1,109 +1,205 @@
 <?php
-
+/**
+* 
+*/
 class SiteController extends Controller
 {
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
-	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
+    /**
+    * Declares class-based actions.
+    */
+    public function actions()
+    {
+        return array(
+            // captcha action renders the CAPTCHA image displayed on the contact page
+            'captcha'=>array(
+                'class'=>'CCaptchaAction',
+                'backColor'=>0xFFFFFF,
+                ),
+            // page action renders "static" pages stored under 'protected/views/site/pages'
+            // They can be accessed via: index.php?r=site/page&view=FileName
+            'page'=>array(
+                'class'=>'CViewAction',
+                ),
+            );
+    }
 
-	/**
-	 * This is the default 'index' action that is invoked
-	 * when an action is not explicitly requested by users.
-	 */
-	public function actionIndex()
-	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
-	}
+    /**
+     * This is the default 'index' action that is invoked
+     * when an action is not explicitly requested by users.
+     */
+    public function actionIndex()
+    {
+        // renders the view file 'protected/views/site/index.php'
+        // using the default layout 'protected/views/layouts/main.php'
+        if(!Yii::app()->user->isGuest)
+        {
+            $this->render('index');
+        }
+        else
+        {
+            $model = new LoginForm;
+            // if it is ajax validation request
+            if(isset($_POST['ajax']) && $_POST['ajax'] === 'login-form')
+            {
+                echo CActiveForm::validate($model);
+                Yii::app()->end();
+            }
+            // collect user input data
+            if(isset($_POST['LoginForm']))
+            {
+                $model->attributes = $_POST['LoginForm'];
+                // validate user input and redirect to the previous page if valid
+                if($model->validate() && $model->login())
+                    $this->redirect(Yii::app()->user->returnUrl);
+            }
+            // display the login form
+            $this->render('login', array('model' => $model));
+        }
+    }
 
-	/**
-	 * This is the action to handle external exceptions.
-	 */
-	public function actionError()
-	{
-		if($error=Yii::app()->errorHandler->error)
-		{
-			if(Yii::app()->request->isAjaxRequest)
-				echo $error['message'];
-			else
-				$this->render('error', $error);
-		}
-	}
+    /**
+     * This is the action to handle external exceptions.
+     */
+    public function actionError()
+    {
+        if($error = Yii::app()->errorHandler->error)
+        {
+            if(Yii::app()->request->isAjaxRequest)
+                echo $error['message'];
+            else
+                $this->render('error', $error);
+        }
+    }
 
-	/**
-	 * Displays the contact page
-	 */
-	public function actionContact()
-	{
-		$model=new ContactForm;
-		if(isset($_POST['ContactForm']))
-		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
-			{
-				$name='=?UTF-8?B?'.base64_encode($model->name).'?=';
-				$subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
-				$headers="From: $name <{$model->email}>\r\n".
-					"Reply-To: {$model->email}\r\n".
-					"MIME-Version: 1.0\r\n".
-					"Content-type: text/plain; charset=UTF-8";
+    /**
+    * renderiza vista rutinarios
+    */
+    public function actionRutinarios()
+    {
+        $this->render('rutinarios');
+    }
 
-				mail(Yii::app()->params['adminEmail'],$subject,$model->body,$headers);
-				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
-				$this->refresh();
-			}
-		}
-		$this->render('contact',array('model'=>$model));
-	}
+    /**
+    * Renderiza vista personalizados
+    */
+    public function actionPersonalizados()
+    {
+        $this->render('personalizados');
+    }
 
-	/**
-	 * Displays the login page
-	 */
-	public function actionLogin()
-	{
-		$model=new LoginForm;
+    /**
+    * renderiza vista especificos
+    */
+    public function actionEspecificos()
+    {
+        $this->render('especificos');
+    }
 
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
+    /**
+    *
+    */
+    public function actionContact()
+    {
+        $model=new ContactForm;
+        if(isset($_POST['ContactForm']))
+        {
+            $model->attributes=$_POST['ContactForm'];
+            if($model->validate())
+            {
+                $name='=?UTF-8?B?'.base64_encode($model->name).'?=';
+                $subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
+                $headers="From: $name <{$model->email}>\r\n".
+                        "Reply-To: {$model->email}\r\n" .
+                        "MIME-Version: 1.0\r\n" .
+                        "Content-type: text/plain; charset=UTF-8";
+                mail(Yii::app()->params['adminEmail'], $subject, $model->body, $headers);
+                Yii::app()->user->setFlash('contact', 'Thank you for contacting us. We will respond to you as soon as possible.');
+                $this->refresh();
+            }
+        }
+        $this->render('contact', array('model' => $model));
+    }
 
-		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
-			$model->attributes=$_POST['LoginForm'];
-			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
-		}
-		// display the login form
-		$this->render('login',array('model'=>$model));
-	}
+    /**
+     * Displays the login page
+     */
+    public function actionLogin()
+    {
+        $model = new LoginForm;
+        // if it is ajax validation request
+        if(isset($_POST['ajax']) && $_POST['ajax'] === 'login-form')
+        {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        // collect user input data
+        if(isset($_POST['LoginForm']))
+        {
+            $model->attributes=$_POST['LoginForm'];
+            // validate user input and redirect to the previous page if valid
+            if($model->validate() && $model->login())
+                $this->redirect(Yii::app()->user->returnUrl);
+        }
+        // display the login form
+        $this->render('login', array('model' => $model));
+    }
 
-	/**
-	 * Logs out the current user and redirect to homepage.
-	 */
-	public function actionLogout()
-	{
-		Yii::app()->user->logout();
-		$this->redirect(Yii::app()->homeUrl);
-	}
+    /**
+     * Logs out the current user and redirect to homepage.
+     */
+    public function actionLogout()
+    {
+        Yii::app()->user->logout();
+        $this->redirect(Yii::app()->homeUrl);
+    }
+
+    /**
+    * Action encargada de envuiar por mail el tipo de reporte seleccionado,
+    * las especificaciones seran recibidas desde el array $_POST
+    */
+    public function actionEnviarmail()
+    {
+        $fecha=null;
+        $correos=null;
+        $user = 'mmzmm3z@gmail.com';
+        if(isset($_POST['fecha']))
+        {
+            $fecha=(string)$_POST['fecha'];
+            if(isset($_POST['lista']['AIR']))
+            {
+                $correos['altoImpactoRetail']['asunto']="Alto Impacto Retail (+1$) de día ".$fecha;
+                $correos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+            }
+            if(isset($_POST['lista']['AI10']))
+            {
+                $correos['altoImpacto']['asunto']="Alto Impacto (+10$) del día ".$fecha;
+                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+            } 
+            if(isset($_POST['lista']['PN']))
+            {
+                $correos['posicionNeta']['asunto']="Posicion Neta de día ".$fecha;
+                $correos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+            }
+            if(isset($_POST['lista']['otros']))
+            {
+                $correos['otros']['asunto']="Otros de día ".$fecha;
+                $correos['otros']['cuerpo']="Prueba de Otros";
+            }
+            if(isset($_POST['lista']['otros2']))
+            {
+                $correos['otros2']['asunto']="Otros 2 de día ".$fecha;
+                $correos['otros2']['cuerpo']="Prueba de Otros 2";
+            } 
+        }
+        foreach($correos as $key => $correo)
+        {
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
+        }
+        echo "Su correo fue enviado exitosamente :)";
+    }
+
+    public function actionExportExcel()
+    {
+        
+    }
 }
