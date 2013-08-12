@@ -869,7 +869,49 @@ class reportes extends CApplicationComponent
         $destinosTotalCompleto=Balance::model()->findBySql($sqlDestinosTotalCompleto);
         if($destinosTotalCompleto->etiqueta!=null)
         {
-            
+            $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: center;' class='etiqueta'>".
+                                    $destinosTotalCompleto->etiqueta.
+                       "</td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->totalcalls).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->completecalls).
+                       "</td>
+                        <td style='text-align: center;' class='minutos'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->minutos).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>".
+                            Yii::app()->format->format_decimal(($destinosTotalCompleto->completecalls*100)/$destinosTotalCompleto->totalcalls).
+                       "</td>
+                        <td style='text-align: center;' class='acd'>".
+                            Yii::app()->format->format_decimal(($destinosTotalCompleto->minutos/$destinosTotalCompleto->completecalls)).
+                       "</td>
+                        <td style='text-align: center;' class='pdd'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->pdd).
+                       "</td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal((($destinosTotalCompleto->revenue*100)/$destinosTotalCompleto->cost)-100).
+                       "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>";
         }
         else
         {
@@ -877,7 +919,46 @@ class reportes extends CApplicationComponent
                         <td colspan='15'>No se encontraron resultados</td>
                      </tr>";
         }
-
+        $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: right;' class='totalCalls'>".
+                        Yii::app()->format->format_decimal(($destinosTotal->totalcalls/$destinosTotalCompleto->totalcalls)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='completeCalls'>".
+                        Yii::app()->format->format_decimal(($destinosTotal->completecalls/$destinosTotalCompleto->completecalls)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='minutos'>".
+                        Yii::app()->format->format_decimal(($destinosTotal->minutos/$destinosTotalCompleto->minutos)*(100))."%
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: right;' class='cost'>".
+                        Yii::app()->format->format_decimal(($destinosTotal->cost/$destinosTotalCompleto->cost)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='revenue'>".
+                        Yii::app()->format->format_decimal(($destinosTotal->revenue/$destinosTotalCompleto->revenue)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='margin'>".
+                        Yii::app()->format->format_decimal(($destinosTotal->margin/$destinosTotalCompleto->margin)*(100))."%
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                </tr>
+            </table>
+        </div>";
         /*
         
 
@@ -1103,106 +1184,11 @@ class reportes extends CApplicationComponent
             $revenueTotalCompleto = $fila[6];
             $marginTotalCompleto = $fila[7];
 
-            $email .="
-        <tr style='background-color:#615E5E; color:#FFFFFF;'>
-
-        <td style='text-align: center;' class='fecha'>
-                $fila[0]
-                        </td>
-            <td style='text-align: center;' class='totalVentas'>" .
-                    Yii::app()->format->format_decimal($fila[1]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($fila[2]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($fila[3]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal(($fila[2] * 100) / $fila[1]) . "
-            </td>           
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal(($fila[3] / $fila[2])) . "
-            </td>           
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($fila[4]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($fila[5]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($fila[6]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($fila[7]) . "
-            </td>
-            <td style='text-align: center;' class='diferencialBancario'>" .
-                    Yii::app()->format->format_decimal($margin) . "
-            </td>  
-  
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>                
-            </td> 
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>                
-            </td> 
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>                
-            </td> 
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>                
-            </td> 
-            </tr>";
+            
         }
 
-        $email .="
-        <tr style='background-color:#615E5E; color:#FFFFFF;'>
-
-        <td style='text-align: left; background-color:#f8f8f8' class='fecha'>
-                
-            </td>          
-            <td style='text-align: right;' class='totalVentas'>" .
-                Yii::app()->format->format_decimal(($totalcallsTotal / $totalcallsTotalCompleto) * (100)) . "%
-            </td>
-            <td style='text-align: right;' class='diferencialBancario'>" .
-                Yii::app()->format->format_decimal(($completecallsTotal / $completecallsTotalCompleto) * (100)) . "%
-            </td>           
-            <td style='text-align: right;' class='diferencialBancario'>" .
-                Yii::app()->format->format_decimal(($minutesTotal / $minutesTotalCompleto) * (100)) . "%
-            </td>           
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>
-            
-            </td>           
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>
-            
-            </td>           
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>
-                
-            </td>           
-            <td style='text-align: right;' class='diferencialBancario'>" .
-                Yii::app()->format->format_decimal(($costTotal / $costTotalCompleto) * (100)) . "%
-            </td>           
-            <td style='text-align: right;' class='diferencialBancario'>" .
-                Yii::app()->format->format_decimal(($revenueTotal / $revenueTotalCompleto) * (100)) . "%
-            </td>           
-            <td style='text-align: right;' class='diferencialBancario'>" .
-                Yii::app()->format->format_decimal(($marginTotal / $marginTotalCompleto) * (100)) . "%
-            </td>           
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>
-            
-            </td>          
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>   
-            
-            </td> 
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>   
-            
-            </td> 
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>   
-            
-            </td> 
-            <td style='text-align: left; background-color:#f8f8f8' class='diferencialBancario'>   
-            
-            </td> 
-            </tr>";*/
-        $email .= "
-    </table>
-</div>";
+        */
+        $email .= "";
 
         return $email;
     }
