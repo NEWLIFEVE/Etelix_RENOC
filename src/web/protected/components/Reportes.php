@@ -1,6 +1,6 @@
 <?php
 /**
-*
+* Clase de reportes
 */
 class reportes extends CApplicationComponent
 {
