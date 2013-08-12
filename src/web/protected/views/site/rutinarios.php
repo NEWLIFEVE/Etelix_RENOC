@@ -68,7 +68,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="AIR" class="custom-checkbox" name="AIR">
+                        <input type="checkbox" value="true" id="AIR" class="custom-checkbox" name="lista[AIR]">
                         <label for="AIR">
                             <h4>
                             </h4>
@@ -86,7 +86,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="AI10">
+                        <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="lista[AI10]">
                         <label for="AI10">
                             <h4>
                             </h4>
@@ -104,7 +104,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="PN">
+                        <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
                         <label for="PN">
                             <h4>
                             </h4>
@@ -122,7 +122,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="otros" class="custom-checkbox" name="otros"> 
+                        <input type="checkbox" value="true" id="otros" class="custom-checkbox" name="lista[otros]"> 
                         <label for="otros">
                             <h4>
                             </h4>
@@ -140,7 +140,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="otros2" class="custom-checkbox" name="otros2"> 
+                        <input type="checkbox" value="true" id="otros2" class="custom-checkbox" name="lista[otros2]"> 
                         <label for="otros2">
                             <h4>
                             </h4>

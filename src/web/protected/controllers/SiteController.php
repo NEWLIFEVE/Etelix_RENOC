@@ -246,3 +246,5 @@ class SiteController extends Controller
         echo $cuerpo;
     }
 }
+?>
+

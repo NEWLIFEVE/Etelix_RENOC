@@ -82,13 +82,15 @@ var ajax=function()
     this.formulario=null;
     this.mail="/site/mail";
     this.excel="/site/excel";
-};
+}
+
 ajax.prototype.run=function()
 {      alert('por aca paso');
     var self=this;
     $('#mail,#excel').on('click',function(e)
     {
         e.preventDefault();
+<<<<<<< HEAD
         var datefecha = $('input#datepicker_value').val(length);
         var numero = $('input[type="checkbox"]').filter(function()
         {
@@ -125,6 +127,7 @@ ajax.prototype.run=function()
         }
     });
 };
+
 ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formRutinarios").serializeArray();
@@ -153,9 +156,7 @@ ajax.prototype.enviarMail=function()
             $('.cargando').remove();
         }, 5000);
     });
-};
-
-
+}
 
 function marcar(source)
 {
