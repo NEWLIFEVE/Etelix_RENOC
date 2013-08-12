@@ -299,7 +299,7 @@ background: linear-gradient(#F2F2F2, white);
 
 
 #mail{
-    border:px solid black;
+    border:0px solid black;
     text-align:rigth;
     width:60px; 
     height:60px; 
@@ -754,3 +754,61 @@ para luego
 	<input type="checkbox" value="None" id="squaredOne" name="check" />
 	<label for="squaredOne"></label>
 </div>*/
+.cargando
+{
+/*     background: rgba(0,0,0,0.5);*/
+   background-color: black;
+     height: 100%;
+     position: fixed;
+     text-align: center;
+     top: 0px;
+     width: 100%;
+     content:"";
+     opacity: .8; 
+}
+.error
+{
+/*     background: rgba(0,0,0,0.5);*/
+   background-color: red;
+     height: 100%;
+     position: fixed;
+     text-align: center;
+     top: 0px;
+     width: 100%;
+     content:"";
+     opacity: .8; 
+}
+
+
+.mensaje
+{
+    background-color: whitesmoke;
+    border: thin outset;
+    border-radius: 15px 15px 15px 15px;
+    color: green;
+/*    display: -moz-marker;*/
+/*    opacity: 1.00;*/
+    padding-top: -6px;
+    margin-top: 105px;
+    width: 423px;
+    margin-left: calc(100%/2 - 4*2% - 1*1em - 76*1px); 
+    
+}
+.fail
+{
+    color: red;
+
+}
+
+.exito
+{
+    color: #58D3F7;
+
+}
+
+/*z-index: 1011; position: fixed; padding:
+0px; margin: 0px; width: 100%; height: 100%;
+top: 3%;
+left: 0%; text-align: center; color: rgb(0, 0, 0,12);
+border: 3px solid rgb(140, -1, 170); background-color: 
+rgb(153, 184, 114); cursor: wait;*/

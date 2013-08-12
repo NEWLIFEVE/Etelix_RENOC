@@ -17,11 +17,11 @@ class reportes extends CApplicationComponent {
 //    public function test(){
 //        return 5;
 //    }
-    public function AltoIMpacto($fecha) {
+    public function AltoIMpacto($fecha_mod) {
 
        // return 'PROBANDO...';
 
-        $fecha_mod = Yii::app()->format->format_date($fecha);
+        //$fecha_mod = Yii::app()->format->format_date($fecha);
         /*         * ********************** CONECCION BASE DE DATOS - COMIENZO *********************** */
 
         //$conection = mysql_connect($server, $username, $password);

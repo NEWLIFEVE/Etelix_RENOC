@@ -1,3 +1,10 @@
+
+/**
+*
+*
+/**
+*
+*/
 var selector=function(id)
 {
     this.variable=id;
@@ -7,13 +14,16 @@ selector.prototype.run=function()
     this.objeto=$(this.variable);
     this.objeto.datepicker(
     {
+        dateFormat: 'yy-mm-dd',
         onSelect: function(dateText, inst)
         {
             $("#datepicker_value").val(dateText);
         }
     });
 }
-
+/**
+*
+*/
 var navegar=function()
 {
     this.enlaces='a#flecha-forward, a#flecha-backward';
@@ -46,64 +56,6 @@ navegar.prototype.pisaAqui=function()
     });
 }
 
-//            $(function() 
-//            {
-//                var formulario = $("#formRutinarios").serialize();
-//                alert("Selecciono AltoImpacto +10$ para la Fecha:" + fecha);
-//                $.ajax({
-//                    url: $(this).attr("/site/SiteController/EnviarMail"),
-//                    data: "fecha=" + fecha,
-//                    type: $(this).attr("post"),
-//                    $("#results").text(formulario);
-//                     })
-//            }
-//            );
-//
-//   
-//   
-   
-    $(function() {
-                $("#mail").click(function() {
-                var fecha = $("#datepicker_value").val();
-                alert(fecha);
-                if(fecha!=""){
-                if($("#AI10").is(":checked")){                    
-                    alert("Selecciono AltoImpacto +10$ para la Fecha:"+fecha);
-                    $.ajax({
-
-                       url: $(this).attr("/site/SiteController/EnviarMail"),
-
-                        //url: 'PHPMailer_5.2.4/AltoImpacto.php',
-                     //   url: 'site/Enviarmail',
-
-                        data: "fecha="+fecha,
-                       type: $(this).attr("post"),
-                       data: $(this).serialize(), 
-                        success: function(data){
-                            alert (data);
-//                           $('#respuestaAI').html(data);
-                        }
-                    });
-                }
-                if($("#AIR").is(":checked")){                    
-                    alert("Selecciono AltoImpactoRetail +1$ para la Fecha:"+fecha);
-//                    $.ajax({
-//                        url: 'PHPMailer_5.2.4/AltoImpactoRetail.php',
-//                        data: "fecha="+fecha,
-//                        type: 'get',
-//                        success: function(data){
-//                            //alert (data);
-//                            $('#respuestaAIR').html(data);
-//                        }
-//                    });
-                }
-                }else{
-                alert('seleccione una fecha');
-                }
-        });
-        
-            });     
-
 navegar.prototype.ida=function()
 {
     var self=this;
@@ -122,6 +74,88 @@ navegar.prototype.vuelta=function()
         self.objetoMain.toggle('slide');
     });
 }
+/**
+*
+*/
+var ajax=function()
+{
+    this.formulario=null;
+    this.mail="/site/mail";
+    this.excel="/site/excel";
+};
+ajax.prototype.run=function()
+{      alert('por aca paso');
+    var self=this;
+    $('#mail,#excel').on('click',function(e)
+    {
+        e.preventDefault();
+        var datefecha = $('input#datepicker_value').val(length);
+        var numero = $('input[type="checkbox"]').filter(function()
+        {
+            return $(this).is(':checked');
+        });
+        if (numero.length >0 && datefecha.length >0)
+        {
+            var tipo = $(this).attr('id');
+            if (tipo == "mail")
+            {
+                self.getFormPost();
+                self.enviarMail();
+            }
+            else
+            {
+                self.getFormPost();
+                for(var i = 0; i <= self.formulario.length - 2; i++)
+                {
+                    fecha=self.formulario[self.formulario.length-1].value;
+                    nombre=self.formulario[i].name;
+                    valor=self.formulario[i].value;
+                    var ventana=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel");
+                };
+            }
+        }
+        else
+        {
+              jQuery('.mensaje').html("<h2>Debe seleccionar al menos un tipo de reporte</h2><img src='/images/stop.png'width='95px' height='95px'/>");
+        setTimeout(function()
+        {
+            $('.cargando').remove();
+
+        }, 3000);
+        }
+    });
+};
+ajax.prototype.getFormPost=function()
+{
+    this.formulario=$("#formRutinarios").serializeArray();
+};
+ajax.prototype.enviarMail=function()
+{
+    var self=this;
+    var opciones=
+    {
+        url:this.mail,
+        data:this.formulario,
+        type:'POST'
+    };
+    this.envio=$.ajax(opciones).done(function(datos)
+    {
+        jQuery('.mensaje').html("<h1 class='exito'>Mensaje Enviado(datos)</h1><img src='/images/si.png'width='95px' height='95px'/>");
+        setTimeout(function()
+        {
+            $('.cargando').remove();
+        }, 5000);
+    }).fail(function()
+    {
+        jQuery('.mensaje').html("<h1 class='fail'>Ups! Ocurrio un problema</h1><img src='/images/no.png'width='95px' height='95px'/><br>");
+        setTimeout(function()
+        {
+            $('.cargando').remove();
+        }, 5000);
+    });
+};
+
+
 
 function marcar(source)
 {
@@ -137,8 +171,10 @@ function marcar(source)
 
 var ventana=new navegar();
 var fecha=new selector("#datepicker");
+var ejecutar=new ajax();
 $(document).on('ready',function()
 {
+    ejecutar.run();
     ventana.run();
     fecha.run();
     marcar();
@@ -148,3 +184,64 @@ $(document).on('ready',function()
         marcar();
     });
 });
+
+//*/
+//var ajax=function()
+//{
+//    this.formulario=null;
+//    this.mail="/site/enviarmail";
+//}
+//ajax.prototype.run=function()
+//{
+//    var self=this;
+//    $('#mail,#excel').on('click',function(e)
+//    {
+//        e.preventDefault();
+//        var tipo=$(this).attr('id');
+//        if(tipo=="mail")
+//        {
+//            self.getForm();
+//            self.enviarMail();
+//        }
+//        else
+//        {
+//            alert("Excel aun en desarrollo");
+//        }
+//    });
+//}
+//$('#mail').click(function()
+//{
+   // $("body").append("<div class='cargando'><div class='mensaje'><h1>Espere un momento por favor</h1><img src='/images/circular.gif'width='95px' height='95px'/></div></div>");
+//}); 
+//ajax.prototype.getForm=function()
+//{
+//    this.formulario=$("#formRutinarios").serializeArray();
+//}
+//ajax.prototype.enviarMail=function()
+//{
+//    var self=this;
+//    var opciones=
+//    {
+//        url:this.mail,
+//        data:this.formulario,
+//        type:'POST'
+//    };
+//    $.ajax(opciones).done(function(datos)
+//    {
+//        jQuery('.mensaje').html("<h1 class='exito'>Mensaje Enviado</h1><img src='/images/si.png'width='95px' height='95px'/>");
+//        setTimeout(function()
+//        {
+//            $('.cargando').remove();
+//
+//        }, 5000);
+//    }).fail(function()
+//    {
+//        jQuery('.mensaje').html("<h1 class='fail'>Ups! Ocurrion un problema</h1><img src='/images/no.png'width='95px' height='95px'/><br>");
+//        setTimeout(function()
+//        {
+//            $('.cargando').remove();
+//
+//        }, 5000);
+//    });
+//    
+//};
