@@ -103,11 +103,8 @@ ajax.prototype.run=function()
                 for(var i = 0; i <= self.formulario.length - 2; i++)
                 {
                     fecha=self.formulario[self.formulario.length-1].value;
-                    console.log(fecha);
                     nombre=self.formulario[i].name;
-                    console.log(nombre);
                     valor=self.formulario[i].value;
-                    console.log(valor);
                     var ventana=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel");
                 };
             }
@@ -122,33 +119,12 @@ ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formRutinarios").serializeArray();
 }
-ajax.prototype.getFormGet=function()
-{
-    this.formulario=$("#formRutinarios").serialize();
-}
 ajax.prototype.enviarMail=function()
 {
     var self=this;
     var opciones=
     {
         url:this.mail,
-        data:this.formulario,
-        type:'POST'
-    };
-    this.envio=$.ajax(opciones).done(function(datos)
-    {
-        alert(datos);
-    }).fail(function()
-    {
-        alert("Error");
-    });
-}
-ajax.prototype.enviarExcel=function()
-{
-    var self=this;
-    var opciones=
-    {
-        url:this.excel,
         data:this.formulario,
         type:'POST'
     };
