@@ -708,7 +708,7 @@ class reportes extends CApplicationComponent
             foreach($destinos as $key => $destino)
             {
                 $pos=$key+1;
-                $email.="<tr>";
+                $email.=$this->colorDestino($destino->destino);
                 $email.="<td style='text-align: left;' class='destino'>".
                             $destino->destino.
                         "</td>
@@ -1043,65 +1043,7 @@ class reportes extends CApplicationComponent
                 $email .= "
         </tr>";
             } elseif ($par % 2 == 0) {
-                if (substr_count($fila[0], 'USA') >= 1 ||
-                        substr_count($fila[0], 'CANADA') >= 1) {
-
-                    $email .= "<tr style='background-color:#F3F3F3; color:#584E4E;'>";
-                } elseif (substr_count($fila[0], 'SPAIN') >= 1 ||
-                        substr_count($fila[0], 'ROMANIA') >= 1 ||
-                        substr_count($fila[0], 'BELGIUM') >= 1 ||
-                        substr_count($fila[0], 'PAKISTAN') >= 1 ||
-                        substr_count($fila[0], 'ANTIGUA') >= 1 ||
-                        substr_count($fila[0], 'UGANDA') >= 1 ||
-                        substr_count($fila[0], 'NETHERLANDS') >= 1 ||
-                        substr_count($fila[0], 'THAILAND') >= 1 ||
-                        substr_count($fila[0], 'CHINA') >= 1 ||
-                        substr_count($fila[0], 'DENMARK') >= 1 ||
-                        substr_count($fila[0], 'RUSSIA') >= 1 ||
-                        substr_count($fila[0], 'AUSTRIA') >= 1 ||
-                        substr_count($fila[0], 'NORWAY') >= 1 ||
-                        substr_count($fila[0], 'MAURITANIA') >= 1 ||
-                        substr_count($fila[0], 'FINLAND') >= 1 ||
-                        substr_count($fila[0], 'UNITED KINGDOM') >= 1 ||
-                        substr_count($fila[0], 'ITALY') >= 1 ||
-                        substr_count($fila[0], 'SWITZERLAND ') >= 1 ||
-                        substr_count($fila[0], 'VIETNAM') >= 1 ||
-                        substr_count($fila[0], 'SATELLITE') >= 1 ||
-                        substr_count($fila[0], 'JAPAN ') >= 1 ||
-                        substr_count($fila[0], 'IRELAND') >= 1 ||
-                        substr_count($fila[0], 'ISRAEL ') >= 1 ||
-                        substr_count($fila[0], 'AUSTRALIA') >= 1) {
-
-                    $email .= "<tr style='background-color:#8BA0AC; color:#584E4E;'>";
-                } elseif (substr_count($fila[0], 'PERU') >= 1 ||
-                        substr_count($fila[0], 'CHILE') >= 1 ||
-                        substr_count($fila[0], 'ECUADOR') >= 1 ||
-                        substr_count($fila[0], 'PARAGUAY') >= 1 ||
-                        substr_count($fila[0], 'BRAZIL') >= 1 ||
-                        substr_count($fila[0], 'BOLIVIA') >= 1 ||
-                        substr_count($fila[0], 'ARGENTINA') >= 1 ||
-                        substr_count($fila[0], 'URUGUAY') >= 1) {
-
-                    $email .= "<tr style='background-color:#AED7F3; color:#584E4E;'>";
-                } elseif (substr_count($fila[0], 'COLOMBIA') >= 1) {
-
-                    $email .= "<tr style='background-color:#BEE2C1; color:#584E4E;'>";
-                } elseif (substr_count($fila[0], 'VENEZUELA') >= 1) {
-
-                    $email .= "<tr style='background-color:#F0D0AE; color:#584E4E;'>";
-                } elseif (substr_count($fila[0], 'MEXICO') >= 1 ||
-                        substr_count($fila[0], 'PANAMA') >= 1 ||
-                        substr_count($fila[0], 'CUBA') >= 1 ||
-                        substr_count($fila[0], 'BARBADOS') >= 1 ||
-                        substr_count($fila[0], 'ARUBA') >= 1 ||
-                        substr_count($fila[0], 'DOMINICAN REPUBLIC ') >= 1 ||
-                        substr_count($fila[0], 'HONDURAS') >= 1 ||
-                        substr_count($fila[0], 'HAITI') >= 1 ||
-                        substr_count($fila[0], 'SALVADOR') >= 1) {
-
-                    $email .= "<tr style='background-color:#EDF0AE; color:#584E4E;'>";
-                }
-
+                
                 $email .= "
             <td style='text-align: left;' class='fecha'>
                 $fila[0]
@@ -1246,6 +1188,80 @@ class reportes extends CApplicationComponent
             case 4:
                 $color="<tr style='background-color:#F8B6C9; color:#584E4E;'>";
                 break;
+        }
+        return $color;
+    }
+    /**
+    * @param $var string a identificar
+    * @return string con la fila coloreada
+    */
+    public function colorDestino($var)
+    {
+        if(substr_count($var, 'USA') >= 1 || substr_count($var, 'CANADA') >= 1)
+        {
+            $color="<tr style='background-color:#F3F3F3; color:#584E4E;'>";
+        }
+        elseif(substr_count($var, 'SPAIN') >= 1 ||
+                substr_count($var, 'ROMANIA') >= 1 ||
+                substr_count($var, 'BELGIUM') >= 1 ||
+                substr_count($var, 'PAKISTAN') >= 1 ||
+                substr_count($var, 'ANTIGUA') >= 1 ||
+                substr_count($var, 'UGANDA') >= 1 ||
+                substr_count($var, 'NETHERLANDS') >= 1 ||
+                substr_count($var, 'THAILAND') >= 1 ||
+                substr_count($var, 'CHINA') >= 1 ||
+                substr_count($var, 'DENMARK') >= 1 ||
+                substr_count($var, 'RUSSIA') >= 1 ||
+                substr_count($var, 'AUSTRIA') >= 1 ||
+                substr_count($var, 'NORWAY') >= 1 ||
+                substr_count($var, 'MAURITANIA') >= 1 ||
+                substr_count($var, 'FINLAND') >= 1 ||
+                substr_count($var, 'UNITED KINGDOM') >= 1 ||
+                substr_count($var, 'ITALY') >= 1 ||
+                substr_count($var, 'SWITZERLAND ') >= 1 ||
+                substr_count($var, 'VIETNAM') >= 1 ||
+                substr_count($var, 'SATELLITE') >= 1 ||
+                substr_count($var, 'JAPAN ') >= 1 ||
+                substr_count($var, 'IRELAND') >= 1 ||
+                substr_count($var, 'ISRAEL ') >= 1 ||
+                substr_count($var, 'AUSTRALIA') >= 1)
+        {
+            $color="<tr style='background-color:#8BA0AC; color:#584E4E;'>";
+        }
+        elseif(substr_count($var, 'PERU') >= 1 ||
+                substr_count($var, 'CHILE') >= 1 ||
+                substr_count($var, 'ECUADOR') >= 1 ||
+                substr_count($var, 'PARAGUAY') >= 1 ||
+                substr_count($var, 'BRAZIL') >= 1 ||
+                substr_count($var, 'BOLIVIA') >= 1 ||
+                substr_count($var, 'ARGENTINA') >= 1 ||
+                substr_count($var, 'URUGUAY') >= 1)
+        {
+            $color="<tr style='background-color:#AED7F3; color:#584E4E;'>";
+        }
+        elseif(substr_count($var, 'COLOMBIA') >= 1)
+        {
+            $color="<tr style='background-color:#BEE2C1; color:#584E4E;'>";
+        }
+        elseif(substr_count($var, 'VENEZUELA') >= 1)
+        {
+            $color="<tr style='background-color:#F0D0AE; color:#584E4E;'>";
+        }
+        elseif(substr_count($var, 'MEXICO') >= 1 ||
+                substr_count($var, 'PANAMA') >= 1 ||
+                substr_count($var, 'CUBA') >= 1 ||
+                substr_count($var, 'BARBADOS') >= 1 ||
+                substr_count($var, 'ARUBA') >= 1 ||
+                substr_count($var, 'DOMINICAN REPUBLIC ') >= 1 ||
+                substr_count($var, 'HONDURAS') >= 1 ||
+                substr_count($var, 'HAITI') >= 1 ||
+                substr_count($var, 'SALVADOR') >= 1)
+        {
+            $color="<tr style='background-color:#EDF0AE; color:#584E4E;'>";
+        }
+        else
+        {
+            $color="<tr>";
         }
         return $color;
     }
