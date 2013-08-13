@@ -161,7 +161,7 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user = 'mmzmm3z@gmail.com';
+        $user=UserIdentity::getEmail();
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
@@ -201,7 +201,6 @@ class SiteController extends Controller
     {
         $fecha=null;
         $archivos=null;
-        $user = 'mmzmm3z@gmail.com';
         if(isset($_GET['fecha']))
         {
             $fecha=(string)$_GET['fecha'];
