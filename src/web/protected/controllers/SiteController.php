@@ -161,14 +161,14 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user = 'mmzmm3z@gmail.com';
+        $user=UserIdentity::getEmail();
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
             if(isset($_POST['lista']['AIR']))
             {
                 $correos['altoImpactoRetail']['asunto']="Alto Impacto Retail (+1$) de día ".$fecha;
-                $correos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_POST['lista']['AI10']))
             {
@@ -201,14 +201,13 @@ class SiteController extends Controller
     {
         $fecha=null;
         $archivos=null;
-        $user = 'mmzmm3z@gmail.com';
         if(isset($_GET['fecha']))
         {
             $fecha=(string)$_GET['fecha'];
             if(isset($_GET['lista']['AIR']))
             {
                 $archivos['altoImpactoRetail']['nombre']="Alto Impacto Retail (+1$) de día ".$fecha;
-                $archivos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+                $archivos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_GET['lista']['AI10']))
             {
