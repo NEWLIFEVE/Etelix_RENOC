@@ -76,7 +76,8 @@ navegar.prototype.vuelta=function()
 var ajax=function()
 {
     this.formulario=null;
-    this.mail="/site/enviarmail";
+    this.mail="/site/mail";
+    this.excel="/site/excel";
 }
 ajax.prototype.run=function()
 {
@@ -93,12 +94,19 @@ ajax.prototype.run=function()
             var tipo=$(this).attr('id');
             if(tipo=="mail")
             {
-                self.getForm();
+                self.getFormPost();
                 self.enviarMail();
             }
             else
             {
-                alert("Excel aun en desarrollo");
+                self.getFormPost();
+                for(var i = 0; i <= self.formulario.length - 2; i++)
+                {
+                    fecha=self.formulario[self.formulario.length-1].value;
+                    nombre=self.formulario[i].name;
+                    valor=self.formulario[i].value;
+                    var ventana=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel");
+                };
             }
         }
         else
@@ -107,7 +115,7 @@ ajax.prototype.run=function()
         }
     });
 }
-ajax.prototype.getForm=function()
+ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formRutinarios").serializeArray();
 }
@@ -128,7 +136,6 @@ ajax.prototype.enviarMail=function()
         alert("Error");
     });
 }
-
 function marcar(source)
 {
     checkboxes = document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input

@@ -1,6 +1,6 @@
 <?php
 /**
-* 
+* @var $this SiteController
 */
 class SiteController extends Controller
 {
@@ -157,7 +157,7 @@ class SiteController extends Controller
     * Action encargada de envuiar por mail el tipo de reporte seleccionado,
     * las especificaciones seran recibidas desde el array $_POST
     */
-    public function actionEnviarmail()
+    public function actionMail()
     {
         $fecha=null;
         $correos=null;
@@ -168,7 +168,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['AIR']))
             {
                 $correos['altoImpactoRetail']['asunto']="Alto Impacto Retail (+1$) de día ".$fecha;
-                $correos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_POST['lista']['AI10']))
             {
@@ -197,9 +197,52 @@ class SiteController extends Controller
         }
         echo "Su correo fue enviado exitosamente :)";
     }
-
-    public function actionExportExcel()
+    public function actionExcel()
     {
-        
+        $fecha=null;
+        $archivos=null;
+        $user = 'mmzmm3z@gmail.com';
+        if(isset($_GET['fecha']))
+        {
+            $fecha=(string)$_GET['fecha'];
+            if(isset($_GET['lista']['AIR']))
+            {
+                $archivos['altoImpactoRetail']['nombre']="Alto Impacto Retail (+1$) de día ".$fecha;
+                $archivos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
+            }
+            if(isset($_GET['lista']['AI10']))
+            {
+                $archivos['altoImpacto']['nombre']="Alto Impacto (+10$) del día ".$fecha;
+                $archivos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+            } 
+            if(isset($_GET['lista']['PN']))
+            {
+                $archivos['posicionNeta']['nombre']="Posicion Neta de día ".$fecha;
+                $archivos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+            }
+            if(isset($_GET['lista']['otros']))
+            {
+                $archivos['otros']['nombre']="Otros de día ".$fecha;
+                $archivos['otros']['cuerpo']="Prueba de Otros";
+            }
+            if(isset($_GET['lista']['otros2']))
+            {
+                $archivos['otros2']['nombre']="Otros 2 de día ".$fecha;
+                $archivos['otros2']['cuerpo']="Prueba de Otros 2";
+            } 
+        }
+        foreach($archivos as $key => $archivo)
+        {
+            $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
+        }
+    }
+    
+    public function genExcel($nombre,$cuerpo)
+    {
+        header("Content-type: application/vnd.ms-excel; name='excel'");
+        header("Content-Disposition: filename=$nombre.xls");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        echo $cuerpo;
     }
 }
