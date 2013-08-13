@@ -168,7 +168,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['AIR']))
             {
                 $correos['altoImpactoRetail']['asunto']="Alto Impacto Retail (+1$) de día ".$fecha;
-                $correos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_POST['lista']['AI10']))
             {
@@ -208,7 +208,7 @@ class SiteController extends Controller
             if(isset($_GET['lista']['AIR']))
             {
                 $archivos['altoImpactoRetail']['nombre']="Alto Impacto Retail (+1$) de día ".$fecha;
-                $archivos['altoImpactoRetail']['cuerpo']="Prueba de Alto Impacto Retail";
+                $archivos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_GET['lista']['AI10']))
             {
