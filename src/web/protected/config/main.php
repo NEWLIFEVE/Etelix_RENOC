@@ -7,46 +7,48 @@
 // CWebApplication properties can be configured here.
 Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../extensions/bootstrap');
 return array(
-    'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
-    'name' => 'RENOC',
+    'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
+    'name'=>'RENOC',
     'language'=>'es',
     // preloading 'log' component
-    'preload' => array('log', 'bootstrap'),
+    'preload'=>array('log','bootstrap'),
     // autoloading model and component classes
-    'import' => array(
+    'import'=>array(
         'application.models.*',
         'application.components.*',
     ),
-    'modules' => array(
+    'modules'=>array(
         // uncomment the following to enable the Gii tool
-        'gii' => array(
+        'gii'=>array(
             'class'=>'system.gii.GiiModule',
 			'password'=>'123',
-			// If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'=>array('127.0.0.1','::1'),
-            'generatorPaths' => array(
-                'bootstrap.gii', // since 0.9.1
-            ),	
-	),
-    ),
+            // If removed, Gii defaults to localhost only. Edit carefully to taste.
+			'ipFilters'=>array(
+                '127.0.0.1',
+                '::1'
+                ),
+            'generatorPaths'=>array(
+                'bootstrap.gii',
+                ),
+            ),
+        ),
     // application components
-    'components' => array(
-        'reportes' => array(
+    'components'=>array(
+        'reportes'=>array(
             'class'=>"application.components.Reportes",
         ),
-        'mail' => array(
+        'mail'=>array(
             'class'=>"application.components.EnviarEmail",
         ),
-        'format' => array(
+        'format'=>array(
             'class'=>"application.components.Formatter",
         ),
-        'bootstrap' => array(
-            'class' => 'application.extensions.bootstrap.components.Bootstrap', // assuming you extracted bootstrap under extensions
+        'bootstrap'=>array(
+            'class'=>'application.extensions.bootstrap.components.Bootstrap', // assuming you extracted bootstrap under extensions
         ),
-
-        'user' => array(
+        'user'=>array(
             // enable cookie-based authentication
-            'allowAutoLogin' => true,
+            'allowAutoLogin'=>true,
         ),
         'urlManager'=>array(
 			'urlFormat'=>'path',
@@ -57,47 +59,38 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
-
-		// uncomment the following to use a MySQL database
-//                'db' => array(
-//            'connectionString' => 'sqlite:' . dirname(__FILE__) . '/../data/testdrive.db',
-//        ),
-        
-        'db' => array (
-     
-            'connectionString' => 'pgsql:host=192.168.1.239;port=5432;dbname=sori',
-			'emulatePrepare' => true,
-			'username' => 'postgres',
-			'password' => '123',
-			'charset' => 'utf8',
+        'db'=>array(
+            'connectionString'=>'pgsql:host=192.168.1.239;port=5432;dbname=sori',
+			'emulatePrepare'=>true,
+			'username'=>'postgres',
+			'password'=>'123',
+			'charset'=>'utf8',
             ),
-            'errorHandler' => array(
-                // use 'site/error' action to display errors
-                'errorAction' => 'site/error',
+        'errorHandler'=>array(
+            // use 'site/error' action to display errors
+            'errorAction'=>'site/error',
             ),
-
-            'log' => array(
-                'class' => 'CLogRouter',
-                'routes' => array(
-                    array(
-                        'class' => 'CFileLogRoute',
-                        'levels' => 'error, warning',
+        'log'=>array(
+            'class'=>'CLogRouter',
+            'routes'=>array(
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'error, warning',
                     ),
                 // uncomment the following to show log messages on web pages
                 /*
-                  array(
-                  'class'=>'CWebLogRoute',
-                  ),
-                 */
+                array(
+                    'class'=>'CWebLogRoute',
+                    ),
+                */
                 ),
             ),
-
         ),
-        // application-level parameters that can be accessed
-        // using Yii::app()->params['paramName']
-        'params' => array(
-            // this is used in contact page
-            'adminEmail' => 'webmaster@example.com',
+    // application-level parameters that can be accessed
+    // using Yii::app()->params['paramName']
+    'params'=>array(
+        // this is used in contact page
+        'adminEmail'=>'manuel@newlifeve.com',
         ),
     );
 
