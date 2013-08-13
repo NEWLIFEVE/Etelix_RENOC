@@ -105,6 +105,9 @@ class reportes extends CApplicationComponent
                     <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Rankin
+                            </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Client
                             </th>
@@ -135,11 +138,14 @@ class reportes extends CApplicationComponent
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Margin
                             </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                                Client
+                            </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Margin%
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Position
+                                Rankin
                             </th>
                         </tr>";
 
@@ -150,7 +156,9 @@ class reportes extends CApplicationComponent
             {
                 $pos=$key+1;
                 $email.=$this->color($pos);
-                $email.="<td style='text-align: left;' class='cliente'>".
+                $email.="<td style='text-align: center;' class='position'>
+                            $pos
+                         </td><td style='text-align: left;' class='cliente'>".
                             $cliente->cliente.
                         "</td>
                          <td style='text-align: left;' class='totalCalls'>".
@@ -180,6 +188,9 @@ class reportes extends CApplicationComponent
                          <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($cliente->margin).
                         "</td>
+                         </td><td style='text-align: left;' class='cliente'>".
+                            $cliente->cliente.
+                        "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($cliente->revenue*100)/$cliente->cost)-100)."%
                          </td>
@@ -197,6 +208,8 @@ class reportes extends CApplicationComponent
         }
                
         $email.="<tr>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Client
                     </td>
@@ -227,18 +240,21 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin
                     </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin%
                     </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Position
-                    </th>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
                     </tr>";
         
         $clientesTotal=Balance::model()->findBySql($sqlClientesTotal);
         if($clientesTotal->etiqueta!=null)
         {
             $email.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $clientesTotal->etiqueta.
                        "</td>
@@ -269,6 +285,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($clientesTotal->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($clientesTotal->revenue*100)/$clientesTotal->cost)-100)."%
                         </td>
@@ -286,6 +304,8 @@ class reportes extends CApplicationComponent
         if($clientesTotalCompleto->etiqueta!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $clientesTotalCompleto->etiqueta.
                        "</td>
@@ -316,6 +336,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($clientesTotalCompleto->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($clientesTotalCompleto->revenue*100)/$clientesTotalCompleto->cost)-100)."%
                         </td>
@@ -368,6 +390,9 @@ class reportes extends CApplicationComponent
                  </h2>
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
+                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                            Rankin
+                        </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                             Supplier
                         </th>
@@ -398,11 +423,14 @@ class reportes extends CApplicationComponent
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                             Margin
                         </th>
+                        <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                            Supplier
+                        </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                             Margin%
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Position
+                            Rankin
                         </th>
                     </tr>";
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
@@ -412,7 +440,10 @@ class reportes extends CApplicationComponent
             {
                 $pos=$key+1;
                 $email.=$this->color($pos);
-                $email.="<td style='text-align: left;' class='supplier'>".
+                $email.="<td style='text-align: center;' class='position'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='supplier'>".
                             $proveedor->proveedor.
                         "</td>
                          <td style='text-align: left;' class='totalcalls'>".
@@ -442,6 +473,9 @@ class reportes extends CApplicationComponent
                          <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($proveedor->margin).
                         "</td>
+                        <td style='text-align: left;' class='supplier'>".
+                            $proveedor->proveedor.
+                        "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($proveedor->revenue*100)/$proveedor->cost)-100)."%
                          </td>
@@ -459,6 +493,8 @@ class reportes extends CApplicationComponent
         }
 
         $email.="<tr>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Supplier
                     </td>
@@ -489,18 +525,21 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin
                     </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin%
                     </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Position
-                    </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                 </tr>";
 
         $proveedoresTotal=Balance::model()->findBySql($sqlProveedoresTotal);
         if($proveedoresTotal->etiqueta!=null)
         {
             $email.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $proveedoresTotal->etiqueta.
                        "</td>
@@ -531,10 +570,12 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($proveedoresTotal->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($proveedoresTotal->revenue*100)/$proveedoresTotal->cost)-100)."%
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='position'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                     </tr>";
         }
@@ -548,6 +589,8 @@ class reportes extends CApplicationComponent
         if($proveedoresTotalCompleto->etiqueta!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $proveedoresTotalCompleto->etiqueta.
                        "</td>
@@ -578,10 +621,12 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($proveedoresTotalCompleto->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($proveedoresTotalCompleto->revenue*100)/$proveedoresTotalCompleto->cost)-100)."%
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='position'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                     </tr>";
         }
@@ -592,6 +637,8 @@ class reportes extends CApplicationComponent
                      </tr>";
         }
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
                     <td style='text-align: right;' class='totalCalls'>".
@@ -622,6 +669,8 @@ class reportes extends CApplicationComponent
                     </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                 </tr>
             </table>";
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
@@ -629,6 +678,9 @@ class reportes extends CApplicationComponent
                  </h2>
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
+                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                            Rankin
+                        </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destination
                         </th>
@@ -659,6 +711,9 @@ class reportes extends CApplicationComponent
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                             Margin
                         </th>
+                        <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
+                            Destination
+                        </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                             Margin%
                         </th>
@@ -672,7 +727,7 @@ class reportes extends CApplicationComponent
                             Margin/Min
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Position
+                            Rankin
                         </th>
                     </tr>";
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -682,7 +737,10 @@ class reportes extends CApplicationComponent
             {
                 $pos=$key+1;
                 $email.=$this->colorDestino($destino->destino);
-                $email.="<td style='text-align: left;' class='destino'>".
+                $email.="<td style='text-align: center;' class='diferencialBancario'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='destino'>".
                             $destino->destino.
                         "</td>
                          <td style='text-align: left;' class='totalcalls'>".
@@ -712,6 +770,9 @@ class reportes extends CApplicationComponent
                          <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($destino->margin).
                         "</td>
+                         <td style='text-align: left;' class='destino'>".
+                            $destino->destino.
+                        "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($destino->revenue*100)/$destino->cost)-100).
                         "</td>
@@ -737,6 +798,8 @@ class reportes extends CApplicationComponent
                      </tr>";
         }
         $email.="<tr>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Destination
                     </td>
@@ -767,6 +830,8 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin
                     </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin%
                     </th>
@@ -779,14 +844,15 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin/Min
                     </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Position
-                    </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                 </tr>";
         $destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
         if($destinosTotal->etiqueta!=null)
         {
              $email.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $destinosTotal->etiqueta.
                        "</td>
@@ -817,6 +883,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($destinosTotal->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($destinosTotal->revenue*100)/$destinosTotal->cost)-100).
                        "</td>
@@ -843,6 +911,8 @@ class reportes extends CApplicationComponent
         if($destinosTotalCompleto->etiqueta!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                                     $destinosTotalCompleto->etiqueta.
                        "</td>
@@ -873,6 +943,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($destinosTotalCompleto->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($destinosTotalCompleto->revenue*100)/$destinosTotalCompleto->cost)-100).
                        "</td>
@@ -893,6 +965,8 @@ class reportes extends CApplicationComponent
                      </tr>";
         }
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
                     <td style='text-align: right;' class='totalCalls'>".
@@ -918,6 +992,8 @@ class reportes extends CApplicationComponent
                     </td>
                     <td style='text-align: right;' class='margin'>".
                         Yii::app()->format->format_decimal(($destinosTotal->margin/$destinosTotalCompleto->margin)*(100))."%
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -1025,6 +1101,9 @@ class reportes extends CApplicationComponent
                     <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Rankin
+                            </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Client RP
                             </th>
@@ -1055,11 +1134,14 @@ class reportes extends CApplicationComponent
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Margin
                             </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                                Client RP
+                            </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Margin%
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Position
+                                Rankin
                             </th>
                         </tr>";
 
@@ -1071,7 +1153,10 @@ class reportes extends CApplicationComponent
             {
                 $pos=$key+1;
                 $email.=$this->color($pos);
-                $email.="<td style='text-align: left;' class='clienteRp'>".
+                $email.="<td style='text-align: center;' class='position'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='clienteRp'>".
                             $cliente->cliente.
                         "</td>
                          <td style='text-align: left;' class='totalCalls'>".
@@ -1101,6 +1186,9 @@ class reportes extends CApplicationComponent
                          <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($cliente->margin).
                         "</td>
+                         <td style='text-align: left;' class='clienteRp'>".
+                            $cliente->cliente.
+                        "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal(($cliente->revenue*100)/$cliente->cost)."%
                          </td>
@@ -1117,6 +1205,8 @@ class reportes extends CApplicationComponent
                      </tr>";
         }
         $email.="<tr>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Client RP
                     </th>
@@ -1147,17 +1237,20 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin
                     </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin%
                     </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Position
-                    </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                 </tr>";
         $clientesTotal=Balance::model()->findBySql($sqlClientesTotal);
         if($clientesTotal->etiqueta!=null)
         {
             $email.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $clientesTotal->etiqueta.
                        "</td>
@@ -1188,6 +1281,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($clientesTotal->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($clientesTotal->revenue*100)/$clientesTotal->cost)-100)."%
                         </td>
@@ -1205,6 +1300,8 @@ class reportes extends CApplicationComponent
         if($clientesTotalCompleto->etiqueta!=null)
         {
             $email.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>".
                             $clientesTotalCompleto->etiqueta.
                        "</td>
@@ -1235,6 +1332,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($clientesTotalCompleto->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($clientesTotalCompleto->revenue*100)/$clientesTotalCompleto->cost)-100)."%
                         </td>
@@ -1250,6 +1349,8 @@ class reportes extends CApplicationComponent
                      </tr>";
         }
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
                     <td style='text-align: right;' class='totalCalls'>".
@@ -1280,6 +1381,8 @@ class reportes extends CApplicationComponent
                     </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                 </tr>
             </table>";
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
@@ -1287,6 +1390,9 @@ class reportes extends CApplicationComponent
                 </h2>
                 <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
+                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                        Ramkin
+                        </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destination RP
                         </th>     
@@ -1317,6 +1423,9 @@ class reportes extends CApplicationComponent
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                             Margin
                         </th>
+                        <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
+                            Destination RP
+                        </th> 
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                             Margin%
                         </th>
@@ -1330,7 +1439,7 @@ class reportes extends CApplicationComponent
                             Margin/Min
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Position
+                            Ramkin
                         </th>
                     </tr>";
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -1340,7 +1449,10 @@ class reportes extends CApplicationComponent
             {
                 $pos=$key+1;
                 $email.=$this->colorDestino($destino->destino);
-                $email.="<td style='text-align: left;' class='destino'>".
+                $email.="<td style='text-align: center;' class='position'>".
+                            $pos.
+                       "</td>
+                        <td style='text-align: left;' class='destino'>".
                             $destino->destino.
                        "</td>
                         <td style='text-align: left;' class='totalCalls'>".
@@ -1370,6 +1482,9 @@ class reportes extends CApplicationComponent
                         <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($destino->margin).
                        "</td>
+                        <td style='text-align: left;' class='destino'>".
+                            $destino->destino.
+                       "</td>
                         <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($destino->revenue*100)/$destino->cost)-100).
                        "</td>  
@@ -1395,6 +1510,8 @@ class reportes extends CApplicationComponent
                      </tr>";
         }
         $email.="<tr>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                    </td> 
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Destination RP
                     </th>     
@@ -1425,6 +1542,8 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin
                     </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                    </td> 
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin%
                     </th>
@@ -1437,14 +1556,15 @@ class reportes extends CApplicationComponent
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                         Margin/Min
                     </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Position
-                    </th>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                    </td> 
                 </tr>";
         $destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
         if($destinosTotal->etiqueta!=null)
         {
             $email.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                        </td> 
                         <td style='text-align: center;' class='etiqueta'>".
                             $destinosTotal->etiqueta.
                        "</td>
@@ -1475,6 +1595,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($destinosTotal->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                        </td> 
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($destinosTotal->revenue*100)/$destinosTotal->cost)-100).
                        "</td>  
@@ -1501,6 +1623,8 @@ class reportes extends CApplicationComponent
         if($destinosTotalCompleto->etiqueta!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                        </td> 
                         <td style='text-align: center;' class='etiqueta'>".
                             $destinosTotalCompleto->etiqueta.
                        "</td>
@@ -1531,6 +1655,8 @@ class reportes extends CApplicationComponent
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($destinosTotalCompleto->margin).
                        "</td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                        </td> 
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal((($destinosTotalCompleto->revenue*100)/$destinosTotalCompleto->cost)-100).
                        "</td>
@@ -1547,6 +1673,8 @@ class reportes extends CApplicationComponent
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                    </td> 
                     <td style='text-align: right;' class='totalCalls'>".
                         Yii::app()->format->format_decimal(($destinosTotal->totalcalls/$destinosTotalCompleto->totalcalls)*(100))."%
                     </td>
@@ -1570,7 +1698,9 @@ class reportes extends CApplicationComponent
                     </td>           
                     <td style='text-align: right;' class='margin'>".
                         Yii::app()->format->format_decimal(($destinosTotal->margin/$destinosTotalCompleto->margin)*(100))."%
-                    </td>           
+                    </td>  
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                    </td> 
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>          
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>    

@@ -784,25 +784,25 @@ para luego
 {
     background-color: whitesmoke;
     border: thin outset;
-    border-radius: 15px 15px 15px 15px;
-    color: green;
+    border-radius: 4px 4px 4px 4px;
+    color: #6E6E6E;
 /*    display: -moz-marker;*/
 /*    opacity: 1.00;*/
-    padding-top: -6px;
-    margin-top: 105px;
-    width: 423px;
-    margin-left: calc(100%/2 - 4*2% - 1*1em - 76*1px); 
-    
+    padding-top: 0px;
+    margin-top: 208px;
+    width: 470px;
+    margin-left:calc((((100% / 2) - (4 * 3%)) - (1 * 1em)) - (76 * 1px));
+
 }
 .fail
 {
-    color: red;
+    color: #6E6E6E;
 
 }
 
 .exito
 {
-    color: #58D3F7;
+    color: #6E6E6E;
 
 }
 
