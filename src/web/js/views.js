@@ -22,7 +22,7 @@ selector.prototype.run=function()
 */
 var navegar=function()
 {
-    this.enlaces='a#flecha-forward, a#flecha-backward';
+    this.enlaces='a#flecha-forward'/*, a#flecha-backward'*/;
     this.main='#capa';
     this.nueva='.div';
 }
