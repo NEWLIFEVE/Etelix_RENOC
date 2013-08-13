@@ -177,8 +177,8 @@ class SiteController extends Controller
             } 
             if(isset($_POST['lista']['PN']))
             {
-                $correos['posicionNeta']['asunto']="Posicion Neta de día ".$fecha;
-                $correos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+                $correos['posicionNeta']['asunto']="Posicion Neta del día ".$fecha;
+                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_POST['lista']['otros']))
             {
@@ -216,8 +216,8 @@ class SiteController extends Controller
             } 
             if(isset($_GET['lista']['PN']))
             {
-                $archivos['posicionNeta']['nombre']="Posicion Neta de día ".$fecha;
-                $archivos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+                $archivos['posicionNeta']['nombre']="Posicion Neta del día ".$fecha;
+                $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_GET['lista']['otros']))
             {
