@@ -161,7 +161,7 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user = 'angelo08121987@gmail.com';
+        $user=UserIdentity::getEmail();
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
@@ -177,8 +177,8 @@ class SiteController extends Controller
             } 
             if(isset($_POST['lista']['PN']))
             {
-                $correos['posicionNeta']['asunto']="Posicion Neta de día ".$fecha;
-                $correos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+                $correos['posicionNeta']['asunto']="Posicion Neta del día ".$fecha;
+                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_POST['lista']['otros']))
             {
@@ -201,7 +201,6 @@ class SiteController extends Controller
     {
         $fecha=null;
         $archivos=null;
-        $user = 'mmzmm3z@gmail.com';
         if(isset($_GET['fecha']))
         {
             $fecha=(string)$_GET['fecha'];
@@ -217,8 +216,8 @@ class SiteController extends Controller
             } 
             if(isset($_GET['lista']['PN']))
             {
-                $archivos['posicionNeta']['nombre']="Posicion Neta de día ".$fecha;
-                $archivos['posicionNeta']['cuerpo']="Prueba de posicion neta";
+                $archivos['posicionNeta']['nombre']="Posicion Neta del día ".$fecha;
+                $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_GET['lista']['otros']))
             {

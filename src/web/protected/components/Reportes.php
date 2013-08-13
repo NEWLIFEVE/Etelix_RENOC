@@ -1721,8 +1721,117 @@ class reportes extends CApplicationComponent
     return $email;
     }
 
-    public function PosicionNetaEmail() {
-        
+    /**
+    * Encargado de generar el cuerpo del reporte de posicion neta
+    * @param $fecha date es la fecha que se necesita el reporte
+    * @return un string con el cuerpo del reporte
+    */
+    public function posicionNeta($fecha)
+    {
+        $sql="SELECT operador.name AS Operador, vendedor.name AS Vendedor, customer.Vminutes, customer.Vrevenue, customer.Vmargin, supplier.Cminutes, supplier.Ccost, supplier.Cmargin, (customer.Vrevenue-supplier.Ccost) AS Posicion_neta, (customer.Vmargin+supplier.Cmargin) AS Margen_total
+            FROM
+                (SELECT id_carrier_customer, SUM(minutes) AS Vminutes, SUM(revenue) AS Vrevenue, SUM(margin) AS Vmargin 
+                FROM balance 
+                WHERE date_balance = '$fecha' 
+                GROUP BY id_carrier_customer) customer,
+                (SELECT id_carrier_supplier, SUM(minutes) AS Cminutes, SUM(cost) AS Ccost, SUM(margin) AS Cmargin 
+                FROM balance 
+                WHERE date_balance = '$fecha' 
+                GROUP BY id_carrier_supplier) supplier,
+                carrier operador, 
+                managers vendedor, 
+                carrier_managers cm 
+            WHERE customer.id_carrier_customer = supplier.id_carrier_supplier AND operador.id = customer.id_carrier_customer AND cm.id_carrier = customer.id_carrier_customer AND cm.id_managers = vendedor.id
+            ORDER BY Posicion_neta DESC";
+
+        $email="<div>
+                    <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
+                        Posicion Neta ".$fecha."
+                    </h1>
+                    <br/>
+                    <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                        <tr>
+                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                                Operador
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Vendedor
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Vminutes
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Vrevenue
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Vmargin
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Cminutes
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Ccosto
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Cmargin
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Posicion Neta
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Margen Total
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Numero
+                            </th>
+                        </tr>";
+
+        $posicionNeta=Balance::model()->findAllBySql($sql);
+        if($posicionNeta!=null)
+        {
+            foreach($posicionNeta as $key => $operador)
+            {
+                $pos=$key+1;
+                $email.=$this->color($pos);
+                $email.="<td style='text-align: center;' class='operador'>".
+                            $operador->operador.
+                        "</td>
+                         <td style='text-align: center;' class='vendedor'>".
+                            $operador->vendedor.
+                        "</td>
+                         <td style='text-align: center;' class='vminutes'>".
+                            Yii::app()->format->format_decimal($operador->vminutes).
+                        "</td>
+                         <td style='text-align: center;' class='vrevenue'>".
+                            Yii::app()->format->format_decimal($operador->vrevenue).
+                        "</td>
+                         <td style='text-align: center;' class='vmargin'>".
+                            Yii::app()->format->format_decimal($operador->vmargin).
+                        "</td>
+                         <td style='text-align: center;' class='cminutes'>".
+                            Yii::app()->format->format_decimal($operador->cminutes).
+                        "</td>
+                        <td style='text-align: center;' class='ccost'>".
+                            Yii::app()->format->format_decimal($operador->ccost).
+                        "</td>
+                        <td style='text-align: center;' class='cmargin'>".
+                            Yii::app()->format->format_decimal($operador->cmargin).
+                        "</td>
+                        <td style='text-align: center;' class='posicionNeta'>".
+                            Yii::app()->format->format_decimal($operador->posicion_neta).
+                        "</td>
+                        <td style='text-align: center;' class='margenTotal'>".
+                            Yii::app()->format->format_decimal($operador->margen_total).
+                        "</td>
+                        <td style='text-align: center;' class='numero'>".
+                            $pos.
+                        "</td>
+                    </tr>";
+            }
+            $email.="</table>
+            </div>";
+        }
+        return $email;
     }
 
     public function AltoIMpactoExcel() {
