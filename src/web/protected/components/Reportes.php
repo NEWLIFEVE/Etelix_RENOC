@@ -97,10 +97,10 @@ class reportes extends CApplicationComponent
 
         $email="<div>
                     <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                        Alto Impacto (+10$) ".$fecha."
+                      
                     </h1>
                     <h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                        Por Clientes (Ventas)
+                       
                     </h2>
                     <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
@@ -386,7 +386,7 @@ class reportes extends CApplicationComponent
             </table>";
 
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                    Por Proveedores (Compras)
+                   
                  </h2>
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
@@ -674,7 +674,7 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>";
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                    Por Destinos
+                   
                  </h2>
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
@@ -1093,10 +1093,10 @@ class reportes extends CApplicationComponent
         /************************ GENERACION CODIGO HTML - COMIENZO *************************/
         $email="<div>
                     <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                        Alto Impacto RETAIL (+1$)
+                      <p><p> 
                     </h1>
                     <h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                        Por Clientes (Ventas)
+                        
                     </h2>
                     <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
@@ -1386,7 +1386,7 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>";
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                    Por Destinos
+                   <p><p>  
                 </h2>
                 <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
@@ -1746,11 +1746,14 @@ class reportes extends CApplicationComponent
 
         $email="<div>
                     <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                        Posicion Neta ".$fecha."
+                     <p><p> 
                     </h1>
                     <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Rankin
+                            </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Operador
                             </th>
@@ -1781,19 +1784,29 @@ class reportes extends CApplicationComponent
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Margen Total
                             </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                                Operador
+                            </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Numero
+                                Rankin
                             </th>
                         </tr>";
-
+         
+//$miarray = array('leon','salamanca','zamora');
+//echo count($miarray); // Resultado: 3
         $posicionNeta=Balance::model()->findAllBySql($sql);
         if($posicionNeta!=null)
-        {
+        { 
+            $conto=count($posicionNeta)/2;
             foreach($posicionNeta as $key => $operador)
-            {
-                $pos=$key+1;
+            {  
+                $pos=($conto-1)-($key+1);
+//                $pos=$conto-$menor;
                 $email.=$this->color($pos);
-                $email.="<td style='text-align: center;' class='operador'>".
+                $email.="<td style='text-align: center;' class='numero'>".
+                            $pos. 
+                        "</td>
+                         <td style='text-align: center;' class='operador'>".
                             $operador->operador.
                         "</td>
                          <td style='text-align: center;' class='vendedor'>".
@@ -1822,6 +1835,9 @@ class reportes extends CApplicationComponent
                         "</td>
                         <td style='text-align: center;' class='margenTotal'>".
                             Yii::app()->format->format_decimal($operador->margen_total).
+                        "</td>
+                         <td style='text-align: center;' class='operador'>".
+                            $operador->operador.
                         "</td>
                         <td style='text-align: center;' class='numero'>".
                             $pos.

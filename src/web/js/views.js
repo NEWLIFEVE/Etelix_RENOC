@@ -139,18 +139,18 @@ ajax.prototype.enviarMail=function()
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        $('.mensaje').html("<h2 class='exito'>Mensaje Enviado</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn(4000);
+        $('.mensaje').html("<h2 class='exito'>Mensaje Enviado</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn(500);
         setTimeout(function()
         {
-            $('.cargando').fadeOut(2000);
-        }, 5000);
+            $('.cargando').fadeOut(1000);
+        }, 4000);
     }).fail(function()
     {
         $('.mensaje').html("<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/><p><p><p><p>").fadeIn(200);
         setTimeout(function()
         {
-            $('.cargando').fadeOut(2000);
-        }, 5000);
+            $('.cargando').fadeOut(1000);
+        }, 4000);
     });
 }
 /**

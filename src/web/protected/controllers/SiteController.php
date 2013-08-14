@@ -167,27 +167,27 @@ class SiteController extends Controller
             $fecha=(string)$_POST['fecha'];
             if(isset($_POST['lista']['AIR']))
             {
-                $correos['altoImpactoRetail']['asunto']="Alto Impacto Retail (+1$) de día ".$fecha;
+                $correos['altoImpactoRetail']['asunto']="RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
                 $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_POST['lista']['AI10']))
             {
-                $correos['altoImpacto']['asunto']="Alto Impacto (+10$) del día ".$fecha;
+                $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
             } 
             if(isset($_POST['lista']['PN']))
             {
-                $correos['posicionNeta']['asunto']="Posicion Neta del día ".$fecha;
+                $correos['posicionNeta']['asunto']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_POST['lista']['otros']))
             {
-                $correos['otros']['asunto']="Otros de día ".$fecha;
+                $correos['otros']['asunto']="Otros de día ".str_replace("-","",$fecha);
                 $correos['otros']['cuerpo']="Prueba de Otros";
             }
             if(isset($_POST['lista']['otros2']))
             {
-                $correos['otros2']['asunto']="Otros 2 de día ".$fecha;
+                $correos['otros2']['asunto']="Otros 2 de día ".str_replace("-","",$fecha);
                 $correos['otros2']['cuerpo']="Prueba de Otros 2";
             } 
         }
@@ -206,27 +206,27 @@ class SiteController extends Controller
             $fecha=(string)$_GET['fecha'];
             if(isset($_GET['lista']['AIR']))
             {
-                $archivos['altoImpactoRetail']['nombre']="Alto Impacto Retail (+1$) de día ".$fecha;
+                $archivos['altoImpactoRetail']['nombre']="RENOC Alto Impacto RETAIL (+1$) al ".str_replace("-","",$fecha);
                 $archivos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
             if(isset($_GET['lista']['AI10']))
             {
-                $archivos['altoImpacto']['nombre']="Alto Impacto (+10$) del día ".$fecha;
+                $archivos['altoImpacto']['nombre']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $archivos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
             } 
             if(isset($_GET['lista']['PN']))
             {
-                $archivos['posicionNeta']['nombre']="Posicion Neta del día ".$fecha;
+                $archivos['posicionNeta']['nombre']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
                 $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_GET['lista']['otros']))
             {
-                $archivos['otros']['nombre']="Otros de día ".$fecha;
+                $archivos['otros']['nombre']="Otros de día ".str_replace("-","",$fecha);
                 $archivos['otros']['cuerpo']="Prueba de Otros";
             }
             if(isset($_GET['lista']['otros2']))
             {
-                $archivos['otros2']['nombre']="Otros 2 de día ".$fecha;
+                $archivos['otros2']['nombre']="Otros 2 de día ".str_replace("-","",$fecha);
                 $archivos['otros2']['cuerpo']="Prueba de Otros 2";
             } 
         }
