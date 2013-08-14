@@ -4,6 +4,9 @@
 */
 $this->layout=$this->getLayoutFile('menuContent');
 ?>
+
+
+    <script src="http://malsup.github.io/jquery.blockUI.js"></script>
 <div class="">
     <div id="atras">
         <ul class="thumbnails">
@@ -158,7 +161,11 @@ $this->layout=$this->getLayoutFile('menuContent');
                 <td>
                 </td> 
                 <td>
-                    <input name="fecha" type="hidden"  id="datepicker_value"/>                                        
+                    <input name="fecha" type="hidden"  id="datepicker_value" value=" <?php
+                    mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
+                    echo date("Y-m-d");
+                    ?>"/>
+
                 </td>
             </tr>
         </table>
