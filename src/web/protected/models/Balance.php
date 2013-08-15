@@ -43,14 +43,14 @@
  */
 class Balance extends CActiveRecord
 {
-	//Agregadas para funcionar con los reportes
-	public $etiqueta;
+	//Alto Impacto
 	public $cliente;
 	public $proveedor;
 	public $destino;
-	public $totalcalls;
-	public $completecalls;
-	public $minutos;
+	public $total_calls;
+	public $costmin;
+	public $ratemin;
+	public $marginmin;
 
 	//para posicion neta
 	public $operador;
