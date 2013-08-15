@@ -33,7 +33,6 @@ navegar.prototype.run=function()
     this.objetoNueva=$(this.nueva);
     this.pisaAqui();
 }
-
 navegar.prototype.pisaAqui=function()
 {
     var self=this;
@@ -51,7 +50,6 @@ navegar.prototype.pisaAqui=function()
         }
     });
 }
-
 navegar.prototype.ida=function()
 {
     var self=this;
@@ -71,7 +69,7 @@ navegar.prototype.vuelta=function()
     });
 }
 /**
-*
+**
 */
 var ajax=function()
 {
@@ -90,18 +88,22 @@ ajax.prototype.run=function()
             return $(this).is(':checked');
         });
         if(numero.length>0)
-        {
+        { 
             var tipo=$(this).attr('id');
             if(tipo=="mail")
             {
                 self.getFormPost();
                 self.enviarMail();
+              var espere = $("<div class='cargando'><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div></div>").hide();
+               $("body").append(espere)
+               espere.fadeIn(2000);
             }
             else
             {
                 self.getFormPost();
                 for(var i = 0; i <= self.formulario.length - 2; i++)
                 {
+//                    $("body").append.fadeIn()("<div class='cargando'><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div></div>");
                     fecha=self.formulario[self.formulario.length-1].value;
                     nombre=self.formulario[i].name;
                     valor=self.formulario[i].value;
@@ -111,7 +113,14 @@ ajax.prototype.run=function()
         }
         else
         {
-            alert("Debe seleccionar al menos un tipo de reporte");
+var stop = $("<div class='cargando'><div class='mensaje'><h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/></div></div>").hide();
+$('body').append(stop);
+stop.fadeIn(1000);
+
+        setTimeout(function()
+        {
+            stop.fadeOut(2000);
+        }, 3000);
         }
     });
 }
@@ -130,12 +139,23 @@ ajax.prototype.enviarMail=function()
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        alert(datos);
+        $('.mensaje').html("<h2 class='exito'>Mensaje Enviado</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn(500);
+        setTimeout(function()
+        {
+            $('.cargando').fadeOut(1000);
+        }, 4000);
     }).fail(function()
     {
-        alert("Error");
+        $('.mensaje').html("<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/><p><p><p><p>").fadeIn(200);
+        setTimeout(function()
+        {
+            $('.cargando').fadeOut(1000);
+        }, 4000);
     });
 }
+/**
+**
+*/
 function marcar(source)
 {
     checkboxes = document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
@@ -147,7 +167,6 @@ function marcar(source)
         }
     }
 };
-
 var ventana=new navegar();
 var fecha=new selector("#datepicker");
 var ejecutar=new ajax();
