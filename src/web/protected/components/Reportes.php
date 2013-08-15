@@ -1360,6 +1360,8 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
+        if($clientesTotal->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -1398,6 +1400,15 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>
             <br>";
+          }
+          else
+          {
+             $email.="<tr>
+                        <td colspan='14'>No se encontraron resultados</td>
+                     </tr>
+                     </table>
+            <br>";
+          }
         $email.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -1683,6 +1694,14 @@ class reportes extends CApplicationComponent
                         </td> 
                         </tr>";    
         }
+        else
+        {
+            $email.="<tr>
+                        <td colspan='17'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        if($destinosTotal->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -1727,6 +1746,15 @@ class reportes extends CApplicationComponent
                     </tr>
                 </table>
             </div>";
+          }
+          else
+          {
+             $email.="<tr>
+                        <td colspan='17'>No se encontraron resultados</td>
+                     </tr>
+                     </table>
+              </div>";
+          }
 
 
 /*----------------------- GENERACION CODIGO HTML - FIN -----------------------------*/
