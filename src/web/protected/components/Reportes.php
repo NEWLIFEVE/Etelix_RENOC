@@ -357,6 +357,8 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
+        if($clientesTotalCompleto->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -393,6 +395,15 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>
             <br>";
+            }
+            else
+            {
+              $email.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>
+                     </table>
+            <br>";
+            }
 
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
                    
@@ -648,6 +659,8 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
+        if($proveedoresTotal->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -686,6 +699,15 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>
             <br>";
+          }
+          else
+          {
+            $email.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>
+                    </table>
+                <br>";
+          }
         $email.="<h2 style='color:#615E5E; border: 0 none; font:120% Arial,Helvetica,sans-serif; margin: 0; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
                  </h2>
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
@@ -982,6 +1004,8 @@ class reportes extends CApplicationComponent
                         <td colspan='15'>No se encontraron resultados</td>
                      </tr>";
         }
+        if($destinosTotal->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -1026,6 +1050,13 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>
         </div>";
+      }
+      else
+      {
+        $email.="<tr>
+                  <td colspan='15'>No se encontraron resultados</td>
+                </tr>";
+      }
         return $email;
     }
     /**
@@ -1710,21 +1741,22 @@ class reportes extends CApplicationComponent
     */
     public function posicionNeta($fecha)
     {
-        $sqlCien="SELECT operador.name AS Operador, vendedor.name AS Vendedor, customer.Vminutes, customer.Vrevenue, customer.Vmargin, supplier.Cminutes, supplier.Ccost, supplier.Cmargin, (customer.Vrevenue-supplier.Ccost) AS Posicion_neta, (customer.Vmargin+supplier.Cmargin) AS Margen_total
-            FROM
-                (SELECT id_carrier_customer, SUM(minutes) AS Vminutes, SUM(revenue) AS Vrevenue, SUM(margin) AS Vmargin 
-                FROM balance 
-                WHERE date_balance = '$fecha' 
-                GROUP BY id_carrier_customer) customer,
-                (SELECT id_carrier_supplier, SUM(minutes) AS Cminutes, SUM(cost) AS Ccost, SUM(margin) AS Cmargin 
-                FROM balance 
-                WHERE date_balance = '$fecha' 
-                GROUP BY id_carrier_supplier) supplier,
-                carrier operador, 
-                managers vendedor, 
-                carrier_managers cm 
-            WHERE customer.id_carrier_customer = supplier.id_carrier_supplier AND operador.id = customer.id_carrier_customer AND cm.id_carrier = customer.id_carrier_customer AND cm.id_managers = vendedor.id
-            ORDER BY Posicion_neta DESC";
+        $sqlCien="SELECT o.name AS operador, m.name AS vendedor, c.minutes AS vminutes, c.revenue AS vrevenue, c.margin AS vmargin, s.minutes AS cminutes, s.cost AS ccost, s.margin AS cmargin, (c.revenue-s.cost) AS posicion_neta, (c.margin+s.margin) AS Margen_total
+                  FROM (SELECT id_carrier_customer, SUM(minutes) AS minutes, SUM(revenue) AS revenue, SUM(margin) AS margin
+                        FROM balance
+                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                        GROUP BY id_carrier_customer
+                        ORDER BY id_carrier_customer) c,
+                       (SELECT id_carrier_supplier, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(margin) AS margin
+                        FROM balance
+                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                        GROUP BY id_carrier_supplier
+                        ORDER BY id_carrier_supplier) s,
+                        carrier o,
+                        managers m,
+                        carrier_managers cm
+                  WHERE c.id_carrier_customer = s.id_carrier_supplier AND c.id_carrier_customer = o.id AND cm.id_carrier = o.id AND cm.id_managers = m.id
+                  ORDER BY posicion_neta DESC";
 
         $email="<div>
                     <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
@@ -1734,7 +1766,7 @@ class reportes extends CApplicationComponent
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Operador
@@ -1770,19 +1802,20 @@ class reportes extends CApplicationComponent
                                 Operador
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                         </tr>";
          
 //$miarray = array('leon','salamanca','zamora');
 //echo count($miarray); // Resultado: 3
-        $posicionNeta=Balance::model()->findAllBySql($sql);
+        $posicionNeta=Balance::model()->findAllBySql($sqlCien);
         if($posicionNeta!=null)
         { 
-            $conto=count($posicionNeta)/2;
+            //$conto=count($posicionNeta)/2;
             foreach($posicionNeta as $key => $operador)
             {  
-                $pos=($conto-1)-($key+1);
+              $pos=$key+1;
+                //$pos=($conto-1)-($key+1);
 //                $pos=$conto-$menor;
                 $email.=$this->color($pos);
                 $email.="<td style='text-align: center;' class='numero'>".
@@ -1826,9 +1859,15 @@ class reportes extends CApplicationComponent
                         "</td>
                     </tr>";
             }
-            $email.="</table>
+          }
+          else
+          {
+            $email.="<tr>
+                      <td colspan='13'>No se encontraron resultados</td>
+                     </tr>";
+          }
+          $email.="</table>
             </div>";
-        }
         return $email;
     }
 
