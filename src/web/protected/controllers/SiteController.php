@@ -180,10 +180,10 @@ class SiteController extends Controller
                 $correos['posicionNeta']['asunto']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
-            if(isset($_POST['lista']['otros']))
+            if(isset($_POST['lista']['DC']))
             {
-                $correos['otros']['asunto']="Otros de día ".str_replace("-","",$fecha);
-                $correos['otros']['cuerpo']="Prueba de Otros";
+                $correos['distribucionComercial']['asunto']="Distribución Comercial al ".str_replace("-","",$fecha);
+                $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
             if(isset($_POST['lista']['otros2']))
             {
@@ -219,10 +219,10 @@ class SiteController extends Controller
                 $archivos['posicionNeta']['nombre']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
                 $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
-            if(isset($_GET['lista']['otros']))
+            if(isset($_GET['lista']['DC']))
             {
-                $archivos['otros']['nombre']="Otros de día ".str_replace("-","",$fecha);
-                $archivos['otros']['cuerpo']="Prueba de Otros";
+                $archivos['distribucionComercial']['nombre']="Distribucion Comercial al".str_replace("-","",$fecha);
+                $archivos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
             if(isset($_GET['lista']['otros2']))
             {

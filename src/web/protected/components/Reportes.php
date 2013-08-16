@@ -274,13 +274,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($clientesTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($clientesTotal->asr).
+                            //Yii::app()->format->format_decimal($clientesTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->acd).
+                            //Yii::app()->format->format_decimal($clientesTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->pdd).
+                            //Yii::app()->format->format_decimal($clientesTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($clientesTotal->cost).
@@ -576,13 +576,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($proveedoresTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->asr).
+                            //Yii::app()->format->format_decimal($proveedoresTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->acd).
+                            //Yii::app()->format->format_decimal($proveedoresTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->pdd).
+                            //Yii::app()->format->format_decimal($proveedoresTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($proveedoresTotal->cost).
@@ -903,13 +903,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($destinosTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($destinosTotal->asr).
+                            //Yii::app()->format->format_decimal($destinosTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->acd).
+                            //Yii::app()->format->format_decimal($destinosTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->pdd).
+                            //Yii::app()->format->format_decimal($destinosTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($destinosTotal->cost).
@@ -1066,12 +1066,12 @@ class reportes extends CApplicationComponent
     {
        /************************ SENTENCIAS SQL - COMIENZO *********************************/
        $sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
-                     FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(incomplete_calls+complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
-                          FROM balance 
-                          WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance='$fecha'
-                          GROUP BY id_carrier_customer) x, carrier c
-                     WHERE x.margin>1 AND x.id_carrier_customer=c.id
-                     ORDER BY x.margin DESC";
+                    FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(incomplete_calls+complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
+                         FROM balance 
+                         WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance='$fecha' AND id_destination_int IS NOT NULL
+                         GROUP BY id_carrier_customer) x, carrier c
+                    WHERE x.margin>1 AND x.id_carrier_customer=c.id
+                    ORDER BY x.margin DESC";
         $sqlClientesTotal="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.total_calls)) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
                            FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                                 FROM balance 
@@ -1276,13 +1276,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($clientesTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($clientesTotal->asr).
+                            //Yii::app()->format->format_decimal($clientesTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->acd).
+                            //Yii::app()->format->format_decimal($clientesTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->pdd).
+                            //Yii::app()->format->format_decimal($clientesTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($clientesTotal->cost).
@@ -1602,13 +1602,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($destinosTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($destinosTotal->asr).
+                            //Yii::app()->format->format_decimal($destinosTotal->asr).
                        "</td>           
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->acd).
+                            //Yii::app()->format->format_decimal($destinosTotal->acd).
                        "</td>           
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->pdd).
+                            //Yii::app()->format->format_decimal($destinosTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($destinosTotal->cost).
@@ -1787,10 +1787,6 @@ class reportes extends CApplicationComponent
                   ORDER BY posicion_neta DESC";
 
         $email="<div>
-                    <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                     <p><p> 
-                    </h1>
-                    <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -1897,6 +1893,72 @@ class reportes extends CApplicationComponent
           $email.="</table>
             </div>";
         return $email;
+    }
+
+    /**
+    * Metodo encargado de generar el reporte de distribucion comercial
+    * @param $fecha date la fecha que se quiere consultar
+    */
+    public function distComercial($fecha)
+    {
+      $sql="SELECT m.name AS vendedor, c.name AS operador 
+            FROM carrier c, managers m, carrier_managers cm
+            WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '$fecha'
+            ORDER BY m.name ASC";
+      $email="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                        <tr>
+                            <th colspan='2' style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                                Responsable
+                            </th>
+                            <th></th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Operador
+                            </th>
+                        </tr>";
+      $vendedores=Balance::model()->findAllBySql($sql);
+      if($vendedores!=null)
+      {
+        $nombre=null;
+        $numero=1;
+        foreach ($vendedores as $key => $vendedor)
+        {
+          $pos=$key+1;
+          $com=$key-1;
+          if($key>0)
+          {
+            if($vendedores[$com]->vendedor==$vendedor->vendedor)
+            {
+              $nombre="";
+              $numero=$numero+1;
+            }
+            else
+            {
+              $nombre=$vendedor->vendedor;
+              $numero=1;
+            }
+          }
+          else
+          {
+            $nombre=$vendedor->vendedor;
+          }
+          
+          $email.="<tr>
+                  <td></td>
+                  <td>".$nombre."</td>
+                  <td>".$numero."</td>
+                  <td>".$vendedor->operador."</td>
+                 </tr>";
+        }
+        $email.="</table>";
+      }
+      else
+      {
+        $email.="<tr>
+                  <td colspan='4'>No se encontraron resultados</td>
+                </tr>
+                </table>";
+      }
+      return $email;
     }
 
     /**
