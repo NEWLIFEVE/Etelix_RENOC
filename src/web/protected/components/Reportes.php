@@ -1417,7 +1417,7 @@ class reportes extends CApplicationComponent
         $email.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Ranking
+                            Ranking
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destino RP
@@ -1840,23 +1840,24 @@ class reportes extends CApplicationComponent
             $media= count($posicionNeta)/2; 
             foreach($posicionNeta as $key => $operador)
             {  
-//            function decrecer() 
-//                        {
-                $posy = "-";
-                if ($key < $media)
-                    {
-                    $pos = $key + 1;
-                    $posy = "+";
-                    }
-                elseif ($key >= $media) 
-                    {
-                    $pos=(-$key + ($media * 2));
-                    $posy = "-";
-                    }
-//                        }
+               $pos=$key+1;
+               //queda de parte de manuel...
+               //  public function mitad($pos,$media) 
+//     {
+//       if ($key < $media)
+//         {
+//         $pos = $key + 1;
+//         $posy = "";
+//         }
+//         elseif ($key >= $media) 
+//           {
+//           $pos=(-$key + ($media * 2));
+//           $posy = "-";
+//           }
+//      }
                 $email.=$this->color($pos);
                 $email.="<td style='text-align: center;' class='numero'>".
-                           $posy. $pos.
+                           $pos.
                         "</td>
                          <td style='text-align: center;' class='operador'>".
                             $operador->operador.
@@ -1892,7 +1893,7 @@ class reportes extends CApplicationComponent
                             $operador->operador.
                         "</td>
                         <td style='text-align: center;' class='numero'>".
-                           $posy.$pos.
+                           $pos.
                         "</td>
                     </tr>";
             }
@@ -1907,7 +1908,6 @@ class reportes extends CApplicationComponent
             </div>";
         return $email;
     }
-
     /**
     * Metodo encargado de generar el reporte de distribucion comercial
     * @param $fecha date la fecha que se quiere consultar
@@ -1941,8 +1941,7 @@ class reportes extends CApplicationComponent
                   <td>".$vendedor->operador."</td>
                  </tr>
                 </table>";
-        }
-        
+        } 
       }
       else
       {
@@ -1952,7 +1951,6 @@ class reportes extends CApplicationComponent
                 </table>";
       }
     }
-
     /**
     * Metodo encargado de pintar las filas de los reportes
     * @param int $pos es un numero indicando que color debe regresar
@@ -1989,6 +1987,30 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+    
+     function mitad($pos, $posicionNeta) {
+        $mitad = ($posicionNeta / 2) + 1;
+        if ($pos < $mitad) {
+            return $pos;
+        } else {
+            $diferencia = $pos - $mitad;
+            $pos = ($mitad - $diferencia) - 1;
+            return "-" . $pos;
+        }
+    }
+//  public function mitad($pos,$media) 
+//     {
+//       if ($key < $media)
+//         {
+//         $pos = $key + 1;
+//         $posy = "";
+//         }
+//         elseif ($key >= $media) 
+//           {
+//           $pos=(-$key + ($media * 2));
+//           $posy = "-";
+//           }
+//      }
     /**
     * @param $var string a identificar
     * @return string con la fila coloreada

@@ -698,7 +698,7 @@ input.favorite{ background-position: 4px -70px; }
      top: 0px;
      width: 100%;
      content:"";
-     opacity: .9; 
+     opacity: .7; 
 }
 
 .mensaje
@@ -708,10 +708,13 @@ input.favorite{ background-position: 4px -70px; }
     border-radius: 4px 4px 4px 4px;
     color: #6E6E6E;
     padding-top: 0px;
-    margin-top: 208px;
+    padding: 1px 1px 1px 1px;
+    margin-top: -470px;
     width: 470px;
-    margin-left:calc((((100% / 2) - (4 * 3%)) - (1 * 1em)) - (76 * 1px));
-
+    position:absolute;
+    text-align: center;
+    margin-left:calc((((100% / 2) - (4 * 3%)) - (1 * 1em)) - (76 * 1px)); 
+    padding: 23px 30px 43px 28px;"
 }
 
 .fail
