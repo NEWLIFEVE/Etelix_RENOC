@@ -274,13 +274,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($clientesTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($clientesTotal->asr).
+                            //Yii::app()->format->format_decimal($clientesTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->acd).
+                            //Yii::app()->format->format_decimal($clientesTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->pdd).
+                            //Yii::app()->format->format_decimal($clientesTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($clientesTotal->cost).
@@ -576,13 +576,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($proveedoresTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->asr).
+                            //Yii::app()->format->format_decimal($proveedoresTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->acd).
+                            //Yii::app()->format->format_decimal($proveedoresTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->pdd).
+                            //Yii::app()->format->format_decimal($proveedoresTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($proveedoresTotal->cost).
@@ -903,13 +903,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($destinosTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($destinosTotal->asr).
+                            //Yii::app()->format->format_decimal($destinosTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->acd).
+                            //Yii::app()->format->format_decimal($destinosTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->pdd).
+                            //Yii::app()->format->format_decimal($destinosTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($destinosTotal->cost).
@@ -1281,13 +1281,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($clientesTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($clientesTotal->asr).
+                            //Yii::app()->format->format_decimal($clientesTotal->asr).
                        "</td>
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->acd).
+                            //Yii::app()->format->format_decimal($clientesTotal->acd).
                        "</td>
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($clientesTotal->pdd).
+                            //Yii::app()->format->format_decimal($clientesTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($clientesTotal->cost).
@@ -1365,6 +1365,8 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
+        if($clientesTotal->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -1403,6 +1405,15 @@ class reportes extends CApplicationComponent
                 </tr>
             </table>
             <br>";
+          }
+          else
+          {
+             $email.="<tr>
+                        <td colspan='14'>No se encontraron resultados</td>
+                     </tr>
+                     </table>
+            <br>";
+          }
         $email.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -1596,13 +1607,13 @@ class reportes extends CApplicationComponent
                             Yii::app()->format->format_decimal($destinosTotal->minutes).
                        "</td>
                         <td style='text-align: center;' class='asr'>".
-                            Yii::app()->format->format_decimal($destinosTotal->asr).
+                            //Yii::app()->format->format_decimal($destinosTotal->asr).
                        "</td>           
                         <td style='text-align: center;' class='acd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->acd).
+                            //Yii::app()->format->format_decimal($destinosTotal->acd).
                        "</td>           
                         <td style='text-align: center;' class='pdd'>".
-                            Yii::app()->format->format_decimal($destinosTotal->pdd).
+                            //Yii::app()->format->format_decimal($destinosTotal->pdd).
                        "</td>
                         <td style='text-align: center;' class='cost'>".
                             Yii::app()->format->format_decimal($destinosTotal->cost).
@@ -1688,6 +1699,14 @@ class reportes extends CApplicationComponent
                         </td> 
                         </tr>";    
         }
+        else
+        {
+            $email.="<tr>
+                        <td colspan='17'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        if($destinosTotal->total_calls!=null)
+        {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
@@ -1732,6 +1751,15 @@ class reportes extends CApplicationComponent
                     </tr>
                 </table>
             </div>";
+          }
+          else
+          {
+             $email.="<tr>
+                        <td colspan='17'>No se encontraron resultados</td>
+                     </tr>
+                     </table>
+              </div>";
+          }
 
 
 /*----------------------- GENERACION CODIGO HTML - FIN -----------------------------*/
@@ -1764,10 +1792,6 @@ class reportes extends CApplicationComponent
                   ORDER BY posicion_neta DESC";
 
         $email="<div>
-                    <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
-                     <p><p> 
-                    </h1>
-                    <br/>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
@@ -1882,6 +1906,51 @@ class reportes extends CApplicationComponent
           $email.="</table>
             </div>";
         return $email;
+    }
+
+    /**
+    * Metodo encargado de generar el reporte de distribucion comercial
+    * @param $fecha date la fecha que se quiere consultar
+    */
+    public function distComercial($fecha)
+    {
+      $sql="SELECT m.name AS vendedor, c.name AS operador 
+            FROM carrier c, managers m, carrier_managers cm
+            WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '$fecha'
+            ORDER BY m.name ASC";
+      $email="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                        <tr>
+                            <th colspan='2' style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                                Responsable
+                            </th>
+                            <th></th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Operador
+                            </th>
+                        </tr>";
+      $vendedores=Balance::model()->findAllBySql($sql);
+      if($vendedores!=null)
+      {
+        foreach ($vendedores as $key => $vendedor)
+        {
+          $pos=$key+1;
+          $email.="<tr>
+                  <td></td>
+                  <td>".$vendedor->vendedor."</td>
+                  <td></td>
+                  <td>".$vendedor->operador."</td>
+                 </tr>
+                </table>";
+        }
+        
+      }
+      else
+      {
+        $email.="<tr>
+                  <td colspan='4'>No se encontraron resultados</td>
+                </tr>
+                </table>";
+      }
     }
 
     /**
