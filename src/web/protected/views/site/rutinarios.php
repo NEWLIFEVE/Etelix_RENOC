@@ -103,7 +103,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td>
                     <label class="checkbox">
                         <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
@@ -120,26 +120,26 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </td>
-            </tr>
-            <tr>
+            </tr>-->
+            <!--<tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="otros" class="custom-checkbox" name="lista[otros]"> 
-                        <label for="otros">
+                        <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]"> 
+                        <label for="DC">
                             <h4>
                             </h4>
                         </label>
                     </label>
                 </td>
                 <td id="td4">
-                    <label for="otros">
+                    <label for="DC">
                         <h4>
-                            Otros
+                            Distribucion Comercial
                         </h4>
                     </label>
                 </td>
-            </tr>
-            <tr>
+            </tr>-->
+            <!--<tr>
                 <td>
                     <label class="checkbox">
                         <input type="checkbox" value="true" id="otros2" class="custom-checkbox" name="lista[otros2]"> 
@@ -156,7 +156,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </td>
-            </tr>
+            </tr>-->
             <tr> 
                 <td>
                 </td> 
