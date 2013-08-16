@@ -103,7 +103,6 @@ ajax.prototype.run=function()
                 self.getFormPost();
                 for(var i = 0; i <= self.formulario.length - 2; i++)
                 {
-//                    $("body").append.fadeIn()("<div class='cargando'><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div></div>");
                     fecha=self.formulario[self.formulario.length-1].value;
                     nombre=self.formulario[i].name;
                     valor=self.formulario[i].value;

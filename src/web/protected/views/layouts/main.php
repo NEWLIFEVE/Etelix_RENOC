@@ -42,6 +42,10 @@
                                 'class'=>'pull-right'
                                 ),
                             'items'=>array(
+                                array
+                                    (
+                                    'label'=>'V:1.0', 'url'=>'/'
+                                    ),
                                 array(
                                     'label'=>'Usuarios',
                                     'url'=>array('/usersRenoc/admin'),

@@ -881,7 +881,7 @@ class reportes extends CApplicationComponent
                         Margin/Min
                     </th>
                     <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Rankin
+                        Ranking
                     </th>
                 </tr>";
         $destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
@@ -1108,7 +1108,6 @@ class reportes extends CApplicationComponent
 
         /************************ GENERACION CODIGO HTML - COMIENZO *************************/
         $email="<div>
-<<<<<<< HEAD
                     <h1 style='color:#615E5E; border: 0 none; font:150% Arial,Helvetica,sans-serif; margin: 0; padding-left: 550;margin-bottom: -22px; background-color: #f8f8f8; vertical-align: baseline; background: url('http://fullredperu.com/themes/mattskitchen/img/line_hor.gif') repeat-x scroll 0 100% transparent;'>
                       <p><p> 
                     </h1>
@@ -1161,56 +1160,7 @@ class reportes extends CApplicationComponent
                                 Ranking
                             </th>
                         </tr>";
-=======
-                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
-                    <tr>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Ranking
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
-                          Cliente RP
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          TotalCalls
-                      </th> 
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          CompleteCalls
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Minutes
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          ASR
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          ACD
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          PDD
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Cost
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Revenue
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Margin
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
-                          Cliente RP
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Margin%
-                      </th>
-                      <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                          Ranking
-                      </th>
-                  </tr>";
->>>>>>> 0453b2ae58dc0c6424852a53f3ed6bd199592e32
-
-
-        $clientes=Balance::model()->findAllBySql($sqlClientes);
+      $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
             foreach ($clientes as $key => $cliente)
@@ -1456,11 +1406,7 @@ class reportes extends CApplicationComponent
         $email.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-<<<<<<< HEAD
                         Ranking
-=======
-                        Ramking
->>>>>>> 0453b2ae58dc0c6424852a53f3ed6bd199592e32
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destino RP
@@ -1508,11 +1454,7 @@ class reportes extends CApplicationComponent
                             Margin/Min
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-<<<<<<< HEAD
                             Ranking
-=======
-                            Ramking
->>>>>>> 0453b2ae58dc0c6424852a53f3ed6bd199592e32
                         </th>
                     </tr>";
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -1584,7 +1526,7 @@ class reportes extends CApplicationComponent
         }
         $email.="<tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Ramking
+                            Ramking
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destino RP
@@ -1867,14 +1809,8 @@ class reportes extends CApplicationComponent
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Ranking
                             </th>
-                        </tr>";
-         
-//$miarray = array('leon','salamanca','zamora');
-//echo count($miarray); // Resultado: 3
-<<<<<<< HEAD
-     
-   
-        $posicionNeta=Balance::model()->findAllBySql($sql);
+                        </tr>";  
+        $posicionNeta=Balance::model()->findAllBySql($sqlCien);
         if($posicionNeta!=null)
         {         
             $media= count($posicionNeta)/2; 
@@ -1894,17 +1830,6 @@ class reportes extends CApplicationComponent
                     $posy = "-";
                     }
 //                        }
-=======
-        $posicionNeta=Balance::model()->findAllBySql($sqlCien);
-        if($posicionNeta!=null)
-        { 
-            //$conto=count($posicionNeta)/2;
-            foreach($posicionNeta as $key => $operador)
-            {  
-              $pos=$key+1;
-                //$pos=($conto-1)-($key+1);
-//                $pos=$conto-$menor;
->>>>>>> 0453b2ae58dc0c6424852a53f3ed6bd199592e32
                 $email.=$this->color($pos);
                 $email.="<td style='text-align: center;' class='numero'>".
                            $posy. $pos.
