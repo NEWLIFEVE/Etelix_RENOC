@@ -1066,12 +1066,12 @@ class reportes extends CApplicationComponent
     {
        /************************ SENTENCIAS SQL - COMIENZO *********************************/
        $sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
-                     FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(incomplete_calls+complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
-                          FROM balance 
-                          WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance='$fecha'
-                          GROUP BY id_carrier_customer) x, carrier c
-                     WHERE x.margin>1 AND x.id_carrier_customer=c.id
-                     ORDER BY x.margin DESC";
+                    FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(incomplete_calls+complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
+                         FROM balance 
+                         WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance='$fecha' AND id_destination_int IS NOT NULL
+                         GROUP BY id_carrier_customer) x, carrier c
+                    WHERE x.margin>1 AND x.id_carrier_customer=c.id
+                    ORDER BY x.margin DESC";
         $sqlClientesTotal="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.total_calls)) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
                            FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                                 FROM balance 
@@ -1931,17 +1931,44 @@ class reportes extends CApplicationComponent
       $vendedores=Balance::model()->findAllBySql($sql);
       if($vendedores!=null)
       {
+        $nombre=null;
+        $numero=1;
         foreach ($vendedores as $key => $vendedor)
         {
           $pos=$key+1;
+          $com=$key-1;
+          if($key>0)
+          {
+            if($vendedores[$com]->vendedor==$vendedor->vendedor)
+            {
+              $nombre="";
+              $numero=$numero+1;
+            }
+            else
+            {
+              $nombre=$vendedor->vendedor;
+              $numero=1;
+            }
+          }
+          else
+          {
+            $nombre=$vendedor->vendedor;
+          }
+          
           $email.="<tr>
                   <td></td>
-                  <td>".$vendedor->vendedor."</td>
-                  <td></td>
+                  <td>".$nombre."</td>
+                  <td>".$numero."</td>
                   <td>".$vendedor->operador."</td>
+<<<<<<< HEAD
                  </tr>
                 </table>";
         } 
+=======
+                 </tr>";
+        }
+        $email.="</table>";
+>>>>>>> e6cedf2929346458f611b6e5be32a110cb735685
       }
       else
       {
@@ -1950,6 +1977,7 @@ class reportes extends CApplicationComponent
                 </tr>
                 </table>";
       }
+      return $email;
     }
     /**
     * Metodo encargado de pintar las filas de los reportes

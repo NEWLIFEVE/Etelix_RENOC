@@ -32,7 +32,7 @@
                 $admin = (isset(Yii::app()->user->perfil) and Yii::app()->user->perfil == 'ADMIN') ? true : false ;
                 $this->widget('bootstrap.widgets.TbNavbar',array(
                     'type'=>'inverse',
-                    'brand'=>'RENOC 1.0',
+                    'brand'=>'RENOC',
                     'brandUrl'=>'#',
                     'collapse'=>true,
                     'items'=>array(
