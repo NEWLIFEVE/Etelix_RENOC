@@ -65,7 +65,7 @@ $this->pageTitle = Yii::app()->name;
 <div class="div">
 </div>
 <div id="footer">
-    Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. 
+    Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.0
 </div>
 <!-- page -->
 <!--container-->
