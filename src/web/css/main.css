@@ -309,6 +309,16 @@ background: linear-gradient(#F2F2F2, white);
     
 }
 
+#mailRenoc{
+    border:0px solid black;
+    text-align:rigth;
+    width:60px; 
+    height:60px; 
+    margin-top: 303px; 
+    margin-left: -178px; 
+    margin-bottom: 0px;   
+}
+
 #selecFecha{
     border: 0px solid black;
     height: 28px;

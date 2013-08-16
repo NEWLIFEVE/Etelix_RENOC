@@ -106,7 +106,7 @@ class reportes extends CApplicationComponent
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Client
@@ -145,7 +145,7 @@ class reportes extends CApplicationComponent
                                 Margin%
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                         </tr>";
 
@@ -391,7 +391,7 @@ class reportes extends CApplicationComponent
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Rankin
+                            Ranking
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                             Supplier
@@ -430,7 +430,7 @@ class reportes extends CApplicationComponent
                             Margin%
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Rankin
+                            Ranking
                         </th>
                     </tr>";
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
@@ -679,7 +679,7 @@ class reportes extends CApplicationComponent
                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Rankin
+                            Ranking
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destination
@@ -727,7 +727,7 @@ class reportes extends CApplicationComponent
                             Margin/Min
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Rankin
+                            Ranking
                         </th>
                     </tr>";
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -1102,7 +1102,7 @@ class reportes extends CApplicationComponent
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Client RP
@@ -1141,7 +1141,7 @@ class reportes extends CApplicationComponent
                                 Margin%
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                         </tr>";
 
@@ -1391,7 +1391,7 @@ class reportes extends CApplicationComponent
                 <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <tr>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Ramkin
+                        Ranking
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>
                             Destination RP
@@ -1439,7 +1439,7 @@ class reportes extends CApplicationComponent
                             Margin/Min
                         </th>
                         <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Ramkin
+                            Ranking
                         </th>
                     </tr>";
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -1752,7 +1752,7 @@ class reportes extends CApplicationComponent
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <tr>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Operador
@@ -1788,23 +1788,37 @@ class reportes extends CApplicationComponent
                                 Operador
                             </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Rankin
+                                Ranking
                             </th>
                         </tr>";
          
 //$miarray = array('leon','salamanca','zamora');
 //echo count($miarray); // Resultado: 3
+     
+   
         $posicionNeta=Balance::model()->findAllBySql($sql);
         if($posicionNeta!=null)
-        { 
-            $conto=count($posicionNeta)/2;
+        {         
+            $media= count($posicionNeta)/2; 
             foreach($posicionNeta as $key => $operador)
             {  
-                $pos=($conto-1)-($key+1);
-//                $pos=$conto-$menor;
+//            function decrecer() 
+//                        {
+                $posy = "-";
+                if ($key < $media)
+                    {
+                    $pos = $key + 1;
+                    $posy = "+";
+                    }
+                elseif ($key >= $media) 
+                    {
+                    $pos=(-$key + ($media * 2));
+                    $posy = "-";
+                    }
+//                        }
                 $email.=$this->color($pos);
                 $email.="<td style='text-align: center;' class='numero'>".
-                            $pos. 
+                           $posy. $pos.
                         "</td>
                          <td style='text-align: center;' class='operador'>".
                             $operador->operador.
@@ -1840,7 +1854,7 @@ class reportes extends CApplicationComponent
                             $operador->operador.
                         "</td>
                         <td style='text-align: center;' class='numero'>".
-                            $pos.
+                           $posy.$pos.
                         "</td>
                     </tr>";
             }
