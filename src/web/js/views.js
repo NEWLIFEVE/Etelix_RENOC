@@ -106,7 +106,9 @@ ajax.prototype.run=function()
                         fecha=self.formulario[self.formulario.length-1].value;
                         nombre=self.formulario[i].name;
                         valor=self.formulario[i].value;
-                        var ventana=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel");
+                        var ventana1=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel1");
+                        var ventana2=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel2");
+                        var ventana3=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel3");
                     };
                 }
           }

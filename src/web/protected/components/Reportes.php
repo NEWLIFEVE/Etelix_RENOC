@@ -1840,24 +1840,20 @@ class reportes extends CApplicationComponent
             $media= count($posicionNeta)/2; 
             foreach($posicionNeta as $key => $operador)
             {  
-               $pos=$key+1;
+         if ($key < $media)
+         {
+         $pos = $key + 1;
+         $posy = "";
+         }
+         elseif ($key >= $media) 
+           {
+           $pos=(-$key + ($media * 2));
+           $posy = "-";
+           }
                //queda de parte de manuel...
-               //  public function mitad($pos,$media) 
-//     {
-//       if ($key < $media)
-//         {
-//         $pos = $key + 1;
-//         $posy = "";
-//         }
-//         elseif ($key >= $media) 
-//           {
-//           $pos=(-$key + ($media * 2));
-//           $posy = "-";
-//           }
-//      }
                 $email.=$this->color($pos);
                 $email.="<td style='text-align: center;' class='numero'>".
-                           $pos.
+                          $posy.$pos.
                         "</td>
                          <td style='text-align: center;' class='operador'>".
                             $operador->operador.
@@ -1893,7 +1889,7 @@ class reportes extends CApplicationComponent
                             $operador->operador.
                         "</td>
                         <td style='text-align: center;' class='numero'>".
-                           $pos.
+                         $posy.$pos.
                         "</td>
                     </tr>";
             }
@@ -1960,15 +1956,11 @@ class reportes extends CApplicationComponent
                   <td>".$nombre."</td>
                   <td>".$numero."</td>
                   <td>".$vendedor->operador."</td>
-<<<<<<< HEAD
+
                  </tr>
                 </table>";
         } 
-=======
-                 </tr>";
-        }
-        $email.="</table>";
->>>>>>> e6cedf2929346458f611b6e5be32a110cb735685
+
       }
       else
       {
@@ -2014,18 +2006,17 @@ class reportes extends CApplicationComponent
                 break;
         }
         return $color;
-    }
-    
-     function mitad($pos, $posicionNeta) {
-        $mitad = ($posicionNeta / 2) + 1;
-        if ($pos < $mitad) {
-            return $pos;
-        } else {
-            $diferencia = $pos - $mitad;
-            $pos = ($mitad - $diferencia) - 1;
-            return "-" . $pos;
-        }
-    }
+    } 
+//     function mitad($pos, $posicionNeta) {
+//        $mitad = ($posicionNeta / 2) + 1;
+//        if ($pos < $mitad) {
+//            return $pos;
+//        } else {
+//            $diferencia = $pos - $mitad;
+//            $pos = ($mitad - $diferencia) - 1;
+//            return "-" . $pos;
+//        }
+//    }
 //  public function mitad($pos,$media) 
 //     {
 //       if ($key < $media)
