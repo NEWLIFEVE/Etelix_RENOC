@@ -185,17 +185,12 @@ class SiteController extends Controller
                 $correos['distribucionComercial']['asunto']="Distribución Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
-            if(isset($_POST['lista']['otros2']))
-            {
-                $correos['otros2']['asunto']="Otros 2 de día ".str_replace("-","",$fecha);
-                $correos['otros2']['cuerpo']="Prueba de Otros 2";
-            } 
         }
         foreach($correos as $key => $correo)
         {
             Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
         }
-        echo "Su correo fue enviado exitosamente :)";
+        echo "Mensaje Enviado";
     }
     public function actionExcel()
     {
@@ -221,13 +216,8 @@ class SiteController extends Controller
             }
             if(isset($_GET['lista']['DC']))
             {
-                $archivos['distribucionComercial']['nombre']="Distribucion Comercial al".str_replace("-","",$fecha);
+                $archivos['distribucionComercial']['nombre']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $archivos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
-            }
-            if(isset($_GET['lista']['otros2']))
-            {
-                $archivos['otros2']['nombre']="Otros 2 de día ".str_replace("-","",$fecha);
-                $archivos['otros2']['cuerpo']="Prueba de Otros 2";
             } 
         }
         foreach($archivos as $key => $archivo)
@@ -235,7 +225,45 @@ class SiteController extends Controller
             $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
         }
     }
-    
+    /**
+    * Action encargada de envuiar por mail el tipo de reporte seleccionado,
+    * las especificaciones seran recibidas desde el array $_POST
+    */
+    public function actionMaillista()
+    {
+        $fecha=null;
+        $correos=null;
+        $user="mmzmm3z@gmail.com";
+        if(isset($_POST['fecha']))
+        {
+            $fecha=(string)$_POST['fecha'];
+            if(isset($_POST['lista']['AIR']))
+            {
+                $correos['altoImpactoRetail']['asunto']="RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
+                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
+            }
+            if(isset($_POST['lista']['AI10']))
+            {
+                $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
+                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+            } 
+            if(isset($_POST['lista']['PN']))
+            {
+                $correos['posicionNeta']['asunto']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
+                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
+            }
+            if(isset($_POST['lista']['DC']))
+            {
+                $correos['distribucionComercial']['asunto']="Distribución Comercial al ".str_replace("-","",$fecha);
+                $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
+            }
+        }
+        foreach($correos as $key => $correo)
+        {
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
+        }
+        echo "Mensaje Enviado";
+    }
     public function genExcel($nombre,$cuerpo)
     {
         header("Content-type: application/vnd.ms-excel; name='excel'");
