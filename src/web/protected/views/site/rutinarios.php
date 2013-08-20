@@ -103,7 +103,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </td>
             </tr>
-            <!--<tr>
+            <tr>
                 <td>
                     <label class="checkbox">
                         <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
@@ -120,7 +120,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </td>
-            </tr>-->
+            </tr>
             <!--<tr>
                 <td>
                     <label class="checkbox">
