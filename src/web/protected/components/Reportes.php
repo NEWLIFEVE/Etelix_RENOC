@@ -20,8 +20,12 @@ class reportes extends CApplicationComponent
     public function AltoImpacto($fecha)
     {
         /*********************** GENERACION CODIGO HTML - COMIENZO *************************/
-        $email="<div>";
-        $email.=$this->altoImpactoHead("Cliente");
+        $email="<div>
+                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                  <thead>";
+        $email.=$this->cabecera(array('Ranking','Cliente','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cliente','Margin%','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="</thead>
+                 <tbody>";
         //Selecciono los totales por clientes
         $sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
@@ -34,10 +38,11 @@ class reportes extends CApplicationComponent
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
+            $max=count($clientes);
             foreach ($clientes as $key => $cliente)
             {
-                $pos=$key+1;
-                $email.=$this->color($pos);
+                $pos=$this->ranking($key+1,$max);
+                $email.=$this->color($key+1);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td><td style='text-align: left;' class='cliente'>".
@@ -204,7 +209,19 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->altoImpactoFoot();
+        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
         if($clientesTotalCompleto->total_calls!=null)
         {
         $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -253,7 +270,11 @@ class reportes extends CApplicationComponent
             <br>";
             }
 
-        $email.=$this->altoImpactoHead("Proveedor");
+        $email.="<table>
+                 <thead>";
+        $email.=$this->cabecera(array('Ranking','Proveedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Proveedor','Margin%','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="</thead>
+                 <tbody>";
         // Selecciono los totales por proveedoresn de mas de 10 dolares de margen
         $sqlProveedores="SELECT c.name AS proveedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                           FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
@@ -266,10 +287,11 @@ class reportes extends CApplicationComponent
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
         if($proveedores!=null)
         {
+            $max=count($proveedores);
             foreach($proveedores as $key => $proveedor)
             {
-                $pos=$key+1;
-                $email.=$this->color($pos);
+                $pos=$this->ranking($key+1,$max);
+                $email.=$this->color($key+1);
                 $email.="<td style='text-align: center;' class='ranking'>".
                             $pos.
                         "</td>
@@ -437,7 +459,19 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->altoImpactoFoot();
+        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
         if($proveedoresTotal->total_calls!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -487,7 +521,11 @@ class reportes extends CApplicationComponent
                     </table>
                 <br>";
           }
-        $email.=$this->altoImpactoHeadDestino("Destino");
+        $email.="<table>
+                 <thead>";
+        $email.=$this->cabecera(array('Ranking','Destino','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="</thead>
+                 <tbody>";
         // selecciono los totales de los destinos de mas de 10 dolares de marger
         $sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
                       FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
@@ -500,9 +538,10 @@ class reportes extends CApplicationComponent
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
+            $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=$key+1;
+                $pos=$this->ranking($key+1,$max);
                 $email.=$this->colorDestino($destino->destino);
                 $email.="<td style='text-align: center;' class='diferencialBancario'>".
                             $pos.
@@ -693,7 +732,22 @@ class reportes extends CApplicationComponent
                         <td colspan='15'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->altoImpactoFootdDestino();
+        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%','Cost/Min','Rate/Min','Margin/Min',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
         if($destinosTotal->total_calls!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -738,6 +792,7 @@ class reportes extends CApplicationComponent
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </div>";
         }
@@ -755,8 +810,12 @@ class reportes extends CApplicationComponent
     public function AltoIMpactoRetail($fecha)
     {
         /************************ GENERACION CODIGO HTML - COMIENZO *************************/
-        $email="<div>";
-        $email.=$this->altoImpactoHead("Cliente RP");
+        $email="<div>
+                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                  <thead>";
+        $email.=$this->cabecera(array('Ranking','Cliente RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cliente RP','Margin%','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="</thead>
+                 <tbody>";
         $sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                            FROM balance 
@@ -767,10 +826,11 @@ class reportes extends CApplicationComponent
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
+            $max=count($clientes);
             foreach ($clientes as $key => $cliente)
             {
-                $pos=$key+1;
-                $email.=$this->color($pos);
+                $pos=$this->ranking($key+1,$max);
+                $email.=$this->color($key+1);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -936,7 +996,19 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->altoImpactoFoot();
+        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
         if($clientesTotal->total_calls!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -986,7 +1058,11 @@ class reportes extends CApplicationComponent
                      </table>
             <br>";
         }
-        $email.=$this->altoImpactoHeadDestino("Destino RP");
+        $email.="<table>
+                 <thead>";
+        $email.=$this->cabecera(array('Ranking','Destino RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino RP','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="</thead>
+                 <tbody>";
         $sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
                       FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                            FROM balance
@@ -998,9 +1074,10 @@ class reportes extends CApplicationComponent
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
+            $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=$key+1;
+                $pos=$this->ranking($key+1,$max);
                 $email.=$this->colorDestino($destino->destino);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
@@ -1190,7 +1267,22 @@ class reportes extends CApplicationComponent
                         <td colspan='17'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->altoImpactoFootdDestino();
+        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%','Cost/Min','Rate/Min','Margin/Min',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
         if($destinosTotal->total_calls!=null)
         {
             $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -1257,11 +1349,16 @@ class reportes extends CApplicationComponent
         $clientesRpro=Balance::model()->findAllBySql($sqlClientesRpro);
         if($clientesRpro!=null)
         {
-            $email.=$this->altoImpactoHead("Cliente RPRO");
+            $email.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                    <thead>";
+            $email.=$this->cabecera(array('Ranking','Cliente RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cliente RPRO','Margin%','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+            $email.="</thead>
+                 <tbody>";
+            $max=count($clientesRpro);
             foreach ($clientesRpro as $key => $clienteRpro)
             {
-                $pos=$key+1;
-                $email.=$this->color($pos);
+                $pos=$this->ranking($key+1,$max);
+                $email.=$this->color($key+1);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -1408,7 +1505,19 @@ class reportes extends CApplicationComponent
                         </tr>"; 
                
             }
-            $email.=$this->altoImpactoFoot();
+            $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
             if($clientesTotalRpro->total_calls!=null)
             {
                 $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -1450,7 +1559,11 @@ class reportes extends CApplicationComponent
                     </table>
                     <br>";
             }
-            $email.=$this->altoImpactoHeadDestino("Destino RPRO");
+            $email.="<table>
+                 <thead>";
+        $email.=$this->cabecera(array('Ranking','Destino RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino RPRO','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="</thead>
+                 <tbody>";
             $sqlDestinosRpro="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
                           FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                                FROM balance
@@ -1462,9 +1575,10 @@ class reportes extends CApplicationComponent
             $destinosRpro=Balance::model()->findAllBySql($sqlDestinosRpro);
             if($destinosRpro!=null)
             {
+                $max=count($destinosRpro);
                 foreach($destinosRpro as $key => $destinoRpro)
                 {
-                    $pos=$key+1;
+                    $pos=$this->ranking($key+1,$max);
                     $email.=$this->colorDestino($destinoRpro->destino);
                     $email.="<td style='text-align: center;' class='position'>".
                                 $pos.
@@ -1636,7 +1750,22 @@ class reportes extends CApplicationComponent
                             </td> 
                             </tr>";    
             }
-            $email.=$this->altoImpactoFootdDestino();
+            $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','','Margin%','Cost/Min','Rate/Min','Margin/Min',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    '',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    ''));
             if($destinosTotalRpro->total_calls!=null)
             {
                 $email.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -1700,87 +1829,74 @@ class reportes extends CApplicationComponent
     */
     public function posicionNeta($fecha)
     {
-        $sqlCien="SELECT o.name AS operador, m.name AS vendedor, c.minutes AS vminutes, c.revenue AS vrevenue, c.margin AS vmargin, s.minutes AS cminutes, s.cost AS ccost, s.margin AS cmargin, (c.revenue-s.cost) AS posicion_neta, (c.margin+s.margin) AS Margen_total
-                  FROM (SELECT id_carrier_customer, SUM(minutes) AS minutes, SUM(revenue) AS revenue, SUM(margin) AS margin
-                        FROM balance
-                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                        GROUP BY id_carrier_customer
-                        ORDER BY id_carrier_customer) c,
-                       (SELECT id_carrier_supplier, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(margin) AS margin
-                        FROM balance
-                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                        GROUP BY id_carrier_supplier
-                        ORDER BY id_carrier_supplier) s,
-                        carrier o,
-                        managers m,
-                        carrier_managers cm
-                  WHERE c.id_carrier_customer = s.id_carrier_supplier AND c.id_carrier_customer = o.id AND cm.id_carrier = o.id AND cm.id_managers = m.id
-                  ORDER BY posicion_neta DESC";
+      $sqlCien="SELECT o.name AS operador, cs.id, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
+                FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
+                     FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
+                          FROM balance
+                          WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_customer
+                          UNION
+                          SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
+                          FROM balance
+                          WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_supplier)t
+                     GROUP BY id
+                     ORDER BY posicion_neta DESC)cs,
+                    carrier o
+                WHERE o.id=cs.id
+                ORDER BY cs.posicion_neta DESC
+                LIMIT 100";
+        $sqlCienTotal="SELECT SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(posicion_neta) AS posicion_neta, SUM(margen_total) AS margen_total
+                       FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
+                            FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC
+                       LIMIT 100) t";
+    $sqlTotal=" SELECT SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(posicion_neta) AS posicion_neta, SUM(margen_total) AS margen_total
+                       FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
+                            FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC) t";
 
         $email="<div>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
-                        <tr>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Ranking
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
-                                Operador
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Vendedor
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Vminutes
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Vrevenue
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Vmargin
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Cminutes
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Ccosto
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Cmargin
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Posicion Neta
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Margen Total
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
-                                Operador
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Ranking
-                            </th>
-                        </tr>";
+                    <thead>";
+        $email.=$this->cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.="<thead>
+                 <tbody>";
          
-//$miarray = array('leon','salamanca','zamora');
-//echo count($miarray); // Resultado: 3
         $posicionNeta=Balance::model()->findAllBySql($sqlCien);
         if($posicionNeta!=null)
         { 
-            //$conto=count($posicionNeta)/2;
+            $max=count($posicionNeta);
             foreach($posicionNeta as $key => $operador)
             {  
-              $pos=$key+1;
-                //$pos=($conto-1)-($key+1);
-//                $pos=$conto-$menor;
-                $email.=$this->color($pos);
-                $email.="<td style='text-align: center;' class='numero'>".
+                $pos=$this->ranking($key+1,$max);
+                $email.=$this->color($key+1);
+                $email.="<td style='text-align: center;' class='ranking'>".
                             $pos. 
                         "</td>
                          <td style='text-align: center;' class='operador'>".
                             $operador->operador.
                         "</td>
                          <td style='text-align: center;' class='vendedor'>".
-                            $operador->vendedor.
+                            CarrierManagers:: getManager($operador->id).
                         "</td>
                          <td style='text-align: center;' class='vminutes'>".
                             Yii::app()->format->format_decimal($operador->vminutes).
@@ -1809,7 +1925,7 @@ class reportes extends CApplicationComponent
                          <td style='text-align: center;' class='operador'>".
                             $operador->operador.
                         "</td>
-                        <td style='text-align: center;' class='numero'>".
+                        <td style='text-align: center;' class='ranking'>".
                             $pos.
                         "</td>
                     </tr>";
@@ -1821,8 +1937,113 @@ class reportes extends CApplicationComponent
                       <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
           }
-          $email.="</table>
-            </div>";
+            $email.=$this->cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+            $posicionNetaTotal=Balance::model()->findBySql($sqlCienTotal);
+            if($posicionNetaTotal!=null)
+            { 
+            $email.="<tr>
+                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ranking'>
+                      </td>
+                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
+                      TOTAL
+                      </td>
+                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vendedor'>
+                      TOTAL
+                      </td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vminutes'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->vminutes).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vrevenue'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->vrevenue).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vmargin'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->vmargin).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cminutes'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->cminutes).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ccost'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->ccost).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cmargin'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->cmargin).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='posicionNeta'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->posicion_neta).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='margenTotal'>".
+                            Yii::app()->format->format_decimal($posicionNetaTotal->margen_total).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
+                         TOTAL
+                         </td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
+                        </td>
+                    </tr>";
+            }
+            else
+            {
+                $email.="<tr>
+                      <td colspan='13'>No se encontraron resultados</td>
+                     </tr>";
+            }
+            $Total=Balance::model()->findBySql($sqlTotal);
+            if($Total!=null)
+            { 
+            $email.="<tr>
+                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ranking'>
+                      </td>
+                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
+                      TOTAL
+                      </td>
+                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vendedor'>
+                      TOTAL
+                      </td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vminutes'>".
+                            Yii::app()->format->format_decimal($Total->vminutes).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vrevenue'>".
+                            Yii::app()->format->format_decimal($Total->vrevenue).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vmargin'>".
+                            Yii::app()->format->format_decimal($Total->vmargin).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cminutes'>".
+                            Yii::app()->format->format_decimal($Total->cminutes).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ccost'>".
+                            Yii::app()->format->format_decimal($Total->ccost).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cmargin'>".
+                            Yii::app()->format->format_decimal($Total->cmargin).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='posicionNeta'>".
+                            Yii::app()->format->format_decimal($Total->posicion_neta).
+                        "</td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='margenTotal'>".
+                            Yii::app()->format->format_decimal($Total->margen_total).
+                        "</td>
+                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
+                         TOTAL
+                         </td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
+                        </td>
+                    </tr>";
+            }
+            else
+            {
+                $email.="<tr>
+                      <td colspan='13'>No se encontraron resultados</td>
+                     </tr>";
+            }
+            $email.="</tbody></table>";
+
+
+
+
+
+
+            $email.="</div>";
         return $email;
     }
 
@@ -1832,11 +2053,12 @@ class reportes extends CApplicationComponent
     */
     public function distComercial($fecha)
     {
-      $sql="SELECT m.name AS vendedor, c.name AS operador 
-            FROM carrier c, managers m, carrier_managers cm
-            WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '$fecha'
-            ORDER BY m.name ASC";
-      $email="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+        $sql="SELECT m.name AS vendedor, c.name AS operador
+              FROM carrier c, managers m, carrier_managers cm
+              WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '$fecha'
+              ORDER BY m.name ASC";
+        $email="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                    <thead>
                         <tr>
                             <th colspan='2' style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
                                 Responsable
@@ -1845,7 +2067,9 @@ class reportes extends CApplicationComponent
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Operador
                             </th>
-                        </tr>";
+                        </tr>
+                    </thead>
+                    </tbody>";
       $vendedores=Balance::model()->findAllBySql($sql);
       if($vendedores!=null)
       {
@@ -1880,7 +2104,7 @@ class reportes extends CApplicationComponent
                   <td>".$vendedor->operador."</td>
                  </tr>";
         }
-        $email.="</table>";
+        $email.="</tbody></table>";
       }
       else
       {
@@ -2003,212 +2227,61 @@ class reportes extends CApplicationComponent
         return $color;
     }
     /**
-    * Metodo de cabecera de las tablas en los reportes, retorna el inicio de la tabla
-    * @param $nombre string nombre del reporte
-    * @return string con tabla
+    * Se encarga de crear una fila con los datos pasados
+    * @param $etiquetas array lista de etiquetas para lacabeceras
+    * @param $estilos string con los estilos para la fila
+    * @return string con la fila construida
     */
-    public function altoImpactoHead($nombre)
+    public function cabecera($etiquetas,$estilos)
     {
-        return "<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
-                    <tr>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Ranking
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>".
-                            $nombre.
-                       "</th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            TotalCalls
-                        </th> 
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            CompleteCalls
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Minutes
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            ASR
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            ACD
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            PDD
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Cost
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Revenue
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Margin
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>".
-                            $nombre.
-                       "</th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Margin%
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Ranking
-                        </th>
-                    </tr>";
+        if(count($etiquetas)>1)
+        {
+            $cabecera="<tr>";
+            if(count($estilos)>1)
+            {
+                foreach($etiquetas as $key => $value)
+                {
+                    $cabecera.="<th style='".$estilos[$key]."'>".$value."</th>";
+                }
+            }
+            else
+            {
+                foreach ($etiquetas as $key => $value)
+                {
+                    $cabecera.="<th style='".$estilos."'>".$value."</th>";
+                }
+            }
+            $cabecera.="</tr>";
+        }
+        return $cabecera;
     }
-    public function altoImpactoHeadDestino($nombre=null)
-    {
-        return "<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
-                    <tr>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Ramking
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>".
-                            $nombre.
-                       "</th>     
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            TotalCalls
-                        </th> 
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            CompleteCalls
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Minutes
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            ASR
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            ACD
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            PDD
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Cost
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Revenue
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Margin
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:40%; height:100%;'>".
-                            $nombre.
-                       "</th> 
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Margin%
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Cost/Min
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Rate/Min
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Margin/Min
-                        </th>
-                        <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                            Ramking
-                        </th>
-                    </tr>";
-    }
+
     /**
-    * Metodo que retorna el pie de las tablas de alto impacto
+    * Metodo encargado de realizar los rankings
+    * @param $posicion int valor a rankear
+    * @param $max int valor a dividir
+    * @return $valor int
     */
-    public function altoImpactoFoot($nombre=null)
+    public function ranking($pos,$max)
     {
-        return "<tr>
-                    <th>
-                    </th>
-                    <th>
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        TotalCalls
-                    </th> 
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        CompleteCalls
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Minutes
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        ASR
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        ACD
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        PDD
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Cost
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Revenue
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Margin
-                    </th>
-                    <th>
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Margin%
-                    </th>
-                    <th>
-                    </th>
-                </tr>";
-    }
-    public function altoImpactoFootdDestino($nombre=null)
-    {
-        return "<tr>
-                    <th>
-                    </th>
-                    <th>
-                    </th>     
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        TotalCalls
-                    </th> 
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        CompleteCalls
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Minutes
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        ASR
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        ACD
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        PDD
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Cost
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Revenue
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Margin
-                    </th>
-                    <th>
-                    </th> 
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Margin%
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Cost/Min
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Rate/Min
-                    </th>
-                    <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                        Margin/Min
-                    </th>
-                    <th>
-                    </th>
-                </tr>";
+        if($max>10)
+        {
+            $mitad=($max/2)+1;
+            if($pos<$mitad)
+            {
+                return $pos;
+            }
+            else
+            {
+                $diferencia=$pos-$mitad;
+                $valor=($mitad-$diferencia)-1;
+                return "-".$valor;
+            }
+        }
+        else
+        {
+            return $pos;
+        }
     }
 }
 ?>
