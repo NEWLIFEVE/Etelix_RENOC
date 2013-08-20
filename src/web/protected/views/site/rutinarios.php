@@ -34,6 +34,11 @@ $this->layout=$this->getLayoutFile('menuContent');
             <img src="/images/mail.png" width="95px" height="95px" value="Activar Función">
         </a>
     </div>
+    <div id="mailRenoc" class="span1">
+        <a href="/" rel="tooltip" title="Enviar Reportes a Correo Electronico RENOC" class="tooltip-test">
+            <img src="/images/mailRenoc.png" width="95px" height="95px" value="Activar Función">
+        </a>
+    </div>
     <div id="excel" class="span1">
         <a href="/" rel="tooltip" title="Exportar Reportes en Excel" class="tooltip-test">
             <img src="/images/excel.png" width="75px" height="75px" value="Activar Función">
@@ -51,7 +56,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                 <td width="47">
                     <h3>
                         <label class="checkbox">
-                            <input type="checkbox" value="todos" id="todos" class="custom-checkbox" name="todos" onClick="marcar(this);">
+                            <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
                             <label for="todos">
                                 <h4>
                                 </h4>
@@ -103,7 +108,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </td>
             </tr>
-            <!--<tr>
+            <tr>
                 <td>
                     <label class="checkbox">
                         <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
@@ -120,8 +125,8 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </td>
-            </tr>-->
-            <!--<tr>
+            </tr>
+            <tr>
                 <td>
                     <label class="checkbox">
                         <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]"> 
@@ -138,7 +143,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </td>
-            </tr>-->
+            </tr>
             <!--<tr>
                 <td>
                     <label class="checkbox">
