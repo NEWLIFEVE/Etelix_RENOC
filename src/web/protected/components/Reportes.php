@@ -1890,6 +1890,7 @@ class reportes extends CApplicationComponent
             $max=count($posicionNeta);
             foreach($posicionNeta as $key => $operador)
             {  
+
                 $pos=$this->ranking($key+1,$max);
                 $email.=$this->color($key+1);
                 $email.="<td style='text-align: center;' class='ranking'>".
@@ -2146,6 +2147,7 @@ class reportes extends CApplicationComponent
                 break;
         }
         return $color;
+
     }
     public function colorEstilo($var)
     {
