@@ -521,6 +521,7 @@ class reportes extends CApplicationComponent
                     </table>
                 <br>";
           }
+
         $email.="<table>
                  <thead>";
         $email.=$this->cabecera(array('Ranking','Destino','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
@@ -535,6 +536,7 @@ class reportes extends CApplicationComponent
                            ORDER BY margin DESC) x, destination d
                       WHERE x.margin > 10 AND x.id_destination = d.id
                       ORDER BY x.margin DESC";
+
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
@@ -603,6 +605,7 @@ class reportes extends CApplicationComponent
                         <td colspan='15'>No se encontraron resultados</td>
                      </tr>";
         }
+
         // Selecciono la suma de los totales de los destinos con mas de 10 doleres de margen
         $sqlDestinosTotal="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
                             FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(incomplete_calls+complete_calls)) AS acd, SUM(pdd_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
@@ -611,6 +614,7 @@ class reportes extends CApplicationComponent
                                  GROUP BY id_destination
                                  ORDER BY margin DESC) balance
                             WHERE margin>10";
+
         $destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
         if($destinosTotal->total_calls!=null)
         {
@@ -824,6 +828,7 @@ class reportes extends CApplicationComponent
                       WHERE x.margin>1 AND x.id_carrier_customer=c.id
                       ORDER BY x.margin DESC";
         $clientes=Balance::model()->findAllBySql($sqlClientes);
+
         if($clientes!=null)
         {
             $max=count($clientes);
@@ -1071,6 +1076,7 @@ class reportes extends CApplicationComponent
                            ORDER BY margin DESC) x, destination d
                       WHERE x.margin > 1 AND x.id_destination = d.id
                       ORDER BY x.margin DESC";
+
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
@@ -1146,6 +1152,7 @@ class reportes extends CApplicationComponent
                                  GROUP BY id_destination
                                  ORDER BY margin DESC) balance
                             WHERE margin>1";
+
         $destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
         if($destinosTotal->total_calls!=null)
         {
@@ -2046,7 +2053,6 @@ class reportes extends CApplicationComponent
             $email.="</div>";
         return $email;
     }
-
     /**
     * Metodo encargado de generar el reporte de distribucion comercial
     * @param $fecha date la fecha que se quiere consultar
@@ -2102,9 +2108,9 @@ class reportes extends CApplicationComponent
                   <td>".$nombre."</td>
                   <td>".$numero."</td>
                   <td>".$vendedor->operador."</td>
-                 </tr>";
-        }
-        $email.="</tbody></table>";
+                 </tr>
+                </table>";
+        } 
       }
       else
       {
@@ -2115,7 +2121,6 @@ class reportes extends CApplicationComponent
       }
       return $email;
     }
-
     /**
     * Metodo encargado de pintar las filas de los reportes
     * @param int $pos es un numero indicando que color debe regresar
@@ -2151,6 +2156,17 @@ class reportes extends CApplicationComponent
                 break;
         }
         return $color;
+    }
+    
+     function mitad($pos, $posicionNeta) {
+        $mitad = ($posicionNeta / 2) + 1;
+        if ($pos < $mitad) {
+            return $pos;
+        } else {
+            $diferencia = $pos - $mitad;
+            $pos = ($mitad - $diferencia) - 1;
+            return "-" . $pos;
+        }
     }
     /**
     * @param $var string a identificar
