@@ -1822,11 +1822,7 @@ class reportes extends CApplicationComponent
             }
         }
         $email.="</div>";
-
-
-/*----------------------- GENERACION CODIGO HTML - FIN -----------------------------*/
-
-    return $email;
+        return $email;
     }
 
     /**
@@ -1836,23 +1832,23 @@ class reportes extends CApplicationComponent
     */
     public function posicionNeta($fecha)
     {
-      $sqlCien="SELECT o.name AS operador, cs.id, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
-                FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
-                     FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
-                          FROM balance
-                          WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                          GROUP BY id_carrier_customer
-                          UNION
-                          SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
-                          FROM balance
-                          WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                          GROUP BY id_carrier_supplier)t
-                     GROUP BY id
-                     ORDER BY posicion_neta DESC)cs,
-                    carrier o
-                WHERE o.id=cs.id
-                ORDER BY cs.posicion_neta DESC
-                LIMIT 100";
+        $sqlCien="SELECT o.name AS operador, cs.id, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
+                    FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
+                         FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
+                              FROM balance
+                              WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                              GROUP BY id_carrier_customer
+                              UNION
+                              SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
+                              FROM balance
+                              WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                              GROUP BY id_carrier_supplier)t
+                         GROUP BY id
+                         ORDER BY posicion_neta DESC)cs,
+                        carrier o
+                    WHERE o.id=cs.id
+                    ORDER BY cs.posicion_neta DESC
+                    LIMIT 100";
         $sqlCienTotal="SELECT SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(posicion_neta) AS posicion_neta, SUM(margen_total) AS margen_total
                        FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
                             FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
@@ -1867,7 +1863,7 @@ class reportes extends CApplicationComponent
                        GROUP BY id
                        ORDER BY posicion_neta DESC
                        LIMIT 100) t";
-    $sqlTotal=" SELECT SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(posicion_neta) AS posicion_neta, SUM(margen_total) AS margen_total
+        $sqlTotal="SELECT SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(posicion_neta) AS posicion_neta, SUM(margen_total) AS margen_total
                        FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
                             FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, SUM(cost) AS ccost, CAST(0 AS double precision) AS cmargin
                             FROM balance
@@ -1937,22 +1933,21 @@ class reportes extends CApplicationComponent
                         "</td>
                     </tr>";
             }
-          }
-          else
-          {
+        }
+        else
+        {
             $email.="<tr>
                       <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
-          }
-            $email.=$this->cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
-            $posicionNetaTotal=Balance::model()->findBySql($sqlCienTotal);
-            if($posicionNetaTotal!=null)
-            { 
+        }
+        $email.=$this->cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $posicionNetaTotal=Balance::model()->findBySql($sqlCienTotal);
+        if($posicionNetaTotal!=null)
+        { 
             $email.="<tr>
                       <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ranking'>
                       </td>
                       <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
-                      TOTAL
                       </td>
                       <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vendedor'>
                       TOTAL
@@ -1987,21 +1982,20 @@ class reportes extends CApplicationComponent
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
                         </td>
                     </tr>";
-            }
-            else
-            {
-                $email.="<tr>
+        }
+        else
+        {
+            $email.="<tr>
                       <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
-            }
-            $Total=Balance::model()->findBySql($sqlTotal);
-            if($Total!=null)
-            { 
+        }
+        $Total=Balance::model()->findBySql($sqlTotal);
+        if($Total!=null)
+        { 
             $email.="<tr>
                       <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ranking'>
                       </td>
                       <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
-                      TOTAL
                       </td>
                       <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vendedor'>
                       TOTAL
@@ -2036,21 +2030,15 @@ class reportes extends CApplicationComponent
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
                         </td>
                     </tr>";
-            }
-            else
-            {
-                $email.="<tr>
+        }
+        else
+        {
+            $email.="<tr>
                       <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
-            }
-            $email.="</tbody></table>";
-
-
-
-
-
-
-            $email.="</div>";
+        }
+        $email.="</tbody></table>";
+        $email.="</div>";
         return $email;
     }
     /**
@@ -2059,14 +2047,14 @@ class reportes extends CApplicationComponent
     */
     public function distComercial($fecha)
     {
-        $sql="SELECT m.name AS vendedor, c.name AS operador
+        $sql="SELECT m.name AS vendedor, c.name AS operador, m.position
               FROM carrier c, managers m, carrier_managers cm
-              WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '$fecha'
+              WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '2013-08-20'
               ORDER BY m.name ASC";
         $email="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <thead>
                         <tr>
-                            <th colspan='2' style='background-color:#615E5E; color:#62C25E; width:15%; height:100%;'>
+                            <th colspan='2' style='background-color:#615E5E; color:#62C25E; width:15%; height:100%; border: 1px black;'>
                                 Responsable
                             </th>
                             <th></th>
@@ -2076,50 +2064,52 @@ class reportes extends CApplicationComponent
                         </tr>
                     </thead>
                     </tbody>";
-      $vendedores=Balance::model()->findAllBySql($sql);
-      if($vendedores!=null)
-      {
-        $nombre=null;
-        $numero=1;
-        foreach ($vendedores as $key => $vendedor)
+        $vendedores=Managers::model()->findAllBySql($sql);
+        if($vendedores!=null)
         {
-          $pos=$key+1;
-          $com=$key-1;
-          if($key>0)
-          {
-            if($vendedores[$com]->vendedor==$vendedor->vendedor)
+            $nombre=null;
+            $numero=1;
+            $posicion=null;
+            foreach ($vendedores as $key => $vendedor)
             {
-              $nombre="";
-              $numero=$numero+1;
-            }
-            else
-            {
-              $nombre=$vendedor->vendedor;
-              $numero=1;
-            }
-          }
-          else
-          {
-            $nombre=$vendedor->vendedor;
-          }
-          
-          $email.="<tr>
-                  <td></td>
-                  <td>".$nombre."</td>
-                  <td>".$numero."</td>
-                  <td>".$vendedor->operador."</td>
-                 </tr>
-                </table>";
-        } 
-      }
-      else
-      {
-        $email.="<tr>
+                $pos=$key+1;
+                $com=$key-1;
+                $posicion=$vendedor->position;
+                if($key>0)
+                {
+                    if($vendedores[$com]->vendedor==$vendedor->vendedor)
+                    {
+                        $nombre="";
+                        $posicion="";
+                        $numero=$numero+1;
+                    }
+                    else
+                    {
+                        $nombre=$vendedor->vendedor;
+                        $posicion=$vendedor->position;
+                        $numero=1;
+                    }
+                }
+                else
+                {
+                    $nombre=$vendedor->vendedor;
+                }
+                $email.="<tr>
+                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$posicion."</td>
+                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$nombre."</td>
+                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$numero."</td>
+                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$vendedor->operador."</td>
+                        </tr>";
+            } 
+        }
+        else
+        {
+            $email.="<tr>
                   <td colspan='4'>No se encontraron resultados</td>
-                </tr>
-                </table>";
-      }
-      return $email;
+                </tr>";
+        }
+        $email.="</tbody></table>";
+        return $email;
     }
     /**
     * Metodo encargado de pintar las filas de los reportes
@@ -2155,6 +2145,60 @@ class reportes extends CApplicationComponent
                 $color="<tr style='background-color:#F8B6C9; color:#584E4E;'>";
                 break;
         }
+        return $color;
+    }
+    public function colorEstilo($var)
+    {
+        $color=null;
+        if(substr_count($var, 'Leandro') >= 1)
+        {
+            $color="background-color:#fe6500; color:black;";
+        }
+        elseif(substr_count($var, 'Juan Carlos Lopez Silva') >= 1)
+        {
+            $color="background-color:#4aabc5; color:black;";
+        }
+        elseif(substr_count($var, 'Jose Ramon Olivar') >= 1)
+        {
+            $color="background-color:#333399; color:black;";
+        }
+        elseif(substr_count($var, 'Juan Carlos Robayo') >= 1)
+        {
+            $color="background-color:#00ffff; color:black;";
+        }
+        elseif(substr_count($var, 'Jaime Laguna') >= 1)
+        {
+            $color="background-color:#ffcc99; color:black;";
+        }
+        elseif(substr_count($var, 'Carlos Pinango') >= 1)
+        {
+            $color="background-color:#cc99ff; color:black;";
+        }
+        elseif(substr_count($var, 'Augusto Cardenas') >= 1)
+        {
+            $color="background-color:#00ff00; color:black;";
+        }
+        elseif(substr_count($var, 'Luis Ernesto Barbaran') >= 1)
+        {
+            $color="background-color:#ff8080; color:black;";
+        }
+        elseif(substr_count($var, 'Alonso Van Der Biest') >= 1)
+        {
+            $color="background-color:#c0504d; color:black;";
+        }
+        elseif(substr_count($var, 'Soiret Solarte') >= 1)
+        {
+            $color="background-color:#ff9900; color:black;";
+        }
+        elseif(substr_count($var, 'Ernesto Da Rocha') >= 1)
+        {
+            $color="background-color:#c0c0c0; color:black;";
+        }
+        elseif(substr_count($var, 'Diana Mirakyan') >= 1)
+        {
+            $color="background-color:#00b0f0; color:black;";
+        }
+        
         return $color;
     }
     
