@@ -244,6 +244,11 @@ class SiteController extends Controller
         header("Expires: 0");
         echo $cuerpo;
     }
+    public function probandofunction($hola)
+    {
+        $hola='angelo';
+        echo $hola;
+    }
 }
 ?>
 
