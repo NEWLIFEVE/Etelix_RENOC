@@ -56,7 +56,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                 <td width="47">
                     <h3>
                         <label class="checkbox">
-                            <input type="checkbox" value="todos" id="todos" class="custom-checkbox" name="todos" onClick="marcar(this);">
+                            <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
                             <label for="todos">
                                 <h4>
                                 </h4>
@@ -126,7 +126,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </td>
             </tr>
-            <!--<tr>
+            <tr>
                 <td>
                     <label class="checkbox">
                         <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]"> 
@@ -143,7 +143,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </td>
-            </tr>-->
+            </tr>
             <!--<tr>
                 <td>
                     <label class="checkbox">
