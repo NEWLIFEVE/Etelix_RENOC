@@ -37,9 +37,6 @@ return array(
         'reportes'=>array(
             'class'=>"application.components.Reportes",
         ),
-        'swiftMailer' => array(
-            'class' => 'ext.swiftMailer.SwiftMailer',
-        ),
         'mail'=>array(
             'class'=>"application.components.EnviarEmail",
         ),

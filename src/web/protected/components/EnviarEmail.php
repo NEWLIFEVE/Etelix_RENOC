@@ -8,9 +8,9 @@ class EnviarEmail extends CApplicationComponent {
     /**
      * Init method for the application component mode.
      */
-    public function init() 
-            {
-            }
+    public function init() {
+        
+    }
 
     public function enviar($html, $user, $asunto) {
 
@@ -33,11 +33,10 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->Subject = Yii::t('', $asunto);
             $message = $html;
             $mailer->Body = $message;
-            $path = "/protected/views/doc/excel.xls"; 
-            $name = "excel.xls"; 
-            $mailer->AddAttachment($path, $name); 
             $mailer->Send();
         }
     }
+
 }
+
 ?>

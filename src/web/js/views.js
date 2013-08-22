@@ -146,7 +146,7 @@ ajax.prototype.enviarMail=function()
     {
         url:this.mail,
         data:this.formulario,
-        type:'GET'
+        type:'POST'
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
