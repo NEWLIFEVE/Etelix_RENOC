@@ -14,6 +14,11 @@ class reportes extends CApplicationComponent
         
     }
 
+    public function AltoImpactoVendedor($fecha)
+    {
+      $variable=AltoImpactoVendedor::Vendedor($fecha);
+      return $variable;
+    }
     /**
     *
     */
@@ -23,7 +28,7 @@ class reportes extends CApplicationComponent
         $email="<div>
                   <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                   <thead>";
-        $email.=$this->cabecera(array('Ranking','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
@@ -41,8 +46,8 @@ class reportes extends CApplicationComponent
             $max=count($clientes);
             foreach ($clientes as $key => $cliente)
             {
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->color($key+1);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::color($key+1);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -217,7 +222,7 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+        $email.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('','','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -282,7 +287,7 @@ class reportes extends CApplicationComponent
 
         $email.="<table>
                  <thead>";
-        $email.=$this->cabecera(array('Ranking','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="</thead>
                  <tbody>";
         // Selecciono los totales por proveedores con de mas de 10 dolares de margen
@@ -300,8 +305,8 @@ class reportes extends CApplicationComponent
             $max=count($proveedores);
             foreach($proveedores as $key => $proveedor)
             {
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->color($key+1);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::color($key+1);
                 $email.="<td style='text-align: center;' class='ranking'>".
                             $pos.
                         "</td>
@@ -476,7 +481,7 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+        $email.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('','','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -543,7 +548,7 @@ class reportes extends CApplicationComponent
 
         $email.="<table>
                  <thead>";
-        $email.=$this->cabecera(array('Ranking','Destino','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Destino','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="</thead>
                  <tbody>";
         // selecciono los totales de los destinos de mas de 10 dolares de marger
@@ -562,8 +567,8 @@ class reportes extends CApplicationComponent
             $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->colorDestino($destino->destino);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::colorDestino($destino->destino);
                 $email.="<td style='text-align: center;' class='diferencialBancario'>".
                             $pos.
                         "</td>
@@ -755,7 +760,7 @@ class reportes extends CApplicationComponent
                         <td colspan='15'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
+        $email.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
                                 array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -835,7 +840,7 @@ class reportes extends CApplicationComponent
         $email="<div>
                   <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                   <thead>";
-        $email.=$this->cabecera(array('Ranking','Cliente RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Cliente RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="</thead>
                  <tbody>";
         /*Total por cliente con mas de 1 dolar de margen*/
@@ -853,8 +858,8 @@ class reportes extends CApplicationComponent
             $max=count($clientes);
             foreach ($clientes as $key => $cliente)
             {
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->color($key+1);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::color($key+1);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -1022,7 +1027,7 @@ class reportes extends CApplicationComponent
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+        $email.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -1086,7 +1091,7 @@ class reportes extends CApplicationComponent
         }
         $email.="<table>
                  <thead>";
-        $email.=$this->cabecera(array('Ranking','Destino RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','Destino RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Destino RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','Destino RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="</thead>
                  <tbody>";
         /*Total por destino con mas de 1 dolar de margen*/
@@ -1105,8 +1110,8 @@ class reportes extends CApplicationComponent
             $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->colorDestino($destino->destino);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::colorDestino($destino->destino);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -1298,7 +1303,7 @@ class reportes extends CApplicationComponent
                         <td colspan='17'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
+        $email.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
                                 array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -1383,14 +1388,14 @@ class reportes extends CApplicationComponent
         {
             $email.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <thead>";
-            $email.=$this->cabecera(array('Ranking','Cliente RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RPRO','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+            $email.=self::cabecera(array('Ranking','Cliente RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RPRO','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
             $email.="</thead>
                  <tbody>";
             $max=count($clientesRpro);
             foreach ($clientesRpro as $key => $clienteRpro)
             {
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->color($key+1);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::color($key+1);
                 $email.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -1539,7 +1544,7 @@ class reportes extends CApplicationComponent
                         </tr>"; 
                
             }
-            $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+            $email.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -1595,7 +1600,7 @@ class reportes extends CApplicationComponent
             }
             $email.="<table>
                  <thead>";
-        $email.=$this->cabecera(array('Ranking','Destino RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','Destino RPRO','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Destino RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','Destino RPRO','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="</thead>
                  <tbody>";
             /*Totales por destino con mas de 1 dollar de margen RPRO*/
@@ -1613,8 +1618,8 @@ class reportes extends CApplicationComponent
                 $max=count($destinosRpro);
                 foreach($destinosRpro as $key => $destinoRpro)
                 {
-                    $pos=$this->ranking($key+1,$max);
-                    $email.=$this->colorDestino($destinoRpro->destino);
+                    $pos=self::ranking($key+1,$max);
+                    $email.=self::colorDestino($destinoRpro->destino);
                     $email.="<td style='text-align: center;' class='position'>".
                                 $pos.
                             "</td>
@@ -1787,7 +1792,7 @@ class reportes extends CApplicationComponent
                             </td> 
                             </tr>";    
             }
-            $email.=$this->cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
+            $email.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
                                 array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -1895,7 +1900,7 @@ class reportes extends CApplicationComponent
         $email="<div>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <thead>";
-        $email.=$this->cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $email.="<thead>
                  <tbody>";
          
@@ -1906,8 +1911,8 @@ class reportes extends CApplicationComponent
             foreach($posicionNeta as $key => $operador)
             {  
 
-                $pos=$this->ranking($key+1,$max);
-                $email.=$this->color($key+1);
+                $pos=self::ranking($key+1,$max);
+                $email.=self::color($key+1);
                 $email.="<td style='text-align: center;' class='ranking'>".
                             $pos. 
                         "</td>
@@ -1956,7 +1961,7 @@ class reportes extends CApplicationComponent
                       <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
         }
-        $email.=$this->cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $email.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $Total=Balance::model()->findBySql($sqlTotal);
         if($Total!=null)
         { 
@@ -2063,10 +2068,10 @@ class reportes extends CApplicationComponent
                     $nombre=$vendedor->vendedor;
                 }
                 $email.="<tr>
-                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$posicion."</td>
-                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$nombre."</td>
-                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$numero."</td>
-                            <td style='".$this->colorEstilo($vendedor->vendedor)."'>".$vendedor->operador."</td>
+                            <td style='".self::colorVendedor($vendedor->vendedor)."'>".$posicion."</td>
+                            <td style='".self::colorVendedor($vendedor->vendedor)."'>".$nombre."</td>
+                            <td style='".self::colorVendedor($vendedor->vendedor)."'>".$numero."</td>
+                            <td style='".self::colorVendedor($vendedor->vendedor)."'>".$vendedor->operador."</td>
                         </tr>";
             } 
         }
@@ -2083,7 +2088,7 @@ class reportes extends CApplicationComponent
     * Metodo encargado de pintar las filas de los reportes
     * @param int $pos es un numero indicando que color debe regresar
     */
-    public function color($pos)
+    public static function color($pos)
     {
         $color=null;
         $j=0;
@@ -2114,9 +2119,40 @@ class reportes extends CApplicationComponent
                 break;
         }
         return $color;
-
     }
-    public function colorEstilo($var)
+    public static function colorEstilo($pos)
+    {
+        $color=null;
+        $j=0;
+        for($i=1;$i<=$pos;$i++)
+        { 
+            if($j>=4)
+            {
+                $j=1;
+            }
+            else
+            {
+                $j=$j+1;
+            }
+        }
+        switch($j)
+        {
+            case 1:
+                $color="background-color:#FFC8AE; color:#584E4E;";
+                break;
+            case 2:
+                $color="background-color:#B3A5CF; color:#584E4E;";
+                break;
+            case 3:
+                $color="background-color:#AFD699; color:#584E4E;";
+                break;
+            case 4:
+                $color="background-color:#F8B6C9; color:#584E4E;";
+                break;
+        }
+        return $color;
+    }
+    public static function colorVendedor($var)
     {
         $color=null;
         if(substr_count($var, 'Leandro') >= 1)
@@ -2185,7 +2221,7 @@ class reportes extends CApplicationComponent
     * @param $var string a identificar
     * @return string con la fila coloreada
     */
-    public function colorDestino($var)
+    public static function colorDestino($var)
     {
         if(substr_count($var, 'USA') >= 1 || substr_count($var, 'CANADA') >= 1)
         {
@@ -2261,7 +2297,7 @@ class reportes extends CApplicationComponent
     * @param $estilos string con los estilos para la fila
     * @return string con la fila construida
     */
-    public function cabecera($etiquetas,$estilos)
+    public static function cabecera($etiquetas,$estilos)
     {
         if(count($etiquetas)>1)
         {
@@ -2291,7 +2327,7 @@ class reportes extends CApplicationComponent
     * @param $max int valor a dividir
     * @return $valor int
     */
-    public function ranking($pos,$max)
+    public static function ranking($pos,$max)
     {
         if($max>10)
         {
