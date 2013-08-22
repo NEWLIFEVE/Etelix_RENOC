@@ -1231,7 +1231,7 @@ class PHPMailer {
         2 => $name,
         3 => $encoding,
         4 => $type,
-        5 => false,  // isStringAttachment
+        5 => true,  // isStringAttachment
         6 => 'attachment',
         7 => 0
       );
