@@ -44,7 +44,7 @@ class Perdidas extends Reportes
                             Yii::app()->format->format_decimal($balance->minutes).
                          "</td>
                           <td style='text-align: left;".self::colorEstilo($pos)."' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($balance->margin).
+                            Yii::app()->format->format_decimal($balance->margin,5).
                          "</td>
                         </tr>";
             }
@@ -81,7 +81,7 @@ class Perdidas extends Reportes
                         TOTAL
                         </td>
                         <td style='background-color:#999999; color:#FFFFFF;'>".
-                            Yii::app()->format->format_decimal($Total->margin).
+                            Yii::app()->format->format_decimal($Total->margin,5).
                        "</td>
                     </tr>";
         }
