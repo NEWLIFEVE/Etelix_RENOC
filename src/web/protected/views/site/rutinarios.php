@@ -162,24 +162,24 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </td>
             </tr>
-            <!--<tr>
+            <tr>
                 <td>
                     <label class="checkbox">
-                        <input type="checkbox" value="true" id="otros2" class="custom-checkbox" name="lista[otros2]"> 
-                        <label for="otros2">
+                        <input type="checkbox" value="true" id="perdidas" class="custom-checkbox" name="lista[perdidas]"> 
+                        <label for="perdidas">
                             <h4>
                             </h4>
                         </label>
                     </label>
                 </td>
                 <td id="td5">
-                    <label for="otros2">
+                    <label for="perdidas">
                         <h4>
-                            Otros
+                            Perdidas
                         </h4>
                     </label>
                 </td>
-            </tr>-->
+            </tr>
             <tr> 
                 <td>
                 </td> 

@@ -12,7 +12,8 @@ class EnviarEmail extends CApplicationComponent {
         
     }
 
-    public function enviar($html, $user, $asunto) {
+    public function enviar($html, $user, $asunto)
+    {
 
         if (isset($html) && isset($html)) {
             $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
@@ -33,6 +34,7 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->Subject = Yii::t('', $asunto);
             $message = $html;
             $mailer->Body = $message;
+            //$mailer->AddAttachment($ruta, $asunto);
             $mailer->Send();
         }
     }
