@@ -76,11 +76,12 @@ var ajax=function()
     this.formulario=null;
     this.mail="/site/mail";
     this.excel="/site/excel";
+    this.mailLista="/site/maillista";
 }
 ajax.prototype.run=function()
 {
     var self=this;
-    $('#mail,#excel').on('click',function(e)
+    $('#mail,#excel,#mailRenoc').on('click',function(e)
     {
         e.preventDefault();
         var numero=$('input[type="checkbox"]').filter(function()
@@ -90,38 +91,48 @@ ajax.prototype.run=function()
         if(numero.length>0)
         { 
             var tipo=$(this).attr('id');
-            if(tipo=="mail")
-            {
-                self.getFormPost();
-                self.enviarMail();
-              var espere = $("<div class='cargando'><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div></div>").hide();
-               $("body").append(espere)
-               espere.fadeIn(2000);
-            }
-            else
-            {
-                self.getFormPost();
-                for(var i = 0; i <= self.formulario.length - 2; i++)
+                if(tipo=="mail")
                 {
-//                    $("body").append.fadeIn()("<div class='cargando'><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div></div>");
-                    fecha=self.formulario[self.formulario.length-1].value;
-                    nombre=self.formulario[i].name;
-                    valor=self.formulario[i].value;
-                    var ventana=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,"Archivos Excel");
-                };
-            }
-        }
+                    self.getFormPost();
+                    self.enviarMail();
+                  var espere = $("<div class='cargando'></div><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div>").hide();
+                   $("body").append(espere)
+                   espere.fadeIn('fast');
+                }
+                else if(tipo=="excel")
+                {
+                    self.getFormPost();
+                    var ventana={};
+                    for(var i = 0; i <= self.formulario.length - 2; i++)
+                    {
+                        fecha=self.formulario[self.formulario.length-1].value;
+                        nombre=self.formulario[i].name;
+                        valor=self.formulario[i].value;
+                        if(nombre!="lista[todos]")
+                        {
+                            ventana[i]=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+                        }
+                    };
+                }
+                else
+                {
+                    self.getFormPost();
+                    self.enviarMailLista();
+                  var espere = $("<div class='cargando'></div><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div>").hide();
+                   $("body").append(espere)
+                   espere.fadeIn('fast');
+                }
+          }
         else
-        {
-var stop = $("<div class='cargando'><div class='mensaje'><h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/></div></div>").hide();
-$('body').append(stop);
-stop.fadeIn(1000);
-
-        setTimeout(function()
-        {
-            stop.fadeOut(2000);
-        }, 3000);
-        }
+          {
+                var stop = $("<div class='cargando'></div><div class='mensaje'><h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/></div>").hide();
+                $('body').append(stop);
+                stop.fadeIn('fast');
+                setTimeout(function()
+                {
+                    stop.fadeOut('fast');
+                }, 2000);
+          }
     });
 }
 ajax.prototype.getFormPost=function()
@@ -139,17 +150,46 @@ ajax.prototype.enviarMail=function()
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        $('.mensaje').html("<h2 class='exito'>Mensaje Enviado</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn(500);
+        $('.mensaje').html("<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
         setTimeout(function()
         {
-            $('.cargando').fadeOut(1000);
-        }, 4000);
+            $('.cargando').fadeOut('fast');
+            $('.mensaje').fadeOut('fast');
+        }, 3000);
     }).fail(function()
     {
         $('.mensaje').html("<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/><p><p><p><p>").fadeIn(200);
         setTimeout(function()
         {
-            $('.cargando').fadeOut(1000);
+            $('.cargando').fadeOut('fast');
+            $('.mensaje').fadeOut('fast');
+        }, 4000);
+    });
+}
+ajax.prototype.enviarMailLista=function()
+{
+    var self=this;
+    var opciones=
+    {
+        url:this.mailLista,
+        data:this.formulario,
+        type:'POST'
+    };
+    this.envio=$.ajax(opciones).done(function(datos)
+    {
+        $('.mensaje').html("<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
+        setTimeout(function()
+        {
+            $('.cargando').fadeOut('fast');
+            $('.mensaje').fadeOut('fast');
+        }, 3000);
+    }).fail(function()
+    {
+        $('.mensaje').html("<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/><p><p><p><p>").fadeIn(200);
+        setTimeout(function()
+        {
+            $('.cargando').fadeOut('fast');
+            $('.mensaje').fadeOut('fast');
         }, 4000);
     });
 }
