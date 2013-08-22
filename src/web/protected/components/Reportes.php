@@ -19,6 +19,11 @@ class reportes extends CApplicationComponent
       $variable=AltoImpactoVendedor::Vendedor($fecha);
       return $variable;
     }
+    public function Perdidas($fecha)
+    {
+      $variable=Perdidas::reporte($fecha);
+      return $variable;
+    }
     /**
     *
     */
