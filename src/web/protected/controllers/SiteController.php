@@ -174,18 +174,30 @@ class SiteController extends Controller
             {
                 $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+            }
+            if(isset($_POST['lista']['AI10V']))
+            {
+                $correos['altoImpactoVendedor']['asunto']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
+                $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
             } 
             if(isset($_POST['lista']['PN']))
             {
-                $correos['posicionNeta']['asunto']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
+                $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_POST['lista']['DC']))
             {
-                $correos['distribucionComercial']['asunto']="Distribución Comercial al ".str_replace("-","",$fecha);
+                $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
+            if(isset($_POST['lista']['perdidas']))
+            {
+                $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
+                $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+            }
         }
+        $tiempo=30*count($correos);
+        ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         {
             Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
@@ -209,6 +221,11 @@ class SiteController extends Controller
                 $archivos['altoImpacto']['nombre']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $archivos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
             } 
+            if(isset($_GET['lista']['AI10V']))
+            {
+                $archivos['altoImpactoVendedor']['nombre']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
+                $archivos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
+            } 
             if(isset($_GET['lista']['PN']))
             {
                 $archivos['posicionNeta']['nombre']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
@@ -218,7 +235,12 @@ class SiteController extends Controller
             {
                 $archivos['distribucionComercial']['nombre']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $archivos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
-            } 
+            }
+            if(isset($_GET['lista']['perdidas']))
+            {
+                $archivos['perdidas']['nombre']="RENOC Perdidas al ".str_replace("-","",$fecha);
+                $archivos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+            }
         }
         foreach($archivos as $key => $archivo)
         {
@@ -246,31 +268,51 @@ class SiteController extends Controller
             {
                 $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+            }
+            if(isset($_POST['lista']['AI10V']))
+            {
+                $correos['altoImpactoVendedor']['asunto']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
+                $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
             } 
             if(isset($_POST['lista']['PN']))
             {
-                $correos['posicionNeta']['asunto']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
+                $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_POST['lista']['DC']))
             {
-                $correos['distribucionComercial']['asunto']="Distribución Comercial al ".str_replace("-","",$fecha);
+                $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
+            if(isset($_POST['lista']['perdidas']))
+            {
+                $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
+                $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+            }
         }
+        $tiempo=30*count($correos);
+        ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         {
             Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
         }
         echo "Mensaje Enviado";
     }
-    public function genExcel($nombre,$cuerpo)
+    public function genExcel($nombre,$cuerpo,$salida=true)
     {
-        header("Content-type: application/vnd.ms-excel; name='excel'");
-        header("Content-Disposition: filename=$nombre.xls");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        echo $cuerpo;
+        if($salida)
+        {
+            header("Content-type: application/vnd.ms-excel; name='excel'");
+            header("Content-Disposition: filename=$nombre.xls");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+            echo $cuerpo;
+        }
+        else
+        {
+            $fp=@fopen("adjuntos/$nombre.xls","w+");
+            fwrite($fp,$cuerpo);
+        }
     }
 }
 ?>
