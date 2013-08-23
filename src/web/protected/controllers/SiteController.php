@@ -169,38 +169,45 @@ class SiteController extends Controller
             {
                 $correos['altoImpactoRetail']['asunto']="RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
                 $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
+                $correos['altoImpactoRetail']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha).".xls";
             }
             if(isset($_GET['lista']['AI10']))
             {
                 $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+                $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Alto Impacto (+10$) al (+1$) al  ".str_replace("-","",$fecha).".xls";
             }
             if(isset($_GET['lista']['AI10V']))
             {
                 $correos['altoImpactoVendedor']['asunto']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
                 $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
+                $correos['altoImpactoVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha).".xls";
             } 
             if(isset($_GET['lista']['PN']))
             {
                 $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
+                $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta al ".str_replace("-","",$fecha).".xls";
             }
             if(isset($_GET['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
+                $correos['distribucionComercial']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."Distribucion Comercial al ".str_replace("-","",$fecha).".xls";
             }
             if(isset($_GET['lista']['perdidas']))
             {
                 $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+                $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Perdidas al ".str_replace("-","",$fecha).".xls";
             }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
-        {
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
+        { 
+            $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
     }
@@ -228,7 +235,7 @@ class SiteController extends Controller
             } 
             if(isset($_GET['lista']['PN']))
             {
-                $archivos['posicionNeta']['nombre']="RENOC Posicion Neta del día ".str_replace("-","",$fecha);
+                $archivos['posicionNeta']['nombre']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
             if(isset($_GET['lista']['DC']))
@@ -255,46 +262,54 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user="angelo08121987@gmail.com";
-        if(isset($_GET['fecha']))
+
+        $user="mmzmm3z@gmail.com";
+        if(isset($_POST['fecha']))
         {
-            $fecha=(string)$_GET['fecha'];
-            if(isset($_GET['lista']['AIR']))
+            $fecha=(string)$_POST['fecha'];
+            if(isset($_POST['lista']['AIR']))
             {
                 $correos['altoImpactoRetail']['asunto']="RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
                 $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
+                $correos['altoImpactoRetail']['ruta']=Yii::getPathOfAlias('webroot.adjuntos')."RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_GET['lista']['AI10']))
+            if(isset($_POST['lista']['AI10']))
             {
                 $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+                $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos')."RENOC Alto Impacto (+10$) al (+1$) al  ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_GET['lista']['AI10V']))
+            if(isset($_POST['lista']['AI10V']))
             {
                 $correos['altoImpactoVendedor']['asunto']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
                 $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
+                $correos['altoImpactoVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos')."RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha).".xls";
             } 
-            if(isset($_GET['lista']['PN']))
+            if(isset($_POST['lista']['PN']))
             {
                 $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
+                $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos')."RENOC Posicion Neta al ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_GET['lista']['DC']))
+            if(isset($_POST['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
+                $correos['distribucionComercial']['ruta']=Yii::getPathOfAlias('webroot.adjuntos')."Distribucion Comercial al ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_GET['lista']['perdidas']))
+            if(isset($_POST['lista']['perdidas']))
             {
                 $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+                $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos')."RENOC Perdidas al ".str_replace("-","",$fecha).".xls";
             }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
-        {
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto']);
+        { 
+            $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
     }
@@ -307,6 +322,7 @@ class SiteController extends Controller
             header("Pragma: no-cache");
             header("Expires: 0");
             echo $cuerpo;
+
         }
         else
         {
@@ -314,10 +330,16 @@ class SiteController extends Controller
             fwrite($fp,$cuerpo);
         }
     }
-    public function probandofunction()
+    public function actionPruebaruta()
     {
-        $hola='angelo';
-        echo $hola;
+        $asunto='perro';
+    $name=($asunto.'.xls');
+    
+    $funciona='adjuntos/'.$asunto.'.xls';
+    
+    echo $name;
+    echo '<br>';
+    echo $funciona;
     }
 }
 ?>

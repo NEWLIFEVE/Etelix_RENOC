@@ -12,7 +12,7 @@ class EnviarEmail extends CApplicationComponent {
         
     }
 
-    public function enviar($html, $user, $asunto)
+    public function enviar($html, $user, $asunto, $ruta)
     {
 
         if (isset($html) && isset($html)) {
@@ -35,9 +35,7 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->FromName = 'RENOC';
             $mailer->CharSet = 'UTF-8';
             $mailer->Subject = Yii::t('', $asunto);
-            $path=('adjuntos/Distribucion Comercial al 20130816.xls');
-            $name=('Distribucion Comercial al 20130816.xls');
-            $mailer->AddAttachment($path, $name); //Archivo adjunto
+            $mailer->AddAttachment($ruta, $asunto,'utf-8','xls'); //Archivo adjunto
             $message = $html;
             $mailer->Body = $message;
 
