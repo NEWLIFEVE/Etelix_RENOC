@@ -6,7 +6,7 @@ class AltoImpactoVendedor extends Reportes
         $cuerpo="<div>
                   <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                   <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking Vendedor','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
@@ -21,68 +21,66 @@ class AltoImpactoVendedor extends Reportes
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
+            $posv=1;
             $nombre=null;
-            $pos=1;
-            $max=count($clientes);
-            $col=1;
             foreach ($clientes as $key => $cliente)
             {
+                $pos=$key+1;
+                $estilo=self::colorEstilo($pos);
                 if($nombre==$cliente->vendedor)
                 {
-                    $pos=$pos+1;
-                    $titulo="";
+                    $posv=$posv+1;
                 }
                 else
                 {
+                    $posv=1;
                     $nombre=$cliente->vendedor;
-                    $pos=1;
-                    $titulo=$nombre;
-                    $col=$col+1;
+                    $estilo.="border-top-style:solid;border-top-color:white;border-top-width:20px;";
                 }
-                $cuerpo.=self::color($key+1);
-                $cuerpo.="<td style='text-align: center;' class='position'>".
-                            $pos.
+                $cuerpo.="<tr>
+                        <td style='text-align: center;".$estilo."' class='position'>".
+                            $posv.
                         "</td>
-                        <td style='text-align: left;' class='cliente'>".
+                        <td style='text-align: left;".$estilo."' class='cliente'>".
                             $cliente->cliente.
                         "</td>
-                        <td style='text-align: left;".self::colorEstilo($col)."' class='Vendedor'>".
-                            $titulo.
+                        <td style='text-align: left;".$estilo."' class='Vendedor'>".
+                            $cliente->vendedor.
                         "</td>
-                         <td style='text-align: left;' class='totalCalls'>".
+                         <td style='text-align: left;".$estilo."' class='totalCalls'>".
                             Yii::app()->format->format_decimal($cliente->total_calls).
                         "</td>
-                         <td style='text-align: left;' class='completeCalls'>".
+                         <td style='text-align: left;".$estilo."' class='completeCalls'>".
                             Yii::app()->format->format_decimal($cliente->complete_calls).
                         "</td>
-                         <td style='text-align: left;' class='minutes'>".
+                         <td style='text-align: left;".$estilo."' class='minutes'>".
                             Yii::app()->format->format_decimal($cliente->minutes).
                         "</td>
-                         <td style='text-align: left;' class='asr'>".
+                         <td style='text-align: left;".$estilo."' class='asr'>".
                             Yii::app()->format->format_decimal($cliente->asr).
                         "</td>
-                         <td style='text-align: center;' class='acd'>".
+                         <td style='text-align: center;".$estilo."' class='acd'>".
                             Yii::app()->format->format_decimal($cliente->acd).
                         "</td>
-                        <td style='text-align: left;' class='pdd'>".
+                        <td style='text-align: left;".$estilo."' class='pdd'>".
                             Yii::app()->format->format_decimal($cliente->pdd).
                         "</td>
-                         <td style='text-align: left;' class='cost'>".
+                         <td style='text-align: left;".$estilo."' class='cost'>".
                             Yii::app()->format->format_decimal($cliente->cost).
                         "</td>
-                         <td style='text-align: left;' class='revenue'>".
+                         <td style='text-align: left;".$estilo."' class='revenue'>".
                             Yii::app()->format->format_decimal($cliente->revenue).
                         "</td>
-                         <td style='text-align: center;' class='margin'>".
+                         <td style='text-align: center;".$estilo."' class='margin'>".
                             Yii::app()->format->format_decimal($cliente->margin).
                         "</td>
-                         <td style='text-align: left;' class='margin_percentage'>".
+                         <td style='text-align: left;".$estilo."' class='margin_percentage'>".
                             Yii::app()->format->format_decimal($cliente->margin_percentage)."%
                          </td>
-                         </td><td style='text-align: left;' class='cliente'>".
+                         </td><td style='text-align: left;".$estilo."' class='cliente'>".
                             $cliente->cliente.
                         "</td>
-                         <td style='text-align: center;' class='position'>".
+                         <td style='text-align: center;".$estilo."' class='position'>".
                             $pos.
                         "</td>
                          </tr>";
@@ -279,7 +277,7 @@ class AltoImpactoVendedor extends Reportes
 
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Ranking Vendedor','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         // Selecciono los totales por proveedores con de mas de 10 dolares de margen
@@ -296,67 +294,66 @@ class AltoImpactoVendedor extends Reportes
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
         if($proveedores!=null)
         {
+            $posv=1;
             $nombre=null;
-            $pos=1;
-            $max=count($proveedores);
             foreach($proveedores as $key => $proveedor)
             {
+                $pos=$key+1;
+                $estilo=self::colorEstilo($pos);
                 if($nombre==$proveedor->vendedor)
                 {
-                    $pos=$pos+1;
-                    $titulo="";
+                    $posv=$posv+1;
                 }
                 else
                 {
+                    $posv=1;
                     $nombre=$proveedor->vendedor;
-                    $pos=1;
-                    $titulo=$nombre;
-                    $col=$col+1;
+                    $estilo.="border-top-style:solid;border-top-color:white;border-top-width:10px;";
                 }
-                $cuerpo.=self::color($key+1);
-                $cuerpo.="<td style='text-align: center;' class='ranking'>".
-                            $pos.
+                $cuerpo.="<tr>
+                        <td style='text-align: left;".$estilo."' class='supplier'>".
+                            $posv.
                         "</td>
-                         <td style='text-align: left;' class='supplier'>".
+                         <td style='text-align: left;".$estilo."' class='supplier'>".
                             $proveedor->proveedor.
                         "</td>
-                        <td style='text-align: left;".self::colorEstilo($col)."' class='vendedor'>".
-                            $titulo.
+                        <td style='text-align: left;".$estilo."' class='vendedor'>".
+                            $proveedor->vendedor.
                         "</td>
-                         <td style='text-align: left;' class='totalcalls'>".
+                         <td style='text-align: left;".$estilo."' class='totalcalls'>".
                             Yii::app()->format->format_decimal($proveedor->total_calls).
                         "</td>
-                         <td style='text-align: left;' class='completeCalls'>".
+                         <td style='text-align: left;".$estilo."' class='completeCalls'>".
                             Yii::app()->format->format_decimal($proveedor->complete_calls).
                         "</td>
-                         <td style='text-align: left;' class='minutes'>".
+                         <td style='text-align: left;".$estilo."' class='minutes'>".
                             Yii::app()->format->format_decimal($proveedor->minutes).
                         "</td>
-                         <td style='text-align: left;' class='asr'>".
+                         <td style='text-align: left;".$estilo."' class='asr'>".
                             Yii::app()->format->format_decimal($proveedor->asr).
                         "</td>
-                         <td style='text-align: left;' class='acd'>".
+                         <td style='text-align: left;".$estilo."' class='acd'>".
                             Yii::app()->format->format_decimal($proveedor->acd).
                         "</td>
-                         <td style='text-align: left;' class='pdd'>".
+                         <td style='text-align: left;".$estilo."' class='pdd'>".
                             Yii::app()->format->format_decimal($proveedor->pdd).
                         "</td>
-                         <td style='text-align: left;' class='cost'>".
+                         <td style='text-align: left;".$estilo."' class='cost'>".
                             Yii::app()->format->format_decimal($proveedor->cost).
                         "</td>
-                         <td style='text-align: left;' class='revenue'>".
+                         <td style='text-align: left;".$estilo."' class='revenue'>".
                             Yii::app()->format->format_decimal($proveedor->revenue).
                         "</td>
-                         <td style='text-align: left;' class='margin'>".
+                         <td style='text-align: left;".$estilo."' class='margin'>".
                             Yii::app()->format->format_decimal($proveedor->margin).
                         "</td>
-                         <td style='text-align: left;' class='margin_percentage'>".
+                         <td style='text-align: left;".$estilo."' class='margin_percentage'>".
                             Yii::app()->format->format_decimal($proveedor->margin_percentage)."%
                          </td>
-                         <td style='text-align: left;' class='supplier'>".
+                         <td style='text-align: left;".$estilo."' class='supplier'>".
                             $proveedor->proveedor.
                         "</td>
-                         <td style='text-align: center;' class='position'>".
+                         <td style='text-align: center;".$estilo."' class='position'>".
                             $pos.
                         "</td>
                     </tr>";
@@ -381,8 +378,6 @@ class AltoImpactoVendedor extends Reportes
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='ranking'>
-                        </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: center;' class='etiqueta'>
                             TOTAL
@@ -440,8 +435,6 @@ class AltoImpactoVendedor extends Reportes
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
-                        </td>
                         <td style='text-align: center;' class='etiqueta'>
                             Total
                         </td>
@@ -488,8 +481,8 @@ class AltoImpactoVendedor extends Reportes
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
-                                array('','','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -504,8 +497,6 @@ class AltoImpactoVendedor extends Reportes
         if($proveedoresTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
-                        </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
