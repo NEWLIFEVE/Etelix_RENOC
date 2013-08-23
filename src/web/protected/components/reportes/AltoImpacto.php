@@ -1,86 +1,81 @@
 <?php
-class AltoImpactoVendedor extends Reportes
+/**
+* @package reportes
+*/
+class AltoImpacto extends Reportes
 {
-    public static function Vendedor($fecha)
-    {
+	/**
+	* Genera la tabla de Alto Impacto (+10$)
+	* @param $fecha date fecha a consultar
+	* @return string con la tabla armada
+	*/
+	public static function reporte($fecha)
+	{
         $cuerpo="<div>
                   <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                   <thead>";
-        $cuerpo.=self::cabecera(array('Ranking Vendedor','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
-        $sqlClientes="SELECT c.name AS cliente, m.name AS vendedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        $sqlClientes="SELECT c.name AS cliente, x.id_carrier_customer AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_customer
-                           ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
-                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id
-                      ORDER BY m.name ASC, x.margin DESC";
+                           ORDER BY margin DESC) x, carrier c
+                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id
+                      ORDER BY x.margin DESC";
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
-            $posv=1;
-            $nombre=null;
             foreach ($clientes as $key => $cliente)
             {
                 $pos=$key+1;
-                $estilo=self::colorEstilo($pos);
-                if($nombre==$cliente->vendedor)
-                {
-                    $posv=$posv+1;
-                }
-                else
-                {
-                    $posv=1;
-                    $nombre=$cliente->vendedor;
-                    $estilo.="border-top-style:solid;border-top-color:white;border-top-width:20px;";
-                }
-                $cuerpo.="<tr>
-                        <td style='text-align: center;".$estilo."' class='position'>".
-                            $posv.
+                $cuerpo.=self::color($pos);
+                $cuerpo.="<td style='text-align: center;' class='position'>".
+                            $pos.
                         "</td>
-                        <td style='text-align: left;".$estilo."' class='cliente'>".
+                        <td style='text-align: left;' class='cliente'>".
                             $cliente->cliente.
                         "</td>
-                        <td style='text-align: left;".$estilo."' class='Vendedor'>".
-                            $cliente->vendedor.
+                        <td style='text-align: left;' class='Vendedor'>".
+                            CarrierManagers::getManager($cliente->id).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='totalCalls'>".
+                         <td style='text-align: left;' class='totalCalls'>".
                             Yii::app()->format->format_decimal($cliente->total_calls).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='completeCalls'>".
+                         <td style='text-align: left;' class='completeCalls'>".
                             Yii::app()->format->format_decimal($cliente->complete_calls).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='minutes'>".
+                         <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($cliente->minutes).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='asr'>".
+                         <td style='text-align: left;' class='asr'>".
                             Yii::app()->format->format_decimal($cliente->asr).
                         "</td>
-                         <td style='text-align: center;".$estilo."' class='acd'>".
+                         <td style='text-align: center;' class='acd'>".
                             Yii::app()->format->format_decimal($cliente->acd).
                         "</td>
-                        <td style='text-align: left;".$estilo."' class='pdd'>".
+                        <td style='text-align: left;' class='pdd'>".
                             Yii::app()->format->format_decimal($cliente->pdd).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='cost'>".
+                         <td style='text-align: left;' class='cost'>".
                             Yii::app()->format->format_decimal($cliente->cost).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='revenue'>".
+                         <td style='text-align: left;' class='revenue'>".
                             Yii::app()->format->format_decimal($cliente->revenue).
                         "</td>
-                         <td style='text-align: center;".$estilo."' class='margin'>".
+                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($cliente->margin).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='margin_percentage'>".
+                         <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal($cliente->margin_percentage)."%
                          </td>
-                         </td><td style='text-align: left;".$estilo."' class='cliente'>".
+                         </td><td style='text-align: left;' class='cliente'>".
                             $cliente->cliente.
                         "</td>
-                         <td style='text-align: center;".$estilo."' class='position'>".
+                         <td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
                          </tr>";
@@ -277,83 +272,68 @@ class AltoImpactoVendedor extends Reportes
 
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Ranking Vendedor','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         // Selecciono los totales por proveedores con de mas de 10 dolares de margen
-        $sqlProveedores="SELECT c.name AS proveedor, m.name AS vendedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        $sqlProveedores="SELECT c.name AS proveedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                          FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
                               FROM balance
                               WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                               GROUP BY id_carrier_supplier
-                              ORDER BY margin DESC) x, carrier c,
-                              carrier_managers cm,
-                              managers m
-                         WHERE x.margin > 10 AND x.id_carrier_supplier=c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id
-                         ORDER BY m.name ASC, x.margin DESC";
+                              ORDER BY margin DESC) x, carrier c
+                         WHERE x.margin > 10 AND x.id_carrier_supplier = c.id
+                         ORDER BY x.margin DESC";
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
         if($proveedores!=null)
         {
-            $posv=1;
-            $nombre=null;
             foreach($proveedores as $key => $proveedor)
             {
                 $pos=$key+1;
-                $estilo=self::colorEstilo($pos);
-                if($nombre==$proveedor->vendedor)
-                {
-                    $posv=$posv+1;
-                }
-                else
-                {
-                    $posv=1;
-                    $nombre=$proveedor->vendedor;
-                    $estilo.="border-top-style:solid;border-top-color:white;border-top-width:10px;";
-                }
-                $cuerpo.="<tr>
-                        <td style='text-align: left;".$estilo."' class='supplier'>".
-                            $posv.
+                $cuerpo.=self::color($pos);
+                $cuerpo.="<td style='text-align: center;' class='ranking'>".
+                            $pos.
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='supplier'>".
+                         <td style='text-align: left;' class='supplier'>".
                             $proveedor->proveedor.
                         "</td>
-                        <td style='text-align: left;".$estilo."' class='vendedor'>".
-                            $proveedor->vendedor.
+                        <td style='text-align: left;' class='vendedor'>".
+                            CarrierManagers::getManager($proveedor->id).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='totalcalls'>".
+                         <td style='text-align: left;' class='totalcalls'>".
                             Yii::app()->format->format_decimal($proveedor->total_calls).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='completeCalls'>".
+                         <td style='text-align: left;' class='completeCalls'>".
                             Yii::app()->format->format_decimal($proveedor->complete_calls).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='minutes'>".
+                         <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($proveedor->minutes).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='asr'>".
+                         <td style='text-align: left;' class='asr'>".
                             Yii::app()->format->format_decimal($proveedor->asr).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='acd'>".
+                         <td style='text-align: left;' class='acd'>".
                             Yii::app()->format->format_decimal($proveedor->acd).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='pdd'>".
+                         <td style='text-align: left;' class='pdd'>".
                             Yii::app()->format->format_decimal($proveedor->pdd).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='cost'>".
+                         <td style='text-align: left;' class='cost'>".
                             Yii::app()->format->format_decimal($proveedor->cost).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='revenue'>".
+                         <td style='text-align: left;' class='revenue'>".
                             Yii::app()->format->format_decimal($proveedor->revenue).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='margin'>".
+                         <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($proveedor->margin).
                         "</td>
-                         <td style='text-align: left;".$estilo."' class='margin_percentage'>".
+                         <td style='text-align: left;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal($proveedor->margin_percentage)."%
                          </td>
-                         <td style='text-align: left;".$estilo."' class='supplier'>".
+                         <td style='text-align: left;' class='supplier'>".
                             $proveedor->proveedor.
                         "</td>
-                         <td style='text-align: center;".$estilo."' class='position'>".
+                         <td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
                     </tr>";
@@ -378,6 +358,8 @@ class AltoImpactoVendedor extends Reportes
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='ranking'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: center;' class='etiqueta'>
                             TOTAL
@@ -435,6 +417,8 @@ class AltoImpactoVendedor extends Reportes
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: center;' class='etiqueta'>
                             Total
                         </td>
@@ -481,8 +465,8 @@ class AltoImpactoVendedor extends Reportes
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
-                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+                                array('','','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -497,6 +481,8 @@ class AltoImpactoVendedor extends Reportes
         if($proveedoresTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -562,10 +548,9 @@ class AltoImpactoVendedor extends Reportes
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
-            $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=self::ranking($key+1,$max);
+                $pos=$key+1;
                 $cuerpo.=self::colorDestino($destino->destino);
                 $cuerpo.="<td style='text-align: center;' class='diferencialBancario'>".
                             $pos.
@@ -829,6 +814,6 @@ class AltoImpactoVendedor extends Reportes
                     </tr>";
         }
         return $cuerpo;
-    }
+	}
 }
 ?>

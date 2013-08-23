@@ -12,11 +12,13 @@ class EnviarEmail extends CApplicationComponent {
         
     }
 
-    public function enviar($html, $user, $asunto)
+    public function enviar($html, $user, $asunto, $ruta)
     {
-
-        if (isset($html) && isset($html)) {
+        if (isset($html) && isset($user))
+        {
             $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
+            $mailer = new PHPMailer();//prueba;
+            $mailer->IsSMTP();//prueba;
             $mailer->Host = 'smtp.gmail.com';
             $mailer->Port = '587';
             //$mailer->SMTPDebug = 2;
@@ -32,10 +34,12 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->FromName = 'RENOC';
             $mailer->CharSet = 'UTF-8';
             $mailer->Subject = Yii::t('', $asunto);
+            $mailer->AddAttachment($ruta); //Archivo adjunto
             $message = $html;
             $mailer->Body = $message;
-            //$mailer->AddAttachment($ruta, $asunto);
+
             $mailer->Send();
+            
         }
     }
 
