@@ -123,16 +123,16 @@ class reportes extends CApplicationComponent
         switch($j)
         {
             case 1:
-                $color="background-color:#FFC8AE; color:#584E4E;";
+                $color="background-color:#FFC8AE; color:#584E4E; border: 1px solid black;";
                 break;
             case 2:
-                $color="background-color:#B3A5CF; color:#584E4E;";
+                $color="background-color:#B3A5CF; color:#584E4E; border: 1px solid black;";
                 break;
             case 3:
-                $color="background-color:#AFD699; color:#584E4E;";
+                $color="background-color:#AFD699; color:#584E4E; border: 1px solid black;";
                 break;
-            case 4:
-                $color="background-color:#F8B6C9; color:#584E4E;";
+            case 4: 
+                $color="background-color:#F8B6C9; color:#584E4E; border: 1px solid black;";
                 break;
         }
         return $color;
