@@ -676,18 +676,6 @@ input.favorite{ background-position: 4px -70px; }
     margin-left: 2.6em;
     
 }
-.error
-{
-/*     background: rgba(0,0,0,0.5);*/
-   background-color: red;
-     height: 100%;
-     position: fixed;
-     text-align: center;
-     top: 0px;
-     width: 100%;
-     content:"";
-     opacity: .8; 
-}
 
  .cargando
 {
@@ -729,9 +717,3 @@ input.favorite{ background-position: 4px -70px; }
 
 }
 
-/*z-index: 1011; position: fixed; padding:
-0px; margin: 0px; width: 100%; height: 100%;
-top: 3%;
-left: 0%; text-align: center; color: rgb(0, 0, 0,12);
-border: 3px solid rgb(140, -1, 170); background-color: 
-rgb(153, 184, 114); cursor: wait;*/

@@ -16,7 +16,10 @@ class EnviarEmail extends CApplicationComponent {
     {
 
         if (isset($html) && isset($html)) {
+
             $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
+            $mailer = new PHPMailer();//prueba;
+            $mailer->IsSMTP();//prueba;
             $mailer->Host = 'smtp.gmail.com';
             $mailer->Port = '587';
             //$mailer->SMTPDebug = 2;
@@ -32,10 +35,14 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->FromName = 'RENOC';
             $mailer->CharSet = 'UTF-8';
             $mailer->Subject = Yii::t('', $asunto);
+            $path=('adjuntos/Distribucion Comercial al 20130816.xls');
+            $name=('Distribucion Comercial al 20130816.xls');
+            $mailer->AddAttachment($path, $name); //Archivo adjunto
             $message = $html;
             $mailer->Body = $message;
-            //$mailer->AddAttachment($ruta, $asunto);
+
             $mailer->Send();
+            
         }
     }
 

@@ -68,7 +68,7 @@ class SiteController extends Controller
                 echo $error['message'];
             else
                 $this->render('error', $error);
-        }
+        } 
     }
 
     /**
@@ -101,9 +101,9 @@ class SiteController extends Controller
     public function actionContact()
     {
         $model=new ContactForm;
-        if(isset($_POST['ContactForm']))
+        if(isset($_GET['ContactForm']))
         {
-            $model->attributes=$_POST['ContactForm'];
+            $model->attributes=$_GET['ContactForm'];
             if($model->validate())
             {
                 $name='=?UTF-8?B?'.base64_encode($model->name).'?=';
@@ -127,15 +127,15 @@ class SiteController extends Controller
     {
         $model = new LoginForm;
         // if it is ajax validation request
-        if(isset($_POST['ajax']) && $_POST['ajax'] === 'login-form')
+        if(isset($_GET['ajax']) && $_GET['ajax'] === 'login-form')
         {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
         // collect user input data
-        if(isset($_POST['LoginForm']))
+        if(isset($_GET['LoginForm']))
         {
-            $model->attributes=$_POST['LoginForm'];
+            $model->attributes=$_GET['LoginForm'];
             // validate user input and redirect to the previous page if valid
             if($model->validate() && $model->login())
                 $this->redirect(Yii::app()->user->returnUrl);
@@ -155,42 +155,42 @@ class SiteController extends Controller
 
     /**
     * Action encargada de envuiar por mail el tipo de reporte seleccionado,
-    * las especificaciones seran recibidas desde el array $_POST
+    * las especificaciones seran recibidas desde el array $_GET
     */
     public function actionMail()
     {
         $fecha=null;
         $correos=null;
         $user=UserIdentity::getEmail();
-        if(isset($_POST['fecha']))
+        if(isset($_GET['fecha']))
         {
-            $fecha=(string)$_POST['fecha'];
-            if(isset($_POST['lista']['AIR']))
+            $fecha=(string)$_GET['fecha'];
+            if(isset($_GET['lista']['AIR']))
             {
                 $correos['altoImpactoRetail']['asunto']="RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
                 $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
-            if(isset($_POST['lista']['AI10']))
+            if(isset($_GET['lista']['AI10']))
             {
                 $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
             }
-            if(isset($_POST['lista']['AI10V']))
+            if(isset($_GET['lista']['AI10V']))
             {
                 $correos['altoImpactoVendedor']['asunto']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
                 $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
             } 
-            if(isset($_POST['lista']['PN']))
+            if(isset($_GET['lista']['PN']))
             {
                 $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
-            if(isset($_POST['lista']['DC']))
+            if(isset($_GET['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
-            if(isset($_POST['lista']['perdidas']))
+            if(isset($_GET['lista']['perdidas']))
             {
                 $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
@@ -249,42 +249,42 @@ class SiteController extends Controller
     }
     /**
     * Action encargada de envuiar por mail el tipo de reporte seleccionado,
-    * las especificaciones seran recibidas desde el array $_POST
+    * las especificaciones seran recibidas desde el array $_GET
     */
     public function actionMaillista()
     {
         $fecha=null;
         $correos=null;
         $user="angelo08121987@gmail.com";
-        if(isset($_POST['fecha']))
+        if(isset($_GET['fecha']))
         {
-            $fecha=(string)$_POST['fecha'];
-            if(isset($_POST['lista']['AIR']))
+            $fecha=(string)$_GET['fecha'];
+            if(isset($_GET['lista']['AIR']))
             {
                 $correos['altoImpactoRetail']['asunto']="RENOC Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
                 $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
             }
-            if(isset($_POST['lista']['AI10']))
+            if(isset($_GET['lista']['AI10']))
             {
                 $correos['altoImpacto']['asunto']="RENOC Alto Impacto (+10$) al ".str_replace("-","",$fecha);
                 $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
             }
-            if(isset($_POST['lista']['AI10V']))
+            if(isset($_GET['lista']['AI10V']))
             {
                 $correos['altoImpactoVendedor']['asunto']="RENOC Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
                 $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
             } 
-            if(isset($_POST['lista']['PN']))
+            if(isset($_GET['lista']['PN']))
             {
                 $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
-            if(isset($_POST['lista']['DC']))
+            if(isset($_GET['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
                 $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
             }
-            if(isset($_POST['lista']['perdidas']))
+            if(isset($_GET['lista']['perdidas']))
             {
                 $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);

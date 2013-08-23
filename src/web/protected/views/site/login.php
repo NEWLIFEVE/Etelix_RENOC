@@ -38,14 +38,13 @@ $this->breadcrumbs=array(
             <div id="barraVerdeUser" ></div>
                <?php echo $form->labelEx($model,''); ?>
 		<?php echo $form->textField($model,'username'); ?>
-		<?php echo $form->error($model,'username'); ?>
+
 	</div>
 
 	<div class="row login">
             <div id="barraVerdePass" ></div>
 		<?php echo $form->labelEx($model,''); ?>
 		<?php echo $form->passwordField($model,'password'); ?>
-		<?php echo $form->error($model,'password'); ?>
 <!--		<p class="hint">
 			Hint: You may login with <kbd>demo</kbd>/<kbd>demo</kbd> or <kbd>admin</kbd>/<kbd>admin</kbd>.
 		</p>-->
@@ -58,6 +57,10 @@ $this->breadcrumbs=array(
 		<?php echo $form->error($model,'rememberMe'); ?>
             
             <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'type'=>'success', 'label'=>'Ingresar >')); ?> 
+                <?php echo $form->error($model,'username'); ?>
+		<?php echo $form->error($model,'password'); ?>
+
+            
             </div>
 	</div>
 <?php $this->endWidget(); ?>
@@ -71,3 +74,4 @@ $this->breadcrumbs=array(
     </div>
    </body>
    </html>
+   

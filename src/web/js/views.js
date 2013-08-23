@@ -146,7 +146,7 @@ ajax.prototype.enviarMail=function()
     {
         url:this.mail,
         data:this.formulario,
-        type:'POST'
+        type:'GET'
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
@@ -173,7 +173,7 @@ ajax.prototype.enviarMailLista=function()
     {
         url:this.mailLista,
         data:this.formulario,
-        type:'POST'
+        type:'GET'
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
