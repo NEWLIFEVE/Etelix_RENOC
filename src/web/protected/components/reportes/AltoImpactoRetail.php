@@ -28,10 +28,9 @@ class AltoImpactoRetail extends Reportes
 
         if($clientes!=null)
         {
-            $max=count($clientes);
             foreach ($clientes as $key => $cliente)
             {
-                $pos=self::ranking($key+1,$max);
+                $pos=$key+1;
                 $cuerpo.=self::color($key+1);
                 $cuerpo.="<td style='text-align: center;' class='position'>".
                             $pos.
@@ -280,10 +279,9 @@ class AltoImpactoRetail extends Reportes
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
-            $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=self::ranking($key+1,$max);
+                $pos=$key+1;
                 $cuerpo.=self::colorDestino($destino->destino);
                 $cuerpo.="<td style='text-align: center;' class='position'>".
                             $pos.
@@ -564,11 +562,10 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.=self::cabecera(array('Ranking','Cliente RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RPRO','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
             $cuerpo.="</thead>
                  <tbody>";
-            $max=count($clientesRpro);
             foreach ($clientesRpro as $key => $clienteRpro)
             {
-                $pos=self::ranking($key+1,$max);
-                $cuerpo.=self::color($key+1);
+                $pos=$key+1;
+                $cuerpo.=self::color($pos);
                 $cuerpo.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -788,10 +785,9 @@ class AltoImpactoRetail extends Reportes
             $destinosRpro=Balance::model()->findAllBySql($sqlDestinosRpro);
             if($destinosRpro!=null)
             {
-                $max=count($destinosRpro);
                 foreach($destinosRpro as $key => $destinoRpro)
                 {
-                    $pos=self::ranking($key+1,$max);
+                    $pos=$key+1;
                     $cuerpo.=self::colorDestino($destinoRpro->destino);
                     $cuerpo.="<td style='text-align: center;' class='position'>".
                                 $pos.
