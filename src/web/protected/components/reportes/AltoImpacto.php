@@ -29,11 +29,10 @@ class AltoImpacto extends Reportes
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
-            $max=count($clientes);
             foreach ($clientes as $key => $cliente)
             {
-                $pos=self::ranking($key+1,$max);
-                $cuerpo.=self::color($key+1);
+                $pos=$key+1;
+                $cuerpo.=self::color($pos);
                 $cuerpo.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -288,11 +287,10 @@ class AltoImpacto extends Reportes
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
         if($proveedores!=null)
         {
-            $max=count($proveedores);
             foreach($proveedores as $key => $proveedor)
             {
-                $pos=self::ranking($key+1,$max);
-                $cuerpo.=self::color($key+1);
+                $pos=$key+1;
+                $cuerpo.=self::color($pos);
                 $cuerpo.="<td style='text-align: center;' class='ranking'>".
                             $pos.
                         "</td>
@@ -550,10 +548,9 @@ class AltoImpacto extends Reportes
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
-            $max=count($destinos);
             foreach($destinos as $key => $destino)
             {
-                $pos=self::ranking($key+1,$max);
+                $pos=$key+1;
                 $cuerpo.=self::colorDestino($destino->destino);
                 $cuerpo.="<td style='text-align: center;' class='diferencialBancario'>".
                             $pos.
