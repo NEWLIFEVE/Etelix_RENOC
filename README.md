@@ -2,6 +2,8 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.1.2
+- Adjuntado de archivo excel en correo electronico
 
 Release 1.1.1
 - Reporte Alto Impacto por vendedor
