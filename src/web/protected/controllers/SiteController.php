@@ -356,8 +356,7 @@ class SiteController extends Controller
             header("Content-Disposition: filename=$nombre.xls");
             header("Pragma: no-cache");
             header("Expires: 0");
-            echo $cuerpo;
-
+            echo $html;
         }
         else
         {
