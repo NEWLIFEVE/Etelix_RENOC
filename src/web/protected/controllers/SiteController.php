@@ -361,7 +361,7 @@ class SiteController extends Controller
         else
         {
             $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-            $fp=@fopen("/home/c1248/renoc/src/web/adjuntos/$nombre.xls","w+");
+            $fp=fopen("/home/c1248/renoc/src/web/adjuntos/$nombre.xls","w+");
             $cuerpo="
             <!DOCTYPE html>
             <html>
