@@ -360,7 +360,8 @@ class SiteController extends Controller
         }
         else
         {
-            $fp=@fopen("adjuntos/$nombre.xls","w+");
+            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+            $fp=fopen($ruta."$nombre.xls","w+");
             $cuerpo="
             <!DOCTYPE html>
             <html>
@@ -368,8 +369,7 @@ class SiteController extends Controller
                     <meta charset='utf-8'>
                     <meta http-equiv='Content-Type' content='application/excel charset=utf-8'>
                 </head>
-                <body>
-            ";
+                <body>";
             $cuerpo.=$html;
             $cuerpo.="</body>
             </html>";
