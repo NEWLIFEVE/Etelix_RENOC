@@ -360,7 +360,8 @@ class SiteController extends Controller
         }
         else
         {
-            $fp=@fopen("adjuntos/$nombre.xls","w+");
+            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+            $fp=@fopen($ruta."$nombre.xls","w+");
             $cuerpo="
             <!DOCTYPE html>
             <html>
