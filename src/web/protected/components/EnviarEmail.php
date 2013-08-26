@@ -14,9 +14,8 @@ class EnviarEmail extends CApplicationComponent {
 
     public function enviar($html, $user, $asunto, $ruta)
     {
-
-        if (isset($html) && isset($html)) {
-
+        if (isset($html) && isset($user))
+        {
             $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
             $mailer = new PHPMailer();
             $mailer->IsSMTP();
@@ -35,7 +34,7 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->FromName = 'RENOC';
             $mailer->CharSet = 'UTF-8';
             $mailer->Subject = Yii::t('', $asunto);
-            $mailer->AddAttachment($ruta, $asunto,'utf-8','.xls'); //Archivo adjunto
+            $mailer->AddAttachment($ruta); //Archivo adjunto
             $message = $html;
             $mailer->Body = $message;
 
