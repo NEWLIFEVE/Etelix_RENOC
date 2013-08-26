@@ -25,8 +25,8 @@ class reportes extends CApplicationComponent {
         /*         * ********************** CONECCION BASE DE DATOS - COMIENZO *********************** */
 
         //$conection = mysql_connect($server, $username, $password);
-        //$conection = pg_connect("host=67.215.160.89 port=5432 dbname=sori user=postgres password=Nsusfd8263");
-        $conection = pg_connect("host=192.168.1.239 port=5432 dbname=sori user=postgres password=123");
+        $conection = pg_connect("host=67.215.160.89 port=5432 dbname=sori user=postgres password=Nsusfd8263");
+        //$conection = pg_connect("host=192.168.1.239 port=5432 dbname=sori user=postgres password=123");
 
         //mysql_select_db($dataBase, $conection);
 
