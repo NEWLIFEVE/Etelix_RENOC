@@ -55,4 +55,9 @@ class UserIdentity extends CUserIdentity
 	{
 		return $this->_id;
 	}
+	public static function getEmail()
+	{
+		$usuario=UsersRenoc::model()->findByAttributes(array('username'=>Yii::app()->user->name));
+		return $usuario->email;
+	}
 }

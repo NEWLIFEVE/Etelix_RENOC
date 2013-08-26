@@ -43,14 +43,26 @@
  */
 class Balance extends CActiveRecord
 {
-	//Agregadas para funcionar con los reportes
-	public $etiqueta;
+	//Alto Impacto
 	public $cliente;
 	public $proveedor;
 	public $destino;
-	public $totalcalls;
-	public $completecalls;
-	public $minutos;
+	public $total_calls;
+	public $costmin;
+	public $ratemin;
+	public $marginmin;
+
+	//para posicion neta
+	public $operador;
+	public $vendedor;
+	public $vminutes;
+	public $vrevenue;
+	public $vmargin;
+	public $cminutes;
+	public $ccost;
+	public $cmargin;
+	public $posicion_neta;
+	public $margen_total;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
