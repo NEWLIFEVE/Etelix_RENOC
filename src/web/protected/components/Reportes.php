@@ -1,5 +1,6 @@
 <?php
 /**
+* Clase de reportes
 * @package components
 */
 class reportes extends CApplicationComponent
@@ -49,7 +50,6 @@ class reportes extends CApplicationComponent
         return $variable;
     }
 
-
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta
     * @param $fecha date es la fecha que se necesita el reporte
@@ -88,7 +88,6 @@ class reportes extends CApplicationComponent
             {
                 $j=$j+1;
             }
-
         }
         switch($j)
         {
