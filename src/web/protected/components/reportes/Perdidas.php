@@ -87,7 +87,9 @@ class Perdidas extends Reportes
                         <td style='background-color:#999999; color:#FFFFFF;'>".
                             Yii::app()->format->format_decimal($Total->margin,5).
                        "</td>
-                        <td style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='background-color:#999999; color:#FFFFFF;'>".
+                            Yii::app()->format->format_decimal($Total->minutes).
+                       "
                         </td>
                         <td style='background-color:#999999; color:#FFFFFF;'>".
                             Yii::app()->format->format_decimal($Total->cost).
