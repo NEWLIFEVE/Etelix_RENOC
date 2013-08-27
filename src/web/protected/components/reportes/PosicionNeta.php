@@ -85,10 +85,10 @@ class PosicionNeta extends Reportes
                                 Yii::app()->format->format_decimal($operador->cmargin).
                            "</td>
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='posicionNeta'>".
-                                Yii::app()->format->format_decimal($operador->posicion_neta).
+                                Yii::app()->format->format_decimal($operador->margen_total).
                            "</td>
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='margenTotal'>".
-                                Yii::app()->format->format_decimal($operador->margen_total).
+                                Yii::app()->format->format_decimal($operador->posicion_neta).
                            "</td>
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='operador'>".
                                 $operador->operador.
@@ -136,10 +136,10 @@ class PosicionNeta extends Reportes
                             Yii::app()->format->format_decimal($Total->cmargin).
                         "</td>
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='posicionNeta'>".
-                            Yii::app()->format->format_decimal($Total->posicion_neta).
+                            Yii::app()->format->format_decimal($Total->margen_total).
                         "</td>
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='margenTotal'>".
-                            Yii::app()->format->format_decimal($Total->margen_total).
+                            Yii::app()->format->format_decimal($Total->posicion_neta).
                         "</td>
                          <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
                          TOTAL
