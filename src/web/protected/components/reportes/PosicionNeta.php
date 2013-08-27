@@ -44,7 +44,7 @@ class PosicionNeta extends Reportes
         $cuerpo="<div>
                     <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                         <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
                   <tbody>";
          
