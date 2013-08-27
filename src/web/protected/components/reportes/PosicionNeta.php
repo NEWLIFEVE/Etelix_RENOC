@@ -105,7 +105,7 @@ class PosicionNeta extends Reportes
                         <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Posicion Neta','Margen Total','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $Total=Balance::model()->findBySql($sqlTotal);
         if($Total!=null)
         { 
@@ -135,10 +135,10 @@ class PosicionNeta extends Reportes
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cmargin'>".
                             Yii::app()->format->format_decimal($Total->cmargin).
                         "</td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='posicionNeta'>".
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='margenTotal'>".
                             Yii::app()->format->format_decimal($Total->margen_total).
                         "</td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='margenTotal'>".
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='posicionNeta'>".
                             Yii::app()->format->format_decimal($Total->posicion_neta).
                         "</td>
                          <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
