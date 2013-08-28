@@ -20,6 +20,14 @@ class Formatter  extends CApplicationComponent{
         $numsub = substr($numtext,0,$position+$decimales); 
         return $numsub;
     }
+    public function format_number($num,$decimales=3)
+    {        
+        $english_format_number2 = number_format($num, 10, ',', '.');
+        $numtext=strval($english_format_number2);
+        $position = strpos($numtext, ',');
+        $numsub = substr($numtext,0,$position+$decimales); 
+        return $numsub;
+    }
     
     public function format_date($fecha, $tipo=NULL) {
 
