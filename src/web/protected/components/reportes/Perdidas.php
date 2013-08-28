@@ -63,8 +63,8 @@ class Perdidas extends Reportes
         }
         $cuerpo.=self::cabecera(array('Ranking','Cliente','Destino','Proveedor','Margen','Minutos','Costo','Revenue'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         //Selecciono la suma de todos los totales mayores a 10 dolares de margen
-        $sqlTotal="SELECT SUM(b.margin) AS margin, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue
-                   FROM(SELECT SUM(margin) AS margin, SUM(cost) AS cost, SUM(revenue) AS revenue
+        $sqlTotal="SELECT SUM(b.margin) AS margin, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue, SUM(b.minutes) AS minutes
+                   FROM(SELECT SUM(margin) AS margin, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(minutes) AS minutes
                          FROM balance
                          WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                          GROUP BY id_carrier_customer, id_destination_int, id_carrier_supplier
@@ -87,7 +87,9 @@ class Perdidas extends Reportes
                         <td style='background-color:#999999; color:#FFFFFF;'>".
                             Yii::app()->format->format_decimal($Total->margin,5).
                        "</td>
-                        <td style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='background-color:#999999; color:#FFFFFF;'>".
+                            Yii::app()->format->format_decimal($Total->minutes).
+                       "
                         </td>
                         <td style='background-color:#999999; color:#FFFFFF;'>".
                             Yii::app()->format->format_decimal($Total->cost).
