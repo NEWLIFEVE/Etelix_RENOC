@@ -6,6 +6,7 @@ Sistema de Reportes para el NOC
 Release 1.1.3
 - Corrección de margenes de millones
 - Cambio de nombre de vendedores en reportes
+- Reporte Ranking Compra/Venta
 
 Release 1.1.2
 - Adjuntado de archivo excel en correo electronico
