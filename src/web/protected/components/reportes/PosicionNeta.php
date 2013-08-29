@@ -42,9 +42,9 @@ class PosicionNeta extends Reportes
                    ORDER BY posicion_neta DESC)cs";
 
         $cuerpo="<div>
-                    <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                    <table >
                         <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
                   <tbody>";
          
@@ -96,6 +96,9 @@ class PosicionNeta extends Reportes
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='ranking'>".
                                 $pos.
                            "</td>
+                           <td style='text-align: center;".self::colorEstilo($key+1)."' class='vendedor'>".
+                                CarrierManagers:: getManager($operador->id).
+                           "</td>
                         </tr>";
             }
         }
@@ -105,7 +108,7 @@ class PosicionNeta extends Reportes
                         <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $Total=Balance::model()->findBySql($sqlTotal);
         if($Total!=null)
         { 
@@ -144,6 +147,8 @@ class PosicionNeta extends Reportes
                          <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
                          TOTAL
                          </td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
+                        </td>
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
                         </td>
                     </tr>";

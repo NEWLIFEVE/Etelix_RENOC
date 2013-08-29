@@ -22,7 +22,7 @@ class RankingCompraVenta extends Reportes
 						GROUP BY m.name, m.lastname
 						ORDER BY margin DESC";
 		$cuerpo="<div>
-                    <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                    <table>
                         <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
@@ -107,7 +107,7 @@ class RankingCompraVenta extends Reportes
 						GROUP BY m.name, m.lastname
 						ORDER BY margin DESC";
 		$cuerpo.="<br>
-		<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+		<table >
                     <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
@@ -184,7 +184,7 @@ class RankingCompraVenta extends Reportes
         }
         $cuerpo.="</tbody></table>";
         $cuerpo.="<br>
-		<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+		<table >
                     <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
@@ -271,15 +271,15 @@ class RankingCompraVenta extends Reportes
         			  </tr>";
         }
         $cuerpo.="<tr>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
+        					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
         					</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
+        					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
         					Total Margen
         					</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
+        					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>".
         					Yii::app()->format->format_decimal($totalCompradores->margin).
         					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
+        					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
         					</td>
         				  </tr>";
         $cuerpo.="</div>";

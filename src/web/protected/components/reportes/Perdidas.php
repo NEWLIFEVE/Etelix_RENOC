@@ -4,9 +4,9 @@ class Perdidas extends Reportes
     public static function reporte($fecha)
     {
         $cuerpo="<div>
-                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                  <table >
                   <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Cliente','Destino','Proveedor','Margen','Minutos','Costo', 'Revenue'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Cliente','Destino','Proveedor','Minutos','Costo', 'Revenue','Margen'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
@@ -40,9 +40,6 @@ class Perdidas extends Reportes
                           <td style='text-align: left;".self::colorEstilo($pos)."' class='destino'>".
                             $balance->proveedor.
                          "</td>
-                          <td style='text-align: left;".self::colorEstilo($pos)."' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($balance->margin,5).
-                         "</td>
                           <td style='text-align: left;".self::colorEstilo($pos)."' class='completeCalls'>".
                             Yii::app()->format->format_decimal($balance->minutes).
                          "</td>
@@ -51,6 +48,9 @@ class Perdidas extends Reportes
                          "</td>
                          <td style='text-align: left;".self::colorEstilo($pos)."' class='completeCalls'>".
                             Yii::app()->format->format_decimal($balance->revenue).
+                         "</td>
+                         <td style='text-align: left;".self::colorEstilo($pos)."' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($balance->margin,5).
                          "</td>
                         </tr>";
             }
@@ -61,7 +61,7 @@ class Perdidas extends Reportes
                         <td colspan='5'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('Ranking','Cliente','Destino','Proveedor','Margen','Minutos','Costo','Revenue'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Cliente','Destino','Proveedor','Minutos','Costo','Revenue','Margen'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         //Selecciono la suma de todos los totales mayores a 10 dolares de margen
         $sqlTotal="SELECT SUM(b.margin) AS margin, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue, SUM(b.minutes) AS minutes
                    FROM(SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(minutes) AS minutes
@@ -84,9 +84,7 @@ class Perdidas extends Reportes
                         <td style='background-color:#999999; color:#FFFFFF;'>
                         TOTAL
                         </td>                        
-                        <td style='background-color:#999999; color:#FFFFFF;'>".
-                            Yii::app()->format->format_decimal($Total->margin,5).
-                       "</td>
+                      
                         <td style='background-color:#999999; color:#FFFFFF;'>".
                             Yii::app()->format->format_decimal($Total->minutes).
                        "
@@ -96,6 +94,9 @@ class Perdidas extends Reportes
                        "</td>
                        <td style='background-color:#999999; color:#FFFFFF;'>".
                             Yii::app()->format->format_decimal($Total->revenue).
+                       "</td>
+                             <td style='background-color:#999999; color:#FFFFFF;'>".
+                            Yii::app()->format->format_decimal($Total->margin,5).
                        "</td>
                     </tr>";
         }
