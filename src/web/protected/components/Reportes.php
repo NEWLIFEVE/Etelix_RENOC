@@ -216,7 +216,10 @@ class reportes extends CApplicationComponent
         }
         elseif(substr_count($var, 'SPAIN') >= 1 ||
                 substr_count($var, 'ROMANIA') >= 1 ||
+                substr_count($var, 'MOROCCO') >= 1 ||
+                substr_count($var, 'PHILIPPINES') >= 1 ||
                 substr_count($var, 'BELGIUM') >= 1 ||
+                substr_count($var, 'CONGO') >= 1 ||
                 substr_count($var, 'PAKISTAN') >= 1 ||
                 substr_count($var, 'ANTIGUA') >= 1 ||
                 substr_count($var, 'UGANDA') >= 1 ||
@@ -262,7 +265,9 @@ class reportes extends CApplicationComponent
         }
         elseif(substr_count($var, 'MEXICO') >= 1 ||
                 substr_count($var, 'PANAMA') >= 1 ||
+                substr_count($var, 'GUATEMALA') >= 1 ||
                 substr_count($var, 'CUBA') >= 1 ||
+                substr_count($var, 'PUERTO RICO') >= 1 ||
                 substr_count($var, 'BARBADOS') >= 1 ||
                 substr_count($var, 'ARUBA') >= 1 ||
                 substr_count($var, 'DOMINICAN REPUBLIC ') >= 1 ||
