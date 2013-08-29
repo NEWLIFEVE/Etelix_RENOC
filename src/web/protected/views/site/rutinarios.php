@@ -180,6 +180,24 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <label class="checkbox">
+                        <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]"> 
+                        <label for="compraventa">
+                            <h4>
+                            </h4>
+                        </label>
+                    </label>
+                </td>
+                <td id="td5">
+                    <label for="compraventa">
+                        <h4>
+                            RENOC Ranking Compra/Venta
+                        </h4>
+                    </label>
+                </td>
+            </tr>
             <tr> 
                 <td>
                 </td> 
