@@ -10,17 +10,22 @@ class DistComercial extends Reportes
 	*/
 	public static function reporte($fecha)
 	{
-		$sql="SELECT m.name AS vendedor, c.name AS operador, m.position
+		$sql="SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position
               FROM carrier c, managers m, carrier_managers cm
               WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '2013-08-20'
-              ORDER BY m.name ASC";
-        $cuerpo="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+              ORDER BY vendedor ASC";
+        $cuerpo="<table >
                     <thead>
                         <tr>
-                            <th colspan='2' style='background-color:#615E5E; color:#62C25E; width:15%; height:100%; border: 1px black;'>
+                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%; border: 1px black;'>
+                                Cargo
+                            </th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%; border: 1px black;'>
                                 Responsable
                             </th>
-                            <th></th>
+                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
+                                Pos
+                                </th>
                             <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
                                 Operador
                             </th>

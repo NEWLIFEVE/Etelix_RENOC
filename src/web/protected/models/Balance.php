@@ -63,6 +63,11 @@ class Balance extends CActiveRecord
 	public $cmargin;
 	public $posicion_neta;
 	public $margen_total;
+
+	//RankingCompraVenta
+	public $nombre;
+	public $apellido;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.

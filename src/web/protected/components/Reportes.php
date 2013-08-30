@@ -49,6 +49,7 @@ class reportes extends CApplicationComponent
         return $variable;
     }
 
+
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta
     * @param $fecha date es la fecha que se necesita el reporte
@@ -70,6 +71,16 @@ class reportes extends CApplicationComponent
         return $variable;
     }
     /**
+    * Metodo encargado de generar el reporte de Ranking Compra Venta
+    * @param $fecha date lafecha que se quiere consultar
+    * @return $variable string con el cuerpo del reporte
+    */
+    public function RankingCompraVenta($fecha)
+    {
+        $variable=RankingCompraVenta::reporte($fecha);
+        return $variable;
+    }
+    /**
     * Metodo encargado de pintar las filas de los reportes
     * @param int $pos es un numero indicando que color debe regresar
     */
@@ -87,20 +98,21 @@ class reportes extends CApplicationComponent
             {
                 $j=$j+1;
             }
+
         }
         switch($j)
         {
             case 1:
-                $color="<tr style='background-color:#FFC8AE; color:#584E4E;'>";
+                $color="<tr style='background-color:#FFC8AE; color:#584E4E; border: 1px solid rgb(121, 115, 115);'>";
                 break;
             case 2:
-                $color="<tr style='background-color:#B3A5CF; color:#584E4E;'>";
+                $color="<tr style='background-color:#B3A5CF; color:#584E4E; border: 1px solid rgb(121, 115, 115);'>";
                 break;
             case 3:
-                $color="<tr style='background-color:#AFD699; color:#584E4E;'>";
+                $color="<tr style='background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);'>";
                 break;
             case 4:
-                $color="<tr style='background-color:#F8B6C9; color:#584E4E;'>";
+                $color="<tr style='background-color:#F8B6C9; color:#584E4E; border: 1px solid rgb(121, 115, 115);'>";
                 break;
         }
         return $color;
@@ -123,16 +135,16 @@ class reportes extends CApplicationComponent
         switch($j)
         {
             case 1:
-                $color="background-color:#FFC8AE; color:#584E4E; border: 1px solid black;";
+                $color="background-color:#FFC8AE; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
                 break;
             case 2:
-                $color="background-color:#B3A5CF; color:#584E4E; border: 1px solid black;";
+                $color="background-color:#B3A5CF; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
                 break;
             case 3:
-                $color="background-color:#AFD699; color:#584E4E; border: 1px solid black;";
+                $color="background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
                 break;
             case 4: 
-                $color="background-color:#F8B6C9; color:#584E4E; border: 1px solid black;";
+                $color="background-color:#F8B6C9; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
                 break;
         }
         return $color;
@@ -142,51 +154,51 @@ class reportes extends CApplicationComponent
         $color=null;
         if(substr_count($var, 'Leandro') >= 1)
         {
-            $color="background-color:#fe6500; color:black;";
+            $color="background-color:#fe6500; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Juan Carlos Lopez Silva') >= 1)
         {
-            $color="background-color:#4aabc5; color:black;";
+            $color="background-color:#4aabc5; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Jose Ramon Olivar') >= 1)
         {
-            $color="background-color:#333399; color:black;";
+            $color="background-color:#333399; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Juan Carlos Robayo') >= 1)
         {
-            $color="background-color:#00ffff; color:black;";
+            $color="background-color:#00ffff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Jaime Laguna') >= 1)
         {
-            $color="background-color:#ffcc99; color:black;";
+            $color="background-color:#ffcc99; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Carlos Pinango') >= 1)
         {
-            $color="background-color:#cc99ff; color:black;";
+            $color="background-color:#cc99ff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Augusto Cardenas') >= 1)
         {
-            $color="background-color:#00ff00; color:black;";
+            $color="background-color:#00ff00; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Luis Ernesto Barbaran') >= 1)
         {
-            $color="background-color:#ff8080; color:black;";
+            $color="background-color:#ff8080; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Alonso Van Der Biest') >= 1)
         {
-            $color="background-color:#c0504d; color:black;";
+            $color="background-color:#c0504d; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Soiret Solarte') >= 1)
         {
-            $color="background-color:#ff9900; color:black;";
+            $color="background-color:#ff9900; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Ernesto Da Rocha') >= 1)
         {
-            $color="background-color:#c0c0c0; color:black;";
+            $color="background-color:#c0c0c0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Diana Mirakyan') >= 1)
         {
-            $color="background-color:#00b0f0; color:black;";
+            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         
         return $color;
@@ -210,11 +222,14 @@ class reportes extends CApplicationComponent
     {
         if(substr_count($var, 'USA') >= 1 || substr_count($var, 'CANADA') >= 1)
         {
-            $color="<tr style='background-color:#F3F3F3; color:#584E4E;'>";
+            $color="<tr style='background-color:#F3F3F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
         }
         elseif(substr_count($var, 'SPAIN') >= 1 ||
                 substr_count($var, 'ROMANIA') >= 1 ||
+                substr_count($var, 'MOROCCO') >= 1 ||
+                substr_count($var, 'PHILIPPINES') >= 1 ||
                 substr_count($var, 'BELGIUM') >= 1 ||
+                substr_count($var, 'CONGO') >= 1 ||
                 substr_count($var, 'PAKISTAN') >= 1 ||
                 substr_count($var, 'ANTIGUA') >= 1 ||
                 substr_count($var, 'UGANDA') >= 1 ||
@@ -237,7 +252,7 @@ class reportes extends CApplicationComponent
                 substr_count($var, 'ISRAEL ') >= 1 ||
                 substr_count($var, 'AUSTRALIA') >= 1)
         {
-            $color="<tr style='background-color:#8BA0AC; color:#584E4E;'>";
+            $color="<tr style='background-color:#8BA0AC; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
         }
         elseif(substr_count($var, 'PERU') >= 1 ||
                 substr_count($var, 'CHILE') >= 1 ||
@@ -248,19 +263,21 @@ class reportes extends CApplicationComponent
                 substr_count($var, 'ARGENTINA') >= 1 ||
                 substr_count($var, 'URUGUAY') >= 1)
         {
-            $color="<tr style='background-color:#AED7F3; color:#584E4E;'>";
+            $color="<tr style='background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
         }
         elseif(substr_count($var, 'COLOMBIA') >= 1)
         {
-            $color="<tr style='background-color:#BEE2C1; color:#584E4E;'>";
+            $color="<tr style='background-color:#BEE2C1; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
         }
         elseif(substr_count($var, 'VENEZUELA') >= 1)
         {
-            $color="<tr style='background-color:#F0D0AE; color:#584E4E;'>";
+            $color="<tr style='background-color:#F0D0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
         }
         elseif(substr_count($var, 'MEXICO') >= 1 ||
                 substr_count($var, 'PANAMA') >= 1 ||
+                substr_count($var, 'GUATEMALA') >= 1 ||
                 substr_count($var, 'CUBA') >= 1 ||
+                substr_count($var, 'PUERTO RICO') >= 1 ||
                 substr_count($var, 'BARBADOS') >= 1 ||
                 substr_count($var, 'ARUBA') >= 1 ||
                 substr_count($var, 'DOMINICAN REPUBLIC ') >= 1 ||
@@ -268,7 +285,7 @@ class reportes extends CApplicationComponent
                 substr_count($var, 'HAITI') >= 1 ||
                 substr_count($var, 'SALVADOR') >= 1)
         {
-            $color="<tr style='background-color:#EDF0AE; color:#584E4E;'>";
+            $color="<tr style='background-color:#EDF0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
         }
         else
         {

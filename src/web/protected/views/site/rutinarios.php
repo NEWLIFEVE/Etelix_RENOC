@@ -32,11 +32,11 @@ $this->layout=$this->getLayoutFile('menuContent');
             <img src="/images/mail.png" width="95px" height="95px" value="Activar Función">
         </a>
     </div>
-    <div id="mailRenoc" class="span1">
+<!--    <div id="mailRenoc" class="span1">
         <a href="/" rel="tooltip" title="Enviar Reportes a Correo Electronico RENOC" class="tooltip-test">
             <img src="/images/mailRenoc.png" width="95px" height="95px" value="Activar Función">
         </a>
-    </div>
+    </div>-->
     <div id="excel" class="span1">
         <a href="/" rel="tooltip" title="Exportar Reportes en Excel" class="tooltip-test">
             <img src="/images/excel.png" width="75px" height="75px" value="Activar Función">
@@ -174,6 +174,24 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <label for="perdidas">
                         <h4>
                             Perdidas
+                        </h4>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="checkbox">
+                        <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]"> 
+                        <label for="compraventa">
+                            <h4>
+                            </h4>
+                        </label>
+                    </label>
+                </td>
+                <td id="td5">
+                    <label for="compraventa">
+                        <h4>
+                            RENOC Ranking Compra/Venta
                         </h4>
                     </label>
                 </td>

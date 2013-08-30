@@ -20,6 +20,7 @@ class Formatter  extends CApplicationComponent{
         $numsub = substr($numtext,0,$position+$decimales); 
         return $numsub;
     }
+
     
     public function format_date($fecha, $tipo=NULL) {
 
