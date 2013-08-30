@@ -291,7 +291,7 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user="manuel@newlifeve.com";
+        $user="renoc@etelix.com";
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
@@ -333,7 +333,7 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['compraventa']))
             {
-                $correos['compraventa']['asunto']="RENOC Ranking Compra/Venta al ".str_replace("-","",$fecha);
+                $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
