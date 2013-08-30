@@ -4,8 +4,6 @@
 */
 $this->layout=$this->getLayoutFile('menuContent');
 ?>
-
-
     <script src="http://malsup.github.io/jquery.blockUI.js"></script>
 <div class="">
     <div id="atras">
