@@ -63,9 +63,9 @@ return array(
 		),
         'db'=>array(
 
-            'connectionString'=>'pgsql:host=192.168.1.239;port=5432;dbname=sori',
-        //    'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
-
+            //'connectionString'=>'pgsql:host=192.168.1.239;port=5432;dbname=sori',
+            //'connectionString'=>'pgsql:host=67.215.160.89;port=5432;dbname=sori',
+            'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
 			'password'=>'123',

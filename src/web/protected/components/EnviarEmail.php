@@ -17,8 +17,8 @@ class EnviarEmail extends CApplicationComponent {
         if (isset($html) && isset($user))
         {
             $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
-            $mailer = new PHPMailer();//prueba;
-            $mailer->IsSMTP();//prueba;
+            $mailer = new PHPMailer();
+            $mailer->IsSMTP();
             $mailer->Host = 'smtp.gmail.com';
             $mailer->Port = '587';
             //$mailer->SMTPDebug = 2;
@@ -39,6 +39,7 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->Body = $message;
 
             $mailer->Send();
+            
             
         }
     }

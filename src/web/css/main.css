@@ -717,3 +717,20 @@ input.favorite{ background-position: 4px -70px; }
 
 }
 
+.cancelar
+{
+    margin-top: 30px;
+ margin-left: 135px;
+text-align: center;
+width: 90px;
+height: 45px;
+}
+.confirma
+{
+     margin-top: -45px;
+    margin-left: 225px;
+text-align: center;
+width: 90px;
+height: 45px;
+}
+
