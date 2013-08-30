@@ -291,7 +291,7 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user="angelo08121987@gmail.com";
+        $user="renoc@etelix.com";
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
