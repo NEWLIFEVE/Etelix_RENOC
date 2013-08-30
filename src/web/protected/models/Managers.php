@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'managers':
  * @property integer $id
  * @property string $name
+ * @property string $lastname
  * @property string $address
  * @property string $record_date
  * @property string $position
@@ -43,12 +44,12 @@ class Managers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, record_date', 'required'),
-			array('name, position', 'length', 'max'=>50),
+			array('name,lastname, record_date', 'required'),
+			array('name,lastname, position', 'length', 'max'=>50),
 			array('address', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, address, record_date, position', 'safe', 'on'=>'search'),
+			array('id, name,lastname, address, record_date, position', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,6 +73,7 @@ class Managers extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'lastname' => 'Last Name',
 			'address' => 'Address',
 			'record_date' => 'Record Date',
 			'position' => 'Position',
@@ -91,6 +93,7 @@ class Managers extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('lastname',$this->name,true);
 		$criteria->compare('address',$this->address,true);
 		$criteria->compare('record_date',$this->record_date,true);
 		$criteria->compare('position',$this->position,true);
