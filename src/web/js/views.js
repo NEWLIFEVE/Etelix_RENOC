@@ -114,6 +114,7 @@ ajax.prototype.run=function()
                         }
                     };
                 }
+                
                 else
                 {
                     var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
