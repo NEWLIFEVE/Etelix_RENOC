@@ -109,9 +109,9 @@ class Managers extends CActiveRecord
 	public static function getName($id)
 	{
 		$model=self::model()->find('id=:id',array(':id'=>$id));
-		if($model->name!=null)
+		if($model->lastname!=null)
 		{
-			return $model->name;
+			return $model->lastname;
 		}
 		else
 		{

@@ -10,7 +10,7 @@ class AltoImpactoVendedor extends Reportes
         $cuerpo.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
-        $sqlClientes="SELECT c.name AS cliente, m.name||' '||m.lastname AS vendedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        $sqlClientes="SELECT c.name AS cliente, m.lastname AS vendedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
@@ -293,7 +293,7 @@ class AltoImpactoVendedor extends Reportes
         $cuerpo.="</thead>
                  <tbody>";
         // Selecciono los totales por proveedores con de mas de 10 dolares de margen
-        $sqlProveedores="SELECT c.name AS proveedor, m.name AS vendedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        $sqlProveedores="SELECT c.name AS proveedor, m.lastname AS vendedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                          FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                               FROM balance
                               WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
@@ -302,7 +302,7 @@ class AltoImpactoVendedor extends Reportes
                               carrier_managers cm,
                               managers m
                          WHERE x.margin > 10 AND x.id_carrier_supplier=c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id
-                         ORDER BY m.name ASC, x.margin DESC";
+                         ORDER BY vendedor ASC, x.margin DESC";
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
         if($proveedores!=null)
         {
