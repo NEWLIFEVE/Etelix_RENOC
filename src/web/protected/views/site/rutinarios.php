@@ -4,8 +4,6 @@
 */
 $this->layout=$this->getLayoutFile('menuContent');
 ?>
-
-
     <script src="http://malsup.github.io/jquery.blockUI.js"></script>
 <div class="">
     <div id="atras">
@@ -176,6 +174,24 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <label for="perdidas">
                         <h4>
                             Perdidas
+                        </h4>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="checkbox">
+                        <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]"> 
+                        <label for="compraventa">
+                            <h4>
+                            </h4>
+                        </label>
+                    </label>
+                </td>
+                <td id="td5">
+                    <label for="compraventa">
+                        <h4>
+                            RENOC Ranking Compra/Venta
                         </h4>
                     </label>
                 </td>

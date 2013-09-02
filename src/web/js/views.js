@@ -56,7 +56,7 @@ navegar.prototype.ida=function()
     this.objetoNueva.load(this.url,function()
     {
         self.objetoMain.toggle('slide');
-        self.objetoNueva.fadeIn('slow');
+        self.objetoNueva.fadeIn('fast');
     });
 }
 navegar.prototype.vuelta=function()
@@ -114,14 +114,29 @@ ajax.prototype.run=function()
                         }
                     };
                 }
+                
                 else
                 {
-                    self.getFormPost();
-                    self.enviarMailLista();
-                  var espere = $("<div class='cargando'></div><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div>").hide();
-                   $("body").append(espere)
-                   espere.fadeIn('fast');
-                }
+                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
+                    $("body").append(revisa)
+                    revisa.fadeIn('fast'); 
+                    
+                        $('#confirma,#cancelar').on('click', function()
+                            {
+                                var tipo=$(this).attr('id');
+                                if(tipo=="confirma")
+                            {
+                                self.getFormPost();
+                                self.enviarMailLista();
+                                $('.mensaje').html("<h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
+
+                            }
+                                else
+                            {
+                                  revisa.fadeOut('fast');
+                            }
+                            });
+               }
           }
         else
           {

@@ -2,6 +2,19 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Realese 1.1.4
+-Solo apellidos para los vendedores
+-Cambios en Reporte AltoImpacto+10$ (se muestra el resto de los Carriers)
+-Totales por Vendedor en Reporte AltoImpacto+10$ por Vendedor
+-Camios Generales de estilos para los Reportes
+-Eliminado Ranking negativo
+-PN en AltoImpacto(+10$)
+
+Release 1.1.3
+- Corrección de margenes de millones
+- Cambio de nombre de vendedores en reportes
+- Reporte Ranking Compra/Venta
+
 Release 1.1.2
 - Adjuntado de archivo excel en correo electronico
 

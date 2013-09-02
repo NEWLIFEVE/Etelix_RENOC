@@ -12,12 +12,12 @@ class PosicionNeta extends Reportes
 	{
         $sqlCien="SELECT o.name AS operador, cs.id, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
                   FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
-                       FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
+                       FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
                             FROM balance
                             WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                             GROUP BY id_carrier_customer
                             UNION
-                            SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
+                            SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS cmargin
                             FROM balance
                             WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                             GROUP BY id_carrier_supplier)t
@@ -29,12 +29,12 @@ class PosicionNeta extends Reportes
         $sqlTotal="SELECT SUM(cs.vminutes) AS vminutes, SUM(cs.vrevenue) AS vrevenue, SUM(cs.vmargin) AS vmargin, SUM(cs.cminutes) AS cminutes, SUM(cs.ccost) AS ccost, SUM(cs.cmargin) AS cmargin, SUM(cs.posicion_neta) AS posicion_neta, SUM(cs.margen_total) AS margen_total
                    FROM
                    (SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
-                   FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, SUM(margin) AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
+                   FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
                         FROM balance
                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                         GROUP BY id_carrier_customer
                         UNION
-                        SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, SUM(margin) AS cmargin
+                        SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS cmargin
                         FROM balance
                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                         GROUP BY id_carrier_supplier)t
@@ -42,9 +42,9 @@ class PosicionNeta extends Reportes
                    ORDER BY posicion_neta DESC)cs";
 
         $cuerpo="<div>
-                    <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                    <table >
                         <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
                   <tbody>";
          
@@ -55,7 +55,8 @@ class PosicionNeta extends Reportes
             foreach($posicionNeta as $key => $operador)
             {  
 
-                $pos=self::ranking($key+1,$max);
+                //$pos=self::ranking($key+1,$max);
+                $pos=$key+1;
                 $cuerpo.="<tr>
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='ranking'>".
                                 $pos. 
@@ -96,6 +97,9 @@ class PosicionNeta extends Reportes
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='ranking'>".
                                 $pos.
                            "</td>
+                           <td style='text-align: center;".self::colorEstilo($key+1)."' class='vendedor'>".
+                                CarrierManagers:: getManager($operador->id).
+                           "</td>
                         </tr>";
             }
         }
@@ -105,7 +109,7 @@ class PosicionNeta extends Reportes
                         <td colspan='13'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $Total=Balance::model()->findBySql($sqlTotal);
         if($Total!=null)
         { 
@@ -144,6 +148,8 @@ class PosicionNeta extends Reportes
                          <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
                          TOTAL
                          </td>
+                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
+                        </td>
                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
                         </td>
                     </tr>";

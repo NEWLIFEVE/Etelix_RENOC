@@ -201,6 +201,12 @@ class SiteController extends Controller
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
                 $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Perdidas al ".str_replace("-","",$fecha).".xls";
             }
+            if(isset($_POST['lista']['compraventa']))
+            {
+                $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
+                $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
+                $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
+            }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
@@ -266,6 +272,11 @@ class SiteController extends Controller
                 $archivos['perdidas']['nombre']="RENOC Perdidas al ".str_replace("-","",$fecha);
                 $archivos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
             }
+            if(isset($_GET['lista']['compraventa']))
+            {
+                $archivos['compraventa']['nombre']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
+                $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
+            }
         }
         foreach($archivos as $key => $archivo)
         {
@@ -319,6 +330,12 @@ class SiteController extends Controller
                 $correos['perdidas']['asunto']="RENOC Perdidas al ".str_replace("-","",$fecha);
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
                 $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Perdidas al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['compraventa']))
+            {
+                $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
+                $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
+                $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
         }
         $tiempo=30*count($correos);

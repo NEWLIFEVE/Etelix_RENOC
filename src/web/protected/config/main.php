@@ -1,3 +1,4 @@
+
 <?php
 
 // uncomment the following to define a path alias
@@ -61,7 +62,8 @@ return array(
 			),
 		),
         'db'=>array(
-        //    'connectionString'=>'pgsql:host=192.168.1.239;port=5432;dbname=sori',
+
+            //'connectionString'=>'pgsql:host=192.168.1.239;port=5432;dbname=sori',
             'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
@@ -96,7 +98,3 @@ return array(
         'adminEmail'=>'manuel@newlifeve.com',
         ),
     );
-
-
-
-
