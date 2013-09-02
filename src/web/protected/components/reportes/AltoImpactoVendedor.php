@@ -105,7 +105,7 @@ class AltoImpactoVendedor extends Reportes
                     
                     $posv=1;
                     $nombre=$cliente->vendedor;
-                    $estilo.="border-top-style:solid;border-top-color:white;border-top-width:20px;";
+                    //$estilo.="border-top-style:solid;border-top-color:white;border-top-width:20px;";
                 }
                 $cuerpo.="<tr>
                         <td style='text-align: center;".$estilo."' class='position'>".
@@ -460,7 +460,7 @@ class AltoImpactoVendedor extends Reportes
                     }
                     $posv=1;
                     $nombre=$proveedor->vendedor;
-                    $estilo.="border-top-style:solid;border-top-color:white;border-top-width:10px;";
+                    //$estilo.="border-top-style:solid;border-top-color:white;border-top-width:10px;";
                 }
                 $cuerpo.="<tr>
                         <td style='text-align: center;".$estilo."' class='supplier'>".
