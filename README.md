@@ -7,6 +7,7 @@ Realese 1.1.4
 -Cambios en Reporte AltoImpacto+10$ (se muestra el resto de los Carriers)
 -Totales por Vendedor en Reporte AltoImpacto+10$ por Vendedor
 -Camios Generales de estilos para los Reportes
+-Eliminado Ranking negativo
 
 Release 1.1.3
 - Corrección de margenes de millones
