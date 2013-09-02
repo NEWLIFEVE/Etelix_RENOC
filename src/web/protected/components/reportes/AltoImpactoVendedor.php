@@ -10,7 +10,7 @@ class AltoImpactoVendedor extends Reportes
         $cuerpo.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
-        $sqlClientes="SELECT c.name AS cliente, m.lastname AS vendedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        $sqlClientes="SELECT c.name AS cliente,m.id AS id_vendedor, m.lastname AS vendedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
@@ -18,6 +18,7 @@ class AltoImpactoVendedor extends Reportes
                            ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
                       WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id
                       ORDER BY vendedor ASC, x.margin DESC";
+        $last_manager=0;
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
@@ -30,9 +31,77 @@ class AltoImpactoVendedor extends Reportes
                 if($nombre==$cliente->vendedor)
                 {
                     $posv=$posv+1;
+                    $last_manager=$cliente->id_vendedor;
+                    
                 }
                 else
                 {
+                    if($last_manager!=0){
+                        $sqlClienteTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
+                      FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                           FROM balance
+                           WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                           GROUP BY id_carrier_customer
+                           ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
+                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id and m.id=$last_manager
+		      GROUP BY vendedor
+                      ORDER BY vendedor ASC";
+                        $clientesTotalVendedor=Balance::model()->findBySql($sqlClienteTotalVendedor);
+                        if($clientesTotalVendedor->total_calls!=null)
+                        {
+                        $cuerpo.="<tr>
+                        <td style='text-align: center; background-color:#999999; color:#FFFFFF;' class='position'>
+                        TOTAL    
+                        </td>
+                        <td style='text-align: center; background-color:#999999; color:#FFFFFF;' class='cliente'>
+                        TOTAL
+                        </td>
+                        <td style='text-align: center; background-color:#999999; color:#FFFFFF;' class='Vendedor'>
+                        TOTAL
+                        </td>
+                         <td style='text-align: left; background-color:#999999; color:#FFFFFF;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->total_calls,0).
+                        "</td>
+                         <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->complete_calls,0).
+                        "</td>
+                         <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='minutes'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->minutes).
+                        "</td>
+                         <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='asr'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->asr).
+                        "</td>
+                         <td style='text-align: center;background-color:#999999; color:#FFFFFF;' class='acd'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->acd).
+                        "</td>
+                        <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='pdd'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->pdd).
+                        "</td>
+                         <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='cost'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->cost).
+                        "</td>
+                         <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='revenue'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->revenue).
+                        "</td>
+                         <td style='text-align: center;background-color:#999999; color:#FFFFFF;' class='margin'>".
+                            Yii::app()->format->format_decimal($clientesTotalVendedor->margin).
+                        "</td>
+                         <td style='text-align: left;background-color:#999999; color:#FFFFFF;' class='margin_percentage'>
+                           
+                         </td>
+                         </td><td style='text-align: center;background-color:#999999; color:#FFFFFF;' class='cliente'>
+                         TOTAL    
+                         </td>
+                         <td style='text-align: center;background-color:#999999; color:#FFFFFF;' class='position'>
+                         TOTAL
+                        </td>
+                        <td style='text-align: center;background-color:#999999; color:#FFFFFF;' class='Vendedor'>
+                        TOTAL
+                        </td>
+                         </tr>";
+                        }
+                    }
+                    
                     $posv=1;
                     $nombre=$cliente->vendedor;
                     $estilo.="border-top-style:solid;border-top-color:white;border-top-width:20px;";
@@ -40,7 +109,7 @@ class AltoImpactoVendedor extends Reportes
                 $cuerpo.="<tr>
                         <td style='text-align: center;".$estilo."' class='position'>".
                             $posv.
-                        "</td>
+                       "</td>
                         <td style='text-align: left;".$estilo."' class='cliente'>".
                             $cliente->cliente.
                         "</td>
