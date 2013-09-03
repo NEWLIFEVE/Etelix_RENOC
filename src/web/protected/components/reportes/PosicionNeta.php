@@ -55,7 +55,8 @@ class PosicionNeta extends Reportes
             foreach($posicionNeta as $key => $operador)
             {  
 
-                $pos=self::ranking($key+1,$max);
+                //$pos=self::ranking($key+1,$max);
+                $pos=$key+1;
                 $cuerpo.="<tr>
                             <td style='text-align: center;".self::colorEstilo($key+1)."' class='ranking'>".
                                 $pos. 

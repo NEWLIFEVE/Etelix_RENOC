@@ -38,7 +38,7 @@ class RankingCompraVenta extends Reportes
         					$pos.
         					"</td>
         					<td style='".self::colorRankingCV(1)."'>".
-        					$vendedor->nombre." ".$vendedor->apellido.
+        					$vendedor->apellido.
         					"</td>
         					<td style='".self::colorRankingCV(1)."'>".
         					Yii::app()->format->format_decimal($vendedor->minutes).
@@ -123,7 +123,7 @@ class RankingCompraVenta extends Reportes
         					$pos.
         					"</td>
         					<td style='".self::colorRankingCV(2)."'>".
-        					$comprador->nombre." ".$comprador->apellido.
+        					$comprador->apellido.
         					"</td>
         					<td style='".self::colorRankingCV(2)."'>".
         					Yii::app()->format->format_decimal($comprador->minutes).
@@ -219,7 +219,7 @@ class RankingCompraVenta extends Reportes
         					$pos.
         					"</td>
         					<td style='".self::colorRankingCV(3)."'>".
-        					$consolidado->nombre." ".$consolidado->apellido.
+        					$consolidado->apellido.
         					"</td>
         					<td style='".self::colorRankingCV(3)."'>".
         					Yii::app()->format->format_decimal($consolidado->margin).
