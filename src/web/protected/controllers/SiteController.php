@@ -393,16 +393,26 @@ class SiteController extends Controller
             fwrite($fp,$cuerpo);
         }
     }
-    public function actionPruebaruta()
+    /**
+    * Metodo que genera un grafico
+    */
+    public function actionGrafico()
     {
-        $asunto='perro';
-    $name=($asunto.'.xls');
-    
-    $funciona='adjuntos/'.$asunto.'.xls';
-    
-    echo $name;
-    echo '<br>';
-    echo $funciona;
+        $this->widget('application.vendor.rgraph.RGraphBar', array(
+    'data' => array(1, 3, 5, 7, 2, 4, 6, 10, 8, 9, 12, 11),
+    'options' => array(
+        'chart' => array(
+            'gutter' => array(
+                'left' => 35,
+            ),
+            'colors' => array('red'),
+            'title' => 'A basic chart',
+            'labels' => array(
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ),
+        )
+    )
+));
     }
 }
 ?>
