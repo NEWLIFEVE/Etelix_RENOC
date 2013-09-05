@@ -393,17 +393,45 @@ class SiteController extends Controller
             fwrite($fp,$cuerpo);
         }
     }
-    public function actionPruebaruta()
+    /**
+    * Metodo que genera un grafico
+    */
+    /*public function actionGrafico()
     {
-        $asunto='perro';
-    $name=($asunto.'.xls');
-    
-    $funciona='adjuntos/'.$asunto.'.xls';
-    
-    echo $name;
-    echo '<br>';
-    echo $funciona;
-    }
+        Yii::app()->fusioncharts->setChartOption(array(
+            'caption'=>'My Chart',
+            'xAxisName'=>'Months',
+            'yAxisName'=>'Revenue'
+            )
+        );
+        $sets=array(
+            array(
+                'label'=>'July',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'August',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'Jan',
+                'value'=>'68000'
+                ),
+            );
+        Yii::app()->fusioncharts->addSets($sets);
+        $categories = array(
+            array(
+                'label'=>'July'
+                ),
+            array(
+                'label'=>'August'
+                ),
+            array(
+                'label'=>'Jan'
+                ),
+            );
+        Yii::app()->fusioncharts->addCategories($categories);
+    }*/
 }
 ?>
 
