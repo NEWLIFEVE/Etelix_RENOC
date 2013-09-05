@@ -396,24 +396,42 @@ class SiteController extends Controller
     /**
     * Metodo que genera un grafico
     */
-    public function actionGrafico()
+    /*public function actionGrafico()
     {
-        $this->widget('application.vendor.rgraph.RGraphBar', array(
-    'data' => array(1, 3, 5, 7, 2, 4, 6, 10, 8, 9, 12, 11),
-    'options' => array(
-        'chart' => array(
-            'gutter' => array(
-                'left' => 35,
-            ),
-            'colors' => array('red'),
-            'title' => 'A basic chart',
-            'labels' => array(
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            ),
-        )
-    )
-));
-    }
+        Yii::app()->fusioncharts->setChartOption(array(
+            'caption'=>'My Chart',
+            'xAxisName'=>'Months',
+            'yAxisName'=>'Revenue'
+            )
+        );
+        $sets=array(
+            array(
+                'label'=>'July',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'August',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'Jan',
+                'value'=>'68000'
+                ),
+            );
+        Yii::app()->fusioncharts->addSets($sets);
+        $categories = array(
+            array(
+                'label'=>'July'
+                ),
+            array(
+                'label'=>'August'
+                ),
+            array(
+                'label'=>'Jan'
+                ),
+            );
+        Yii::app()->fusioncharts->addCategories($categories);
+    }*/
 }
 ?>
 

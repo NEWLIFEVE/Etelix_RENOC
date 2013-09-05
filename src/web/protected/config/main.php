@@ -17,8 +17,7 @@ return array(
     'import'=>array(
         'application.models.*',
         'application.components.*',
-        'application.components.reportes.*',
-        'application.components.rgraph.*'
+        'application.components.reportes.*'
     ),
     'modules'=>array(
         // uncomment the following to enable the Gii tool
@@ -37,6 +36,9 @@ return array(
         ),
     // application components
     'components'=>array(
+        /*'fusioncharts'=>array(
+            'class'=>'ext.fusioncharts.fusionCharts',
+            ),*/
         'reportes'=>array(
             'class'=>"application.components.Reportes",
         ),
