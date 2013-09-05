@@ -36,6 +36,9 @@ return array(
         ),
     // application components
     'components'=>array(
+        /*'fusioncharts'=>array(
+            'class'=>'ext.fusioncharts.fusionCharts',
+            ),*/
         'reportes'=>array(
             'class'=>"application.components.Reportes",
         ),

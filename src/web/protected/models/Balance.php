@@ -51,6 +51,7 @@ class Balance extends CActiveRecord
 	public $costmin;
 	public $ratemin;
 	public $marginmin;
+	public $id_vendedor;
 
 	//para posicion neta
 	public $operador;
