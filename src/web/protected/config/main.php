@@ -1,3 +1,4 @@
+
 <?php
 
 // uncomment the following to define a path alias
@@ -35,6 +36,9 @@ return array(
         ),
     // application components
     'components'=>array(
+        /*'fusioncharts'=>array(
+            'class'=>'ext.fusioncharts.fusionCharts',
+            ),*/
         'reportes'=>array(
             'class'=>"application.components.Reportes",
         ),
@@ -65,8 +69,8 @@ return array(
             'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
-			'password'=>'123',
-			//'password'=>'Nsusfd8263',
+			//'password'=>'123',
+			'password'=>'Nsusfd8263',
 			'charset'=>'utf8',
             ),
         'errorHandler'=>array(
@@ -96,7 +100,3 @@ return array(
         'adminEmail'=>'manuel@newlifeve.com',
         ),
     );
-
-
-
-

@@ -149,54 +149,77 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+    public static function colorRankingCV($tipo){
+        switch($tipo)
+        {
+            case 1:
+                $color="background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 2:
+                $color="background-color:#FFC8AE; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 3:
+                $color="background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+        }
+        return $color;
+    }
     public static function colorVendedor($var)
     {
         $color=null;
-        if(substr_count($var, 'Leandro') >= 1)
+        if(substr_count($var, 'Iglesias') >= 1)
         {
             $color="background-color:#fe6500; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Juan Carlos Lopez Silva') >= 1)
+        elseif(substr_count($var, 'Lopez Silva') >= 1)
         {
             $color="background-color:#4aabc5; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Jose Ramon Olivar') >= 1)
+        elseif(substr_count($var, 'Olivar') >= 1)
         {
             $color="background-color:#333399; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Juan Carlos Robayo') >= 1)
+        elseif(substr_count($var, 'Robayo') >= 1)
         {
             $color="background-color:#00ffff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Jaime Laguna') >= 1)
+        elseif(substr_count($var, 'Laguna') >= 1)
         {
             $color="background-color:#ffcc99; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Carlos Pinango') >= 1)
+        elseif(substr_count($var, 'Pinango') >= 1)
         {
             $color="background-color:#cc99ff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Augusto Cardenas') >= 1)
+        elseif(substr_count($var, 'Cardenas') >= 1)
         {
             $color="background-color:#00ff00; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Luis Ernesto Barbaran') >= 1)
+        elseif(substr_count($var, 'Barbaran') >= 1)
         {
             $color="background-color:#ff8080; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Alonso Van Der Biest') >= 1)
+        elseif(substr_count($var, 'Van Der Biest') >= 1)
         {
             $color="background-color:#c0504d; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Soiret Solarte') >= 1)
+        elseif(substr_count($var, 'Solarte') >= 1)
         {
             $color="background-color:#ff9900; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Ernesto Da Rocha') >= 1)
+        elseif(substr_count($var, 'Da Rocha') >= 1)
         {
             $color="background-color:#c0c0c0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Diana Mirakyan') >= 1)
+        elseif(substr_count($var, 'Mirakyan') >= 1)
+        {
+            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Sin Asiignar') >= 1)
+        {
+            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Vacante') >= 1)
         {
             $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
@@ -226,7 +249,10 @@ class reportes extends CApplicationComponent
         }
         elseif(substr_count($var, 'SPAIN') >= 1 ||
                 substr_count($var, 'ROMANIA') >= 1 ||
+                substr_count($var, 'MOROCCO') >= 1 ||
+                substr_count($var, 'PHILIPPINES') >= 1 ||
                 substr_count($var, 'BELGIUM') >= 1 ||
+                substr_count($var, 'CONGO') >= 1 ||
                 substr_count($var, 'PAKISTAN') >= 1 ||
                 substr_count($var, 'ANTIGUA') >= 1 ||
                 substr_count($var, 'UGANDA') >= 1 ||
@@ -272,7 +298,9 @@ class reportes extends CApplicationComponent
         }
         elseif(substr_count($var, 'MEXICO') >= 1 ||
                 substr_count($var, 'PANAMA') >= 1 ||
+                substr_count($var, 'GUATEMALA') >= 1 ||
                 substr_count($var, 'CUBA') >= 1 ||
+                substr_count($var, 'PUERTO RICO') >= 1 ||
                 substr_count($var, 'BARBADOS') >= 1 ||
                 substr_count($var, 'ARUBA') >= 1 ||
                 substr_count($var, 'DOMINICAN REPUBLIC ') >= 1 ||
@@ -324,25 +352,33 @@ class reportes extends CApplicationComponent
     * @param $max int valor a dividir
     * @return $valor int
     */
-    public static function ranking($pos,$max)
+    public static function ranking($pos, $max, $margin = NULL,$marginText=NULL) 
     {
-        if($max>10)
-        {
-            $mitad=($max/2)+1;
-            if($pos<$mitad)
-            {
+        if (is_null($margin)) {
+            if ($max > 10) {
+                $mitad = ($max / 2) + 1;
+                if ($pos < $mitad) {
+                    return $pos;
+                } else {
+                    $diferencia = $pos - $mitad;
+                    $valor = ($mitad - $diferencia) - 1;
+                    return "-" . $valor;
+                }
+            } else {
                 return $pos;
             }
-            else
-            {
-                $diferencia=$pos-$mitad;
-                $valor=($mitad-$diferencia)-1;
-                return "-".$valor;
+        } else {
+
+            if($margin>0){
+                return $pos;
             }
-        }
-        else
-        {
-            return $pos;
+            if($marginText=="0,00"){
+                return 0;
+            }
+            if($margin<0){
+                $negativos=$max-$pos;
+                return "-".$negativos;
+            }
         }
     }
 }

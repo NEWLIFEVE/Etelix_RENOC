@@ -203,7 +203,7 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['compraventa']))
             {
-                $correos['compraventa']['asunto']="RENOC Ranking Compra/Venta al ".str_replace("-","",$fecha);
+                $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
@@ -333,7 +333,7 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['compraventa']))
             {
-                $correos['compraventa']['asunto']="RENOC Ranking Compra/Venta al ".str_replace("-","",$fecha);
+                $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
@@ -393,17 +393,45 @@ class SiteController extends Controller
             fwrite($fp,$cuerpo);
         }
     }
-    public function actionPruebaruta()
+    /**
+    * Metodo que genera un grafico
+    */
+    /*public function actionGrafico()
     {
-        $asunto='perro';
-    $name=($asunto.'.xls');
-    
-    $funciona='adjuntos/'.$asunto.'.xls';
-    
-    echo $name;
-    echo '<br>';
-    echo $funciona;
-    }
+        Yii::app()->fusioncharts->setChartOption(array(
+            'caption'=>'My Chart',
+            'xAxisName'=>'Months',
+            'yAxisName'=>'Revenue'
+            )
+        );
+        $sets=array(
+            array(
+                'label'=>'July',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'August',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'Jan',
+                'value'=>'68000'
+                ),
+            );
+        Yii::app()->fusioncharts->addSets($sets);
+        $categories = array(
+            array(
+                'label'=>'July'
+                ),
+            array(
+                'label'=>'August'
+                ),
+            array(
+                'label'=>'Jan'
+                ),
+            );
+        Yii::app()->fusioncharts->addCategories($categories);
+    }*/
 }
 ?>
 

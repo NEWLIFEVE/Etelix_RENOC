@@ -693,7 +693,7 @@ input.favorite{ background-position: 4px -70px; }
 {
     background-color: white;
     border: thin outset;
-    border-radius: 4px 4px 4px 4px;
+    /*border-radius: 4px 4px 4px 4px;*/
     color: #6E6E6E;
     padding-top: 0px;
     padding: 1px 1px 1px 1px;
@@ -715,5 +715,22 @@ input.favorite{ background-position: 4px -70px; }
 {
     color: #6E6E6E;
 
+}
+
+.cancelar
+{
+    margin-top: 30px;
+ margin-left: 135px;
+text-align: center;
+width: 90px;
+height: 45px;
+}
+.confirma
+{
+     margin-top: -45px;
+    margin-left: 225px;
+text-align: center;
+width: 90px;
+height: 45px;
 }
 

@@ -11,7 +11,7 @@ class AltoImpactoRetail extends Reportes
 	public static function reporte($fecha)
 	{
 		$cuerpo="<div>
-                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                  <table >
                   <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Cliente RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
@@ -39,10 +39,10 @@ class AltoImpactoRetail extends Reportes
                             $cliente->cliente.
                         "</td>
                          <td style='text-align: left;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($cliente->total_calls).
+                            Yii::app()->format->format_decimal($cliente->total_calls,0).
                         "</td>
                          <td style='text-align: left;' class='completecalls'>".
-                            Yii::app()->format->format_decimal($cliente->complete_calls).
+                            Yii::app()->format->format_decimal($cliente->complete_calls,0).
                         "</td>
                          <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($cliente->minutes).
@@ -100,10 +100,10 @@ class AltoImpactoRetail extends Reportes
                           TOTAL
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotal->total_calls).
+                            Yii::app()->format->format_decimal($clientesTotal->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotal->complete_calls).
+                            Yii::app()->format->format_decimal($clientesTotal->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($clientesTotal->minutes).
@@ -130,8 +130,6 @@ class AltoImpactoRetail extends Reportes
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
-                        </td>
                     </tr>";  
         }
         else
@@ -149,17 +147,17 @@ class AltoImpactoRetail extends Reportes
         $clientesTotalCompleto=Balance::model()->findBySql($sqlClientesTotalCompleto);
         if($clientesTotalCompleto->total_calls!=null)
         {
-            $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: center;' class='etiqueta'>
                           Total
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotalCompleto->total_calls).
+                            Yii::app()->format->format_decimal($clientesTotalCompleto->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotalCompleto->complete_calls).
+                            Yii::app()->format->format_decimal($clientesTotalCompleto->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($clientesTotalCompleto->minutes).
@@ -200,7 +198,7 @@ class AltoImpactoRetail extends Reportes
                      </tr>";
         }
         $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
-                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -210,8 +208,8 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
         if($clientesTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -263,7 +261,7 @@ class AltoImpactoRetail extends Reportes
         }
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Destino RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','Destino RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Destino RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino RP','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         /*Total por destino con mas de 1 dolar de margen*/
@@ -290,10 +288,10 @@ class AltoImpactoRetail extends Reportes
                             $destino->destino.
                         "</td>
                          <td style='text-align: left;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($destino->total_calls).
+                            Yii::app()->format->format_decimal($destino->total_calls,0).
                         "</td>
                          <td style='text-align: left;' class='completecalls'>".
-                            Yii::app()->format->format_decimal($destino->complete_calls).
+                            Yii::app()->format->format_decimal($destino->complete_calls,0).
                         "</td>
                          <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($destino->minutes).
@@ -317,8 +315,14 @@ class AltoImpactoRetail extends Reportes
                             Yii::app()->format->format_decimal($destino->margin).
                         "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
-                            Yii::app()->format->format_decimal($destino->margin_percentage).
-                        "</td>  
+                            Yii::app()->format->format_decimal($destino->margin_percentage)."%
+                        </td> 
+                         <td style='text-align: left;' class='destino'>".
+                            $destino->destino.
+                        "</td>
+                         <td style='text-align: center;' class='position'>".
+                            $pos.
+                         "</td>                        
                          <td style='text-align: center;' class='costmin'>".
                             Yii::app()->format->format_decimal($destino->costmin).
                         "</td>
@@ -328,12 +332,7 @@ class AltoImpactoRetail extends Reportes
                          <td style='text-align: left;' class='marginmin'>".
                             Yii::app()->format->format_decimal($destino->marginmin).
                         "</td>
-                         <td style='text-align: left;' class='destino'>".
-                            $destino->destino.
-                        "</td>
-                         <td style='text-align: center;' class='position'>".
-                            $pos.
-                         "</td>
+
                      </tr>";
             }
         }
@@ -362,10 +361,10 @@ class AltoImpactoRetail extends Reportes
                           TOTAL
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotal->total_calls).
+                            Yii::app()->format->format_decimal($destinosTotal->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotal->complete_calls).
+                            Yii::app()->format->format_decimal($destinosTotal->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($destinosTotal->minutes).
@@ -387,6 +386,12 @@ class AltoImpactoRetail extends Reportes
                        "</td>
                         <td style='text-align: center;' class='margin_percentage'>
                         </td>  
+                        <td style='text-align: center;' class='etiqueta'>
+                          TOTAL
+                        </td> 
+                        <td style='text-align: center;' class='etiqueta'>
+                          
+                        </td> 
                         <td style='text-align: center;' class='costmin'>".
                             Yii::app()->format->format_decimal($destinosTotal->costmin).
                        "</td>
@@ -396,11 +401,6 @@ class AltoImpactoRetail extends Reportes
                         <td style='text-align: center;' class='marginmin'>".
                             Yii::app()->format->format_decimal($destinosTotal->marginmin).
                        "</td>
-                        <td style='text-align: center;' class='etiqueta'>
-                          TOTAL
-                        </td> 
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
-                        </td> 
                     </tr>";
         }
         else
@@ -426,10 +426,10 @@ class AltoImpactoRetail extends Reportes
                           Total
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotalCompleto->total_calls).
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotalCompleto->complete_calls).
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($destinosTotalCompleto->minutes).
@@ -453,20 +453,20 @@ class AltoImpactoRetail extends Reportes
                             Yii::app()->format->format_decimal($destinosTotalCompleto->margin).
                        "</td>
                         <td style='text-align: center;' class='margin_percentage'>".
-                            Yii::app()->format->format_decimal($destinosTotalCompleto->margin_percentage).
-                       "</td>
-                        <td style='text-align: center;' class='etiqueta'>                
-                        </td> 
-                        <td style='text-align: center;' class='etiqueta'>                
-                        </td> 
-                        <td style='text-align: center;' class='etiqueta'>                
-                        </td>
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->margin_percentage)."%
+                       </td>
                         <td style='text-align: center;' class='etiqueta'>
                           Total
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                        <td style='text-align: center;' class='etiqueta'>                
                         </td> 
-                        </tr>";    
+                        <td style='text-align: center;' class='etiqueta'>                
+                        </td> 
+                        <td style='text-align: center;' class='etiqueta'>                
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>                
+                        </td>
+                       </tr>";    
         }
         else
         {
@@ -474,8 +474,8 @@ class AltoImpactoRetail extends Reportes
                         <td colspan='17'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
-                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min'),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -485,11 +485,12 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    ));
         if($destinosTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -521,8 +522,8 @@ class AltoImpactoRetail extends Reportes
                         <td style='text-align: right;' class='margin'>".
                             Yii::app()->format->format_decimal(($destinosTotal->margin/$destinosTotalCompleto->margin)*(100))."%
                         </td>  
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
-                        </td> 
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>          
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>    
@@ -573,10 +574,10 @@ class AltoImpactoRetail extends Reportes
                             $clienteRpro->cliente.
                         "</td>
                          <td style='text-align: left;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($clienteRpro->total_calls).
+                            Yii::app()->format->format_decimal($clienteRpro->total_calls,0).
                         "</td>
                          <td style='text-align: left;' class='completecalls'>".
-                            Yii::app()->format->format_decimal($clienteRpro->complete_calls).
+                            Yii::app()->format->format_decimal($clienteRpro->complete_calls,0).
                         "</td>
                          <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($clienteRpro->minutes).
@@ -627,10 +628,10 @@ class AltoImpactoRetail extends Reportes
                               TOTAL
                             </td>
                             <td style='text-align: center;' class='totalCalls'>".
-                                Yii::app()->format->format_decimal($clientesTotalRpro->total_calls).
+                                Yii::app()->format->format_decimal($clientesTotalRpro->total_calls,0).
                            "</td>
                             <td style='text-align: center;' class='completeCalls'>".
-                                Yii::app()->format->format_decimal($clientesTotalRpro->complete_calls).
+                                Yii::app()->format->format_decimal($clientesTotalRpro->complete_calls,0).
                            "</td>
                             <td style='text-align: center;' class='minutes'>".
                                 Yii::app()->format->format_decimal($clientesTotalRpro->minutes).
@@ -657,8 +658,6 @@ class AltoImpactoRetail extends Reportes
                             </td>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                             </td>
-                            <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
-                            </td>
                         </tr>";  
             }
             /* suma de totales Totales por cliente  RPRO*/
@@ -670,17 +669,17 @@ class AltoImpactoRetail extends Reportes
             $clientesTotalCompletoRpro=Balance::model()->findBySql($sqlClientesTotalCompletoRpro);
             if($clientesTotalCompletoRpro->total_calls!=null)
             {
-                $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                             </td>
                             <td style='text-align: center;' class='etiqueta'>
                               Total
                             </td>
                             <td style='text-align: center;' class='totalCalls'>".
-                                Yii::app()->format->format_decimal($clientesTotalCompletoRpro->total_calls).
+                                Yii::app()->format->format_decimal($clientesTotalCompletoRpro->total_calls,0).
                            "</td>
                             <td style='text-align: center;' class='completeCalls'>".
-                                Yii::app()->format->format_decimal($clientesTotalCompletoRpro->complete_calls).
+                                Yii::app()->format->format_decimal($clientesTotalCompletoRpro->complete_calls,0).
                            "</td>
                             <td style='text-align: center;' class='minutes'>".
                                 Yii::app()->format->format_decimal($clientesTotalCompletoRpro->minutes).
@@ -715,7 +714,7 @@ class AltoImpactoRetail extends Reportes
                
             }
             $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
-                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -725,8 +724,8 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
             if($clientesTotalRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -770,7 +769,7 @@ class AltoImpactoRetail extends Reportes
             }
             $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Destino RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','Destino RPRO','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Destino RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino RPRO','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
             /*Totales por destino con mas de 1 dollar de margen RPRO*/
@@ -796,10 +795,10 @@ class AltoImpactoRetail extends Reportes
                                 $destinoRpro->destino.
                             "</td>
                              <td style='text-align: left;' class='totalCalls'>".
-                                Yii::app()->format->format_decimal($destinoRpro->total_calls).
+                                Yii::app()->format->format_decimal($destinoRpro->total_calls,0).
                             "</td>
                              <td style='text-align: left;' class='completecalls'>".
-                                Yii::app()->format->format_decimal($destinoRpro->complete_calls).
+                                Yii::app()->format->format_decimal($destinoRpro->complete_calls,0).
                             "</td>
                              <td style='text-align: left;' class='minutes'>".
                                 Yii::app()->format->format_decimal($destinoRpro->minutes).
@@ -823,8 +822,14 @@ class AltoImpactoRetail extends Reportes
                                 Yii::app()->format->format_decimal($destinoRpro->margin).
                             "</td>
                              <td style='text-align: left;' class='margin_percentage'>".
-                                Yii::app()->format->format_decimal($destinoRpro->margin_percentage).
-                            "</td>  
+                                Yii::app()->format->format_decimal($destinoRpro->margin_percentage)."%
+                            </td>
+                            <td style='text-align: left;' class='destino'>".
+                                $destinoRpro->destino.
+                            "</td>
+                             <td style='text-align: center;' class='position'>".
+                                $pos.
+                             "</td>
                              <td style='text-align: center;' class='costmin'>".
                                 Yii::app()->format->format_decimal($destinoRpro->costmin).
                             "</td>
@@ -834,12 +839,6 @@ class AltoImpactoRetail extends Reportes
                              <td style='text-align: left;' class='marginmin'>".
                                 Yii::app()->format->format_decimal($destinoRpro->marginmin).
                             "</td>
-                             <td style='text-align: left;' class='destino'>".
-                                $destinoRpro->destino.
-                            "</td>
-                             <td style='text-align: center;' class='position'>".
-                                $pos.
-                             "</td>
                          </tr>";
                 }
             }
@@ -861,10 +860,10 @@ class AltoImpactoRetail extends Reportes
                               TOTAL
                             </td>
                             <td style='text-align: center;' class='totalCalls'>".
-                                Yii::app()->format->format_decimal($destinosTotalRpro->total_calls).
+                                Yii::app()->format->format_decimal($destinosTotalRpro->total_calls,0).
                            "</td>
                             <td style='text-align: center;' class='completeCalls'>".
-                                Yii::app()->format->format_decimal($destinosTotalRpro->complete_calls).
+                                Yii::app()->format->format_decimal($destinosTotalRpro->complete_calls,0).
                            "</td>
                             <td style='text-align: center;' class='minutes'>".
                                 Yii::app()->format->format_decimal($destinosTotalRpro->minutes).
@@ -886,6 +885,11 @@ class AltoImpactoRetail extends Reportes
                            "</td>
                             <td style='text-align: center;' class='margin_percentage'>
                             </td>  
+                            <td style='text-align: center;' class='etiqueta'>
+                              TOTAL
+                            </td> 
+                            <td style='text-align: center;' class='etiqueta'>
+                            </td> 
                             <td style='text-align: center;' class='costmin'>".
                                 Yii::app()->format->format_decimal($destinosTotalRpro->costmin).
                            "</td>
@@ -895,11 +899,6 @@ class AltoImpactoRetail extends Reportes
                             <td style='text-align: center;' class='marginmin'>".
                                 Yii::app()->format->format_decimal($destinosTotalRpro->marginmin).
                            "</td>
-                           <td style='text-align: center;' class='etiqueta'>
-                              TOTAL
-                            </td> 
-                            <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
-                            </td> 
                         </tr>";
             }
             /*Suma de totales por destino en general RPRO*/
@@ -919,10 +918,10 @@ class AltoImpactoRetail extends Reportes
                               Total
                             </td>
                             <td style='text-align: center;' class='totalCalls'>".
-                                Yii::app()->format->format_decimal($destinosTotalCompletoRpro->total_calls).
+                                Yii::app()->format->format_decimal($destinosTotalCompletoRpro->total_calls,0).
                            "</td>
                             <td style='text-align: center;' class='completeCalls'>".
-                                Yii::app()->format->format_decimal($destinosTotalCompletoRpro->complete_calls).
+                                Yii::app()->format->format_decimal($destinosTotalCompletoRpro->complete_calls,0).
                            "</td>
                             <td style='text-align: center;' class='minutes'>".
                                 Yii::app()->format->format_decimal($destinosTotalCompletoRpro->minutes).
@@ -946,23 +945,23 @@ class AltoImpactoRetail extends Reportes
                                 Yii::app()->format->format_decimal($destinosTotalCompletoRpro->margin).
                            "</td>
                             <td style='text-align: center;' class='margin_percentage'>".
-                                Yii::app()->format->format_decimal($destinosTotalCompletoRpro->margin_percentage).
-                           "</td>
-                            <td style='text-align: center;' class='etiqueta'>                
-                            </td> 
-                            <td style='text-align: center;' class='etiqueta'>                
-                            </td> 
-                            <td style='text-align: center;' class='etiqueta'>                
+                                Yii::app()->format->format_decimal($destinosTotalCompletoRpro->margin_percentage)."%
                             </td>
                             <td style='text-align: center;' class='etiqueta'>
                               Total
                             </td>
-                            <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
+                            <td style='text-align: center;' class='etiqueta'> 
+                            </td>
+                            <td style='text-align: center;' class='etiqueta'>                
                             </td> 
+                            <td style='text-align: center;' class='etiqueta'>                
+                            </td> 
+                            <td style='text-align: center;' class='etiqueta'>                
+                            </td>
                             </tr>";    
             }
-            $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
-                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+            $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min'),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -972,11 +971,12 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    ));
             if($destinosTotalRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>

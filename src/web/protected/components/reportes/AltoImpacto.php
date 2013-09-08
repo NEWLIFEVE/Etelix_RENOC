@@ -12,20 +12,43 @@ class AltoImpacto extends Reportes
 	public static function reporte($fecha)
 	{
         $cuerpo="<div>
-                  <table style='font:13px/150% Arial,Helvetica,sans-serif;'>
+                  <table>
                   <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Cliente','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Cliente (+10$)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         //Selecciono los totales por clientes
-        $sqlClientes="SELECT c.name AS cliente, x.id_carrier_customer AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
-                      FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                           FROM balance
-                           WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                           GROUP BY id_carrier_customer
-                           ORDER BY margin DESC) x, carrier c
-                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id
-                      ORDER BY x.margin DESC";
+        $sqlClientes="SELECT c.name AS cliente, x.id_carrier_customer AS id, x.total_calls, x.complete_calls, x.minutes, x.asr,x.acd, x.pdd, x.cost, x.revenue, x.margin,
+                            CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, cs.posicion_neta as posicion_neta
+                            FROM
+
+                            (SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
+                                (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr,
+                                CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
+                                (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
+                                SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                FROM balance
+                                WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                                GROUP BY id_carrier_customer
+                                ORDER BY margin DESC) x,
+
+                                (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC)cs,
+                                 carrier c
+                            WHERE x.margin > 10 AND x.id_carrier_customer = c.id and x.id_carrier_customer=cs.id
+                            ORDER BY x.margin DESC";
+        
         $clientes=Balance::model()->findAllBySql($sqlClientes);
         if($clientes!=null)
         {
@@ -43,10 +66,10 @@ class AltoImpacto extends Reportes
                             CarrierManagers::getManager($cliente->id).
                         "</td>
                          <td style='text-align: left;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($cliente->total_calls).
+                            Yii::app()->format->format_decimal($cliente->total_calls,0).
                         "</td>
                          <td style='text-align: left;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($cliente->complete_calls).
+                            Yii::app()->format->format_decimal($cliente->complete_calls,0).
                         "</td>
                          <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($cliente->minutes).
@@ -66,7 +89,7 @@ class AltoImpacto extends Reportes
                          <td style='text-align: left;' class='revenue'>".
                             Yii::app()->format->format_decimal($cliente->revenue).
                         "</td>
-                         <td style='text-align: center;' class='margin'>".
+                         <td style='text-align: left;' class='margin'>".
                             Yii::app()->format->format_decimal($cliente->margin).
                         "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
@@ -77,6 +100,12 @@ class AltoImpacto extends Reportes
                         "</td>
                          <td style='text-align: center;' class='position'>".
                             $pos.
+                        "</td>
+                          <td style='text-align: left;' class='Vendedor'>".
+                            CarrierManagers::getManager($cliente->id).
+                        "</td>
+                          <td style='text-align: left;' class='posicionNeta'>".
+                             Yii::app()->format->format_decimal($cliente->posicion_neta).
                         "</td>
                          </tr>";
             }
@@ -108,10 +137,10 @@ class AltoImpacto extends Reportes
                             TOTAL
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotal->total_calls).
+                            Yii::app()->format->format_decimal($clientesTotal->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotal->complete_calls).
+                            Yii::app()->format->format_decimal($clientesTotal->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutos'>".
                             Yii::app()->format->format_decimal($clientesTotal->minutes).
@@ -135,6 +164,8 @@ class AltoImpacto extends Reportes
                         </td>
                         <td style='text-align: center;' class='etiqueta'>
                             TOTAL
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
                         </td>
@@ -165,10 +196,10 @@ class AltoImpacto extends Reportes
                             Total
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotalCompleto->total_calls).
+                            Yii::app()->format->format_decimal($clientesTotalCompleto->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($clientesTotalCompleto->complete_calls).
+                            Yii::app()->format->format_decimal($clientesTotalCompleto->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($clientesTotalCompleto->minutes).
@@ -199,6 +230,8 @@ class AltoImpacto extends Reportes
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                     </tr>";
         }
         else
@@ -207,8 +240,8 @@ class AltoImpacto extends Reportes
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
-                                array('','','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','',''),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -218,8 +251,9 @@ class AltoImpacto extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
         if($clientesTotalCompleto->total_calls!=null)
         {
         $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -257,6 +291,10 @@ class AltoImpacto extends Reportes
                     </td>
                     <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                     </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
                 </tr>
             </table>
             <br>";
@@ -269,21 +307,338 @@ class AltoImpacto extends Reportes
                      </table>
             <br>";
             }
+            /******************************************CLIENTES RESTO******************************************************/
+        $cuerpo.="<table>
+                  <thead>";
+        $cuerpo.=self::cabecera(array('Ranking','Cliente (RESTO)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.="</thead>
+                 <tbody>";
+        //Selecciono los totales por clientes
+        $sqlClientesResto ="SELECT c.name AS cliente, x.id_carrier_customer AS id, x.total_calls, x.complete_calls, x.minutes, x.asr,x.acd, x.pdd, x.cost, x.revenue, x.margin,
+                            CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, cs.posicion_neta as posicion_neta
+                            FROM
 
+                            (SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
+                                (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr,
+                                CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
+                                (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
+                                SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                FROM balance
+                                WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                                GROUP BY id_carrier_customer
+                                ORDER BY margin DESC) x,
+
+                                (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC)cs,
+                                 carrier c
+                            WHERE x.margin < 10 AND x.id_carrier_customer = c.id and x.id_carrier_customer=cs.id
+                            ORDER BY x.margin DESC";
+        
+        $clientesResto=Balance::model()->findAllBySql($sqlClientesResto);
+        if($clientesResto!=null)
+        {
+            foreach ($clientesResto as $key => $clienteResto)
+            {
+                $max=count($clientesResto);
+                $pos=$pos+1;
+                //$posr=self::ranking($pos,$max,$clienteResto->margin,Yii::app()->format->format_decimal($clienteResto->margin));
+                $cuerpo.=self::color($pos);
+                $cuerpo.="<td style='text-align: center;' class='position'>".
+                            $pos.
+                        "</td>
+                        <td style='text-align: left;' class='cliente'>".
+                            $clienteResto->cliente.
+                        "</td>
+                        <td style='text-align: left;' class='Vendedor'>".
+                            CarrierManagers::getManager($clienteResto->id).
+                        "</td>
+                         <td style='text-align: left;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($clienteResto->total_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($clienteResto->complete_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='minutes'>".
+                            Yii::app()->format->format_decimal($clienteResto->minutes).
+                        "</td>
+                         <td style='text-align: left;' class='asr'>".
+                            Yii::app()->format->format_decimal($clienteResto->asr).
+                        "</td>
+                         <td style='text-align: center;' class='acd'>".
+                            Yii::app()->format->format_decimal($clienteResto->acd).
+                        "</td>
+                        <td style='text-align: left;' class='pdd'>".
+                            Yii::app()->format->format_decimal($clienteResto->pdd).
+                        "</td>
+                         <td style='text-align: left;' class='cost'>".
+                            Yii::app()->format->format_decimal($clienteResto->cost).
+                        "</td>
+                         <td style='text-align: left;' class='revenue'>".
+                            Yii::app()->format->format_decimal($clienteResto->revenue).
+                        "</td>
+                         <td style='text-align: left;' class='margin'>".
+                            Yii::app()->format->format_decimal($clienteResto->margin).
+                        "</td>
+                         <td style='text-align: left;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($clienteResto->margin_percentage)."%
+                         </td>
+                         </td><td style='text-align: left;' class='cliente'>".
+                            $clienteResto->cliente.
+                        "</td>
+                         <td style='text-align: center;' class='position'>".
+                            $pos.
+                        "</td>
+                          <td style='text-align: left;' class='Vendedor'>".
+                            CarrierManagers::getManager($clienteResto->id).
+                        "</td>
+                         <td style='text-align: left;' class='posicionNeta'>".
+                            Yii::app()->format->format_decimal($clienteResto->posicion_neta).
+                        "</td>
+                         </tr>";
+            }
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        //Selecciono la suma de todos los totales mayores a 10 dolares de margen
+        $sqlClientesTotalResto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
+                           FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                              FROM balance
+                              WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                              GROUP BY id_carrier_customer
+                              ORDER BY margin DESC) balance
+                           WHERE margin<10";     
+        
+        $clientesTotalResto=Balance::model()->findBySql($sqlClientesTotalResto);
+        if($clientesTotalResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            TOTAL
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($clientesTotalResto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($clientesTotalResto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutos'>".
+                            Yii::app()->format->format_decimal($clientesTotalResto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>
+                        </td>
+                        <td style='text-align: center;' class='acd'>
+                        </td>
+                        <td style='text-align: center;' class='pdd'>
+                        </td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($clientesTotalResto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($clientesTotalResto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($clientesTotalResto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            TOTAL
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'> 
+                        </td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        //Selecciono la suma de todos los totales
+        $sqlClientesTotalCompletoResto ="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage
+                                    FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                         FROM balance
+                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                         GROUP BY id_carrier_customer
+                                         ORDER BY margin DESC) balance";
+        $clientesTotalCompletoResto=Balance::model()->findBySql($sqlClientesTotalCompletoResto);
+        if($clientesTotalCompletoResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            Total
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutes'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->asr).
+                       "</td>
+                        <td style='text-align: center;' class='acd'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->acd).
+                       "</td>
+                        <td style='text-align: center;' class='pdd'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->pdd).
+                       "</td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($clientesTotalCompletoResto->margin_percentage)."%
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            Total
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','',''),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
+        if($clientesTotalCompletoResto->total_calls!=null)
+        {
+        $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: right;' class='totalCalls'>".
+                        Yii::app()->format->format_decimal(($clientesTotalResto->total_calls/$clientesTotalCompletoResto->total_calls)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='completeCalls'>".
+                        Yii::app()->format->format_decimal(($clientesTotalResto->complete_calls/$clientesTotalCompletoResto->complete_calls)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='minutos'>".
+                        Yii::app()->format->format_decimal(($clientesTotalResto->minutes/$clientesTotalCompletoResto->minutes)*(100))."%
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: right;' class='cost'>".
+                        Yii::app()->format->format_decimal(($clientesTotalResto->cost/$clientesTotalCompletoResto->cost)*(100))."%
+                    </td>
+                    <td style='text-align: right;' class='revenue'>".
+                        Yii::app()->format->format_decimal(($clientesTotalResto->revenue/$clientesTotalCompletoResto->revenue)*(100))."%
+                    </td>
+                    <td style='text-align: center;' class='margin'>".
+                        Yii::app()->format->format_decimal(($clientesTotalResto->margin/$clientesTotalCompletoResto->margin)*(100))."%
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                    <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                    </td>
+                </tr>
+            </table>
+            <br>";
+            }
+            else
+            {
+              $cuerpo.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>
+                     </table>
+            <br>";
+            }
+/*********************************************************************PROVEEDORES +10$*********************************************************************/
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Proveedor (+10$)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         // Selecciono los totales por proveedores con de mas de 10 dolares de margen
-        $sqlProveedores="SELECT c.name AS proveedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
-                         FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                              FROM balance
-                              WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                              GROUP BY id_carrier_supplier
-                              ORDER BY margin DESC) x, carrier c
-                         WHERE x.margin > 10 AND x.id_carrier_supplier = c.id
-                         ORDER BY x.margin DESC";
+        $sqlProveedores="SELECT c.name AS proveedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, 
+                                CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage,cs.posicion_neta as posicion_neta 
+                                FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
+                                    (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, 
+                                    CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
+                                    (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
+                                    SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                    FROM balance
+                                    WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                                    GROUP BY id_carrier_supplier
+                                    ORDER BY margin DESC) x,
+                                   (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                                    FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                                         FROM balance
+                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                         GROUP BY id_carrier_customer
+                                         UNION
+                                         SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                                         FROM balance
+                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                         GROUP BY id_carrier_supplier
+                                         order by id asc)t
+                                    GROUP BY id
+                                    ORDER BY posicion_neta DESC)cs
+                                    , carrier c
+                                WHERE x.margin > 10 AND x.id_carrier_supplier = c.id AND x.id_carrier_supplier=cs.id
+                                ORDER BY x.margin DESC";
         $proveedores=Balance::model()->findAllBySql($sqlProveedores);
         if($proveedores!=null)
         {
@@ -301,10 +656,10 @@ class AltoImpacto extends Reportes
                             CarrierManagers::getManager($proveedor->id).
                         "</td>
                          <td style='text-align: left;' class='totalcalls'>".
-                            Yii::app()->format->format_decimal($proveedor->total_calls).
+                            Yii::app()->format->format_decimal($proveedor->total_calls,0).
                         "</td>
                          <td style='text-align: left;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($proveedor->complete_calls).
+                            Yii::app()->format->format_decimal($proveedor->complete_calls,0).
                         "</td>
                          <td style='text-align: left;' class='minutes'>".
                             Yii::app()->format->format_decimal($proveedor->minutes).
@@ -336,6 +691,12 @@ class AltoImpacto extends Reportes
                          <td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
+                           <td style='text-align: left;' class='Vendedor'>".
+                            CarrierManagers::getManager($proveedor->id).
+                        "</td>
+                         <td style='text-align: left;' class='posicionNeta'>".
+                            Yii::app()->format->format_decimal($proveedor->posicion_neta).
+                        "</td>   
                     </tr>";
             }
         }
@@ -365,10 +726,10 @@ class AltoImpacto extends Reportes
                             TOTAL
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->total_calls).
+                            Yii::app()->format->format_decimal($proveedoresTotal->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($proveedoresTotal->complete_calls).
+                            Yii::app()->format->format_decimal($proveedoresTotal->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($proveedoresTotal->minutes).
@@ -392,6 +753,8 @@ class AltoImpacto extends Reportes
                         </td>
                         <td style='text-align: center;' class='etiqueta'>
                             TOTAL
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
@@ -423,10 +786,10 @@ class AltoImpacto extends Reportes
                             Total
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($proveedoresTotalCompleto->total_calls).
+                            Yii::app()->format->format_decimal($proveedoresTotalCompleto->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($proveedoresTotalCompleto->complete_calls).
+                            Yii::app()->format->format_decimal($proveedoresTotalCompleto->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($proveedoresTotalCompleto->minutes).
@@ -457,6 +820,8 @@ class AltoImpacto extends Reportes
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                     </tr>";
         }
         else
@@ -465,8 +830,8 @@ class AltoImpacto extends Reportes
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
-                                array('','','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','',''),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -476,8 +841,9 @@ class AltoImpacto extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
         if($proveedoresTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -517,6 +883,8 @@ class AltoImpacto extends Reportes
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
                     </tr>
                 </table>
                 <br>";
@@ -529,21 +897,323 @@ class AltoImpacto extends Reportes
                     </table>
                 <br>";
           }
-
+          
+/************************************************************PROVEEDORES RESTO*****************************************************************************/          
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Destino','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Destino','Margin%','Cost/Min','Rate/Min','Margin/Min','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Proveedor (RESTO)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.="</thead>
+                 <tbody>";
+        // Selecciono los totales por proveedores con de mas de 10 dolares de margen
+        $sqlProveedoresResto = "SELECT c.name AS proveedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, 
+                                CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage,cs.posicion_neta as posicion_neta 
+                                FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
+                                    (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, 
+                                    CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
+                                    (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
+                                    SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                    FROM balance
+                                    WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                                    GROUP BY id_carrier_supplier
+                                    ORDER BY margin DESC) x,
+                                   (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                                    FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                                         FROM balance
+                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                         GROUP BY id_carrier_customer
+                                         UNION
+                                         SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                                         FROM balance
+                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                         GROUP BY id_carrier_supplier
+                                         order by id asc)t
+                                    GROUP BY id
+                                    ORDER BY posicion_neta DESC)cs
+                                    , carrier c
+                                WHERE x.margin < 10 AND x.id_carrier_supplier = c.id AND x.id_carrier_supplier=cs.id
+                                ORDER BY x.margin DESC";
+
+        $proveedoresResto=Balance::model()->findAllBySql($sqlProveedoresResto);
+        if($proveedoresResto!=null)
+        {
+            foreach($proveedoresResto as $key => $proveedorResto)
+            {
+                $pos=$pos+1;
+                $cuerpo.=self::color($pos);
+                $cuerpo.="<td style='text-align: center;' class='ranking'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='supplier'>".
+                            $proveedorResto->proveedor.
+                        "</td>
+                        <td style='text-align: left;' class='vendedor'>".
+                            CarrierManagers::getManager($proveedorResto->id).
+                        "</td>
+                         <td style='text-align: left;' class='totalcalls'>".
+                            Yii::app()->format->format_decimal($proveedorResto->total_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($proveedorResto->complete_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='minutes'>".
+                            Yii::app()->format->format_decimal($proveedorResto->minutes).
+                        "</td>
+                         <td style='text-align: left;' class='asr'>".
+                            Yii::app()->format->format_decimal($proveedorResto->asr).
+                        "</td>
+                         <td style='text-align: left;' class='acd'>".
+                            Yii::app()->format->format_decimal($proveedorResto->acd).
+                        "</td>
+                         <td style='text-align: left;' class='pdd'>".
+                            Yii::app()->format->format_decimal($proveedorResto->pdd).
+                        "</td>
+                         <td style='text-align: left;' class='cost'>".
+                            Yii::app()->format->format_decimal($proveedorResto->cost).
+                        "</td>
+                         <td style='text-align: left;' class='revenue'>".
+                            Yii::app()->format->format_decimal($proveedorResto->revenue).
+                        "</td>
+                         <td style='text-align: left;' class='margin'>".
+                            Yii::app()->format->format_decimal($proveedorResto->margin).
+                        "</td>
+                         <td style='text-align: left;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($proveedorResto->margin_percentage)."%
+                         </td>
+                         <td style='text-align: left;' class='supplier'>".
+                            $proveedorResto->proveedor.
+                        "</td>
+                         <td style='text-align: center;' class='position'>".
+                            $pos.
+                        "</td>
+                           <td style='text-align: left;' class='Vendedor'>".
+                            CarrierManagers::getManager($proveedorResto->id).
+                        "</td>
+                         <td style='text-align: left;' class='posicionNeta'>".
+                            Yii::app()->format->format_decimal($proveedorResto->posicion_neta).
+                        "</td>                            
+                    </tr>";
+            }
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='13'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        // Selecciono la suma de totales de los proveedores con mas de 10 dolares de margen
+        $sqlProveedoresTotalResto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
+                              FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                  FROM balance
+                                  WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                  GROUP BY id_carrier_supplier
+                                  ORDER BY margin DESC) balance
+                              WHERE margin<10";
+        $proveedoresTotalResto=Balance::model()->findBySql($sqlProveedoresTotalResto);
+        if($proveedoresTotalResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='ranking'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            TOTAL
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalResto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalResto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutes'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalResto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>
+                        </td>
+                        <td style='text-align: center;' class='acd'>
+                        </td>
+                        <td style='text-align: center;' class='pdd'>
+                        </td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalResto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalResto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalResto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            TOTAL
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        // Selecciono la suma de todos los proveedores
+        $sqlProveedoresTotalCompletoResto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage
+                                      FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                           FROM balance
+                                           WHERE date_balance='$fecha'
+                                           AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                           GROUP BY id_carrier_supplier
+                                           ORDER BY margin DESC) balance";
+        $proveedoresTotalCompletoResto=Balance::model()->findBySql($sqlProveedoresTotalCompletoResto);
+        if($proveedoresTotalCompletoResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            Total
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutes'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->asr).
+                       "</td>
+                        <td style='text-align: center;' class='acd'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->acd).
+                       "</td>
+                        <td style='text-align: center;' class='pdd'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->pdd).
+                       "</td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($proveedoresTotalCompletoResto->margin_percentage)."%
+                        </td>
+                        <td style='text-align: center;' class='etiqueta'>
+                            Total
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='12'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','',''),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
+        if($proveedoresTotalCompletoResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: right;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal(($proveedoresTotalResto->total_calls/$proveedoresTotalCompletoResto->total_calls)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal(($proveedoresTotalResto->complete_calls/$proveedoresTotalCompletoResto->complete_calls)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='minutos'>".
+                            Yii::app()->format->format_decimal(($proveedoresTotalResto->minutes/$proveedoresTotalCompletoResto->minutes)*(100))."%
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: right;' class='cost'>".
+                            Yii::app()->format->format_decimal(($proveedoresTotalResto->cost/$proveedoresTotalCompletoResto->cost)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='revenue'>".
+                            Yii::app()->format->format_decimal(($proveedoresTotalResto->revenue/$proveedoresTotalCompletoResto->revenue)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='margin'>".
+                            Yii::app()->format->format_decimal(($proveedoresTotalResto->margin/$proveedoresTotalCompletoResto->margin)*(100))."%
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>
+                </table>
+                <br>";
+          }
+          else
+          {
+            $cuerpo.="<tr>
+                        <td colspan='13'>No se encontraron resultados</td>
+                     </tr>
+                    </table>
+                <br>";
+          }
+/******************************************************************DESTINOS (+10$)************************************************************************/
+        $cuerpo.="<table>
+                 <thead>";
+        $cuerpo.=self::cabecera(array('Ranking','Destino (+10$)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         // selecciono los totales de los destinos de mas de 10 dolares de marger
-        $sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
-                      FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                           FROM balance
-                           WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL
-                           GROUP BY id_destination
-                           ORDER BY margin DESC) x, destination d
-                      WHERE x.margin > 10 AND x.id_destination = d.id
-                      ORDER BY x.margin DESC";
+        $sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, 
+                            CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage,
+                            CASE WHEN x.minutes=0 THEN 0 ELSE(x.cost/x.minutes)*100 END AS costmin, 
+                            CASE WHEN x.minutes=0 THEN 0 ELSE(x.revenue/x.minutes)*100 END AS ratemin, 
+                            CASE WHEN x.minutes=0 THEN 0 ELSE((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin
+                            FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
+                                (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, 
+                                CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
+                                (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
+                                SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                FROM balance
+                                WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL
+                                GROUP BY id_destination
+                                ORDER BY margin DESC) x, destination d
+                            WHERE x.margin > 10 AND x.id_destination = d.id
+                            ORDER BY x.margin DESC";
 
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
@@ -555,14 +1225,14 @@ class AltoImpacto extends Reportes
                 $cuerpo.="<td style='text-align: center;' class='diferencialBancario'>".
                             $pos.
                         "</td>
-                         <td style='text-align: left;' class='destino'>".
+                         <td colspan='2' style='text-align: left;' class='destino'>".
                             $destino->destino.
                         "</td>
                          <td style='text-align: left;' class='totalcalls'>".
-                            Yii::app()->format->format_decimal($destino->total_calls).
+                            Yii::app()->format->format_decimal($destino->total_calls,0).
                         "</td>
                          <td style='text-align: left;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($destino->complete_calls).
+                            Yii::app()->format->format_decimal($destino->complete_calls,0).
                         "</td>
                          <td style='text-align: left;' class='minutos'>".
                             Yii::app()->format->format_decimal($destino->minutes).
@@ -586,9 +1256,15 @@ class AltoImpacto extends Reportes
                             Yii::app()->format->format_decimal($destino->margin).
                         "</td>
                          <td style='text-align: left;' class='margin_percentage'>".
-                            Yii::app()->format->format_decimal($destino->margin_percentage).
+                            Yii::app()->format->format_decimal($destino->margin_percentage)."%
+                        </td>
+                        <td style='text-align: left;' class='destino'>".
+                            $destino->destino.
                         "</td>
-                         <td style='text-align: center;' class='costmin'>".
+                         <td style='text-align: center;' class='diferencialBancario'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='costmin'>".
                             Yii::app()->format->format_decimal($destino->costmin).
                         "</td>
                          <td style='text-align: left;' class='ratemin'>".
@@ -597,12 +1273,7 @@ class AltoImpacto extends Reportes
                          <td style='text-align: left;' class='marginmin'>".
                             Yii::app()->format->format_decimal($destino->marginmin).
                         "</td>
-                         <td style='text-align: left;' class='destino'>".
-                            $destino->destino.
-                        "</td>
-                         <td style='text-align: center;' class='diferencialBancario'>".
-                            $pos.
-                        "</td>
+
                     </tr>";
             }
         }
@@ -628,14 +1299,14 @@ class AltoImpacto extends Reportes
              $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
-                        <td style='text-align: center;' class='etiqueta'>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
                             TOTAL
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotal->total_calls).
+                            Yii::app()->format->format_decimal($destinosTotal->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completecalls'>".
-                            Yii::app()->format->format_decimal($destinosTotal->complete_calls).
+                            Yii::app()->format->format_decimal($destinosTotal->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutos'>".
                             Yii::app()->format->format_decimal($destinosTotal->minutes).
@@ -655,7 +1326,10 @@ class AltoImpacto extends Reportes
                         <td style='text-align: center;' class='margin'>".
                             Yii::app()->format->format_decimal($destinosTotal->margin).
                        "</td>
-                        <td style='text-align: center;' class='margin_percentage'>
+                        <td style='text-align: center;' class='etiqueta'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                        TOTAL
                         </td>
                         <td style='text-align: center;' class='costmin'>".
                             Yii::app()->format->format_decimal($destinosTotal->costmin).
@@ -666,11 +1340,6 @@ class AltoImpacto extends Reportes
                         <td style='text-align: center;' class='marginmin'>".
                             Yii::app()->format->format_decimal($destinosTotal->marginmin).
                        "</td>
-                        <td style='text-align: center;' class='etiqueta'>
-                            TOTAL
-                        </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
-                        </td>
                     </tr>";
         }
         else
@@ -692,14 +1361,14 @@ class AltoImpacto extends Reportes
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
-                        <td style='text-align: center;' class='etiqueta'>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
                             Total
                         </td>
                         <td style='text-align: center;' class='totalCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotalCompleto->total_calls).
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->total_calls,0).
                        "</td>
                         <td style='text-align: center;' class='completeCalls'>".
-                            Yii::app()->format->format_decimal($destinosTotalCompleto->complete_calls).
+                            Yii::app()->format->format_decimal($destinosTotalCompleto->complete_calls,0).
                        "</td>
                         <td style='text-align: center;' class='minutes'>".
                             Yii::app()->format->format_decimal($destinosTotalCompleto->minutes).
@@ -725,15 +1394,14 @@ class AltoImpacto extends Reportes
                         <td style='text-align: center;' class='margin_percentage'>".
                             Yii::app()->format->format_decimal($destinosTotalCompleto->margin_percentage).
                        "</td>
-                        <td style='text-align: center;' class='costmin'>
-                        </td>
-                        <td style='text-align: center;' class='ratemin'>
+                         <td colspan='2' style='text-align: center;' class='etiqueta'>
+                          Total
                         </td>
                         <td style='text-align: center;' class='marginmin'>
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        <td style='text-align: left; class='marginmin'>
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        <td style='text-align: left; class='marginmin'>
                         </td>
                     </tr>";
         }
@@ -743,8 +1411,8 @@ class AltoImpacto extends Reportes
                         <td colspan='15'>No se encontraron resultados</td>
                      </tr>";
         }
-        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min','',''),
-                                array('','','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min',),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -755,16 +1423,20 @@ class AltoImpacto extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    '',
-                                    ''));
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
         if($destinosTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
-                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        <td colspan='2' style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
                         <td style='text-align: right;' class='totalCalls'>".
                             Yii::app()->format->format_decimal(($destinosTotal->total_calls/$destinosTotalCompleto->total_calls)*(100))."%
@@ -804,6 +1476,302 @@ class AltoImpacto extends Reportes
                         </td>
                     </tr>
                     </tbody>
+                   </table>
+                <br>";
+          }
+          else
+          {
+            $cuerpo.="<tr>
+                        <td colspan='13'>No se encontraron resultados</td>
+                     </tr>
+                    </table>
+                <br>";
+          }
+/************************************************************************DESTINOS (RESTO)*****************************************************************/
+                $cuerpo.="<table>
+                 <thead>";
+        $cuerpo.=self::cabecera(array('Ranking','Destino (RESTO)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.="</thead>
+                 <tbody>";
+        // selecciono los totales de los destinos de mas de 10 dolares de marger
+        $sqlDestinosResto ="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, 
+                            CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage,
+                            CASE WHEN x.minutes=0 THEN 0 ELSE(x.cost/x.minutes)*100 END AS costmin, 
+                            CASE WHEN x.minutes=0 THEN 0 ELSE(x.revenue/x.minutes)*100 END AS ratemin, 
+                            CASE WHEN x.minutes=0 THEN 0 ELSE((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin
+                            FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
+                                (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, 
+                                CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
+                                (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
+                                SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                FROM balance
+                                WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL
+                                GROUP BY id_destination
+                                ORDER BY margin DESC) x, destination d
+                            WHERE x.margin < 10 AND x.id_destination = d.id
+                            ORDER BY x.margin DESC";
+
+        $destinosResto=Balance::model()->findAllBySql($sqlDestinosResto);
+        if($destinosResto!=null)
+        {
+            foreach($destinosResto as $key => $destinoResto)
+            {
+                $pos=$pos+1;
+                $cuerpo.=self::colorDestino($destinoResto->destino);
+                $cuerpo.="<td style='text-align: center;' class='diferencialBancario'>".
+                            $pos.
+                        "</td>
+                         <td colspan='2' style='text-align: left;' class='destino'>".
+                            $destinoResto->destino.
+                        "</td>
+                         <td style='text-align: left;' class='totalcalls'>".
+                            Yii::app()->format->format_decimal($destinoResto->total_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($destinoResto->complete_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='minutos'>".
+                            Yii::app()->format->format_decimal($destinoResto->minutes).
+                        "</td>
+                         <td style='text-align: left;' class='asr'>".
+                            Yii::app()->format->format_decimal($destinoResto->asr).
+                        "</td>
+                         <td style='text-align: left;' class='acd'>".
+                            Yii::app()->format->format_decimal($destinoResto->acd).
+                        "</td>
+                         <td style='text-align: left;' class='pdd'>".
+                            Yii::app()->format->format_decimal($destinoResto->pdd).
+                        "</td>
+                         <td style='text-align: left;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinoResto->cost).
+                        "</td>
+                         <td style='text-align: left;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinoResto->revenue).
+                        "</td>
+                         <td style='text-align: left;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinoResto->margin).
+                        "</td>
+                         <td style='text-align: left;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($destinoResto->margin_percentage)."%
+                        </td>
+                        <td style='text-align: left;' class='destino'>".
+                            $destinoResto->destino.
+                        "</td>
+                         <td style='text-align: center;' class='diferencialBancario'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='costmin'>".
+                            Yii::app()->format->format_decimal($destinoResto->costmin).
+                        "</td>
+                         <td style='text-align: left;' class='ratemin'>".
+                            Yii::app()->format->format_decimal($destinoResto->ratemin).
+                        "</td>
+                         <td style='text-align: left;' class='marginmin'>".
+                            Yii::app()->format->format_decimal($destinoResto->marginmin).
+                        "</td>
+
+                    </tr>";
+            }
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+
+        // Selecciono la suma de los totales de los destinos con mas de 10 doleres de margen
+        $sqlDestinosTotalResto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
+                           FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                FROM balance 
+                                WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL
+                                GROUP BY id_destination
+                                ORDER BY margin DESC) balance
+                           WHERE margin<10";
+
+        $destinosTotalResto=Balance::model()->findBySql($sqlDestinosTotalResto);
+        if($destinosTotalResto->total_calls!=null)
+        {
+             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                            TOTAL
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completecalls'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutos'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>
+                        </td>
+                        <td style='text-align: center;' class='acd'>
+                        </td>
+                        <td style='text-align: center;' class='pdd'>
+                        </td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='etiqueta'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                        TOTAL
+                        </td>
+                        <td style='text-align: center;' class='costmin'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->costmin).
+                       "</td>
+                        <td style='text-align: center;' class='ratemin'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->ratemin).
+                       "</td>
+                        <td style='text-align: center;' class='marginmin'>".
+                            Yii::app()->format->format_decimal($destinosTotalResto->marginmin).
+                       "</td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        // Selecciono los totales de todos los destinos 
+        $sqlDestinosTotalCompletoResto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage
+                                   FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                        FROM balance 
+                                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL
+                                        GROUP BY id_destination
+                                        ORDER BY margin DESC) balance";
+        $destinosTotalCompletoResto=Balance::model()->findBySql($sqlDestinosTotalCompletoResto);
+        if($destinosTotalCompletoResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                            Total
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutes'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->asr).
+                       "</td>
+                        <td style='text-align: center;' class='acd'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->acd).
+                       "</td>
+                        <td style='text-align: center;' class='pdd'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->pdd).
+                       "</td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($destinosTotalCompletoResto->margin_percentage).
+                       "</td>
+                         <td colspan='2' style='text-align: center;' class='etiqueta'>
+                          Total
+                        </td>
+                        <td style='text-align: center;' class='marginmin'>
+                        </td>
+                        <td style='text-align: left; class='marginmin'>
+                        </td>
+                        <td style='text-align: left; class='marginmin'>
+                        </td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min',),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
+        if($destinosTotalCompletoResto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td colspan='2' style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: right;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal(($destinosTotalResto->total_calls/$destinosTotalCompletoResto->total_calls)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal(($destinosTotalResto->complete_calls/$destinosTotalCompletoResto->complete_calls)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='minutes'>".
+                            Yii::app()->format->format_decimal(($destinosTotalResto->minutes/$destinosTotalCompletoResto->minutes)*(100))."%
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: right;' class='cost'>".
+                            Yii::app()->format->format_decimal(($destinosTotalResto->cost/$destinosTotalCompletoResto->cost)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='revenue'>".
+                            Yii::app()->format->format_decimal(($destinosTotalResto->revenue/$destinosTotalCompletoResto->revenue)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='margin'>".
+                            Yii::app()->format->format_decimal(($destinosTotalResto->margin/$destinosTotalCompletoResto->margin)*(100))."%
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
             </div>";
         }
@@ -811,8 +1779,13 @@ class AltoImpacto extends Reportes
         {
             $cuerpo.="<tr>
                       <td colspan='15'>No se encontraron resultados</td>
-                    </tr>";
+                    </tr>
+                    </table>
+                    </div>";
         }
+        
+        
+        
         return $cuerpo;
 	}
 }
