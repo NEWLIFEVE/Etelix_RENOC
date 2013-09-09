@@ -207,6 +207,18 @@ class SiteController extends Controller
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
+            if(isset($_POST['lista']['ATI']))
+            {
+                $correos['ATI']['asunto']="RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha);
+                $correos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+                $correos['ATI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATE']))
+            {
+                $correos['ATE']['asunto']="RENOC Arbol de Trafico External al ".str_replace("-","",$fecha);
+                $correos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+                $correos['ATE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico External al ".str_replace("-","",$fecha).".xls";
+            }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
@@ -277,6 +289,16 @@ class SiteController extends Controller
                 $archivos['compraventa']['nombre']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
             }
+            if(isset($_GET['lista']['ATI']))
+            {
+                $archivos['ATI']['nombre']="RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha);
+                $archivos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+            }
+            if(isset($_GET['lista']['ATE']))
+            {
+                $archivos['ATE']['nombre']="RENOC Arbol de Trafico External al ".str_replace("-","",$fecha);
+                $archivos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+            }
         }
         foreach($archivos as $key => $archivo)
         {
@@ -336,6 +358,18 @@ class SiteController extends Controller
                 $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATI']))
+            {
+                $correos['ATI']['asunto']="RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha);
+                $correos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+                $correos['ATI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATE']))
+            {
+                $correos['ATE']['asunto']="RENOC Arbol de Trafico External al ".str_replace("-","",$fecha);
+                $correos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+                $correos['ATE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico External al ".str_replace("-","",$fecha).".xls";
             }
         }
         $tiempo=30*count($correos);
