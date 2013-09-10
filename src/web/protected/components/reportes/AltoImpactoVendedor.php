@@ -13,18 +13,18 @@ class AltoImpactoVendedor extends Reportes
         $sqlClientes="SELECT c.name AS cliente, m.id AS id_vendedor, m.lastname AS vendedor, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage,y.posicion_neta as posicion_neta
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
-                           WHERE date_balance='2013-08-17' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                           WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_customer
                            ORDER BY margin DESC) x, 
 			(SELECT id,SUM(vrevenue-ccost) AS posicion_neta
                        FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
                             FROM balance
-                            WHERE date_balance='2013-08-17' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                             GROUP BY id_carrier_customer
                             UNION
                             SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
                             FROM balance
-                            WHERE date_balance='2013-08-17' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                             GROUP BY id_carrier_supplier
                             order by id asc)t
                        GROUP BY id
@@ -448,19 +448,32 @@ class AltoImpactoVendedor extends Reportes
 
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking Vendedor','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking Vendedor','Proveedor','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         // Selecciono los totales por proveedores con de mas de 10 dolares de margen
-        $sqlProveedores="SELECT c.name AS proveedor, m.lastname AS vendedor,m.id AS id_vendedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        $sqlProveedores="SELECT c.name AS proveedor, m.lastname AS vendedor,m.id AS id_vendedor, x.id_carrier_supplier AS id, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, y.posicion_neta as posicion_neta
                          FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                               FROM balance
                               WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                               GROUP BY id_carrier_supplier
-                              ORDER BY margin DESC) x, carrier c,
+                              ORDER BY margin DESC) x,
+                              (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC)y, carrier c,
                               carrier_managers cm,
                               managers m
-                         WHERE x.margin > 10 AND x.id_carrier_supplier=c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL
+                         WHERE x.id_carrier_supplier=y.id and x.margin > 10 AND x.id_carrier_supplier=c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL
                          ORDER BY vendedor ASC, x.margin DESC";
                                
 
@@ -544,6 +557,9 @@ class AltoImpactoVendedor extends Reportes
                         <td style='text-align: center; class='Vendedor'>
                         TOTAL
                         </td>
+                        <td style='text-align: center; class='Vendedor'>
+                        TOTAL
+                        </td>
                          </tr>";
                         }
                     }
@@ -599,6 +615,9 @@ class AltoImpactoVendedor extends Reportes
                         "</td>
                         <td style='text-align: left;".$estilo."' class='vendedor'>".
                             $proveedor->vendedor.
+                        "</td>
+                         <td style='text-align: left;".$estilo."' class='margin'>".
+                            Yii::app()->format->format_decimal($proveedor->posicion_neta).
                         "</td>
                     </tr>";
             }
@@ -661,6 +680,9 @@ class AltoImpactoVendedor extends Reportes
                          </td>
                          <td style='text-align: center; class='position'>
                          TOTAL
+                        </td>
+                        <td style='text-align: center; class='Vendedor'>
+                        TOTAL
                         </td>
                         <td style='text-align: center; class='Vendedor'>
                         TOTAL
