@@ -61,6 +61,17 @@ class reportes extends CApplicationComponent
         return $variable;
     }
     /**
+    * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
+    * @param $fecha date es la fecha que se necesita el reporte
+    * @return $variable string con el cuerpo del reporte
+    */
+    public function PosicionNetaVendedor($fecha)
+    {
+        $reporte=new PosicionNetaVendedor($fecha);
+        $variable=$reporte->reporte();
+        return $variable;
+    }
+    /**
     * Metodo encargado de generar el reporte de distribucion comercial
     * @param $fecha date la fecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte

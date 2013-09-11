@@ -145,6 +145,24 @@ $this->layout=$this->getLayoutFile('menuContent');
             <tr>
                 <td>
                     <label class="checkbox">
+                        <input type="checkbox" value="true" id="PNV" class="custom-checkbox" name="lista[PNV]">
+                        <label for="PNV">
+                            <h4>
+                            </h4>
+                        </label>
+                    </label>
+                </td>
+                <td id="td3">
+                    <label for="PNV">
+                        <h4>
+                            Posicion Neta por Vendedor
+                        </h4>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="checkbox">
                         <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]"> 
                         <label for="DC">
                             <h4>
