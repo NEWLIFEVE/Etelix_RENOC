@@ -43,47 +43,47 @@ class PosicionNetaVendedor extends Reportes
         {
         	$this->posicion($valor->vendedor);
             $estilo=self::colorEstilo($key+1);
-        	$cuerpo.="<tr style='{$estilo}'>
-        				<td>".
+        	$cuerpo.="<tr>
+        				<td style='{$estilo}'>".
         					$this->pos.
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					$valor->operador.
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					$valor->vendedor.
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->vminutes).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->vrevenue).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->vmargin).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->cminutes).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->ccost).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->cmargin).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->margen_total).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					Yii::app()->format->format_decimal($valor->posicion_neta).
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					$valor->operador.
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					$this->pos.
         			 "</td>
-        				<td>".
+        				<td style='{$estilo}'>".
         					$valor->vendedor.
         			 "</td>
         			  </tr>";
@@ -178,11 +178,11 @@ class PosicionNetaVendedor extends Reportes
     	$sql="SELECT SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) as cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vmargin)+SUM(cmargin) AS margen_total, SUM(vrevenue)-SUM(ccost) AS posicion_neta
 			  FROM(SELECT SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
 			       FROM balance b, carrier_managers cm
-			       WHERE date_balance='{$this->fecha}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL AND b.id_carrier_customer=cm.id_carrier AND cm.start_date<={$this->fecha} AND cm.end_date IS NULL AND cm.id_managers={$id_managers}
+			       WHERE date_balance='{$this->fecha}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL AND b.id_carrier_customer=cm.id_carrier AND cm.start_date<='{$this->fecha}' AND cm.end_date IS NULL AND cm.id_managers={$id_managers}
 			       UNION
 			       SELECT CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS cmargin
 			       FROM balance b, carrier_managers cm
-			       WHERE date_balance='{$this->fecha}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL AND b.id_carrier_supplier=cm.id_carrier AND cm.start_date<={$this->fecha} AND cm.end_date IS NULL AND cm.id_managers={$id_managers})t";
+			       WHERE date_balance='{$this->fecha}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL AND b.id_carrier_supplier=cm.id_carrier AND cm.start_date<='{$this->fecha}' AND cm.end_date IS NULL AND cm.id_managers={$id_managers})t";
 		$total=Balance::model()->findBySql($sql);
 		$cuerpo="<tr style='background-color:#BDBDBD;  color:#FFFFFF;'>
 					<td>
