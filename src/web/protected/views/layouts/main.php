@@ -18,69 +18,63 @@
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/> 
-    
-    <script src="http://malsup.github.io/jquery.blockUI.js"></script>
-
-    
-    
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
-    <body>
-        <div class="container" style="padding:-30px;">
-            <!--menu-->
-            <?php
-                $admin = (isset(Yii::app()->user->perfil) and Yii::app()->user->perfil == 'ADMIN') ? true : false ;
-                $this->widget('bootstrap.widgets.TbNavbar',array(
-                    'type'=>'inverse',
-                    'brand'=>'RENOC',
-                    'brandUrl'=>'#',
-                    'collapse'=>true,
-                    'items'=>array(
-                        array(
-                            'class'=>'bootstrap.widgets.TbMenu',
-                            'htmlOptions'=>array(
-                                'class'=>'pull-right'
+<body>
+    <div class="container" style="padding:-30px;">
+        <!--menu-->
+        <?php
+            $admin = (isset(Yii::app()->user->perfil) and Yii::app()->user->perfil == 'ADMIN') ? true : false ;
+            $this->widget('bootstrap.widgets.TbNavbar',array(
+                'type'=>'inverse',
+                'brand'=>'RENOC',
+                'brandUrl'=>'#',
+                'collapse'=>true,
+                'items'=>array(
+                    array(
+                        'class'=>'bootstrap.widgets.TbMenu',
+                        'htmlOptions'=>array(
+                            'class'=>'pull-right'
+                            ),
+                        'items'=>array(
+                            array(
+                                'label'=>'Usuarios',
+                                'url'=>array('/usersRenoc/admin'),
+                                'visible'=>$admin
                                 ),
-                            'items'=>array(
-                                array(
-                                    'label'=>'Usuarios',
-                                    'url'=>array('/usersRenoc/admin'),
-                                    'visible'=>$admin
-                                    ),
-                                array(
-                                    'label'=>'Login',
-                                    'url'=>array('/site/login'),
-                                    'visible'=>Yii::app()->user->isGuest
-                                    ),
-                                array(
-                                    'label'=>'Salir ('.Yii::app()->user->name.')',
-                                    'url'=>array('/site/logout'),
-                                    'visible'=>!Yii::app()->user->isGuest
-                                    )
+                            array(
+                                'label'=>'Login',
+                                'url'=>array('/site/login'),
+                                'visible'=>Yii::app()->user->isGuest
                                 ),
+                            array(
+                                'label'=>'Salir ('.Yii::app()->user->name.')',
+                                'url'=>array('/site/logout'),
+                                'visible'=>!Yii::app()->user->isGuest
+                                )
                             ),
                         ),
-                    )
-                );
+                    ),
+                )
+            );
+        ?>
+        <div style="text-align: right;">
+            <?php
+                if(!Yii::app()->user->isGuest and isset(Yii::app()->user->last_login))
+                {
+                    echo "Ultimo Acceso: ".Yii::app()->dateFormatter->format("d-M-y h:m a", Yii::app()->user->last_login);
+                }
             ?>
-            <div style="text-align: right;">
-                <?php
-                    if(!Yii::app()->user->isGuest and isset(Yii::app()->user->last_login))
-                    {
-                        echo "Ultimo Acceso: ".Yii::app()->dateFormatter->format("d-M-y h:m a", Yii::app()->user->last_login);
-                    }
-                ?>
-            </div>
-            <!--fin de menu-->
-            <?php echo Yii::app()->bootstrap->init(); ?>
-            <div id="header">
-                <div id="logo"></div>
-            </div>
-            <?php echo $content; ?>
         </div>
-        <div class="clear"></div>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"/></script>
-        <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-    </body>
+        <!--fin de menu-->
+        <?php echo Yii::app()->bootstrap->init(); ?>
+        <?php echo $content; ?>
+    </div>
+    <div id="footer">
+        Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.1.4
+    </div>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"/></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
+    <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+</body>
 </html>
-
