@@ -181,7 +181,7 @@ class LogController extends Controller
             if ($model != NULL) {
                 echo false;
             } else {
-                echo True;
+                echo true;
             }
         } else {
             echo false;

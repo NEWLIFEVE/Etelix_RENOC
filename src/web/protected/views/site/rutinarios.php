@@ -75,7 +75,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="AI10V" class="custom-checkbox" name="lista[AI10V]">
                         <label for="AI10V">
                             <h4 id="td3">
-                                Alto Impacto(+10$) por Vendedor
+                                AI (+10$) por Vendedor
                             </h4>
                     </label>
                     </div>
