@@ -669,7 +669,7 @@ input.submit
 
 input#LoginForm_username{ background-position:198px -17px; }
 input.search{ background-position: 4px 4px; }
-input#LoginForm_password{ background-position: 198px -39px; }
+input#LoginForm_password{ background-position: 198px -40px; }
 input.favorite{ background-position: 4px -70px; }
 
 .botonLogin{
@@ -692,7 +692,7 @@ input.favorite{ background-position: 4px -70px; }
 {
     background-color: white;
     border: thin outset;
-    border-radius: 4px 4px 4px 4px;
+    /*border-radius: 4px 4px 4px 4px;*/
     color: #6E6E6E;
     padding-top: 0px;
     padding: 1px 1px 1px 1px;

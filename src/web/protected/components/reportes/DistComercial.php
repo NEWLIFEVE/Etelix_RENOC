@@ -12,7 +12,7 @@ class DistComercial extends Reportes
 	{
 		$sql="SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position
               FROM carrier c, managers m, carrier_managers cm
-              WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= '2013-08-20'
+              WHERE m.id = cm.id_managers AND c.id = cm.id_carrier AND cm.end_date IS NULL AND cm.start_date <= current_date
               ORDER BY vendedor ASC";
         $cuerpo="<table >
                     <thead>

@@ -61,6 +61,17 @@ class reportes extends CApplicationComponent
         return $variable;
     }
     /**
+    * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
+    * @param $fecha date es la fecha que se necesita el reporte
+    * @return $variable string con el cuerpo del reporte
+    */
+    public function PosicionNetaVendedor($fecha)
+    {
+        $reporte=new PosicionNetaVendedor($fecha);
+        $variable=$reporte->reporte();
+        return $variable;
+    }
+    /**
     * Metodo encargado de generar el reporte de distribucion comercial
     * @param $fecha date la fecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte
@@ -78,6 +89,19 @@ class reportes extends CApplicationComponent
     public function RankingCompraVenta($fecha)
     {
         $variable=RankingCompraVenta::reporte($fecha);
+        return $variable;
+    }
+    /**
+    * Metodo encargado de generar el reporte de Arbol de Trafico
+    * @param $fecha date lafecha que se quiere consultar
+    * @param $tipo bollean el tipo de reporte internal o external, true=external default, false=internal
+    * @return $variable string con el cuerpo del reporte
+    */
+    public function ArbolDeTrafico($fecha,$tipo=true)
+    {
+        ini_set('max_execution_time', 60);
+        $reporte=new ArbolDeTrafico($fecha,$tipo);
+        $variable=$reporte->reporte();
         return $variable;
     }
     /**
@@ -149,54 +173,77 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+    public static function colorRankingCV($tipo){
+        switch($tipo)
+        {
+            case 1:
+                $color="background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 2:
+                $color="background-color:#FFC8AE; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 3:
+                $color="background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+        }
+        return $color;
+    }
     public static function colorVendedor($var)
     {
         $color=null;
-        if(substr_count($var, 'Leandro') >= 1)
+        if(substr_count($var, 'Iglesias') >= 1)
         {
             $color="background-color:#fe6500; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Juan Carlos Lopez Silva') >= 1)
+        elseif(substr_count($var, 'Lopez Silva') >= 1)
         {
             $color="background-color:#4aabc5; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Jose Ramon Olivar') >= 1)
+        elseif(substr_count($var, 'Olivar') >= 1)
         {
             $color="background-color:#333399; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Juan Carlos Robayo') >= 1)
+        elseif(substr_count($var, 'Robayo') >= 1)
         {
             $color="background-color:#00ffff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Jaime Laguna') >= 1)
+        elseif(substr_count($var, 'Laguna') >= 1)
         {
             $color="background-color:#ffcc99; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Carlos Pinango') >= 1)
+        elseif(substr_count($var, 'Pinango') >= 1)
         {
             $color="background-color:#cc99ff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Augusto Cardenas') >= 1)
+        elseif(substr_count($var, 'Cardenas') >= 1)
         {
             $color="background-color:#00ff00; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Luis Ernesto Barbaran') >= 1)
+        elseif(substr_count($var, 'Barbaran') >= 1)
         {
             $color="background-color:#ff8080; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Alonso Van Der Biest') >= 1)
+        elseif(substr_count($var, 'Van Der Biest') >= 1)
         {
             $color="background-color:#c0504d; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Soiret Solarte') >= 1)
+        elseif(substr_count($var, 'Solarte') >= 1)
         {
             $color="background-color:#ff9900; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Ernesto Da Rocha') >= 1)
+        elseif(substr_count($var, 'Da Rocha') >= 1)
         {
             $color="background-color:#c0c0c0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Diana Mirakyan') >= 1)
+        elseif(substr_count($var, 'Mirakyan') >= 1)
+        {
+            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Sin Asiignar') >= 1)
+        {
+            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Vacante') >= 1)
         {
             $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
         }
@@ -329,25 +376,33 @@ class reportes extends CApplicationComponent
     * @param $max int valor a dividir
     * @return $valor int
     */
-    public static function ranking($pos,$max)
+    public static function ranking($pos, $max, $margin = NULL,$marginText=NULL) 
     {
-        if($max>10)
-        {
-            $mitad=($max/2)+1;
-            if($pos<$mitad)
-            {
+        if (is_null($margin)) {
+            if ($max > 10) {
+                $mitad = ($max / 2) + 1;
+                if ($pos < $mitad) {
+                    return $pos;
+                } else {
+                    $diferencia = $pos - $mitad;
+                    $valor = ($mitad - $diferencia) - 1;
+                    return "-" . $valor;
+                }
+            } else {
                 return $pos;
             }
-            else
-            {
-                $diferencia=$pos-$mitad;
-                $valor=($mitad-$diferencia)-1;
-                return "-".$valor;
+        } else {
+
+            if($margin>0){
+                return $pos;
             }
-        }
-        else
-        {
-            return $pos;
+            if($marginText=="0,00"){
+                return 0;
+            }
+            if($margin<0){
+                $negativos=$max-$pos;
+                return "-".$negativos;
+            }
         }
     }
 }

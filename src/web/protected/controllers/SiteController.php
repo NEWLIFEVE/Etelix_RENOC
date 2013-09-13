@@ -189,6 +189,12 @@ class SiteController extends Controller
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
                 $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta al ".str_replace("-","",$fecha).".xls";
             }
+            if(isset($_POST['lista']['PNV']))
+            {
+                $correos['posicionNetaVendedor']['asunto']="RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
             if(isset($_POST['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
@@ -206,6 +212,18 @@ class SiteController extends Controller
                 $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATI']))
+            {
+                $correos['ATI']['asunto']="RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha);
+                $correos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+                $correos['ATI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATE']))
+            {
+                $correos['ATE']['asunto']="RENOC Arbol de Trafico External al ".str_replace("-","",$fecha);
+                $correos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+                $correos['ATE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico External al ".str_replace("-","",$fecha).".xls";
             }
         }
         $tiempo=30*count($correos);
@@ -262,6 +280,11 @@ class SiteController extends Controller
                 $archivos['posicionNeta']['nombre']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
+            if(isset($_GET['lista']['PNV']))
+            {
+                $archivos['posicionNetaVendedor']['nombre']="RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $archivos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+            }
             if(isset($_GET['lista']['DC']))
             {
                 $archivos['distribucionComercial']['nombre']="Distribucion Comercial al ".str_replace("-","",$fecha);
@@ -277,6 +300,16 @@ class SiteController extends Controller
                 $archivos['compraventa']['nombre']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
             }
+            if(isset($_GET['lista']['ATI']))
+            {
+                $archivos['ATI']['nombre']="RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha);
+                $archivos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+            }
+            if(isset($_GET['lista']['ATE']))
+            {
+                $archivos['ATE']['nombre']="RENOC Arbol de Trafico External al ".str_replace("-","",$fecha);
+                $archivos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+            }
         }
         foreach($archivos as $key => $archivo)
         {
@@ -291,7 +324,7 @@ class SiteController extends Controller
     {
         $fecha=null;
         $correos=null;
-        $user="angelo08121987@gmail.com";
+        $user="renoc@etelix.com";
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
@@ -319,6 +352,12 @@ class SiteController extends Controller
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
                 $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta al ".str_replace("-","",$fecha).".xls";
             }
+            if(isset($_POST['lista']['PNV']))
+            {
+                $correos['posicionNetaVendedor']['asunto']="RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
             if(isset($_POST['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
@@ -333,9 +372,21 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['compraventa']))
             {
-                $correos['compraventa']['asunto']="RENOC Ranking Compra/Venta al ".str_replace("-","",$fecha);
+                $correos['compraventa']['asunto']="RENOC Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATI']))
+            {
+                $correos['ATI']['asunto']="RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha);
+                $correos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+                $correos['ATI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico Internal al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['ATE']))
+            {
+                $correos['ATE']['asunto']="RENOC Arbol de Trafico External al ".str_replace("-","",$fecha);
+                $correos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+                $correos['ATE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Arbol de Trafico External al ".str_replace("-","",$fecha).".xls";
             }
         }
         $tiempo=30*count($correos);
@@ -393,17 +444,45 @@ class SiteController extends Controller
             fwrite($fp,$cuerpo);
         }
     }
-    public function actionPruebaruta()
+    /**
+    * Metodo que genera un grafico
+    */
+    /*public function actionGrafico()
     {
-        $asunto='perro';
-    $name=($asunto.'.xls');
-    
-    $funciona='adjuntos/'.$asunto.'.xls';
-    
-    echo $name;
-    echo '<br>';
-    echo $funciona;
-    }
+        Yii::app()->fusioncharts->setChartOption(array(
+            'caption'=>'My Chart',
+            'xAxisName'=>'Months',
+            'yAxisName'=>'Revenue'
+            )
+        );
+        $sets=array(
+            array(
+                'label'=>'July',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'August',
+                'value'=>'680000'
+                ),
+            array(
+                'label'=>'Jan',
+                'value'=>'68000'
+                ),
+            );
+        Yii::app()->fusioncharts->addSets($sets);
+        $categories = array(
+            array(
+                'label'=>'July'
+                ),
+            array(
+                'label'=>'August'
+                ),
+            array(
+                'label'=>'Jan'
+                ),
+            );
+        Yii::app()->fusioncharts->addCategories($categories);
+    }*/
 }
 ?>
 

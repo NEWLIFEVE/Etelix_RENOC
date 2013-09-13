@@ -32,7 +32,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <img src="/images/mail.png" width="95px" height="95px" value="Activar Función">
         </a>
     </div>
-   <div id="mailRenoc" class="span1">
+    <div id="mailRenoc" class="span1">
         <a href="/" rel="tooltip" title="Enviar Reportes a Correo Electronico RENOC" class="tooltip-test">
             <img src="/images/mailRenoc.png" width="95px" height="95px" value="Activar Función">
         </a>
@@ -138,6 +138,24 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <label for="PN">
                         <h4>
                             Posicion Neta
+                        </h4>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="checkbox">
+                        <input type="checkbox" value="true" id="PNV" class="custom-checkbox" name="lista[PNV]">
+                        <label for="PNV">
+                            <h4>
+                            </h4>
+                        </label>
+                    </label>
+                </td>
+                <td id="td3">
+                    <label for="PNV">
+                        <h4>
+                            Posicion Neta por Vendedor
                         </h4>
                     </label>
                 </td>
