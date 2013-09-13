@@ -239,7 +239,16 @@ $(document).on('ready',function()
 });
 
 $(document).on('ready',function(muestramensaje)
-{  
-    var espere = $(".cargandosori");
-    espere.slideDown('slow');
+{
+    $.ajax({ 
+        url: "Log/revisarRR",     
+        success: function(data) 
+        {
+            if(data==true){
+                var espere = $(".cargandosori");
+                espere.slideDown('slow');
+            }        
+        }
+    });
+
 });
