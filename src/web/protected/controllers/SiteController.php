@@ -189,6 +189,12 @@ class SiteController extends Controller
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
                 $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta al ".str_replace("-","",$fecha).".xls";
             }
+            if(isset($_POST['lista']['PNV']))
+            {
+                $correos['posicionNetaVendedor']['asunto']="RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
             if(isset($_POST['lista']['DC']))
             {
                 $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
@@ -274,6 +280,11 @@ class SiteController extends Controller
                 $archivos['posicionNeta']['nombre']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $archivos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
             }
+            if(isset($_GET['lista']['PNV']))
+            {
+                $archivos['posicionNetaVendedor']['nombre']="RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $archivos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+            }
             if(isset($_GET['lista']['DC']))
             {
                 $archivos['distribucionComercial']['nombre']="Distribucion Comercial al ".str_replace("-","",$fecha);
@@ -340,6 +351,12 @@ class SiteController extends Controller
                 $correos['posicionNeta']['asunto']="RENOC Posicion Neta al ".str_replace("-","",$fecha);
                 $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
                 $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['PNV']))
+            {
+                $correos['posicionNetaVendedor']['asunto']="RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
             }
             if(isset($_POST['lista']['DC']))
             {

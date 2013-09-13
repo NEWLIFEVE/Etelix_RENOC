@@ -29,7 +29,7 @@ $this->pageTitle = Yii::app()->name;
                             <li class="span3">
                                 <div id="claseboot" href="#" class="a">
                                     <h1>RUTINARIOS &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;
-                                        <a id="flecha-forward" href="/site/rutinarios"  rel="tooltip" title="esta es la consulta basica por hora y fecha" class="tooltip-test ">></a>
+                                        <a id="flecha-forward" href="/site/rutinarios"  rel="tooltip" title="esta es la consulta basica por hora y fecha" class="tooltip-test">></a>
                                     </h1>
                                 </div>
                             </li>
