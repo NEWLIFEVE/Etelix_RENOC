@@ -79,7 +79,9 @@
             <?php echo $content; ?>
         </div>
         <div class="clear"></div>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"/></script>
+        <div class='cargandosori'><h6><b>Se estan cargando datos en sori  &nbsp;<img src='/images/cargandosori.gif'width='15px' height='5px'/><b></h6></div>
+
+       <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"/></script>
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
     </body>
 </html>

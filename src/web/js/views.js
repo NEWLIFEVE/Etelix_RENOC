@@ -118,7 +118,7 @@ ajax.prototype.run=function()
                 else
                 {
                     var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
-                    $("body").append(revisa)
+                    $("body").append(revisa);
                     revisa.fadeIn('fast'); 
                     
                         $('#confirma,#cancelar').on('click', function()
@@ -226,7 +226,7 @@ var ventana=new navegar();
 var fecha=new selector("#datepicker");
 var ejecutar=new ajax();
 $(document).on('ready',function()
-{
+{  
     ejecutar.run();
     ventana.run();
     fecha.run();
@@ -236,4 +236,10 @@ $(document).on('ready',function()
         fecha.run();
         marcar();
     });
+});
+
+$(document).on('ready',function(muestramensaje)
+{  
+    var espere = $(".cargandosori");
+    espere.slideDown('slow');
 });

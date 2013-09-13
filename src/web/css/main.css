@@ -676,7 +676,6 @@ input.favorite{ background-position: 4px -70px; }
     margin-left: 2.6em;
     
 }
-
  .cargando
 {
      background-color: black;
@@ -725,6 +724,7 @@ text-align: center;
 width: 90px;
 height: 45px;
 }
+
 .confirma
 {
      margin-top: -45px;
@@ -733,4 +733,19 @@ text-align: center;
 width: 90px;
 height: 45px;
 }
-
+body div.cargandosori
+{
+   /*background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);*/
+/*    border-radius: 4px 4px 4px 4px;*/
+background: #508F56;
+color: white;
+height: 40px;
+left: 41%;
+margin: 84px auto;
+position: fixed;
+top: -43px;
+width: 276px;
+z-index: 1;
+text-align: center;
+display: none;
+}
