@@ -160,7 +160,7 @@ class SiteController extends Controller
     */
     public function actionMail()
     {
-        $this->letra=Log::preliminar();
+        $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
         $user=UserIdentity::getEmail();
@@ -257,7 +257,7 @@ class SiteController extends Controller
     }
     public function actionExcel()
     {
-        $this->letra=Log::preliminar();
+        $this->letra=Log::preliminar($_GET['fecha']);
         $fecha=null;
         $archivos=null;
         if(isset($_GET['fecha']))
@@ -325,7 +325,7 @@ class SiteController extends Controller
     */
     public function actionMaillista()
     {
-        $this->letra=Log::preliminar();
+        $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
         $user="renoc@etelix.com";

@@ -109,9 +109,9 @@ class Log extends CActiveRecord
     /*
      * Funcion que devuelve true si la accion ya fue realizada
      */
-    public static function existe($id)
+    public static function existe($id,$fecha)
     {
-        $model=self::model()->find('id_log_action=:id AND date=:fecha AND hour<=:hora', array(':id'=>$id, ':fecha'=>date("Y-m-d"), ':hora'=>date("H:i:s")));
+        $model=self::model()->find('id_log_action=:id AND date=:fecha AND hour<=:hora', array(':id'=>$id, ':fecha'=>$fecha, ':hora'=>date("H:i:s")));
         if($model!=null)
             return true;
         else
@@ -121,11 +121,11 @@ class Log extends CActiveRecord
     /**
      *
      */
-    public static function preliminar()
+    public static function preliminar($fecha)
     {
-        if(self::existe(1) && self::existe(2))
+        if(self::existe(1,$fecha) && self::existe(2,$fecha))
         {
-            if(self::existe(3) && self::existe(4))
+            if(self::existe(3,$fecha) && self::existe(4,$fecha))
             {
                 $var="";
             }
@@ -133,6 +133,10 @@ class Log extends CActiveRecord
             {
                 $var="P";
             }
+        }
+        else
+        {
+            $var="";
         }
         return $var;
     }
