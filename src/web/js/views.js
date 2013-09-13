@@ -226,7 +226,7 @@ var ventana=new navegar();
 var fecha=new selector("#datepicker");
 var ejecutar=new ajax();
 $(document).on('ready',function()
-{
+{  
     ejecutar.run();
     ventana.run();
     fecha.run();
@@ -236,4 +236,10 @@ $(document).on('ready',function()
         fecha.run();
         marcar();
     });
+});
+
+$(document).on('ready',function(muestramensaje)
+{  
+    var espere = $(".cargandosori");
+    espere.slideDown('slow');
 });
