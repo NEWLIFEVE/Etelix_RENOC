@@ -246,6 +246,7 @@ $(document).on('ready',function(muestramensaje)
         {
             if(data==true){
                 var espere = $(".cargandosori");
+                espere.prop("display",'block');
                 espere.slideDown('slow');
             }        
         }
