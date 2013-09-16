@@ -698,7 +698,7 @@ input.favorite{ background-position: 4px -70px; }
     padding: 1px 1px 1px 1px;
     margin-top: -470px;
     width: 470px;
-    position:absolute;
+    position:fixed;
     text-align: center;
     margin-left:calc((((100% / 2) - (4 * 3%)) - (1 * 1em)) - (76 * 1px)); 
     padding: 23px 30px 43px 28px;"
