@@ -766,6 +766,7 @@ input.favorite{ background-position: 4px -70px; }
     text-align: center;
     padding: 23px 30px 43px 28px;
     margin: 10% auto;
+    margin-left: 30%;
 }
 
 .fail
