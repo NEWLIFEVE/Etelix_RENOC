@@ -128,7 +128,7 @@ class Log extends CActiveRecord
         {
             if(self::existe(3,$fecha) && self::existe(4,$fecha))
             {
-                $var="";
+                $var="D";
             }
             else
             {
