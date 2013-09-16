@@ -173,7 +173,7 @@ background: linear-gradient(#F2F2F2, white);
     background:#E2E8EE; 
     width:600px;
     height: 420px;
-    margin:3.9em auto;
+    margin:6em auto;
     color: #848484;
 }
 #one{
@@ -840,7 +840,11 @@ input.favorite{ background-position: 4px -70px; }
     width: 39%;
     border-left: 10px solid green;
     border-right: 10px solid green;
-    margin-right: 6%;
+    margin-right: 1%;
+}
+#atras{
+    margin-left: -1em;
+    margin-top: 2em;
 }
 .opciones
 {
@@ -880,7 +884,7 @@ body div.cargandosori
 {
    /*background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);*/
 /*    border-radius: 4px 4px 4px 4px;*/
-background: #508F56;
+background: #FF6F6F;
 color: white;
 height: 40px;
 left: 41%;
