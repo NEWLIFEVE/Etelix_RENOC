@@ -64,9 +64,17 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
+                        <input type="checkbox" value="true" id="AIR" class="custom-checkbox" name="lista[AIR]">
+                        <label for="AIR">
+                            <h4 id="td2">
+                                Alto Impacto Retail(+1$)
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
                         <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="lista[AI10]">
                         <label for="AI10">
-                            <h4 id="td2">
+                            <h4 id="td3">
                                 Alto Impacto(+10$)
                             </h4>
                         </label>
@@ -78,14 +86,6 @@ $this->layout=$this->getLayoutFile('menuContent');
                                 AI (+10$) por Vendedor
                             </h4>
                     </label>
-                    </div>
-                    <div class="choice">
-                        <input type="checkbox" value="true" id="AIR" class="custom-checkbox" name="lista[AIR]">
-                        <label for="AIR">
-                            <h4 id="td3">
-                                Alto Impacto Retail(+1$)
-                            </h4>
-                        </label>
                     </div>
                     <div class="choice">
                         <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">

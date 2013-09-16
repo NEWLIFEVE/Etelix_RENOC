@@ -762,6 +762,7 @@ input.favorite{ background-position: 4px -70px; }
     border: thin outset;
     color: #6E6E6E;
     width: 470px;
+    position:fixed;
     text-align: center;
     padding: 23px 30px 43px 28px;
     margin: 10% auto;
