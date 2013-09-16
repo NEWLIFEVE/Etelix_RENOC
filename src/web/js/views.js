@@ -146,8 +146,8 @@ ajax.prototype.run=function()
                 }
                 else
                 {
-                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
-                    $("body").append(revisa);
+                    var revisa = $("<div class='cargando'><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div></div>").hide();
+                    $("body").append(revisa)
                     revisa.fadeIn('fast'); 
                     
                         $('#confirma,#cancelar').on('click', function()
@@ -168,7 +168,7 @@ ajax.prototype.run=function()
           }
         else
           {
-                var stop = $("<div class='cargando'></div><div class='mensaje'><h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/></div>").hide();
+                var stop = $("<div class='cargando'><div class='mensaje'><h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/></div></div>").hide();
                 $('body').append(stop);
                 stop.fadeIn('fast');
                 setTimeout(function()
@@ -267,7 +267,17 @@ $(document).on('ready',function()
 });
 
 $(document).on('ready',function(muestramensaje)
-{  
-    var espere = $(".cargandosori");
-    espere.slideDown('slow');
+{
+    $.ajax({ 
+        url: "Log/revisarRR",     
+        success: function(data) 
+        {
+            if(data==true){
+                var espere = $(".cargandosori");
+                espere.prop("display",'block');
+                espere.slideDown('slow');
+            }        
+        }
+    });
+
 });
