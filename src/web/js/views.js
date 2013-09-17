@@ -92,29 +92,98 @@ ajax.prototype.run=function()
         { 
             var tipo=$(this).attr('id');
                 if(tipo=="mail")
-                {
-                    self.getFormPost();
-                    self.enviarMail();
-                  var espere = $("<div class='cargando'><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p><p><p></div></div>").hide();
-                   $("body").append(espere)
-                   espere.fadeIn('fast');
+                { 
+                    $.ajax({ 
+                    url: "Log/revisarRR",     
+                    success: function(data) 
+                    {
+                                if(data==true){
+                                    
+                                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
+                                    $("body").append(revisa);
+                                    revisa.fadeIn('fast'); 
+                    
+                                    $('#confirma,#cancelar').on('click', function()
+                                    {
+                                        var tipo=$(this).attr('id');
+                                        if(tipo=="confirma")
+                                        {
+                                            self.getFormPost();
+                                            self.enviarMail();
+                                            $('.mensaje').html("<h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
+                                        }
+                                        else
+                                        {
+                                            revisa.fadeOut('fast');
+                                        }
+                                    });
+                                }else
+                                {
+                                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p></div>").hide();
+                                    $("body").append(revisa);
+                                    revisa.fadeIn('fast'); 
+                                    self.getFormPost();
+                                    self.enviarMail();
+                       }   
+                    }
+                    });
+                    
                 }
                 else if(tipo=="excel")
                 {
-                    self.getFormPost();
-                    var ventana={};
-                    for(var i = 0; i <= self.formulario.length - 2; i++)
+                    $.ajax({ 
+                    url: "Log/revisarRR",     
+                    success: function(data) 
                     {
-                        fecha=self.formulario[self.formulario.length-1].value;
-                        nombre=self.formulario[i].name;
-                        valor=self.formulario[i].value;
-                        if(nombre!="lista[todos]")
-                        {
-                            ventana[i]=window.open(self.excel+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+                        if(data==true){
+                                var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
+                                $("body").append(revisa);
+                                revisa.fadeIn('fast'); 
+
+                                    $('#confirma,#cancelar').on('click', function()
+                            {
+                                var tipo = $(this).attr('id');
+                                if (tipo == "confirma")
+                                {
+                                    self.getFormPost();
+                                    var ventana = {};
+                                    for (var i = 0; i <= self.formulario.length - 2; i++)
+                                    {
+                                        fecha = self.formulario[self.formulario.length - 1].value;
+                                        nombre = self.formulario[i].name;
+                                        valor = self.formulario[i].value;
+                                        if (nombre != "lista[todos]")
+                                        {
+                                            ventana[i] = window.open(self.excel + "?fecha=" + fecha + "&" + nombre + "=" + valor, nombre, 'width=200px,height=100px');
+                                        }
+                                        revisa.fadeOut('slow');
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    revisa.fadeOut('fast');
+                                }
+                            });
+                        }else{
+                                                                
+                                    self.getFormPost();
+                                    var ventana = {};
+                                    for (var i = 0; i <= self.formulario.length - 2; i++)
+                                    {
+                                        fecha = self.formulario[self.formulario.length - 1].value;
+                                        nombre = self.formulario[i].name;
+                                        valor = self.formulario[i].value;
+                                        if (nombre != "lista[todos]")
+                                        {
+                                            ventana[i] = window.open(self.excel + "?fecha=" + fecha + "&" + nombre + "=" + valor, nombre, 'width=200px,height=100px');
+                                        }
+                                        
+                                    }
                         }
-                    };
+                    }
+                    });
                 }
-                
                 else
                 {
                     var revisa = $("<div class='cargando'><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div></div>").hide();
@@ -129,7 +198,6 @@ ajax.prototype.run=function()
                                 self.getFormPost();
                                 self.enviarMailLista();
                                 $('.mensaje').html("<h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
-
                             }
                                 else
                             {
