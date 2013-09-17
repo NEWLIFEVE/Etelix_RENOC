@@ -766,7 +766,8 @@ input.favorite{ background-position: 4px -70px; }
     text-align: center;
     padding: 23px 30px 43px 28px;
     margin: 10% auto;
-    margin-left: 30%;
+    left: 30%;
+    z-index: 1031;c
 }
 
 .fail
@@ -840,8 +841,8 @@ input.favorite{ background-position: 4px -70px; }
 .calendario
 {
     width: 39%;
-    border-left: 10px solid green;
-    border-right: 10px solid green;
+    border-left: 10px solid rgb(104, 173, 104);
+    border-right: 10px solid rgb(104, 173, 104);
     margin-right: 1%;
 }
 #atras{
