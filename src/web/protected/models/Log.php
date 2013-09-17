@@ -128,9 +128,9 @@ class Log extends CActiveRecord
     {
     	$nuevafecha=strtotime('+1 day',strtotime($fecha));
         $nuevafecha=date('Y-m-d',$nuevafecha);
-        if(self::existe(1,$nuevafecha) && self::existe(2,$nuevafecha))
+        if(self::existe(LogAction::getId('Carga Ruta External Preliminar'),$nuevafecha) && self::existe(LogAction::getId('Carga Ruta Internal Preliminar'),$nuevafecha))
         {
-            if(self::existe(3,$nuevafecha) && self::existe(4,$nuevafecha))
+            if(self::existe(LogAction::getId('Carga Ruta External Definitivo'),$nuevafecha) && self::existe(LogAction::getId('Carga Ruta Internal Definitivo'),$nuevafecha))
             {
                 $var="D";
             }

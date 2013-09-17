@@ -86,8 +86,11 @@ class LogAction extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-        
-        	public static function getId($nombre)
+    
+    /**
+     *
+     */
+    public static function getId($nombre)
 	{
 		$model=self::model()->find('name=:nombre',array('nombre'=>$nombre));
 		if($model!=null)
