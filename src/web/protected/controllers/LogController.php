@@ -175,8 +175,9 @@ class LogController extends Controller
         $fecha = date('Y-m-d');
         /*Reviso si existe un registro en el log de tipo RERATE*/
         $model = Log::model()->find("date=:fecha AND id_log_action=:action order by hour desc", array(":fecha" => $fecha, ":action" => LogAction::getId('Rerate Iniciado')));
-        $hour =$model->hour;
+        
         if ($model != NULL) {
+            $hour =$model->hour;
             /*Reviso si existe un registro en el log de tipo RERATE COMPLETADO*/
             $model = Log::model()->find("date=:fecha AND id_log_action=:action AND hour>=:hora order by hour desc", array(":fecha" => $fecha, ":action" => LogAction::getId('Rerate Completado'), ":hora"=>$hour));
             if ($model != NULL) {
