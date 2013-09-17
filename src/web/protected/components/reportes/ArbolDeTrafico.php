@@ -48,11 +48,12 @@ class ArbolDeTrafico extends Reportes
      					   GROUP BY {$this->destino}
      					   ORDER BY margin DESC) x, destination d
 					  WHERE x.margin > 10 AND x.{$this->destino} = d.id
-					  ORDER BY x.minutes DESC";
+					  ORDER BY x.margin DESC";
 
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
         foreach ($destinos as $key => $destino)
         {
+        	$pos=$key+1;
         	$cuerpo.="<tr>
         				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
         					$destino->destino.
@@ -96,9 +97,9 @@ class ArbolDeTrafico extends Reportes
         			</tr>";
         	$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#AED7F3; color:#615E5E;',true);
         	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',true);
-        	$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#AED7F3; color:#615E5E;',false);
+        	$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#FFC8AE; color:#615E5E;',false);
         	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',false);
-        	$cuerpo.="<tr><td colspan='13' style='background:white;'></td></tr>";
+        	$cuerpo.="<tr><td  style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;aling-text:left' colspan='13'>POSICION:".$pos."</td></tr>";
 
         }
         $cuerpo.="</tbody>
