@@ -166,7 +166,8 @@ ajax.prototype.run=function()
                                 }
                             });
                         }else{
-                                                                self.getFormPost();
+                                                                
+                                    self.getFormPost();
                                     var ventana = {};
                                     for (var i = 0; i <= self.formulario.length - 2; i++)
                                     {
@@ -177,7 +178,7 @@ ajax.prototype.run=function()
                                         {
                                             ventana[i] = window.open(self.excel + "?fecha=" + fecha + "&" + nombre + "=" + valor, nombre, 'width=200px,height=100px');
                                         }
-                                        revisa.fadeOut('slow');
+                                        
                                     }
                         }
                     }
