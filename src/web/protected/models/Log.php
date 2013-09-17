@@ -112,7 +112,7 @@ class Log extends CActiveRecord
      */
     public static function existe($id,$fecha)
     {
-        $model=self::model()->find('id_log_action=:id AND date=:fecha AND hour<=:hora', array(':id'=>$id, ':fecha'=>$fecha, ':hora'=>date("H:i:s")));
+        $model=self::model()->find('id_log_action=:id AND date=:fecha', array(':id'=>$id, ':fecha'=>date('Y-m-d')));
         if($model!=null)
             return true;
         else
