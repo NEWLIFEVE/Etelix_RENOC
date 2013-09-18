@@ -71,7 +71,7 @@
         <?php echo $content; ?>
     </div>
     <div id="footer">
-        Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.1.4
+        Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.1.5
     </div>
     <div class="clear"></div>
         <div class='cargandosori'><h6><b>Re-Rate en proceso &nbsp;<img src='/images/cargandosori.gif'width='15px' height='5px'/><b></h6></div>
