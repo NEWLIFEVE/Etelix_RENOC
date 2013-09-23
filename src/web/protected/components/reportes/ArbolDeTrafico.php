@@ -36,11 +36,7 @@ class ArbolDeTrafico extends Reportes
 	public function reporte()
 	{
 		$cuerpo="<div>
-                  <table>
-                  <thead>";
-        $cuerpo.=self::cabecera(array('Destino (+10$)','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cost/Min','Rev/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
-        $cuerpo.="</thead>
-                 <tbody>";
+                  <table>";
         $sqlDestinos="SELECT x.{$this->destino} AS id, d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
 					  FROM(SELECT {$this->destino}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
      					   FROM balance
@@ -54,6 +50,8 @@ class ArbolDeTrafico extends Reportes
         foreach ($destinos as $key => $destino)
         {
         	$pos=$key+1;
+        	$cuerpo.="<tr><td  style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;aling-text:left' colspan='13'>POSICION:".$pos."</td></tr>";
+        	$cuerpo.=self::cabecera(array('Destino (+10$)','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cost/Min','Rev/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         	$cuerpo.="<tr>
         				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
         					$destino->destino.
@@ -99,11 +97,9 @@ class ArbolDeTrafico extends Reportes
         	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',true);
         	$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#FFC8AE; color:#615E5E;',false);
         	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',false);
-        	$cuerpo.="<tr><td  style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;aling-text:left' colspan='13'>POSICION:".$pos."</td></tr>";
-
+        	$cuerpo.="<tr><td colspan='13'></td></tr><tr><td colspan='13'></td></tr>";
         }
-        $cuerpo.="</tbody>
-        		</table>
+        $cuerpo.="</table>
         		</div>";
         return $cuerpo;
 	}

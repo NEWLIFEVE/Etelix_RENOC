@@ -451,7 +451,7 @@ class SiteController extends Controller
     /**
     * Metodo que genera un grafico
     */
-    public function actionDato()
+    /*public function actionDato()
     {
         Yii::app()->fusioncharts->setChartOptions(array(
             'caption'=>'My Chart',
@@ -491,12 +491,9 @@ class SiteController extends Controller
     }
     public function actionGrafico()
     {
-         /*header("Content-type: application/vnd.ms-excel; charset=utf-8"); 
-            header("Content-Disposition: attachment; filename=nombre.xls");
-            header("Pragma: no-cache");
-            header("Expires: 0");*/
-            $this->render('grafico');
-    }
+        Yii::app()->Grafico->reporte();
+        //$grafico->Stroke();
+    }*/
 }
 ?>
 

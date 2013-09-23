@@ -107,12 +107,14 @@ class Log extends CActiveRecord
 		));
 	}
 
-/*
-     * Funcion que devuelve true si la accion ya fue realizada
+	/**
+     * Funcion que devuelve true si la accion ya fue realizada en la fecha consultada
+     * @param $id int numero de la accion
+     * @param $fecha date fecha consultada
      */
     public static function existe($id,$fecha)
     {
-        $model=self::model()->find('id_log_action=:id AND date=:fecha AND hour<=:hora', array(':id'=>$id, ':fecha'=>$fecha, ':hora'=>date("H:i:s")));
+        $model=self::model()->find('id_log_action=:id AND date=:fecha', array(':id'=>$id, ':fecha'=>$fecha));
         if($model!=null)
             return true;
         else
@@ -124,9 +126,11 @@ class Log extends CActiveRecord
      */
     public static function preliminar($fecha)
     {
-        if(self::existe(1,$fecha) && self::existe(2,$fecha))
+    	$nuevafecha=strtotime('+1 day',strtotime($fecha));
+        $nuevafecha=date('Y-m-d',$nuevafecha);
+        if(self::existe(LogAction::getId('Carga Ruta External Preliminar'),$nuevafecha) && self::existe(LogAction::getId('Carga Ruta Internal Preliminar'),$nuevafecha))
         {
-            if(self::existe(3,$fecha) && self::existe(4,$fecha))
+            if(self::existe(LogAction::getId('Carga Ruta External Definitivo'),$nuevafecha) && self::existe(LogAction::getId('Carga Ruta Internal Definitivo'),$nuevafecha))
             {
                 $var="D";
             }

@@ -1,6 +1,5 @@
 
 <?php
-
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
 // 
@@ -17,7 +16,8 @@ return array(
     'import'=>array(
         'application.models.*',
         'application.components.*',
-        'application.components.reportes.*'
+        'application.components.reportes.*',
+        'application.components.jpgraph.*'
     ),
     'modules'=>array(
         // uncomment the following to enable the Gii tool
@@ -36,8 +36,8 @@ return array(
         ),
     // application components
     'components'=>array(
-        'fusioncharts'=>array(
-            'class'=>'ext.fusioncharts.fusionCharts',
+        'grafico'=>array(
+            'class'=>'application.components.Grafico',
             ),
         'reportes'=>array(
             'class'=>"application.components.Reportes",
@@ -65,10 +65,10 @@ return array(
 			),
 		),
         'db'=>array(
-            'connectionString'=>'pgsql:host=192.168.1.29;port=5432;dbname=sori',
+            'connectionString'=>'pgsql:host=67.215.160.89;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
-			'password'=>'123',
+			'password'=>'Nsusfd8263',
 			'charset'=>'utf8',
             ),
         'errorHandler'=>array(
