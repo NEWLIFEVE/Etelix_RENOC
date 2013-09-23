@@ -6,10 +6,13 @@ class ArbolDeTrafico extends Reportes
 {
 	private $fecha;
 	private $destino;
+	private $table;
 	private $carrier;
 	private $titulo=array();
 	const DESTINATION_INTERNAL="id_destination_int";
 	const DESTINATION_EXTERNAL="id_destination";
+	const TABLE_INTERNAL="destination_int";
+	const TABLE_EXTERNAL="destination";
 	const ID_CUSTOMER="id_carrier_customer";
 	const ID_SUPPLIER="id_carrier_supplier";
 	const TITULO_CUSTOMER="Clientes";
@@ -23,10 +26,12 @@ class ArbolDeTrafico extends Reportes
 		if($tipo)
 		{
 			$this->destino=self::DESTINATION_EXTERNAL;
+			$this->table=self::TABLE_EXTERNAL;
 		}
 		else
 		{
 			$this->destino=self::DESTINATION_INTERNAL;
+			$this->table=self::TABLE_INTERNAL;
 		}
 	}
 	/**
@@ -40,9 +45,9 @@ class ArbolDeTrafico extends Reportes
         $sqlDestinos="SELECT x.{$this->destino} AS id, d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
 					  FROM(SELECT {$this->destino}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
      					   FROM balance
-     					   WHERE date_balance='$this->fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino}<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
+     					   WHERE date_balance='$this->fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
      					   GROUP BY {$this->destino}
-     					   ORDER BY margin DESC) x, destination d
+     					   ORDER BY margin DESC) x, {$this->table} d
 					  WHERE x.margin > 10 AND x.{$this->destino} = d.id
 					  ORDER BY x.margin DESC";
 
