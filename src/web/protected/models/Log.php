@@ -123,7 +123,7 @@ class Log extends CActiveRecord
     }
     
     /**
-     *
+     * funcioin que devuelve la letra 
      */
     public static function preliminar($fecha)
     {
