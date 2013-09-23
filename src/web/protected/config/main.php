@@ -1,6 +1,5 @@
 
 <?php
-
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
 // 
@@ -37,7 +36,7 @@ return array(
         ),
     // application components
     'components'=>array(
-        'Grafico'=>array(
+        'grafico'=>array(
             'class'=>'application.components.Grafico',
             ),
         'reportes'=>array(
@@ -66,7 +65,6 @@ return array(
 			),
 		),
         'db'=>array(
-
             'connectionString'=>'pgsql:host=192.168.1.29;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
