@@ -97,10 +97,10 @@ class reportes extends CApplicationComponent
     * @param $tipo bollean el tipo de reporte internal o external, true=external default, false=internal
     * @return $variable string con el cuerpo del reporte
     */
-    public function ArbolDeTrafico($fecha,$tipo=true)
+    public function ArbolDestino($fecha,$tipo=true)
     {
         ini_set('max_execution_time', 60);
-        $reporte=new ArbolDeTrafico($fecha,$tipo);
+        $reporte=new ArbolDestino($fecha,$tipo);
         $variable=$reporte->reporte();
         return $variable;
     }
