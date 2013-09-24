@@ -105,6 +105,19 @@ class reportes extends CApplicationComponent
         return $variable;
     }
     /**
+     * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
+     * @param $fecha date la fecha que se quiere consultar
+     * @param $tipo boolean el tipo de reporte clientes o proveedores, true=clientes default, false=proveedores
+     * @return $variable string con el cuerpo del reporte
+     */
+    public function ArbolTrafico($fecha,$tipo=true)
+    {
+        ini_set('max_execution_time', 60);
+        $reporte=new ArbolTrafico($fecha,$tipo);
+        $variable=$reporte->reporte();
+        return $variable;
+    }
+    /**
     * Metodo encargado de pintar las filas de los reportes
     * @param int $pos es un numero indicando que color debe regresar
     */

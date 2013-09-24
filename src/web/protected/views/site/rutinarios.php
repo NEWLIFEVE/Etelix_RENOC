@@ -120,6 +120,22 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
+                        <input type="checkbox" value="true" id="AC" class="custom-checkbox" name="lista[AC]">
+                        <label for="AC">
+                            <h4 id="td5">
+                                Arbol Clientes
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="AP" class="custom-checkbox" name="lista[AP]">
+                        <label for="AP">
+                            <h4 id="td5">
+                                Arbol Proveedores
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
                         <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]">
                         <label for="DC">
                             <h4 id="td5">
