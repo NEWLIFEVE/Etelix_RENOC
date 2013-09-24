@@ -4,7 +4,6 @@
 */
 class ArbolDestino extends Reportes
 {
-	protected $fecha;
 	protected $destino;
 	protected $table;
 	protected $carrier;
