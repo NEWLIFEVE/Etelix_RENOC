@@ -251,6 +251,13 @@ class SiteController extends Controller
                 $correos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
                 $correos['AP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha).".xls";
             }
+            if(isset($_POST['lista']['Ev']))
+            {
+                $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+                $correos['Ev']['asunto']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha);
+                $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($fecha,$nombre);
+                $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+            }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
@@ -441,6 +448,13 @@ class SiteController extends Controller
                 $correos['AP']['asunto']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
                 $correos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,true);
                 $correos['AP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['Ev']))
+            {
+                $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+                $correos['Ev']['asunto']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha);
+                $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($fecha,$nombre);
+                $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
             }
         }
         $tiempo=30*count($correos);
