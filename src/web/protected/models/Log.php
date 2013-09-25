@@ -111,6 +111,7 @@ class Log extends CActiveRecord
      * Funcion que devuelve true si la accion ya fue realizada en la fecha consultada
      * @param $id int numero de la accion
      * @param $fecha date fecha consultada
+     * @return boolean
      */
     public static function existe($id,$fecha)
     {
@@ -122,7 +123,7 @@ class Log extends CActiveRecord
     }
     
     /**
-     *
+     * funcioin que devuelve la letra 
      */
     public static function preliminar($fecha)
     {

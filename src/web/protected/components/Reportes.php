@@ -5,6 +5,7 @@
 class reportes extends CApplicationComponent
 {
     public $tipo;
+    protected $fecha;
     /**
     * Init method for the application component mode.
     */
@@ -13,6 +14,7 @@ class reportes extends CApplicationComponent
         
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -22,6 +24,7 @@ class reportes extends CApplicationComponent
       return $variable;
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -31,6 +34,7 @@ class reportes extends CApplicationComponent
       return $variable;
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -40,6 +44,7 @@ class reportes extends CApplicationComponent
         return $variable;
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -52,6 +57,7 @@ class reportes extends CApplicationComponent
 
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta
+    * @access  public
     * @param $fecha date es la fecha que se necesita el reporte
     * @return $variable string con el cuerpo del reporte
     */
@@ -62,6 +68,7 @@ class reportes extends CApplicationComponent
     }
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
+    * @access  public
     * @param $fecha date es la fecha que se necesita el reporte
     * @return $variable string con el cuerpo del reporte
     */
@@ -73,6 +80,7 @@ class reportes extends CApplicationComponent
     }
     /**
     * Metodo encargado de generar el reporte de distribucion comercial
+    * @access  public
     * @param $fecha date la fecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte
     */
@@ -103,6 +111,7 @@ class reportes extends CApplicationComponent
     }
     /**
     * Metodo encargado de generar el reporte de Ranking Compra Venta
+    * @access  public
     * @param $fecha date lafecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte
     */
@@ -113,19 +122,48 @@ class reportes extends CApplicationComponent
     }
     /**
     * Metodo encargado de generar el reporte de Arbol de Trafico
+    * @access  public
     * @param $fecha date lafecha que se quiere consultar
     * @param $tipo bollean el tipo de reporte internal o external, true=external default, false=internal
     * @return $variable string con el cuerpo del reporte
     */
-    public function ArbolDeTrafico($fecha,$tipo=true)
+    public function ArbolDestino($fecha,$tipo=true)
     {
         ini_set('max_execution_time', 60);
-        $reporte=new ArbolDeTrafico($fecha,$tipo);
+        $reporte=new ArbolDestino($fecha,$tipo);
         $variable=$reporte->reporte();
         return $variable;
     }
     /**
+     * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
+     * @access  public
+     * @param $fecha date la fecha que se quiere consultar
+     * @param $tipo boolean el tipo de reporte clientes o proveedores, true=clientes default, false=proveedores
+     * @return $variable string con el cuerpo del reporte
+     */
+    public function ArbolTrafico($fecha,$tipo=true)
+    {
+        ini_set('max_execution_time', 60);
+        $reporte=new ArbolTrafico($fecha,$tipo);
+        $variable=$reporte->reporte();
+        return $variable;
+    }
+
+    /**
+     * genera el reporte de evolucion
+     * @access  public 
+     * @param $fecha date la fecha que sera consultada
+     */
+    public function Evolucion($fecha,$nombre)
+    {
+        $reporte=new Evolucion($fecha);
+        $variable=$reporte->genExcel($nombre);
+        return $variable;
+    }
+
+    /**
     * Metodo encargado de pintar las filas de los reportes
+    * @access  public
     * @param int $pos es un numero indicando que color debe regresar
     */
     public static function color($pos)
