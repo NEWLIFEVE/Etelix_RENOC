@@ -120,10 +120,42 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]">
-                        <label for="DC">
+                        <input type="checkbox" value="true" id="DCV" class="custom-checkbox" name="lista[DCV]">
+                        <label for="DCV">
                             <h4 id="td5">
-                                Distribucion Comercial
+                                DC Vendedor
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCTP" class="custom-checkbox" name="lista[DCTP]">
+                        <label for="DCTP">
+                            <h4 id="td5">
+                                DC Termino Pago
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCM" class="custom-checkbox" name="lista[DCM]">
+                        <label for="DCM">
+                            <h4 id="td5">
+                                DC Monetizable
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCCom" class="custom-checkbox" name="lista[DCCom]">
+                        <label for="DCCom">
+                            <h4 id="td5">
+                                DC Compania
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCCarrier" class="custom-checkbox" name="lista[DCCarrier]">
+                        <label for="DCCarrier">
+                            <h4 id="td5">
+                                DC Carrier
                             </h4>
                         </label>
                     </div>
