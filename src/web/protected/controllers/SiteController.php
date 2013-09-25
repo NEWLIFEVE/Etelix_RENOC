@@ -30,6 +30,24 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+            if(is_dir($ruta))
+            {
+                $archivos=@scandir($ruta);
+            }
+            if(count($archivos)>1)
+            {
+                foreach ($archivos as $key => $value)
+                {
+                    if($key>1)
+                    { 
+                        if($value!='index.html')
+                        {
+                            unlink($ruta.$value);
+                        }
+                    }
+                }
+            }
         // renders the view file 'protected/views/site/index.php'
         // using the default layout 'protected/views/layouts/main.php'
         if(!Yii::app()->user->isGuest)
@@ -356,6 +374,12 @@ class SiteController extends Controller
                 $archivos['AP']['nombre']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
                 $archivos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
             }
+            if(isset($_GET['lista']['Ev']))
+            {
+                $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+                $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha);
+                $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($fecha,$nombre);
+            }
         }
         foreach($archivos as $key => $archivo)
         {
@@ -486,30 +510,37 @@ class SiteController extends Controller
     }
     public function genExcel($nombre,$html,$salida=true)
     {
-        if($salida)
+        if(stripos($nombre,"Evolucion"))
         {
-            header("Content-type: application/vnd.ms-excel; charset=utf-8"); 
-            header("Content-Disposition: attachment; filename={$nombre}.xls");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-            echo $html;
+            header("Location: /adjuntos/{$nombre}.xlsx");
         }
         else
         {
-            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-            $fp=fopen($ruta."$nombre.xls","w+");
-            $cuerpo="
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta charset='utf-8'>
-                    <meta http-equiv='Content-Type' content='application/vnd.ms-excel charset=utf-8'>
-                </head>
-                <body>";
-            $cuerpo.=$html;
-            $cuerpo.="</body>
-            </html>";
-            fwrite($fp,$cuerpo);
+            if($salida)
+            {
+                header("Content-type: application/vnd.ms-excel; charset=utf-8"); 
+                header("Content-Disposition: attachment; filename={$nombre}.xls");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+                echo $html;
+            }
+            else
+            {
+                $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+                $fp=fopen($ruta."$nombre.xls","w+");
+                $cuerpo="
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset='utf-8'>
+                        <meta http-equiv='Content-Type' content='application/vnd.ms-excel charset=utf-8'>
+                    </head>
+                    <body>";
+                $cuerpo.=$html;
+                $cuerpo.="</body>
+                </html>";
+                fwrite($fp,$cuerpo);
+            }
         }
     }
     /**
