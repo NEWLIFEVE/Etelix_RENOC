@@ -30,24 +30,6 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-            if(is_dir($ruta))
-            {
-                $archivos=@scandir($ruta);
-            }
-            if(count($archivos)>1)
-            {
-                foreach ($archivos as $key => $value)
-                {
-                    if($key>1)
-                    { 
-                        if($value!='index.html')
-                        {
-                            unlink($ruta.$value);
-                        }
-                    }
-                }
-            }
         // renders the view file 'protected/views/site/index.php'
         // using the default layout 'protected/views/layouts/main.php'
         if(!Yii::app()->user->isGuest)
@@ -178,6 +160,7 @@ class SiteController extends Controller
     */
     public function actionMail()
     {
+        $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
@@ -281,31 +264,17 @@ class SiteController extends Controller
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         { 
-            $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
-        }
-        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-        if(is_dir($ruta))
-        {
-            $archivos=@scandir($ruta);
-        }
-        if(count($archivos)>1)
-        {
-            foreach ($archivos as $key => $value)
+            if(stripos($correo['asunto'],"Evolucion")<0)
             {
-                if($key>1)
-                { 
-                    if($value!='index.html')
-                    {
-                        unlink($ruta.$value);
-                    }
-                }
+                $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
     }
     public function actionExcel()
     {
+        $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_GET['fecha']);
         $fecha=null;
         $archivos=array();
@@ -392,6 +361,7 @@ class SiteController extends Controller
     */
     public function actionMaillista()
     {
+        $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
@@ -484,27 +454,12 @@ class SiteController extends Controller
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
-        { 
-            $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
-        }
-        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-        if(is_dir($ruta))
         {
-            $archivos=@scandir($ruta);
-        }
-        if(count($archivos)>1)
-        {
-            foreach ($archivos as $key => $value)
+            if(stripos($correo['asunto'],"Evolucion")<0)
             {
-                if($key>1)
-                { 
-                    if($value!='index.html')
-                    {
-                        unlink($ruta.$value);
-                    }
-                }
+                $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
     }
@@ -544,51 +499,29 @@ class SiteController extends Controller
         }
     }
     /**
-    * Metodo que genera un grafico
-    */
-    /*public function actionDato()
+     *
+     */
+    public function vaciarAdjuntos()
     {
-        Yii::app()->fusioncharts->setChartOptions(array(
-            'caption'=>'My Chart',
-            'xAxisName'=>'Months',
-            'yAxisName'=>'Revenue'
-            )
-        );
-        $sets=array(
-            array(
-                'label'=>'July',
-                'value'=>'680000'
-                ),
-            array(
-                'label'=>'August',
-                'value'=>'680000'
-                ),
-            array(
-                'label'=>'Jan',
-                'value'=>'68000'
-                ),
-            );
-        Yii::app()->fusioncharts->addSets($sets);
-        $categories = array(
-            array(
-                'label'=>'July'
-                ),
-            array(
-                'label'=>'August'
-                ),
-            array(
-                'label'=>'Jan'
-                ),
-            );
-        Yii::app()->fusioncharts->addCategories($categories);
-        Yii::app()->fusioncharts->getXMLData(true);
-        
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+            if(is_dir($ruta))
+            {
+                $archivos=@scandir($ruta);
+            }
+            if(count($archivos)>1)
+            {
+                foreach ($archivos as $key => $value)
+                {
+                    if($key>1)
+                    { 
+                        if($value!='index.html')
+                        {
+                            unlink($ruta.$value);
+                        }
+                    }
+                }
+            }
     }
-    public function actionGrafico()
-    {
-        Yii::app()->Grafico->reporte();
-        //$grafico->Stroke();
-    }*/
 }
 ?>
 
