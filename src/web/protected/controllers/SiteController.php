@@ -288,7 +288,7 @@ class SiteController extends Controller
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         { 
-            if(stripos($correo['asunto'],"Evolucion")<0)
+            if(stripos($correo['asunto'],"Evolucion")==false)
             {
                 $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
@@ -523,7 +523,7 @@ class SiteController extends Controller
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         {
-            if(stripos($correo['asunto'],"Evolucion")<0)
+            if(stripos($correo['asunto'],"Evolucion")==false)
             {
                 $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
