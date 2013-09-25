@@ -120,9 +120,6 @@ class Evolucion extends Reportes
         $resultados[10]=$this->getData('llamadas',15);
         $resultados[11]=$this->getData('llamadas',60);
 
-        /*$resultados['margin']['15']=$this->getData('margin',15);
-        $resultados['margin']['60']=$this->getData('margin',60);*/
-
         $letra=array('A','B','C');
         $nombresColumnas=array('Margen','Margen','Pérdida','Pérdida','Revenue','Revenue','ASR','ASR','ALOC','ALOC','Llamadas Totales','Llamadas Totales');
         foreach ($nombresColumnas as $key => $value)
@@ -140,7 +137,6 @@ class Evolucion extends Reportes
         $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save($ruta.$nombre);
-        return "Revisar archivo adjunto";
     }
 }
 ?>

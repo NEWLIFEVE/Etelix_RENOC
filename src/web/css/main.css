@@ -854,6 +854,8 @@ input.favorite{ background-position: 4px -70px; }
     padding-left: 1%;
     width: 39%;
     margin-left: 1%;
+    overflow-y: scroll;
+    height: 28em;
 }
 .choice
 {
@@ -898,4 +900,36 @@ width: 276px;
 z-index: 1;
 text-align: center;
 display: none;
+}
+
+::-webkit-scrollbar 
+{
+    width: 12px;    
+}
+::-webkit-scrollbar-button
+{       
+    background: rgb(104, 173, 104);
+    height: 23px;
+     
+}
+::-webkit-scrollbar-button:hover
+{
+    background-color: rgb(9, 163, 9);   
+}    
+::-webkit-scrollbar-track 
+{
+    background-color: #D8D8D8;
+}
+ ::-webkit-scrollbar-track-piece 
+{
+    background-color: #D8D8D8;
+}   
+::-webkit-scrollbar-thumb 
+{       
+    background: rgb(104, 173, 104);
+    height: 50px;
+}
+::-webkit-scrollbar-thumb:hover 
+{       
+    background: rgb(9, 163, 9);    
 }

@@ -17,7 +17,9 @@ return array(
         'application.models.*',
         'application.components.*',
         'application.components.reportes.*',
-        'application.components.jpgraph.*'
+        'application.components.jpgraph.*',
+        'application.components.excelwriter.*',
+        'application.components.excelwriter.PHPExcel.*'
     ),
     'modules'=>array(
         // uncomment the following to enable the Gii tool
@@ -38,6 +40,9 @@ return array(
     'components'=>array(
         'grafico'=>array(
             'class'=>'application.components.Grafico',
+            ),
+        'PHPExcel'=>array(
+            'class'=>'application.components.excelwriter.PHPExcel'
             ),
         'reportes'=>array(
             'class'=>"application.components.Reportes",
