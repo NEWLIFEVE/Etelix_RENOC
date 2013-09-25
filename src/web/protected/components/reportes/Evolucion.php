@@ -18,6 +18,7 @@ class Evolucion extends Reportes
      */
     public function getData($columna,$dias)
     {
+        $select="";
         if($columna=="margin")
         {
             $select="CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin";
@@ -122,13 +123,14 @@ class Evolucion extends Reportes
 
         $letra=array('A','B','C');
         $nombresColumnas=array('Margen','Margen','Pérdida','Pérdida','Revenue','Revenue','ASR','ASR','ALOC','ALOC','Llamadas Totales','Llamadas Totales');
+        $nombresDatos=array('margin','margin','margin','margin','revenue','revenue','asr','asr','acd','acd','total_calls','total_calls');
         foreach ($nombresColumnas as $key => $value)
         {
             $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A1', 'Fecha')->setCellValue('B1', 'Minutos')->setCellValue('C1', $value);
             foreach ($resultados[$key] as $llave => $valores)
             {
                 $pos=$llave+2;
-                $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $valores->date_balance)->setCellValue('B'.$pos, Yii::app()->format->format_decimal($valores->minutes))->setCellValue('C'.$pos, Yii::app()->format->format_decimal($valores->margin));
+                $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $valores->date_balance)->setCellValue('B'.$pos, Yii::app()->format->format_decimal($valores->minutes))->setCellValue('C'.$pos, Yii::app()->format->format_decimal($valores->$nombresDatos[$key]));
             }
         }
 
