@@ -4,7 +4,6 @@
 */
 class PosicionNetaVendedor extends Reportes
 {
-	private $fecha;
 	private $pos;
 	private $vendedor="";
 

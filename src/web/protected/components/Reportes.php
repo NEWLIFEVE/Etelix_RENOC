@@ -137,8 +137,8 @@ class reportes extends CApplicationComponent
     public function Evolucion($fecha,$nombre)
     {
         $reporte=new Evolucion($fecha);
-        $variable=$reporte->genExcel($nombre);
-        return $variable;
+        $reporte->genExcel($nombre);
+        return "Revisar archivo adjunto";
     }
 
     /**
