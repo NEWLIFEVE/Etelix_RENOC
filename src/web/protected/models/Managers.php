@@ -18,6 +18,12 @@ class Managers extends CActiveRecord
 {
 	public $vendedor;
 	public $operador;
+	public $company;
+	public $termino_pago;
+	public $monetizable;
+	public $dias_disputa;
+	public $limite_credito;
+	public $limite_compra;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.

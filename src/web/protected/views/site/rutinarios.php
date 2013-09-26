@@ -104,26 +104,82 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="ATI" class="custom-checkbox" name="lista[ATI]">
-                        <label for="ATI">
+                        <input type="checkbox" value="true" id="ADI" class="custom-checkbox" name="lista[ADI]">
+                        <label for="ADI">
                             <h4 id="td5">
-                                Arbol de Trafico Internal
+                                Arbol Destinos Internal
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="ATE" class="custom-checkbox" name="lista[ATE]">
-                        <label for="ATE">
+                        <input type="checkbox" value="true" id="ADE" class="custom-checkbox" name="lista[ADE]">
+                        <label for="ADE">
                             <h4 id="td5">
-                                Arbol de Trafico External
+                                Arbol Destinos External
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]">
-                        <label for="DC">
+                        <input type="checkbox" value="true" id="AC" class="custom-checkbox" name="lista[AC]">
+                        <label for="AC">
                             <h4 id="td5">
-                                Distribucion Comercial
+                                Arbol Clientes
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="AP" class="custom-checkbox" name="lista[AP]">
+                        <label for="AP">
+                            <h4 id="td5">
+                                Arbol Proveedores
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCV" class="custom-checkbox" name="lista[DCV]">
+                        <label for="DCV">
+                            <h4 id="td5">
+                                DC Vendedor
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCTP" class="custom-checkbox" name="lista[DCTP]">
+                        <label for="DCTP">
+                            <h4 id="td5">
+                                DC Termino Pago
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCM" class="custom-checkbox" name="lista[DCM]">
+                        <label for="DCM">
+                            <h4 id="td5">
+                                DC Monetizable
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCCom" class="custom-checkbox" name="lista[DCCom]">
+                        <label for="DCCom">
+                            <h4 id="td5">
+                                DC Compania
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCCarrier" class="custom-checkbox" name="lista[DCCarrier]">
+                        <label for="DCCarrier">
+                            <h4 id="td5">
+                                DC Carrier
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="Ev" class="custom-checkbox" name="lista[Ev]">
+                        <label for="Ev">
+                            <h4 id="td5">
+                                Evolucion
                             </h4>
                         </label>
                     </div>

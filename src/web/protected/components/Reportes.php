@@ -5,6 +5,7 @@
 class reportes extends CApplicationComponent
 {
     public $tipo;
+    protected $fecha;
     /**
     * Init method for the application component mode.
     */
@@ -13,6 +14,7 @@ class reportes extends CApplicationComponent
         
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -22,6 +24,7 @@ class reportes extends CApplicationComponent
       return $variable;
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -31,6 +34,7 @@ class reportes extends CApplicationComponent
       return $variable;
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -40,6 +44,7 @@ class reportes extends CApplicationComponent
         return $variable;
     }
     /**
+    * @access  public
     * @param $fecha date fecha para ser consuldada
     * @return $variable string cuerpo de reporte
     */
@@ -52,6 +57,7 @@ class reportes extends CApplicationComponent
 
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta
+    * @access  public
     * @param $fecha date es la fecha que se necesita el reporte
     * @return $variable string con el cuerpo del reporte
     */
@@ -62,6 +68,7 @@ class reportes extends CApplicationComponent
     }
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
+    * @access  public
     * @param $fecha date es la fecha que se necesita el reporte
     * @return $variable string con el cuerpo del reporte
     */
@@ -73,16 +80,38 @@ class reportes extends CApplicationComponent
     }
     /**
     * Metodo encargado de generar el reporte de distribucion comercial
+    * @access  public
     * @param $fecha date la fecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte
     */
-    public function DistComercial($fecha)
+    public function DistComercialVendedor($fecha)
     {
-        $variable=DistComercial::reporte($fecha);
+        $variable=DistComercialVendedor::reporte($fecha);
+        return $variable;
+    }
+    public function DistComercialTerminoPago($fecha)
+    {
+        $variable=DistComercialTerminoPago::reporte($fecha);
+        return $variable;
+    }
+    public function DistComercialMonetizable($fecha)
+    {
+        $variable=DistComercialMonetizable::reporte($fecha);
+        return $variable;
+    }
+    public function DistComercialCompany($fecha)
+    {
+        $variable=DistComercialCompany::reporte($fecha);
+        return $variable;
+    }
+    public function DistComercialCarrier($fecha)
+    {
+        $variable=DistComercialCarrier::reporte($fecha);
         return $variable;
     }
     /**
     * Metodo encargado de generar el reporte de Ranking Compra Venta
+    * @access  public
     * @param $fecha date lafecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte
     */
@@ -93,19 +122,48 @@ class reportes extends CApplicationComponent
     }
     /**
     * Metodo encargado de generar el reporte de Arbol de Trafico
+    * @access  public
     * @param $fecha date lafecha que se quiere consultar
     * @param $tipo bollean el tipo de reporte internal o external, true=external default, false=internal
     * @return $variable string con el cuerpo del reporte
     */
-    public function ArbolDeTrafico($fecha,$tipo=true)
+    public function ArbolDestino($fecha,$tipo=true)
     {
         ini_set('max_execution_time', 60);
-        $reporte=new ArbolDeTrafico($fecha,$tipo);
+        $reporte=new ArbolDestino($fecha,$tipo);
         $variable=$reporte->reporte();
         return $variable;
     }
     /**
+     * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
+     * @access  public
+     * @param $fecha date la fecha que se quiere consultar
+     * @param $tipo boolean el tipo de reporte clientes o proveedores, true=clientes default, false=proveedores
+     * @return $variable string con el cuerpo del reporte
+     */
+    public function ArbolTrafico($fecha,$tipo=true)
+    {
+        ini_set('max_execution_time', 60);
+        $reporte=new ArbolTrafico($fecha,$tipo);
+        $variable=$reporte->reporte();
+        return $variable;
+    }
+
+    /**
+     * genera el reporte de evolucion
+     * @access  public 
+     * @param $fecha date la fecha que sera consultada
+     */
+    public function Evolucion($fecha,$nombre)
+    {
+        $reporte=new Evolucion($fecha);
+        $reporte->genExcel($nombre);
+        return "Revisar archivo adjunto";
+    }
+
+    /**
     * Metodo encargado de pintar las filas de los reportes
+    * @access  public
     * @param int $pos es un numero indicando que color debe regresar
     */
     public static function color($pos)
@@ -188,66 +246,199 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
-    public static function colorVendedor($var)
+    public static function colorVendedor($var,$alarmaStr=NULL,$alarmaInt=NULL)
     {
         $color=null;
+        
+        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0)){
+            $color="color:white;";
+        }else{
+            $color="color:#584E4E;";
+        }
+        
         if(substr_count($var, 'Iglesias') >= 1)
         {
-            $color="background-color:#fe6500; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#fe6500; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Lopez Silva') >= 1)
         {
-            $color="background-color:#4aabc5; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Olivar') >= 1)
         {
-            $color="background-color:#333399; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#DDCBCB; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Robayo') >= 1)
         {
-            $color="background-color:#00ffff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#3BA7DA; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Laguna') >= 1)
         {
-            $color="background-color:#ffcc99; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#ffcc99; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Pinango') >= 1)
         {
-            $color="background-color:#cc99ff; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#cc99ff; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Cardenas') >= 1)
         {
-            $color="background-color:#00ff00; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:rgb(104, 173, 104); border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Barbaran') >= 1)
         {
-            $color="background-color:#ff8080; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#ff8080; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Van Der Biest') >= 1)
         {
-            $color="background-color:#c0504d; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#c0504d; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Solarte') >= 1)
         {
-            $color="background-color:#ff9900; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#ff9900; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Da Rocha') >= 1)
         {
-            $color="background-color:#c0c0c0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#c0c0c0; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Mirakyan') >= 1)
         {
-            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#00b0f0; border: 1px solid rgb(121, 115, 115)";
         }
-        elseif(substr_count($var, 'Sin Asiignar') >= 1)
+        elseif(substr_count($var, 'Sin Asignar') >= 1)
         {
-            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'Vacante') >= 1)
         {
-            $color="background-color:#00b0f0; color:584E4E; border: 1px solid rgb(121, 115, 115)";
+            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
         }
         
+        return $color;
+    }
+    public static function colorTP($var,$alarmaStr=NULL,$alarmaInt=NULL)
+    {
+        $color=null;
+        
+        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0)){
+            $color="color:white;";
+        }else{
+            $color="color:#584E4E;";
+        }
+        
+        if(substr_count($var, 'P-Mensuales') >= 1)
+        {
+            $color.="background-color:#fe6500; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'P-Semanales') >= 1)
+        {
+            $color.="background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '7/3') >= 1)
+        {
+            $color.="background-color:#DDCBCB; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '7/5') >= 1)
+        {
+            $color.="background-color:#3BA7DA; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '7/7') >= 1)
+        {
+            $color.="background-color:#ffcc99; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '15/5') >= 1)
+        {
+            $color.="background-color:#cc99ff; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '15/7') >= 1)
+        {
+            $color.="background-color:rgb(104, 173, 104); border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '15/15') >= 1)
+        {
+            $color.="background-color:#ff8080; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '30/7') >= 1)
+        {
+            $color.="background-color:#c0504d; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '30/30') >= 1)
+        {
+            $color.="background-color:#ff9900; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Sin Asignar') >= 1)
+        {
+            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
+        }    
+        return $color;
+    }
+    public static function colorM($var,$alarmaStr=NULL,$alarmaInt=NULL)
+    {
+        $color=null;
+        
+        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0)){
+            $color="color:white;";
+        }else{
+            $color="color:#584E4E;";
+        }        
+        if(substr_count($var, '100%') >= 1)
+        {
+            $color.="background-color:#fe6500; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '50%') >= 1)
+        {
+            $color.="background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, '0%') >= 1)
+        {
+            $color.="background-color:#DDCBCB; border: 1px solid rgb(121, 115, 115)";
+        }      
+        elseif(substr_count($var, 'Sin Asignar') >= 1)
+        {
+            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
+        }  
+        return $color;
+    }
+    public static function colorCom($var,$alarmaStr=NULL,$alarmaInt=NULL)
+    {
+        $color=null;
+        
+        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0)){
+            $color="color:white;";
+        }else{
+            $color="color:#584E4E;";
+        }        
+        if(substr_count($var, 'Etelix NET') >= 1)
+        {
+            $color.="background-color:#fe6500; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Etelix.com USA') >= 1)
+        {
+            $color.="background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Etelix.com UK') >= 1)
+        {
+            $color.="background-color:#DDCBCB; border: 1px solid rgb(121, 115, 115)";
+        }       
+        elseif(substr_count($var, 'Etelix.com Peru') >= 1)
+        {
+            $color.="background-color:#ff9900; border: 1px solid rgb(121, 115, 115)";
+        }
+        elseif(substr_count($var, 'Sin Asignar') >= 1)
+        {
+            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
+        }  
+        return $color;
+    }
+    public static function colorCarrier($var,$alarmaStr=NULL,$alarmaInt=NULL)
+    {
+        $color=null;
+        
+        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0)){
+            $color="color:white; background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
+        }else{
+            $color="color:#584E4E; background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
+        }        
+  
         return $color;
     }
     

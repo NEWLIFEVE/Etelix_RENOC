@@ -160,6 +160,7 @@ class SiteController extends Controller
     */
     public function actionMail()
     {
+        $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
@@ -167,99 +168,144 @@ class SiteController extends Controller
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
-            if(isset($_POST['lista']['AIR']))
-            {
-                $correos['altoImpactoRetail']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
-                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
-                $correos['altoImpactoRetail']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['AI10']))
-            {
-                $correos['altoImpacto']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha);
-                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
-                $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['AI10V']))
-            {
-                $correos['altoImpactoVendedor']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
-                $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
-                $correos['altoImpactoVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha).".xls";
-            } 
-            if(isset($_POST['lista']['PN']))
-            {
-                $correos['posicionNeta']['asunto']="RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha);
-                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
-                $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['PNV']))
-            {
-                $correos['posicionNetaVendedor']['asunto']="RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
-                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
-                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['DC']))
-            {
-                $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
-                $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
-                $correos['distribucionComercial']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."Distribucion Comercial al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['perdidas']))
-            {
-                $correos['perdidas']['asunto']="RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha);
-                $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
-                $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha).".xls";
-            }
+            //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
                 $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_POST['lista']['ATI']))
+            //Perdidas
+            if(isset($_POST['lista']['perdidas']))
             {
-                $correos['ATI']['asunto']="RENOC".$this->letra." Arbol de Trafico Internal al ".str_replace("-","",$fecha);
-                $correos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
-                $correos['ATI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol de Trafico Internal al ".str_replace("-","",$fecha).".xls";
+                $correos['perdidas']['asunto']="RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha);
+                $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+                $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_POST['lista']['ATE']))
+            // Alto Impacto Retail
+            if(isset($_POST['lista']['AIR']))
             {
-                $correos['ATE']['asunto']="RENOC".$this->letra." Arbol de Trafico External al ".str_replace("-","",$fecha);
-                $correos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
-                $correos['ATE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol de Trafico External al ".str_replace("-","",$fecha).".xls";
+                $correos['altoImpactoRetail']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
+                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
+                $correos['altoImpactoRetail']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha).".xls";
+            }
+            //Alto Impacto +10$
+            if(isset($_POST['lista']['AI10']))
+            {
+                $correos['altoImpacto']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha);
+                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+                $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha).".xls";
+            }
+            //Alto Impacto +10$ por Vendedor
+            if(isset($_POST['lista']['AI10V']))
+            {
+                $correos['altoImpactoVendedor']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
+                $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
+                $correos['altoImpactoVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
+            //Posicion Neta
+            if(isset($_POST['lista']['PN']))
+            {
+                $correos['posicionNeta']['asunto']="RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha);
+                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
+                $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha).".xls";
+            }
+            //Posicion Neta por vendedor
+            if(isset($_POST['lista']['PNV']))
+            {
+                $correos['posicionNetaVendedor']['asunto']="RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
+             //Arbol Destino Internal
+            if(isset($_POST['lista']['ADI']))
+            {
+                $correos['ADI']['asunto']="RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha);
+                $correos['ADI']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,false);
+                $correos['ADI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha).".xls";
+            }
+            //Arbol Destino External
+            if(isset($_POST['lista']['ADE']))
+            {
+                $correos['ADE']['asunto']="RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha);
+                $correos['ADE']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,true);
+                $correos['ADE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha).".xls";
+            }
+            //Arbol Trafico Clientes
+            if(isset($_POST['lista']['AC']))
+            {
+                $correos['AC']['asunto']="RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha);
+                $correos['AC']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,true);
+                $correos['AC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha).".xls";
+            }
+            //Arbol Trafico Proveedores
+            if(isset($_POST['lista']['AP']))
+            {
+                $correos['AP']['asunto']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
+                $correos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
+                $correos['AP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Vendedor
+            if(isset($_POST['lista']['DCV']))
+            {
+                $correos['distribucionComercialV']['asunto']="DC Vendedor al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialV']['cuerpo']=Yii::app()->reportes->distComercialVendedor($fecha);
+                $correos['distribucionComercialV']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Terminos de Pago
+            if(isset($_POST['lista']['DCTP']))
+            {
+                $correos['distribucionComercialTP']['asunto']="DC Termino Pago al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialTP']['cuerpo']=Yii::app()->reportes->distComercialTerminoPago($fecha);
+                $correos['distribucionComercialTP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Termino Pago al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Monetizable
+            if(isset($_POST['lista']['DCM']))
+            {
+                $correos['distribucionComercialM']['asunto']="DC Monetizable al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialM']['cuerpo']=Yii::app()->reportes->distComercialMonetizable($fecha);
+                $correos['distribucionComercialM']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Monetizable al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Compañia
+            if(isset($_POST['lista']['DCCom']))
+            {
+                $correos['distribucionComercialCom']['asunto']="DC Compania al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialCom']['cuerpo']=Yii::app()->reportes->distComercialCompany($fecha);
+                $correos['distribucionComercialCom']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Compania al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Carrier
+            if(isset($_POST['lista']['DCCarrier']))
+            {
+                $correos['distribucionComercialCarrier']['asunto']="DC Carrier al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialCarrier']['cuerpo']=Yii::app()->reportes->distComercialCarrier($fecha);
+                $correos['distribucionComercialCarrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Carrier al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['Ev']))
+            {
+                $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+                $correos['Ev']['asunto']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha);
+                $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($fecha,$nombre);
+                $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
             }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         { 
-            $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
-        }
-        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-        if(is_dir($ruta))
-        {
-            $archivos=@scandir($ruta);
-        }
-        if(count($archivos)>1)
-        {
-            foreach ($archivos as $key => $value)
+            if(stripos($correo['asunto'],"Evolucion")==false)
             {
-                if($key>1)
-                { 
-                    if($value!='index.html')
-                    {
-                        unlink($ruta.$value);
-                    }
-                }
+                $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
     }
     public function actionExcel()
     {
+        $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_GET['fecha']);
         $fecha=null;
-        $archivos=null;
+        $archivos=array();
         if(isset($_GET['fecha']))
         {
             $fecha=(string)$_GET['fecha'];
@@ -288,10 +334,30 @@ class SiteController extends Controller
                 $archivos['posicionNetaVendedor']['nombre']="RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
                 $archivos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
             }
-            if(isset($_GET['lista']['DC']))
+            if(isset($_GET['lista']['DCV']))
             {
-                $archivos['distribucionComercial']['nombre']="Distribucion Comercial al ".str_replace("-","",$fecha);
-                $archivos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
+                $archivos['distribucionComercialV']['nombre']="DC Vendedor al ".str_replace("-","",$fecha);
+                $archivos['distribucionComercialV']['cuerpo']=Yii::app()->reportes->distComercialVendedor($fecha);
+            }
+            if(isset($_GET['lista']['DCTP']))
+            {
+                $archivos['distribucionComercialTP']['nombre']="DC Termino Pago al ".str_replace("-","",$fecha);
+                $archivos['distribucionComercialTP']['cuerpo']=Yii::app()->reportes->distComercialTerminoPago($fecha);
+            }
+            if(isset($_GET['lista']['DCM']))
+            {
+                $archivos['distribucionComercialM']['nombre']="DC Monetizable al ".str_replace("-","",$fecha);
+                $archivos['distribucionComercialM']['cuerpo']=Yii::app()->reportes->distComercialMonetizable($fecha);
+            }
+            if(isset($_GET['lista']['DCCom']))
+            {
+                $archivos['distribucionComercialCom']['nombre']="DC Compania al ".str_replace("-","",$fecha);
+                $archivos['distribucionComercialCom']['cuerpo']=Yii::app()->reportes->distComercialCompany($fecha);
+            }
+            if(isset($_GET['lista']['DCCarrier']))
+            {
+                $archivos['distribucionComercialCarrier']['nombre']="DC Carrier al ".str_replace("-","",$fecha);
+                $archivos['distribucionComercialCarrier']['cuerpo']=Yii::app()->reportes->distComercialCarrier($fecha);
             }
             if(isset($_GET['lista']['perdidas']))
             {
@@ -303,15 +369,33 @@ class SiteController extends Controller
                 $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
             }
-            if(isset($_GET['lista']['ATI']))
+            if(isset($_GET['lista']['ADI']))
             {
-                $archivos['ATI']['nombre']="RENOC".$this->letra." Arbol de Trafico Internal al ".str_replace("-","",$fecha);
-                $archivos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
+                $archivos['ADI']['nombre']="RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha);
+                $archivos['ADI']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,false);
             }
-            if(isset($_GET['lista']['ATE']))
+            if(isset($_GET['lista']['ADE']))
             {
-                $archivos['ATE']['nombre']="RENOC".$this->letra." Arbol de Trafico External al ".str_replace("-","",$fecha);
-                $archivos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
+                $archivos['ADE']['nombre']="RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha);
+                $archivos['ADE']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,true);
+            }
+            //Arbol Trafico Clientes
+            if(isset($_GET['lista']['AC']))
+            {
+                $archivos['AC']['nombre']="RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha);
+                $archivos['AC']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,true);
+            }
+            //Arbol Trafico Proveedores
+            if(isset($_GET['lista']['AP']))
+            {
+                $archivos['AP']['nombre']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
+                $archivos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
+            }
+            if(isset($_GET['lista']['Ev']))
+            {
+                $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+                $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha);
+                $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($fecha,$nombre);
             }
         }
         foreach($archivos as $key => $archivo)
@@ -320,11 +404,12 @@ class SiteController extends Controller
         }
     }
     /**
-    * Action encargada de envuiar por mail el tipo de reporte seleccionado,
+    * Action encargada de enviar por mail el tipo de reporte seleccionado,
     * las especificaciones seran recibidas desde el array $_GET
     */
     public function actionMaillista()
     {
+        $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
@@ -332,168 +417,197 @@ class SiteController extends Controller
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
-            if(isset($_POST['lista']['AIR']))
-            {
-                $correos['altoImpactoRetail']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$) al ".str_replace("-","",$fecha);
-                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
-                $correos['altoImpactoRetail']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto RETAIL (+1$) al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['AI10']))
-            {
-                $correos['altoImpacto']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha);
-                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
-                $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['AI10V']))
-            {
-                $correos['altoImpactoVendedor']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
-                $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
-                $correos['altoImpactoVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha).".xls";
-            } 
-            if(isset($_POST['lista']['PN']))
-            {
-                $correos['posicionNeta']['asunto']="RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha);
-                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
-                $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['PNV']))
-            {
-                $correos['posicionNetaVendedor']['asunto']="RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
-                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
-                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
-            }
-            if(isset($_POST['lista']['DC']))
-            {
-                $correos['distribucionComercial']['asunto']="Distribucion Comercial al ".str_replace("-","",$fecha);
-                $correos['distribucionComercial']['cuerpo']=Yii::app()->reportes->distComercial($fecha);
-                $correos['distribucionComercial']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."Distribucion Comercial al ".str_replace("-","",$fecha);
-            }
-            if(isset($_POST['lista']['perdidas']))
-            {
-                $correos['perdidas']['asunto']="RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha);
-                $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
-                $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha).".xls";
-            }
+            //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
                 $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_POST['lista']['ATI']))
+            //Perdidas
+            if(isset($_POST['lista']['perdidas']))
             {
-                $correos['ATI']['asunto']="RENOC".$this->letra." Arbol de Trafico Internal al ".str_replace("-","",$fecha);
-                $correos['ATI']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,false);
-                $correos['ATI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol de Trafico Internal al ".str_replace("-","",$fecha).".xls";
+                $correos['perdidas']['asunto']="RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha);
+                $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+                $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha).".xls";
             }
-            if(isset($_POST['lista']['ATE']))
+            // Alto Impacto Retail
+            if(isset($_POST['lista']['AIR']))
             {
-                $correos['ATE']['asunto']="RENOC".$this->letra." Arbol de Trafico External al ".str_replace("-","",$fecha);
-                $correos['ATE']['cuerpo']=Yii::app()->reportes->ArbolDeTrafico($fecha,true);
-                $correos['ATE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol de Trafico External al ".str_replace("-","",$fecha).".xls";
+                $correos['altoImpactoRetail']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha);
+                $correos['altoImpactoRetail']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($fecha);
+                $correos['altoImpactoRetail']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto RETAIL (+1$) al  ".str_replace("-","",$fecha).".xls";
+            }
+            //Alto Impacto +10$
+            if(isset($_POST['lista']['AI10']))
+            {
+                $correos['altoImpacto']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha);
+                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($fecha);
+                $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$fecha).".xls";
+            }
+            //Alto Impacto +10$ por Vendedor
+            if(isset($_POST['lista']['AI10V']))
+            {
+                $correos['altoImpactoVendedor']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha);
+                $correos['altoImpactoVendedor']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($fecha);
+                $correos['altoImpactoVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
+            //Posicion Neta
+            if(isset($_POST['lista']['PN']))
+            {
+                $correos['posicionNeta']['asunto']="RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha);
+                $correos['posicionNeta']['cuerpo']=Yii::app()->reportes->posicionNeta($fecha);
+                $correos['posicionNeta']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta al ".str_replace("-","",$fecha).".xls";
+            }
+            //Posicion Neta por vendedor
+            if(isset($_POST['lista']['PNV']))
+            {
+                $correos['posicionNetaVendedor']['asunto']="RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
+                $correos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
+                $correos['posicionNetaVendedor']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
+             //Arbol Destino Internal
+            if(isset($_POST['lista']['ADI']))
+            {
+                $correos['ADI']['asunto']="RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha);
+                $correos['ADI']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,false);
+                $correos['ADI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha).".xls";
+            }
+            //Arbol Destino External
+            if(isset($_POST['lista']['ADE']))
+            {
+                $correos['ADE']['asunto']="RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha);
+                $correos['ADE']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,true);
+                $correos['ADE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha).".xls";
+            }
+            //Arbol Trafico Clientes
+            if(isset($_POST['lista']['AC']))
+            {
+                $correos['AC']['asunto']="RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha);
+                $correos['AC']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,true);
+                $correos['AC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha).".xls";
+            }
+            //Arbol Trafico Proveedores
+            if(isset($_POST['lista']['AP']))
+            {
+                $correos['AP']['asunto']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
+                $correos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
+                $correos['AP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Vendedor
+            if(isset($_POST['lista']['DCV']))
+            {
+                $correos['distribucionComercialV']['asunto']="DC Vendedor al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialV']['cuerpo']=Yii::app()->reportes->distComercialVendedor($fecha);
+                $correos['distribucionComercialV']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Vendedor al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Terminos de Pago
+            if(isset($_POST['lista']['DCTP']))
+            {
+                $correos['distribucionComercialTP']['asunto']="DC Termino Pago al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialTP']['cuerpo']=Yii::app()->reportes->distComercialTerminoPago($fecha);
+                $correos['distribucionComercialTP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Termino Pago al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Monetizable
+            if(isset($_POST['lista']['DCM']))
+            {
+                $correos['distribucionComercialM']['asunto']="DC Monetizable al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialM']['cuerpo']=Yii::app()->reportes->distComercialMonetizable($fecha);
+                $correos['distribucionComercialM']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Monetizable al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Compañia
+            if(isset($_POST['lista']['DCCom']))
+            {
+                $correos['distribucionComercialCom']['asunto']="DC Compania al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialCom']['cuerpo']=Yii::app()->reportes->distComercialCompany($fecha);
+                $correos['distribucionComercialCom']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Compania al ".str_replace("-","",$fecha).".xls";
+            }
+            //Distribucion Comercial por Carrier
+            if(isset($_POST['lista']['DCCarrier']))
+            {
+                $correos['distribucionComercialCarrier']['asunto']="DC Carrier al ".str_replace("-","",$fecha);
+                $correos['distribucionComercialCarrier']['cuerpo']=Yii::app()->reportes->distComercialCarrier($fecha);
+                $correos['distribucionComercialCarrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Carrier al ".str_replace("-","",$fecha).".xls";
+            }
+            if(isset($_POST['lista']['Ev']))
+            {
+                $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
+                $correos['Ev']['asunto']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha);
+                $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($fecha,$nombre);
+                $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
             }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
-        { 
-            $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
-        }
-        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-        if(is_dir($ruta))
         {
-            $archivos=@scandir($ruta);
-        }
-        if(count($archivos)>1)
-        {
-            foreach ($archivos as $key => $value)
+            if(stripos($correo['asunto'],"Evolucion")==false)
             {
-                if($key>1)
-                { 
-                    if($value!='index.html')
-                    {
-                        unlink($ruta.$value);
-                    }
-                }
+                $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
+            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
     }
     public function genExcel($nombre,$html,$salida=true)
     {
-        if($salida)
+        if(stripos($nombre,"Evolucion"))
         {
-            header("Content-type: application/vnd.ms-excel; charset=utf-8"); 
-            header("Content-Disposition: attachment; filename={$nombre}.xls");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-            echo $html;
+            header("Location: /adjuntos/{$nombre}.xlsx");
         }
         else
         {
-            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-            $fp=fopen($ruta."$nombre.xls","w+");
-            $cuerpo="
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta charset='utf-8'>
-                    <meta http-equiv='Content-Type' content='application/vnd.ms-excel charset=utf-8'>
-                </head>
-                <body>";
-            $cuerpo.=$html;
-            $cuerpo.="</body>
-            </html>";
-            fwrite($fp,$cuerpo);
+            if($salida)
+            {
+                header("Content-type: application/vnd.ms-excel; charset=utf-8"); 
+                header("Content-Disposition: attachment; filename={$nombre}.xls");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+                echo $html;
+            }
+            else
+            {
+                $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+                $fp=fopen($ruta."$nombre.xls","w+");
+                $cuerpo="
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset='utf-8'>
+                        <meta http-equiv='Content-Type' content='application/vnd.ms-excel charset=utf-8'>
+                    </head>
+                    <body>";
+                $cuerpo.=$html;
+                $cuerpo.="</body>
+                </html>";
+                fwrite($fp,$cuerpo);
+            }
         }
     }
     /**
-    * Metodo que genera un grafico
-    */
-    /*public function actionDato()
+     *
+     */
+    public function vaciarAdjuntos()
     {
-        Yii::app()->fusioncharts->setChartOptions(array(
-            'caption'=>'My Chart',
-            'xAxisName'=>'Months',
-            'yAxisName'=>'Revenue'
-            )
-        );
-        $sets=array(
-            array(
-                'label'=>'July',
-                'value'=>'680000'
-                ),
-            array(
-                'label'=>'August',
-                'value'=>'680000'
-                ),
-            array(
-                'label'=>'Jan',
-                'value'=>'68000'
-                ),
-            );
-        Yii::app()->fusioncharts->addSets($sets);
-        $categories = array(
-            array(
-                'label'=>'July'
-                ),
-            array(
-                'label'=>'August'
-                ),
-            array(
-                'label'=>'Jan'
-                ),
-            );
-        Yii::app()->fusioncharts->addCategories($categories);
-        Yii::app()->fusioncharts->getXMLData(true);
-        
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+            if(is_dir($ruta))
+            {
+                $archivos=@scandir($ruta);
+            }
+            if(count($archivos)>1)
+            {
+                foreach ($archivos as $key => $value)
+                {
+                    if($key>1)
+                    { 
+                        if($value!='index.html')
+                        {
+                            unlink($ruta.$value);
+                        }
+                    }
+                }
+            }
     }
-    public function actionGrafico()
-    {
-        Yii::app()->Grafico->reporte();
-        //$grafico->Stroke();
-    }*/
 }
 ?>
 
