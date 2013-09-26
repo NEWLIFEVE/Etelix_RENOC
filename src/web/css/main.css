@@ -132,10 +132,7 @@ background: linear-gradient(#F2F2F2, white);
     height:75px;
     margin-left:-70px;
 }
-#flecha-forward{
-    color: #848484;
-    text-decoration:none; 
-}
+
 #flecha-backward{
     color: #848484;
     text-decoration:none; 
@@ -152,13 +149,7 @@ background: linear-gradient(#F2F2F2, white);
     margin:6em auto;
     color: #848484;
 }
-#one{
-    float:lefth;
-    margin:10px;
-    width:600px; 
-    height:135px;
-    margin-left: 10px;
-}
+
 #claseboot{
     float:lefth; 
     margin:0px;
@@ -1000,6 +991,30 @@ div.errorMessage
     text-align: left;
     width: 344px;
 }
+/**
+ * Vista Index
+ */
+.reportes
+{
+    text-align: left;
+    padding-top: 41px;
+    padding-bottom: 41px;
+    margin-left: 5em;
+}
+#one
+{
+    float:lefth;
+    margin:10px;
+    width:600px; 
+    height:135px;
+}
+#flecha-forward
+{
+    color: #848484;
+    text-decoration:none;
+    float: right;
+    padding-right: 15%;
+}
 
 
 @media screen and (max-width: 980px) {
@@ -1017,6 +1032,11 @@ div.errorMessage
     {
         margin-top: 1em;
         padding-left: 1em;
+    }
+    /*Vista index*/
+    #capa
+    {
+        margin:2.1em auto;
     }
 }
 @media screen and (max-width: 650px) {
@@ -1047,5 +1067,28 @@ div.errorMessage
     {
         width: 364px;
         margin: 4% auto;
+    }
+    /*Vista index*/
+    #capa
+    {
+        width: 100%;
+    }
+    .reportes h1
+    {
+        font-size: 2em;
+    }
+}
+@media screen and (max-width: 300px) {
+    .reportes h1
+    {
+        font-size: 0.8em;
+    }
+    #flecha-forward
+    {
+        padding-right: 25%;
+    }
+    .row
+    {
+        margin-left: 0px !important;
     }
 }
