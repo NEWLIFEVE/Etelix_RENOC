@@ -1,28 +1,4 @@
 
-
-#titlelogin{
-    
-    border: 10px solid #585858;
-    height: 430px;
-    margin-bottom: 171px;
-    margin-left: 370px;
-    width: 380px;
-    font-size: 30px;
-    text-align:center;
-    margin-top: 2em;
-    
-}
-
-#minifooter{
-    border: 0px solid red;
-    font-size: 10px;
-    height: 28px;
-    margin-bottom: 171px;
-    margin-left: 388px;
-    margin-top: -158px;
-    text-align: left;
-    width: 344px  
-}
 #ingresen{
     font-size: 40px;
     text-align:center;
@@ -464,14 +440,7 @@ label.td5 h4
   border:0px solid red;
 }
 
-#bodylogin
-{
-    margin: 0;
-    padding: 0;
-    color: #555;
-    font: normal 10pt Arial,Helvetica,sans-serif;
-    background: #585858;
-}
+
 
 body
 {
@@ -497,10 +466,7 @@ body
     border-top: 3px solid #C9E0ED;
 }
 
-#content
-{
-    padding: 15px;
-}
+
 
 #sidebar
 {
@@ -735,15 +701,12 @@ input.submit
     cursor: pointer;
 }
 
-input#LoginForm_username{ background-position:198px -17px; }
+
 input.search{ background-position: 4px 4px; }
-input#LoginForm_password{ background-position: 198px -39px; }
+
 input.favorite{ background-position: 4px -70px; }
 
-.botonLogin{
-    margin-left: 2.6em;
-    
-}
+
 .cargando
 {
     background-color: rgba(0,0,0,0.7);
@@ -932,4 +895,157 @@ display: none;
 ::-webkit-scrollbar-thumb:hover 
 {       
     background: rgb(9, 163, 9);    
+}
+#content
+{
+    text-align: center;
+}
+.titlelogin
+{
+    border: 10px solid #585858;
+    height: 430px;
+    margin-bottom: 171px;
+    margin-left: 370px;
+    width: 380px;
+    font-size: 30px;
+    text-align:center;
+    margin-top: 2em;
+    
+}
+/*Vista del login*/
+.bodylogin
+{
+    background: #585858;
+    color: #555;
+    font: normal 10pt Arial,Helvetica,sans-serif;
+    height: 100%;
+    margin-left: -20px;
+    margin-top: -20px;
+    padding-top: 20px;
+    position: absolute;
+    width: 101.5%;
+}
+.cuadro
+{
+    width: 27%;
+    height: 450px;
+    margin: 85px auto;
+}
+p.titulo
+{
+    font-size: 2.1em;
+    margin-bottom: 1%;
+}
+.cuadro_login
+{
+    padding: 16%;
+    background: white;
+    height: 60%;
+}
+p.login_titulo
+{
+    margin-bottom: 16%;
+}
+input#LoginForm_username
+{
+    border-left: 5px solid #68AD68;
+    background-position:198px -17px;
+}
+div.login.error input#LoginForm_username
+{
+    border-left: 5px solid red;
+    border-top:1px solid red;
+    border-right: 1px solid red;
+    border-bottom:1px solid red;
+    background-position:198px -17px;
+}
+input#LoginForm_password
+{
+    border-left: 5px solid #68AD68;
+    background-position: 198px -39px;
+}
+div.login.error input#LoginForm_password
+{
+    border-left: 5px solid red;
+    border-top:1px solid red;
+    border-right: 1px solid red;
+    border-bottom:1px solid red;
+    background-position: 198px -39px;
+}
+.custom-checkboxLogin + label
+{
+    position: absolute;
+    padding-left: 1.4em;
+    font-weight: bold;
+    font-size: 1em;
+}
+.botonLogin
+{
+    margin-top: 1em;
+    padding-left: 5em;
+}
+button.btn
+{
+    margin-left: 98px;
+    border-radius: 6px;
+}
+div.errorMessage
+{
+    color:red;
+}
+#minifooter{
+    padding-top: 0.7em;
+    font-size: 10px;
+    height: 28px;
+    text-align: left;
+    width: 344px;
+}
+
+
+@media screen and (max-width: 980px) {
+    /*Vista del login*/
+    .bodylogin
+    {
+        width: 102%;
+    }
+    .cuadro
+    {
+        width: 364px;
+        margin-top: 40px;
+    }
+    .botonLogin
+    {
+        margin-top: 1em;
+        padding-left: 1em;
+    }
+}
+@media screen and (max-width: 650px) {
+    /*Vista del login*/
+    .bodylogin
+    {
+        height: 88%;
+        width: 100%;
+    }
+    .cuadro
+    {
+        width: 60%;
+    }
+    .botonLogin
+    {
+        margin-top: 1em;
+        padding-left: 1em;
+    }
+}
+@media screen and (max-width: 480px) {
+    /*Vista del login*/
+    .bodylogin
+    {
+        height: 88%;
+        width: 100%;
+    }
+    .cuadro
+    {
+        width: 364px;
+        margin: 4% auto;
+    }
 }
