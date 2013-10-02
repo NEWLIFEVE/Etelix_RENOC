@@ -413,7 +413,7 @@ class SiteController extends Controller
         $this->letra=Log::preliminar($_POST['fecha']);
         $fecha=null;
         $correos=null;
-        $user="renoc@etelix.com";
+        $user="manuel@newlifeve.com";
         if(isset($_POST['fecha']))
         {
             $fecha=(string)$_POST['fecha'];
