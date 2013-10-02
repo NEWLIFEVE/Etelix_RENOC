@@ -309,6 +309,16 @@ class SiteController extends Controller
         if(isset($_GET['fecha']))
         {
             $fecha=(string)$_GET['fecha'];
+            if(isset($_GET['lista']['compraventa']))
+            {
+                $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha);
+                $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
+            }
+            if(isset($_GET['lista']['perdidas']))
+            {
+                $archivos['perdidas']['nombre']="RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha);
+                $archivos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
+            }
             if(isset($_GET['lista']['AIR']))
             {
                 $archivos['altoImpactoRetail']['nombre']="RENOC".$this->letra." Alto Impacto RETAIL (+1$) al ".str_replace("-","",$fecha);
@@ -334,6 +344,28 @@ class SiteController extends Controller
                 $archivos['posicionNetaVendedor']['nombre']="RENOC".$this->letra." Posicion Neta por Vendedor al ".str_replace("-","",$fecha);
                 $archivos['posicionNetaVendedor']['cuerpo']=Yii::app()->reportes->PosicionNetaVendedor($fecha);
             }
+            if(isset($_GET['lista']['ADI']))
+            {
+                $archivos['ADI']['nombre']="RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha);
+                $archivos['ADI']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,false);
+            }
+            if(isset($_GET['lista']['ADE']))
+            {
+                $archivos['ADE']['nombre']="RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha);
+                $archivos['ADE']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,true);
+            }
+            //Arbol Trafico Clientes
+            if(isset($_GET['lista']['AC']))
+            {
+                $archivos['AC']['nombre']="RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha);
+                $archivos['AC']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,true);
+            }
+            //Arbol Trafico Proveedores
+            if(isset($_GET['lista']['AP']))
+            {
+                $archivos['AP']['nombre']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
+                $archivos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
+            }
             if(isset($_GET['lista']['DCV']))
             {
                 $archivos['distribucionComercialV']['nombre']="DC Vendedor al ".str_replace("-","",$fecha);
@@ -358,38 +390,6 @@ class SiteController extends Controller
             {
                 $archivos['distribucionComercialCarrier']['nombre']="DC Carrier al ".str_replace("-","",$fecha);
                 $archivos['distribucionComercialCarrier']['cuerpo']=Yii::app()->reportes->distComercialCarrier($fecha);
-            }
-            if(isset($_GET['lista']['perdidas']))
-            {
-                $archivos['perdidas']['nombre']="RENOC".$this->letra." Perdidas al ".str_replace("-","",$fecha);
-                $archivos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($fecha);
-            }
-            if(isset($_GET['lista']['compraventa']))
-            {
-                $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$fecha);
-                $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($fecha);
-            }
-            if(isset($_GET['lista']['ADI']))
-            {
-                $archivos['ADI']['nombre']="RENOC".$this->letra." Arbol Destinos Internal al ".str_replace("-","",$fecha);
-                $archivos['ADI']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,false);
-            }
-            if(isset($_GET['lista']['ADE']))
-            {
-                $archivos['ADE']['nombre']="RENOC".$this->letra." Arbol Destinos External al ".str_replace("-","",$fecha);
-                $archivos['ADE']['cuerpo']=Yii::app()->reportes->ArbolDestino($fecha,true);
-            }
-            //Arbol Trafico Clientes
-            if(isset($_GET['lista']['AC']))
-            {
-                $archivos['AC']['nombre']="RENOC".$this->letra." Arbol Clientes al ".str_replace("-","",$fecha);
-                $archivos['AC']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,true);
-            }
-            //Arbol Trafico Proveedores
-            if(isset($_GET['lista']['AP']))
-            {
-                $archivos['AP']['nombre']="RENOC".$this->letra." Arbol Proveedores al ".str_replace("-","",$fecha);
-                $archivos['AP']['cuerpo']=Yii::app()->reportes->ArbolTrafico($fecha,false);
             }
             if(isset($_GET['lista']['Ev']))
             {
