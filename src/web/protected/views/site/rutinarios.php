@@ -1,53 +1,41 @@
 <?php
 /**
-* @var $this SiteController
-*/
+ * @var $this SiteController
+ */
 $this->layout=$this->getLayoutFile('menuContent');
 ?>
-<div class="row-fluid show-grid">
-    <div id="atras" class="span12">
-        <div class="span1 offset1">
-            <h1>
-                <a id="flecha-backward" href="/" class="tooltip-test"><</a>
-            </h1>
-        </div>
-        <div class="contiene">
-            <div class="titulosec">
-                RUTINARIOS
+<div class="rutinarios">
+    <header>
+        <h1>
+            <a id="flecha-backward" href="/"><</a>
+        </h1>
+    </header>
+    <section>
+        <article class='titulosec'>
+            RUTINARIOS
+        </article>
+        <article class='calendario'>
+            <p>Seleccione una fecha</p>
+            <div id="datepicker">
             </div>
-            
-                <div class="calendario">
-                    <p>Seleccione una fecha</p>
-                    <div id="datepicker" class="span4">
-                    </div>
-                    <div id="mail" class="span1">
-                        <a href="/" rel="tooltip" title="Enviar Reportes a su Correo Electronico" class="tooltip-test">
-                            <img src="/images/mail.png" width="95px" height="95px" value="Activar Función">
-                        </a>
-                    </div>
-                    <div id="mailRenoc" class="span1">
-                        <a href="/" rel="tooltip" title="Enviar Reportes a Correo Electronico RENOC" class="tooltip-test">
-                            <img src="/images/mailRenoc.png" width="95px" height="95px" value="Activar Función">
-                        </a>
-                    </div>
-                    <div id="excel" class="span1">
-                        <a href="/" rel="tooltip" title="Exportar Reportes en Excel" class="tooltip-test">
-                            <img src="/images/excel.png" width="75px" height="75px" value="Activar Función">
-                        </a>
-                    </div>
+            <footer>
+                <img src="/images/excel.png" title='Exportar Reportes en Excel' class='botones' id='excel' value="Activar Función">
+                <img src="/images/mailRenoc.png" title='Enviar Reportes a Correo Electronico RENOC' class='botones' id='mailRenoc' value="Activar Función">
+                <img src="/images/mail.png" title='Enviar Reportes a su Correo Electronico' class='botones' id='mail' value="Activar Función">
+            </footer>
+        </article>
+        <article class='rutinarios_reportes'>
+            <p>Seleccione los Reportes</p>
+            <form id="formRutinarios">
+                <div class="choice">
+                    <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
+                    <label for="todos">
+                        <h4 id="td1">
+                            Todos
+                        </h4>
+                    </label>
                 </div>
-                <form id="formRutinarios">
-                <div class="opciones">
-                    <p>Seleccione los Reportes</p>
-                    <div class="choice primeras">
-                        <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
-                        <label for="todos">
-                            <h4 id="td1">
-                                Todos
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice primeras">
+                <div class="choice primeras">
                         <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]">
                         <label for="compraventa">
                             <h4 id="td1">
@@ -183,20 +171,13 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
+                    <input name="fecha" type="hidden"  id="datepicker_value" value="<?php mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")); echo date("Y-m-d"); ?>"/>
                 </div>
-                <div>
-                    <div>
-                        <input name="fecha" type="hidden"  id="datepicker_value" value=" <?php
-                    mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
-                    echo date("Y-m-d");
-                    ?>"/>
-                    </div>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>            
+
+            </form>
+        </article>
+    </section>
+</div>       
 <script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
