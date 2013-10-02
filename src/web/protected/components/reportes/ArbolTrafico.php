@@ -4,6 +4,7 @@
 */
 class ArbolTrafico extends ArbolDestino
 {
+	private $estilos;
 	/**
 	 * Si $tipo es true es clientes
 	 */
@@ -15,12 +16,14 @@ class ArbolTrafico extends ArbolDestino
 			$this->carrier=self::ID_CUSTOMER;
 			$this->titulo['sql']=self::CUSTOMER;
 			$this->titulo['tabla']=self::TITULO_CUSTOMER;
+			$this->estilos="border:solid #615E5E 2px;background:#AED7F3; color:#615E5E;";
 		}
 		else
 		{
 			$this->carrier=self::ID_SUPPLIER;
 			$this->titulo['sql']=self::SUPPLIER;
 			$this->titulo['tabla']=self::TITULO_SUPPLIER;
+			$this->estilos="border:solid #615E5E 2px;background:#FFC8AE; color:#615E5E;";
 		}
 	}
 	/**
@@ -47,50 +50,48 @@ class ArbolTrafico extends ArbolDestino
         	$cuerpo.="<tr><td  style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;aling-text:left' colspan='13'>POSICION:".$pos."</td></tr>";
         	$cuerpo.=self::cabecera(array($this->titulo['tabla']." (+10$)",'TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cost/Min','Rev/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         	$cuerpo.="<tr>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					$carrier->{$this->titulo['sql']}.
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->total_calls).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->complete_calls).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->minutes).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->asr).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->acd).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->pdd).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->cost).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->revenue).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->margin).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->costmin).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->ratemin).
         			   "</td>
-        				<td style='border:solid #615E5E 2px;background:#AFD699; color:#615E5E;'>".
+        				<td style='".$this->estilos."'>".
         					Yii::app()->format->format_decimal($carrier->marginmin).
         			   "</td>
         			</tr>";
-        	$cuerpo.=$this->cincoPrimeros($carrier->id,'border:solid #615E5E 1px;background:#AED7F3; color:#615E5E;');
+        	$cuerpo.=$this->cincoPrimeros($carrier->id,'border:solid #615E5E 1px;background:#AFD699; color:#615E5E;');
         	$cuerpo.=$this->totales($carrier->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;');
-        	/*$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#FFC8AE; color:#615E5E;',false);
-        	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',false);*/
         	$cuerpo.="<tr><td colspan='13'></td></tr><tr><td colspan='13'></td></tr>";
         }
         $cuerpo.="</table>
