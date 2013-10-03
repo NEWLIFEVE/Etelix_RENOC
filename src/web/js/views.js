@@ -255,7 +255,6 @@ ajax.prototype.genExcel=function()
         valor=self.formulario[i].value;
         if(nombre!="lista[todos]" && nombre!="fecha")
         {
-            console.log(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor);
             ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
         }
     }
@@ -273,7 +272,6 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
-    console.log(self.ruta,self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
         mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/>";
