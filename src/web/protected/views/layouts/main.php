@@ -15,8 +15,8 @@
     <!--[if lt IE 8]>
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
     <![endif]-->
-    <link href="images/apple-touch-icon-52x52-precomposed.png" rel="apple-touch-icon-precomposed" size="52x52"/>
-    <link href="images/apple-touch-icon-72x72-precomposed.png" rel="apple-touch-icon-precomposed" size="72x72"/>
+<!--    <link href="images/apple-touch-icon-52x52-precomposed.png" rel="apple-touch-icon-precomposed" size="52x52"/>
+    <link href="images/apple-touch-icon-72x72-precomposed.png" rel="apple-touch-icon-precomposed" size="72x72"/>-->
     <link href="images/apple-touch-icon-114x114-precomposed.png" rel="apple-touch-icon-precomposed" size="114x114"/>
     <link href="images/apple-touch-icon-144x144-precomposed.png" rel="apple-touch-icon-precomposed" size="144x144"/>
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
