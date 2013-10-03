@@ -7,6 +7,9 @@ Release 1.1.6
 -Agregados reportes de Arbol de Trafico por Clientes y Proveedores.
 -Agregado reporte de Evolución.
 -Agregados los Reportes de Distribucion Comercial por, Vendedor, Terminos de Pago, Monetizable, Compañia y Carrier.
+-Modificacion en el Scroll de la interfaz
+-Login e Index Responsive Funcional
+-Agregado Total de PN en AltoImpacto (+10$) por Vendedor
 
 Release 1.1.5
 -Reporte Arbol de Trafico Internal y External
