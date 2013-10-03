@@ -24,8 +24,11 @@ var navegar=function()
 {
     this.enlaces='a#flecha-forward'/*, a#flecha-backward'*/;
     this.main='#capa';
-    this.nueva='.div';
+    this.nueva='.vistas';
 }
+/**
+ *
+ */
 navegar.prototype.run=function()
 {
     this.boton=$(this.enlaces);
@@ -33,6 +36,9 @@ navegar.prototype.run=function()
     this.objetoNueva=$(this.nueva);
     this.pisaAqui();
 }
+/**
+ *
+ */
 navegar.prototype.pisaAqui=function()
 {
     var self=this;
@@ -50,6 +56,9 @@ navegar.prototype.pisaAqui=function()
         }
     });
 }
+/**
+ *
+ */
 navegar.prototype.ida=function()
 {
     var self=this;
@@ -59,6 +68,9 @@ navegar.prototype.ida=function()
         self.objetoNueva.fadeIn('fast');
     });
 }
+/**
+ *
+ */
 navegar.prototype.vuelta=function()
 {
     var self=this;
@@ -68,6 +80,30 @@ navegar.prototype.vuelta=function()
         self.objetoMain.toggle('slide');
     });
 }
+var errores=(function()
+{
+    var rerate=null;
+    (function()
+    {
+        $.ajax({
+            url:"Log/revisarRR",
+            success:function(data)
+            {
+                if(data==true)
+                {
+                    window.errores.rerate=true;
+                }
+                else
+                {
+                    window.errores.rerate=false;
+                }
+            }
+        });
+    })();
+    return{
+        rerate:rerate
+    }
+})();
 /**
 **
 */
@@ -77,167 +113,214 @@ var ajax=function()
     this.mail="/site/mail";
     this.excel="/site/excel";
     this.mailLista="/site/maillista";
+    this.ruta=null;
+    this.error=0;
 }
+/**
+ *
+ */
 ajax.prototype.run=function()
 {
     var self=this;
     $('#mail,#excel,#mailRenoc').on('click',function(e)
     {
+        var id=tipo=numero=valor=nombre=fecha=mensaje=null, ventana={};
+        self.setCero();
         e.preventDefault();
-        var numero=$('input[type="checkbox"]').filter(function()
+        numero=$('input[type="checkbox"]').filter(function()
         {
             return $(this).is(':checked');
         });
-        if(numero.length>0)
-        { 
-            var tipo=$(this).attr('id');
-                if(tipo=="mail")
-                { 
-                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a su correo electronico.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar'\n\
-                                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'><p><label><b>Aceptar</b></label></div></div>").hide();
-                    $("body").append(revisa);
-                    revisa.fadeIn('fast'); 
-                    
-                        $('#confirma,#cancelar').on('click', function()
-                            {
-                                var tipo=$(this).attr('id');
-                                if(tipo=="confirma")
-                            {
-                                self.getFormPost();
-                                self.enviarMail();
-                                $('.mensaje').html("<h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
-                            }
-                                else
-                            {
-                                  revisa.fadeOut('fast');
-                            }
-                            });
-                }
-                else if(tipo=="excel")
+        //asigno la ruta de reportes
+        tipo=$(this).attr('id');
+        //compruebo que al menos un reporte este seleccionado
+        if(numero.length<=0)
+        {
+            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/>";
+            self.crearCapa(mensaje);
+            setTimeout(function()
+            {
+                self.destruirCapa();
+            }, 2000);
+            mensaje=null;
+            self.setUno();
+        }
+        if(self.error==0)
+        {
+            if(errores.rerate==true)
+            {
+                mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div>";
+                self.crearCapa(mensaje);
+                $('#cancelar, #confirma').on('click',function()
                 {
-                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Esta a punto de importar reportes a Excel.... blah.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar'\n\
-                                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'><p><label><b>Aceptar</b></label></div></div>").hide();
-                    $("body").append(revisa);
-                    revisa.fadeIn('fast'); 
-                    
-                        $('#confirma,#cancelar').on('click', function()
-                {
-                    var tipo = $(this).attr('id');
-                    if (tipo == "confirma")
+                    id=$(this).attr('id');
+                    if(id=="confirma")
                     {
-                        self.getFormPost();
-                        var ventana = {};
-                        for (var i = 0; i <= self.formulario.length - 2; i++)
+                        self.setCero();
+                        mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+                        self.crearCapa(mensaje);
+                        if(tipo=="excel")
                         {
-                            fecha = self.formulario[self.formulario.length - 1].value;
-                            nombre = self.formulario[i].name;
-                            valor = self.formulario[i].value;
-                            if (nombre != "lista[todos]")
-                            {
-                                ventana[i] = window.open(self.excel + "?fecha=" + fecha + "&" + nombre + "=" + valor, nombre, 'width=200px,height=100px');
-                            }
-                            revisa.fadeOut('slow');
+                            self.ruta=self.excel;
+                            self.getFormPost();
+                            self.genExcel();
+                            self.destruirCapa();
                         }
-                        ;
+                        else if(tipo=="mail")
+                        {
+                            self.ruta=self.mail;
+                            self.getFormPost();
+                            self.enviar();
+                        }
+                        else if(tipo=="mailRenoc")
+                        {
+                            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/>";
+                            self.crearCapa(mensaje);
+                            $('#cancelar, #confirma').on('click',function()
+                            {
+                                id=$(this).attr('id');
+                                if(id=='confirma')
+                                {
+                                    mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+                                    self.crearCapa(mensaje);
+                                    self.ruta=self.mailLista;
+                                    self.getFormPost();
+                                    self.enviar();
+                                }
+                                else
+                                {
+                                    self.destruirCapa();
+                                }
+                            });
+                        }   
                     }
-                    else
+                    else if(id=="cancelar")
                     {
-                        revisa.fadeOut('fast');
+                        self.setUno();
+                        self.destruirCapa();
                     }
                 });
+            }
+            else
+            {
+                self.setCero();
+                mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+                self.crearCapa(mensaje);
+                if(tipo=="excel")
+                {
+                    self.ruta=self.excel;
+                    self.getFormPost();
+                    self.genExcel();
+                    self.destruirCapa();
                 }
-                else
+                else if(tipo=="mail")
                 {
-                    var revisa = $("<div class='cargando'><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar'\n\
-                                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'><p><label><b>Aceptar</b></label></div></div>").hide();
-                    $("body").append(revisa)
-                    revisa.fadeIn('fast'); 
-                    
-                        $('#confirma,#cancelar').on('click', function()
-                            {
-                                var tipo=$(this).attr('id');
-                                if(tipo=="confirma")
-                            {
-                                self.getFormPost();
-                                self.enviarMailLista();
-                                $('.mensaje').html("<h2>Espere un momento por favor</h2><p><p><p><p><p><p><p><p><img src='/images/circular.gif'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
-                            }
-                                else
-                            {
-                                  revisa.fadeOut('fast');
-                            }
-                            });
-               }
-          }
-        else
-          {
-                var stop = $("<div class='cargando'><div class='mensaje'><h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/></div></div>").hide();
-                $('body').append(stop);
-                stop.fadeIn('fast');
-                setTimeout(function()
+                    self.ruta=self.mail;
+                    self.getFormPost();
+                    self.enviar();
+                }
+                else if(tipo=="mailRenoc")
                 {
-                    stop.fadeOut('fast');
-                }, 2000);
-          }
+                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+                             class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
+                             <p><label><b>Aceptar</b></label></div></div>";
+                    self.crearCapa(mensaje);
+                    $('#cancelar, #confirma').on('click',function()
+                    {
+                        id=$(this).attr('id');
+                        if(id=='confirma')
+                        {
+                            mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+                            self.crearCapa(mensaje);
+                            self.ruta=self.mailLista;
+                            self.getFormPost();
+                            self.enviar();
+                        }
+                        else
+                        {
+                            self.destruirCapa();
+                        }
+                    });
+                }
+            }
+        }
+        id=tipo=numero=valor=nombre=fecha=mensaje=null;
     });
+}
+ajax.prototype.genExcel=function()
+{
+    var self=this;
+    for(var i=0, j=self.formulario.length-1;i<=j; i++)
+    {
+        fecha=self.formulario[self.formulario.length-1].value;
+        nombre=self.formulario[i].name;
+        valor=self.formulario[i].value;
+        if(nombre!="lista[todos]" && nombre!="fecha")
+        {
+            console.log(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor);
+            ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+        }
+    }
 }
 ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formRutinarios").serializeArray();
 }
-ajax.prototype.enviarMail=function()
+ajax.prototype.enviar=function()
 {
-    var self=this;
+    var self=this, mensaje=null;
     var opciones=
     {
-        url:this.mail,
-        data:this.formulario,
+        url:self.ruta,
+        data:self.formulario,
         type:'POST'
     };
+    console.log(self.ruta,self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        $('.mensaje').html("<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
+        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/>";
+        self.crearCapa(mensaje);
         setTimeout(function()
         {
-            $('.cargando').fadeOut('fast');
-            $('.mensaje').fadeOut('fast');
+            self.destruirCapa();
         }, 3000);
     }).fail(function()
     {
-        $('.mensaje').html("<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/><p><p><p><p>").fadeIn(200);
+        mensaje="<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/>";
         setTimeout(function()
         {
-            $('.cargando').fadeOut('fast');
-            $('.mensaje').fadeOut('fast');
+            self.destruirCapa();
         }, 4000);
     });
 }
-ajax.prototype.enviarMailLista=function()
+ajax.prototype.crearCapa=function(mensaje)
 {
-    var self=this;
-    var opciones=
+    if($('.cargando').length>0)
     {
-        url:this.mailLista,
-        data:this.formulario,
-        type:'POST'
-    };
-    this.envio=$.ajax(opciones).done(function(datos)
+        $('.mensaje').html(mensaje);
+    }
+    else
     {
-        $('.mensaje').html("<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/><p><p>").hide().fadeIn('fast');
-        setTimeout(function()
-        {
-            $('.cargando').fadeOut('fast');
-            $('.mensaje').fadeOut('fast');
-        }, 3000);
-    }).fail(function()
-    {
-        $('.mensaje').html("<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/><p><p><p><p>").fadeIn(200);
-        setTimeout(function()
-        {
-            $('.cargando').fadeOut('fast');
-            $('.mensaje').fadeOut('fast');
-        }, 4000);
-    });
+        this.capa=$("<div class='cargando'><div class='mensaje'></div></div>").hide();
+        $("body").append(this.capa);
+        $('.mensaje').html(mensaje);
+        $('.cargando').fadeIn('fast');
+    }
+    
+}
+ajax.prototype.destruirCapa=function()
+{
+    this.capa.fadeOut('slow');
+    this.capa.remove();
+    this.capa=null;
+}
+ajax.prototype.setUno=function()
+{
+    this.error=1;
+}
+ajax.prototype.setCero=function()
+{
+    this.error=0;
 }
 /**
 **

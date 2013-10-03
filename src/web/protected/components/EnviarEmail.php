@@ -37,13 +37,16 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->AddAttachment($ruta); //Archivo adjunto
             $message = $html;
             $mailer->Body = $message;
-
-            $mailer->Send();
-            
-            
+            if($mailer->Send())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
-
 }
 
 ?>

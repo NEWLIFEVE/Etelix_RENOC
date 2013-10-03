@@ -1,53 +1,50 @@
 <?php
 /**
-* @var $this SiteController
-*/
+ * @var $this SiteController
+ */
 $this->layout=$this->getLayoutFile('menuContent');
 ?>
-<div class="row-fluid show-grid">
-    <div id="atras" class="span12">
-        <div class="span1 offset1">
-            <h1>
-                <a id="flecha-backward" href="/" class="tooltip-test"><</a>
-            </h1>
-        </div>
-        <div class="contiene">
-            <div class="titulosec">
-                RUTINARIOS
+<div class="rutinarios">
+    <header>
+        <h1>
+            <a id="flecha-backward" href="/"><</a>
+        </h1>
+    </header>
+    <section>
+        <article class='titulosec'>
+            RUTINARIOS
+        </article>
+        <article class='calendario'>
+            <p>Seleccione una fecha</p>
+            <div id="datepicker">
             </div>
-            
-                <div class="calendario">
-                    <p>Seleccione una fecha</p>
-                    <div id="datepicker" class="span4">
-                    </div>
-                    <div id="mail" class="span1">
-                        <a href="/" rel="tooltip" tooltip="Enviar Reportes a su Correo Electronico" class="tooltip-test">
-                            <img src="/images/mail.png" width="95px" height="95px" onmouseover='this.src="/images/mail1.png";' onmouseout='this.src="/images/mail.png";' value="Activar Función">
-                        </a>
-                    </div>
-                    <div id="mailRenoc" class="span1">
-                        <a href="/" rel="tooltip" tooltip="Enviar Reportes a Correo Electronico a lista RENOC" class="tooltip-test">
-                            <img src="/images/mailRenoc.png" width="95px" height="95px" onmouseover='this.src="/images/mailRenoc1.png";' onmouseout='this.src="/images/mailRenoc.png";' value="Activar Función">
-                        </a>
-                    </div>
-                    <div id="excel" class="span1">
-                        <a href="/" rel="tooltip" tooltip="Exportar Reportes en Excel" class="tooltip-test">
-                            <img src='/images/excel.png' width='75px' height='75px' onmouseover='this.src="/images/excel1.png";' onmouseout='this.src="/images/excel.png";' value="Activar Función"/>
-                        </a>
-                    </div>
+            <footer>
+                <div id="excel" class="botones">
+                    <img src="/images/excel.png" class='ver'>
+                    <img src="/images/excel1.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
                 </div>
-                <form id="formRutinarios">
-                <div class="opciones">
-                    <p>Seleccione los Reportes</p>
-                    <div class="choice primeras">
-                        <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
-                        <label for="todos">
-                            <h4 id="td1">
-                                Todos
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice primeras">
+                <div id="mailRenoc" class="botones">
+                    <img src="/images/mailRenoc.png" class='ver'>
+                    <img src="/images/mailRenoc1.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                </div>
+                <div id="mail" class="botones">
+                    <img src="/images/mail.png" class='ver'>
+                    <img src="/images/mail1.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                </div>
+            </footer>
+        </article>
+        <article class='rutinarios_reportes'>
+            <p>Seleccione los Reportes</p>
+            <form id="formRutinarios">
+                <div class="choice">
+                    <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
+                    <label for="todos">
+                        <h4 id="td1">
+                            Todos
+                        </h4>
+                    </label>
+                </div>
+                <div class="choice primeras">
                         <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]">
                         <label for="compraventa">
                             <h4 id="td1">
@@ -58,7 +55,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="perdidas" class="custom-checkbox" name="lista[perdidas]">
                         <label for="perdidas">
-                            <h4 id="td2">
+                            <h4 id="td1">
                                 Perdidas
                             </h4>
                         </label>
@@ -66,7 +63,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="AIR" class="custom-checkbox" name="lista[AIR]">
                         <label for="AIR">
-                            <h4 id="td2">
+                            <h4 id="td1">
                                 Alto Impacto Retail(+1$)
                             </h4>
                         </label>
@@ -74,7 +71,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="lista[AI10]">
                         <label for="AI10">
-                            <h4 id="td3">
+                            <h4 id="td2">
                                 Alto Impacto(+10$)
                             </h4>
                         </label>
@@ -82,7 +79,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="AI10V" class="custom-checkbox" name="lista[AI10V]">
                         <label for="AI10V">
-                            <h4 id="td3">
+                            <h4 id="td2">
                                 AI (+10$) por Vendedor
                             </h4>
                     </label>
@@ -90,7 +87,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
                         <label for="PN">
-                            <h4 id="td4">
+                            <h4 id="td2">
                                 Posicion Neta
                             </h4>
                         </label>
@@ -98,49 +95,98 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="PNV" class="custom-checkbox" name="lista[PNV]">
                         <label for="PNV">
-                            <h4 id="td4">
+                            <h4 id="td2">
                                 Posicion Neta por Vendedor
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="ATI" class="custom-checkbox" name="lista[ATI]">
-                        <label for="ATI">
-                            <h4 id="td5">
-                                Arbol de Trafico Internal
+                        <input type="checkbox" value="true" id="ADI" class="custom-checkbox" name="lista[ADI]">
+                        <label for="ADI">
+                            <h4 id="td3">
+                                Arbol Destinos Internal
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="ATE" class="custom-checkbox" name="lista[ATE]">
-                        <label for="ATE">
-                            <h4 id="td5">
-                                Arbol de Trafico External
+                        <input type="checkbox" value="true" id="ADE" class="custom-checkbox" name="lista[ADE]">
+                        <label for="ADE">
+                            <h4 id="td3">
+                                Arbol Destinos External
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]">
-                        <label for="DC">
-                            <h4 id="td5">
-                                Distribucion Comercial
+                        <input type="checkbox" value="true" id="AC" class="custom-checkbox" name="lista[AC]">
+                        <label for="AC">
+                            <h4 id="td3">
+                                Arbol Clientes
                             </h4>
                         </label>
                     </div>
-                </div>
-                <div>
-                    <div>
-                        <input name="fecha" type="hidden"  id="datepicker_value" value=" <?php
-                    mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
-                    echo date("Y-m-d");
-                    ?>"/>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="AP" class="custom-checkbox" name="lista[AP]">
+                        <label for="AP">
+                            <h4 id="td3">
+                                Arbol Proveedores
+                            </h4>
+                        </label>
                     </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCV" class="custom-checkbox" name="lista[DCV]">
+                        <label for="DCV">
+                            <h4 id="td4">
+                                DC Vendedor
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCTP" class="custom-checkbox" name="lista[DCTP]">
+                        <label for="DCTP">
+                            <h4 id="td4">
+                                DC Termino Pago
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCM" class="custom-checkbox" name="lista[DCM]">
+                        <label for="DCM">
+                            <h4 id="td4">
+                                DC Monetizable
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCCom" class="custom-checkbox" name="lista[DCCom]">
+                        <label for="DCCom">
+                            <h4 id="td4">
+                                DC Compania
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="DCCarrier" class="custom-checkbox" name="lista[DCCarrier]">
+                        <label for="DCCarrier">
+                            <h4 id="td5">
+                                DC Carrier
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="Ev" class="custom-checkbox" name="lista[Ev]">
+                        <label for="Ev">
+                            <h4 id="td5">
+                                Evolucion
+                            </h4>
+                        </label>
+                    </div>
+                    <input name="fecha" type="hidden"  id="datepicker_value" value="<?php mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")); echo date("Y-m-d"); ?>"/>
                 </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>            
+
+            </form>
+        </article>
+    </section>
+</div>       
 <script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
