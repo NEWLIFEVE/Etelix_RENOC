@@ -248,12 +248,15 @@ ajax.prototype.run=function()
 ajax.prototype.genExcel=function()
 {
     var self=this;
-    for(var i=1; i<=self.formulario.length-2; i++)
+    for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
         fecha=self.formulario[self.formulario.length-1].value;
         nombre=self.formulario[i].name;
         valor=self.formulario[i].value;
-        ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+        if(nombre!="lista[todos]" && nombre!="fecha")
+        {
+            ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+        }
     }
 }
 ajax.prototype.getFormPost=function()
