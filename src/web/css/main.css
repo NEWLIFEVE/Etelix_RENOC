@@ -1,28 +1,4 @@
 
-
-#titlelogin{
-    
-    border: 10px solid #585858;
-    height: 430px;
-    margin-bottom: 171px;
-    margin-left: 370px;
-    width: 380px;
-    font-size: 30px;
-    text-align:center;
-    margin-top: 2em;
-    
-}
-
-#minifooter{
-    border: 0px solid red;
-    font-size: 10px;
-    height: 28px;
-    margin-bottom: 171px;
-    margin-left: 388px;
-    margin-top: -158px;
-    text-align: left;
-    width: 344px  
-}
 #ingresen{
     font-size: 40px;
     text-align:center;
@@ -50,34 +26,8 @@
     /*box-shadow: 2px 8px 7px black;*/
 }
 
-div.row{
-   height: auto !important;
-   text-align: center !important;
-}
 
-.div
-{
-    margin: 1em auto;
-    position:absolute;
-    max-width: 90%;
-    /*width:1030px;*/
-    /*height:600px;*/
-    /*font-size:36px; */
-    text-align:center;
-    /*color:silver; 
-    /*top:0; */
-    /*left:0;*/ 
-    /*display:none;*/
-    /*border:0px solid white;*/
-    /*padding-top: 50px;*/
-    /*padding-left: -25px; */
-    /*margin-left: 3em;*/
-    /*background: #F2F2F2;*/
-/*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#F2F2F2), to(white));
-background: -moz-linear-gradient(white, white);
-background: linear-gradient(#F2F2F2, white);
--pie-background: linear-gradient(#F2F2F2, white);   */
-}
+
 
 .capaOculta { 
     display:none; 
@@ -156,15 +106,8 @@ background: linear-gradient(#F2F2F2, white);
     height:75px;
     margin-left:-70px;
 }
-#flecha-forward{
-    color: #848484;
-    text-decoration:none; 
-}
-#flecha-backward{
-    color: #848484;
-    text-decoration:none; 
-    padding-right: 4em;
-}
+
+
 #enlacerenoc{
     color: green;
     
@@ -176,13 +119,7 @@ background: linear-gradient(#F2F2F2, white);
     margin:6em auto;
     color: #848484;
 }
-#one{
-    float:lefth;
-    margin:10px;
-    width:600px; 
-    height:135px;
-    margin-left: 10px;
-}
+
 #claseboot{
     float:lefth; 
     margin:0px;
@@ -285,40 +222,12 @@ background: linear-gradient(#F2F2F2, white);
     margin-top: -44px;
     width: 280px
 }
-#datepicker{
-    border:0px solid black;
-  
-    width:350px; 
-    height:300px; 
-    margin-top: 0px; 
-    margin-left: 25px;
-    margin-bottom: 0px;
-    font-size: 21px;
-    color: #FFFFFF;
-    
-}
 
 
-#mail{
-    border:0px solid black;
-    text-align:rigth;
-    width:60px; 
-    height:60px; 
-    margin-top: 303px; 
-    margin-left: -83px; 
-    margin-bottom: 0spx;
-    
-}
 
-#mailRenoc{
-    border:0px solid black;
-    text-align:rigth;
-    width:60px; 
-    height:60px; 
-    margin-top: 303px; 
-    margin-left: -178px; 
-    margin-bottom: 0px;   
-}
+
+
+
 
 #selecFecha{
     border: 0px solid black;
@@ -327,15 +236,7 @@ background: linear-gradient(#F2F2F2, white);
     margin-top: 307px;
     width: 144px;
 }
-#excel{
-    border:px solid black;
-    text-align:rigth;
-    width:60px; 
-    height:60px;
-    margin-top: 303px; 
-    margin-left: -275px; 
-    margin-bottom: 0spx;
-}
+
 #barraVerde2{
     border:1px solid white;
     background:rgb(104, 173, 104);
@@ -464,14 +365,7 @@ label.td5 h4
   border:0px solid red;
 }
 
-#bodylogin
-{
-    margin: 0;
-    padding: 0;
-    color: #555;
-    font: normal 10pt Arial,Helvetica,sans-serif;
-    background: #585858;
-}
+
 
 body
 {
@@ -497,10 +391,7 @@ body
     border-top: 3px solid #C9E0ED;
 }
 
-#content
-{
-    padding: 15px;
-}
+
 
 #sidebar
 {
@@ -509,25 +400,15 @@ body
 
 #footer
 {
-   position:fixed;
-   left:0px;
-   bottom:0px;
-   height:30px;
-   width:100%;
-   background:#151515;
-   color: #8B8B8B;
-   font-size: 0.8em;
-    text-align: center;
-/*    background:#151515; 
-    padding: 3px;
-    margin: -55px 20px;
+    background:#151515;
+    bottom:0px;
+    color: #8B8B8B;
     font-size: 0.8em;
+    height:30px;
+    left:0px;
+    position:fixed;
     text-align: center;
-    border-top: 1px solid #C9E0ED;
-    margin-left: 0px;
-    width:100%;*/
-
-
+    width:100%;
 }
 
 #logo
@@ -735,15 +616,12 @@ input.submit
     cursor: pointer;
 }
 
-input#LoginForm_username{ background-position:198px -17px; }
+
 input.search{ background-position: 4px 4px; }
-input#LoginForm_password{ background-position: 198px -39px; }
+
 input.favorite{ background-position: 4px -70px; }
 
-.botonLogin{
-    margin-left: 2.6em;
-    
-}
+
 .cargando
 {
     background-color: rgba(0,0,0,0.7);
@@ -818,63 +696,16 @@ input.favorite{ background-position: 4px -70px; }
     margin-top: -4px;
     margin-left: 206px;
 }
-#datepicker
-{
-    padding-left: 19px;
-}
 .contiene
 {
     margin: 70px auto;
 }
-.calendario, .opciones, .titulosec
-{
-    float: left;
-}
-.titulosec
-{
-    color: silver;
-    font-size: 3em;
-    -webkit-transform:rotate(-90deg);
-    width: 10%;
-    margin-top: 20%;
-}
-.calendario
-{
-    width: 39%;
-    border-left: 10px solid rgb(104, 173, 104);
-    border-right: 10px solid rgb(104, 173, 104);
-    margin-right: 1%;
-}
+
 #atras{
     margin-left: -1em;
     margin-top: 2em;
 }
-.opciones
-{
-    padding-left: 1%;
-    width: 39%;
-    margin-left: 1%;
-}
-.choice
-{
-    float: left;
-    color: grey;
-    width: 49%;
-    margin-left: 1%;
-}
-.calendario p, .opciones p
-{
-    color: #848484;
-    font-size: 1.5em;
-}
-.choice label h4
-{
-    text-align: left;
-    background: #E6E6E6;
-    padding: 6%;
-    margin: -3% 0 4% 12%;
-    height: 30px;
-}
+
 .span12
 {
     text-align: center;
@@ -885,17 +716,347 @@ input.favorite{ background-position: 4px -70px; }
 }
 body div.cargandosori
 {
-   /*background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);*/
-/*    border-radius: 4px 4px 4px 4px;*/
-background: #FF6F6F;
-color: white;
-height: 40px;
-left: 41%;
-margin: 84px auto;
-position: fixed;
-top: -43px;
-width: 276px;
-z-index: 1;
-text-align: center;
-display: none;
+    background: #FF6F6F;
+    color: white;
+    display: none;
+    height: 40px;
+    left: 41%;
+    margin: 84px auto;
+    position: fixed;
+    text-align: center;
+    top: -43px;
+    width: 276px;
+    z-index: 1;
+}
+
+::-webkit-scrollbar 
+{
+    width: 12px;    
+}
+::-webkit-scrollbar-button
+{       
+    background: rgb(104, 173, 104);
+    height: 23px;
+     
+}
+::-webkit-scrollbar-button:hover
+{
+    background-color: rgb(9, 163, 9);   
+}    
+::-webkit-scrollbar-track 
+{
+    background-color: #D8D8D8;
+}
+ ::-webkit-scrollbar-track-piece 
+{
+    background-color: #D8D8D8;
+}   
+::-webkit-scrollbar-thumb 
+{       
+    background: rgb(104, 173, 104);
+    height: 50px;
+}
+::-webkit-scrollbar-thumb:hover 
+{       
+    background: rgb(9, 163, 9);    
+}
+/**
+ * Contenedores
+ */
+div.row
+{
+   text-align: center !important;
+}
+
+#content
+{
+    text-align: center;
+}
+.titlelogin
+{
+    border: 10px solid #585858;
+    height: 430px;
+    margin-bottom: 171px;
+    margin-left: 370px;
+    width: 380px;
+    font-size: 30px;
+    text-align:center;
+    margin-top: 2em;
+    
+}
+/*Vista del login*/
+.bodylogin
+{
+    background: #585858;
+    color: #555;
+    font: normal 10pt Arial,Helvetica,sans-serif;
+    height: 100%;
+    margin-left: -20px;
+    margin-top: -20px;
+    padding-top: 20px;
+    position: absolute;
+    width: 101.5%;
+}
+.cuadro
+{
+    width: 27%;
+    height: 450px;
+    margin: 85px auto;
+}
+p.titulo
+{
+    font-size: 2.1em;
+    margin-bottom: 1%;
+}
+.cuadro_login
+{
+    padding: 16%;
+    background: white;
+    height: 60%;
+}
+p.login_titulo
+{
+    margin-bottom: 16%;
+}
+input#LoginForm_username
+{
+    border-left: 5px solid #68AD68;
+    background-position:198px -17px;
+}
+div.login.error input#LoginForm_username
+{
+    border-left: 5px solid red;
+    border-top:1px solid red;
+    border-right: 1px solid red;
+    border-bottom:1px solid red;
+    background-position:198px -17px;
+}
+input#LoginForm_password
+{
+    border-left: 5px solid #68AD68;
+    background-position: 198px -39px;
+}
+div.login.error input#LoginForm_password
+{
+    border-left: 5px solid red;
+    border-top:1px solid red;
+    border-right: 1px solid red;
+    border-bottom:1px solid red;
+    background-position: 198px -39px;
+}
+.custom-checkboxLogin + label
+{
+    position: absolute;
+    padding-left: 1.4em;
+    font-weight: bold;
+    font-size: 1em;
+}
+.botonLogin
+{
+    margin-top: 1em;
+    padding-left: 5em;
+}
+button.btn
+{
+    margin-left: 98px;
+    border-radius: 6px;
+}
+div.errorMessage
+{
+    color:red;
+}
+#minifooter{
+    padding-top: 0.7em;
+    font-size: 10px;
+    height: 28px;
+    text-align: left;
+    width: 344px;
+}
+/**
+ * Vista Index
+ */
+.reportes
+{
+    text-align: left;
+    padding-top: 41px;
+    padding-bottom: 41px;
+    margin-left: 5em;
+}
+#one
+{
+    float:lefth;
+    margin:10px;
+    width:600px; 
+    height:135px;
+}
+#flecha-forward
+{
+    color: #848484;
+    text-decoration:none;
+    float: right;
+    padding-right: 15%;
+}
+.vistas
+{
+    margin: 4em auto;
+    text-align: center;
+}
+/**
+ * Vista de Rutinarios
+ */
+.rutinarios
+{
+    margin: 0 auto;
+    width: 75%;
+    height: 466px;
+}
+.rutinarios h1
+{
+    text-align: left;
+    padding-top: 5px;
+    padding-left: 25px;
+}
+.rutinarios h1 a
+{
+    color: #848484;
+    text-decoration:none; 
+}
+.titulosec
+{
+    color: silver;
+    font-size: 3em;
+    -webkit-transform:rotate(-90deg);
+    width: 10%;
+    margin-top: 23%;
+}
+.calendario p, .rutinarios_reportes p
+{
+    color: #848484;
+    font-size: 1.5em;
+}
+.calendario, .rutinarios_reportes, .titulosec
+{
+    float: left;
+}
+.calendario
+{
+    width: 39%;
+    height: 400px;
+    border-left: 10px solid rgb(104, 173, 104);
+    border-right: 10px solid rgb(104, 173, 104);
+    padding-left: 1%;
+    padding-right: 1%;
+    margin-left: 2%;
+}
+#datepicker
+{
+    border:0px solid black;
+    width:100%; 
+    height:70%; 
+    font-size: 21px;
+    color: #FFFFFF;
+}
+.botones
+{
+    width: 15%;
+    padding: 0 5%;
+}
+.rutinarios_reportes
+{
+    overflow-y: scroll;
+    width: 39%;
+    height: 400px;
+    margin-left: 2%;
+    padding-right: 2%;
+}
+.choice
+{
+    float: left;
+    color: grey;
+    width: 49%;
+    margin-left: 1%;
+}
+.choice label h4
+{
+    text-align: left;
+    background: #E6E6E6;
+    padding: 6%;
+    margin: -3% 0 4% 12%;
+    height: 30px;
+}
+
+@media screen and (max-width: 980px) {
+    /*Vista del login*/
+    .bodylogin
+    {
+        width: 102%;
+    }
+    .cuadro
+    {
+        width: 364px;
+        margin-top: 40px;
+    }
+    .botonLogin
+    {
+        margin-top: 1em;
+        padding-left: 1em;
+    }
+    /*Vista index*/
+    #capa
+    {
+        margin:2.1em auto;
+    }
+}
+@media screen and (max-width: 650px) {
+    /*Vista del login*/
+    .bodylogin
+    {
+        height: 88%;
+        width: 100%;
+    }
+    .cuadro
+    {
+        width: 60%;
+    }
+    .botonLogin
+    {
+        margin-top: 1em;
+        padding-left: 1em;
+    }
+}
+@media screen and (max-width: 480px) {
+    /*Vista del login*/
+    .bodylogin
+    {
+        height: 88%;
+        width: 100%;
+    }
+    .cuadro
+    {
+        width: 364px;
+        margin: 4% auto;
+    }
+    /*Vista index*/
+    #capa
+    {
+        width: 100%;
+    }
+    .reportes h1
+    {
+        font-size: 2em;
+    }
+}
+@media screen and (max-width: 300px) {
+    .reportes h1
+    {
+        font-size: 0.8em;
+    }
+    #flecha-forward
+    {
+        padding-right: 25%;
+    }
+    .row
+    {
+        margin-left: 0px !important;
+    }
 }

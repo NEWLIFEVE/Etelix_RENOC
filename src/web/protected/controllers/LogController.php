@@ -171,21 +171,28 @@ class LogController extends Controller
 		}
 	}
         	
-        public function actionRevisarRR() {
+    public function actionRevisarRR()
+    {
         $fecha = date('Y-m-d');
-        /*Reviso si existe un registro en el log de tipo RERATE*/
+        //Reviso si existe un registro en el log de tipo RERATE
         $model = Log::model()->find("date=:fecha AND id_log_action=:action order by hour desc", array(":fecha" => $fecha, ":action" => LogAction::getId('Rerate Iniciado')));
         
-        if ($model != NULL) {
-            $hour =$model->hour;
-            /*Reviso si existe un registro en el log de tipo RERATE COMPLETADO*/
-            $model = Log::model()->find("date=:fecha AND id_log_action=:action AND hour>=:hora order by hour desc", array(":fecha" => $fecha, ":action" => LogAction::getId('Rerate Completado'), ":hora"=>$hour));
-            if ($model != NULL) {
+        if ($model != NULL)
+        {
+        	$hour=$model->hour;
+            //Reviso si existe un registro en el log de tipo RERATE COMPLETADO
+            $model=Log::model()->find("date=:fecha AND id_log_action=:action AND hour>=:hora order by hour desc", array(":fecha" => $fecha, ":action" => LogAction::getId('Rerate Completado'), ":hora"=>$hour));
+            if($model!=NULL)
+            {
                 echo false;
-            } else {
+            }
+            else
+            {
                 echo true;
             }
-        } else {
+        }
+        else
+        {
             echo false;
         }
     }

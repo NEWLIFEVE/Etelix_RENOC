@@ -51,13 +51,25 @@ class AltoImpactoVendedor extends Reportes
                 else
                 {
                     if($last_manager!=0){
-                        $sqlClienteTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
+                        $sqlClienteTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, sum(y.posicion_neta) as posicion_neta
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_customer
-                           ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
-                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager
+                           ORDER BY margin DESC) x,(SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC)y, carrier c, carrier_managers cm, managers m
+                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager and y.id = cm.id_carrier and cm.id_managers = m.id
 		      GROUP BY vendedor
                       ORDER BY vendedor ASC";
  
@@ -113,9 +125,9 @@ class AltoImpactoVendedor extends Reportes
                         <td style='text-align: center;' class='Vendedor'>
                         TOTAL
                         </td>
-                        <td style='text-align: center;' class='Vendedor'>
-                        TOTAL
-                        </td>
+                        <td style='text-align: center;' class='Vendedor'>".
+                        Yii::app()->format->format_decimal($clientesTotalVendedor->posicion_neta)
+                        ."</td>
                          </tr>";
                         }
                     }
@@ -179,13 +191,25 @@ class AltoImpactoVendedor extends Reportes
                          </tr>";
             }
                                 if($last_manager!=0){
-                        $sqlClienteTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
+                        $sqlClienteTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, sum(y.posicion_neta) as posicion_neta
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_customer
-                           ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
-                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager
+                           ORDER BY margin DESC) x,(SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC)y, carrier c, carrier_managers cm, managers m
+                      WHERE x.margin > 10 AND x.id_carrier_customer = c.id AND x.id_carrier_customer=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager and y.id = cm.id_carrier and cm.id_managers = m.id
 		      GROUP BY vendedor
                       ORDER BY vendedor ASC";
  
@@ -241,9 +265,9 @@ class AltoImpactoVendedor extends Reportes
                         <td style='text-align: center;' class='Vendedor'>
                         TOTAL
                         </td>
-                        <td style='text-align: center;' class='Vendedor'>
-                        TOTAL
-                        </td>
+                        <td style='text-align: center;' class='Vendedor'>".
+                        Yii::app()->format->format_decimal($clientesTotalVendedor->posicion_neta)
+                        ."</td>
                          </tr>";
                         }
                     }
@@ -495,13 +519,25 @@ class AltoImpactoVendedor extends Reportes
                 else
                 {
                     if($last_manager!=0){
-        $sqlProveedorTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
+        $sqlProveedorTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin,sum(y.posicion_neta) as posicion_neta
                       FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_supplier
-                           ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
-                      WHERE x.margin > 10 AND x.id_carrier_supplier = c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager
+                           ORDER BY margin DESC) x,(SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC) y, carrier c, carrier_managers cm, managers m
+                      WHERE x.margin > 10 AND x.id_carrier_supplier = c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager AND  y.id = cm.id_carrier and cm.id_managers = m.id
 		      GROUP BY vendedor
                       ORDER BY vendedor ASC";
  
@@ -557,8 +593,9 @@ class AltoImpactoVendedor extends Reportes
                         <td style='text-align: center; class='Vendedor'>
                         TOTAL
                         </td>
-                        <td style='text-align: center; class='Vendedor'>
-                        TOTAL
+                        <td style='text-align: center; class='Vendedor'>".
+                            Yii::app()->format->format_decimal($proveedorTotalVendedor->posicion_neta).
+                        "
                         </td>
                          </tr>";
                         }
@@ -622,13 +659,25 @@ class AltoImpactoVendedor extends Reportes
                     </tr>";
             }
             if($last_manager!=0){
-        $sqlProveedorTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
+        $sqlProveedorTotalVendedor="SELECT m.lastname AS vendedor, SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.asr) AS asr, SUM(x.acd) AS acd, SUM(x.pdd) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin,sum(y.posicion_neta) as posicion_neta
                       FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_supplier
-                           ORDER BY margin DESC) x, carrier c, carrier_managers cm, managers m
-                      WHERE x.margin > 10 AND x.id_carrier_supplier = c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager
+                           ORDER BY margin DESC) x,(SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                       FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_customer
+                            UNION
+                            SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                            FROM balance
+                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                            GROUP BY id_carrier_supplier
+                            order by id asc)t
+                       GROUP BY id
+                       ORDER BY posicion_neta DESC) y, carrier c, carrier_managers cm, managers m
+                      WHERE x.margin > 10 AND x.id_carrier_supplier = c.id AND x.id_carrier_supplier=cm.id_carrier AND cm.id_managers=m.id AND cm.end_date IS NULL and m.id=$last_manager AND  y.id = cm.id_carrier and cm.id_managers = m.id
 		      GROUP BY vendedor
                       ORDER BY vendedor ASC";
  
@@ -684,8 +733,9 @@ class AltoImpactoVendedor extends Reportes
                         <td style='text-align: center; class='Vendedor'>
                         TOTAL
                         </td>
-                        <td style='text-align: center; class='Vendedor'>
-                        TOTAL
+                        <td style='text-align: center; class='Vendedor'>".
+                            Yii::app()->format->format_decimal($proveedorTotalVendedor->posicion_neta).
+                        "
                         </td>
                          </tr>";
                         }
