@@ -11,7 +11,7 @@ $this->pageTitle = Yii::app()->name;
                     <li class="span3">
                         <div id="claseboot" href="#" class="a">
                             <h1>RUTINARIOS &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;
-                                <a id="flecha-forward" href="/site/rutinarios"  rel="tooltip" title="esta es la consulta basica por hora y fecha" class="tooltip-test ">></a>
+                                <a id="flecha-forward" href="/site/rutinarios"  rel="tooltip" title="Esta es la consulta básica por tipo de reporte y fecha" class="tooltip-testDes">></a>
                             </h1>
                         </div>
                     </li>
@@ -22,7 +22,7 @@ $this->pageTitle = Yii::app()->name;
                     <li class="span3">
                         <div id="claseboot" class="a">
                             <h1> ESPECIFICOS &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  &nbsp;
-                                <a id="flecha-forward" href="/site/especificos" rel="tooltip" title="aqui se muestra informacion de data por fecha y hora especifica" class="tooltip-test">></a>
+                                <a id="flecha-forward" href="/site/especificos" rel="tooltip" title="Aqui se muestra información de data por fecha y hora especifica" class="tooltip-testDes">></a>
                             </h1>
                         </div>
                     </li>
@@ -33,7 +33,7 @@ $this->pageTitle = Yii::app()->name;
                     <li class="span3">
                         <div id="claseboot" class="a">
                             <h1> PERSONALIZADOS &nbsp;  &nbsp;&nbsp;
-                                <a id="flecha-forward" href="/site/personalizados" rel="tooltip" title="puede realizar una busqueda filtrada de data, por fecha, operadora, entre otras" class="tooltip-test">></a>
+                                <a id="flecha-forward" href="/site/personalizados" rel="tooltip" title="Aqui se puede realizar una busqueda filtrada de data, por fecha, operadora, entre otras" class="tooltip-testDes">></a>
                             </h1>
                         </div>
                     </li>

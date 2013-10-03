@@ -93,7 +93,8 @@ ajax.prototype.run=function()
             var tipo=$(this).attr('id');
                 if(tipo=="mail")
                 { 
-                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a su correo electronico.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
+                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Se enviara un correo a su correo electronico.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar'\n\
+                                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'><p><label><b>Aceptar</b></label></div></div>").hide();
                     $("body").append(revisa);
                     revisa.fadeIn('fast'); 
                     
@@ -114,7 +115,8 @@ ajax.prototype.run=function()
                 }
                 else if(tipo=="excel")
                 {
-                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Esta a punto de importar reportes a Excel.... blah.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div>").hide();
+                    var revisa = $("<div class='cargando'></div><div class='mensaje'><h4>Esta a punto de importar reportes a Excel.... blah.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar'\n\
+                                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'><p><label><b>Aceptar</b></label></div></div>").hide();
                     $("body").append(revisa);
                     revisa.fadeIn('fast'); 
                     
@@ -146,7 +148,8 @@ ajax.prototype.run=function()
                 }
                 else
                 {
-                    var revisa = $("<div class='cargando'><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div></div>").hide();
+                    var revisa = $("<div class='cargando'><div class='mensaje'><h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar<p><p><p><p><p><p><p><div id='cancelar'\n\
+                                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'><p><label><b>Aceptar</b></label></div></div>").hide();
                     $("body").append(revisa)
                     revisa.fadeIn('fast'); 
                     

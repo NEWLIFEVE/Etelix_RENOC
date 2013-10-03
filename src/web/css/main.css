@@ -781,23 +781,51 @@ input.favorite{ background-position: 4px -70px; }
     color: #6E6E6E;
 
 }
-
 .cancelar
 {
-    margin-top: 30px;
+    background-color:#E43434;
+    /*background: url(images/cancelarHover.png);*/
+    margin-top: 0px;
     margin-left: 135px;
     text-align: center;
     width: 90px;
-    height: 45px;
+    height: 35px;
+    color:white;
+    font-size: 19px;
 }
-
-.confirma
+.cancelar:hover
 {
-     margin-top: -45px;
-    margin-left: 225px;
+    background-color:#E76969;
+    /*background: url(images/cancelarHover.png);*/
+    margin-top: 0px;
+    margin-left: 135px;
     text-align: center;
     width: 90px;
-    height: 45px;
+    height: 35px;
+    color:white;
+    font-size: 19px;
+}
+.confirma
+{
+    background-color:rgb(56, 139, 56);
+    margin-top: -55px;
+    margin-left: 230px;
+    text-align: center;
+    width: 90px;
+    height: 35px;
+    color:white;
+    font-size: 19px!important;
+}
+.confirma:hover
+{
+    background-color:rgb(104, 173, 104);
+    margin-top: -55px;
+    margin-left: 230px;
+    text-align: center;
+    width: 90px;
+    height: 35px;
+    color:white;
+    font-size: 19px!important;
 }
 .bordes
 {
@@ -895,3 +923,28 @@ z-index: 1;
 text-align: center;
 display: none;
 }
+/*tooltip*/
+.tooltip-test:link {
+     position: relative;
+  }
+.tooltip-test:before {
+     position: absolute;
+     top: -18px;
+     left: -26px;  
+  }
+.tooltip-test:after{
+     content: attr(tooltip);
+     position: absolute;
+     color: white;
+     background: black;
+     padding: 5px 15px;
+     white-space: nowrap;
+     display: none;
+     top: -35px;
+     left: -26px;
+     opacity:0.7;
+  }
+.tooltip-test:hover:after, .tooltip-test:hover:before {
+     display: block;
+  }
+/*  fin toltip*/

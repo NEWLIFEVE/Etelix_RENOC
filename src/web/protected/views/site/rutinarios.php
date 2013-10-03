@@ -21,18 +21,18 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div id="datepicker" class="span4">
                     </div>
                     <div id="mail" class="span1">
-                        <a href="/" rel="tooltip" title="Enviar Reportes a su Correo Electronico" class="tooltip-test">
-                            <img src="/images/mail.png" width="95px" height="95px" value="Activar Función">
+                        <a href="/" rel="tooltip" tooltip="Enviar Reportes a su Correo Electronico" class="tooltip-test">
+                            <img src="/images/mail.png" width="95px" height="95px" onmouseover='this.src="/images/mail1.png";' onmouseout='this.src="/images/mail.png";' value="Activar Función">
                         </a>
                     </div>
                     <div id="mailRenoc" class="span1">
-                        <a href="/" rel="tooltip" title="Enviar Reportes a Correo Electronico RENOC" class="tooltip-test">
-                            <img src="/images/mailRenoc.png" width="95px" height="95px" value="Activar Función">
+                        <a href="/" rel="tooltip" tooltip="Enviar Reportes a Correo Electronico a lista RENOC" class="tooltip-test">
+                            <img src="/images/mailRenoc.png" width="95px" height="95px" onmouseover='this.src="/images/mailRenoc1.png";' onmouseout='this.src="/images/mailRenoc.png";' value="Activar Función">
                         </a>
                     </div>
                     <div id="excel" class="span1">
-                        <a href="/" rel="tooltip" title="Exportar Reportes en Excel" class="tooltip-test">
-                            <img src="/images/excel.png" width="75px" height="75px" value="Activar Función">
+                        <a href="/" rel="tooltip" tooltip="Exportar Reportes en Excel" class="tooltip-test">
+                            <img src='/images/excel.png' width='75px' height='75px' onmouseover='this.src="/images/excel1.png";' onmouseout='this.src="/images/excel.png";' value="Activar Función"/>
                         </a>
                     </div>
                 </div>
