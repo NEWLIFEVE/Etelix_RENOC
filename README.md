@@ -2,7 +2,23 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
-Realese 1.1.4
+Release 1.1.6
+-Modificacion en nombre de Arbol de Trafico Internal y External a Arbol Destino Internal y External.
+-Agregados reportes de Arbol de Trafico por Clientes y Proveedores.
+-Agregado reporte de Evolución.
+-Agregados los Reportes de Distribucion Comercial por, Vendedor, Terminos de Pago, Monetizable, Compañia y Carrier.
+
+Release 1.1.5
+-Reporte Arbol de Trafico Internal y External
+-Cambios en la lista de Reportes en Rutinarios
+-Mensaje de RR en proceso
+-Mensaje de RR en proceso a la hora de hacer click en cualquier boton de exportacion
+-Reporte Posicion Neta por Vendedor
+-Totales en Alto Impacto (+10$) por vendedor corregidos
+-Agregado PN en Alto Impacto (+10$) por vendedor
+-Nombre de Reportes RENOP o RENOCD dependiendo de la carga en SORI (P=Preliminares / D=Definitivos)
+
+Release 1.1.4
 -Solo apellidos para los vendedores
 -Cambios en Reporte AltoImpacto+10$ (se muestra el resto de los Carriers)
 -Totales por Vendedor en Reporte AltoImpacto+10$ por Vendedor
