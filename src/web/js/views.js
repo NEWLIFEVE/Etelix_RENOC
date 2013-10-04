@@ -221,7 +221,9 @@ ajax.prototype.run=function()
                 }
                 else if(tipo=="mailRenoc")
                 {
-                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div></div>";
+                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+                             class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
+                             <p><label><b>Aceptar</b></label></div></div>";
                     self.crearCapa(mensaje);
                     $('#cancelar, #confirma').on('click',function()
                     {

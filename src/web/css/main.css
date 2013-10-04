@@ -645,7 +645,7 @@ input.favorite{ background-position: 4px -70px; }
     padding: 23px 30px 43px 28px;
     margin: 10% auto;
     left: 30%;
-    z-index: 1031;c
+    z-index: 1031;
 }
 
 .fail
@@ -659,23 +659,51 @@ input.favorite{ background-position: 4px -70px; }
     color: #6E6E6E;
 
 }
-
 .cancelar
 {
-    margin-top: 30px;
+    background-color:#E43434;
+    /*background: url(images/cancelarHover.png);*/
+    margin-top: 0px;
     margin-left: 135px;
     text-align: center;
     width: 90px;
-    height: 45px;
+    height: 35px;
+    color:white;
+    font-size: 19px;
 }
-
-.confirma
+.cancelar:hover
 {
-     margin-top: -45px;
-    margin-left: 225px;
+    background-color:#E76969;
+    /*background: url(images/cancelarHover.png);*/
+    margin-top: 0px;
+    margin-left: 135px;
     text-align: center;
     width: 90px;
-    height: 45px;
+    height: 35px;
+    color:white;
+    font-size: 19px;
+}
+.confirma
+{
+    background-color:rgb(56, 139, 56);
+    margin-top: -55px;
+    margin-left: 230px;
+    text-align: center;
+    width: 90px;
+    height: 35px;
+    color:white;
+    font-size: 19px!important;
+}
+.confirma:hover
+{
+    background-color:rgb(104, 173, 104);
+    margin-top: -55px;
+    margin-left: 230px;
+    text-align: center;
+    width: 90px;
+    height: 35px;
+    color:white;
+    font-size: 19px!important;
 }
 .bordes
 {
@@ -959,8 +987,61 @@ div.errorMessage
 .botones
 {
     width: 15%;
-    padding: 0 5%;
+    margin:0 5%;
+    display: inline-block;
 }
+img.ver
+{
+    width: 100%;
+}
+img.oculta
+{
+    display: none;
+    width: 100%;
+}
+.botones:hover img.ver
+{
+    display: none;
+}
+.botones:hover img.oculta
+{
+    display: inline;
+}
+
+/*#excel
+{
+background: url(/images/excel.png);  
+width: 21px;
+height: 61px;
+}
+#excel:hover
+{
+background: url(/images/excel1.png);   
+width: 21px;
+height: 61px;
+}
+
+#mail
+{
+background: url(/images/mail.png);  
+width: 21px;
+height: 61px;
+}
+#mail:hover
+{
+background: url(/images/mail1.png);   
+width: 21px;
+height: 61px;
+}
+
+#mailRenoc
+{
+    background: url(/images/mailRenoc.png);   
+}
+#mailRenoc:hover
+{
+    background: url(/images/mailRenoc1.png);
+}*/
 .rutinarios_reportes
 {
     overflow-y: scroll;
@@ -1046,6 +1127,7 @@ div.errorMessage
         font-size: 2em;
     }
 }
+
 @media screen and (max-width: 300px) {
     .reportes h1
     {
@@ -1060,3 +1142,4 @@ div.errorMessage
         margin-left: 0px !important;
     }
 }
+

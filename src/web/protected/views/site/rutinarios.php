@@ -19,9 +19,18 @@ $this->layout=$this->getLayoutFile('menuContent');
             <div id="datepicker">
             </div>
             <footer>
-                <img src="/images/excel.png" title='Exportar Reportes en Excel' class='botones' id='excel' value="Activar Función">
-                <img src="/images/mailRenoc.png" title='Enviar Reportes a Correo Electronico RENOC' class='botones' id='mailRenoc' value="Activar Función">
-                <img src="/images/mail.png" title='Enviar Reportes a su Correo Electronico' class='botones' id='mail' value="Activar Función">
+                <div id="excel" class="botones">
+                    <img src="/images/excel.png" class='ver'>
+                    <img src="/images/excel1.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                </div>
+                <div id="mailRenoc" class="botones">
+                    <img src="/images/mailRenoc.png" class='ver'>
+                    <img src="/images/mailRenoc1.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                </div>
+                <div id="mail" class="botones">
+                    <img src="/images/mail.png" class='ver'>
+                    <img src="/images/mail1.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                </div>
             </footer>
         </article>
         <article class='rutinarios_reportes'>
