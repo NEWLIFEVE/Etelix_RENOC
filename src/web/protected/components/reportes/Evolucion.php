@@ -130,7 +130,7 @@ class Evolucion extends Reportes
             foreach ($resultados[$key] as $llave => $valores)
             {
                 $pos=$llave+2;
-                $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $valores->date_balance)->setCellValue('B'.$pos, Yii::app()->format->format_decimal($valores->minutes))->setCellValue('C'.$pos, Yii::app()->format->format_decimal($valores->$nombresDatos[$key]));
+                $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $valores->date_balance)->setCellValue('B'.$pos, $valores->minutes)->setCellValue('C'.$pos, $valores->$nombresDatos[$key]);
             }
         }
 
