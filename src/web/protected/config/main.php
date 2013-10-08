@@ -16,7 +16,7 @@ return array(
     'import'=>array(
         'application.models.*',
         'application.components.*',
-        'application.components.reportes.*',
+        'application.components.rutinarios.*',
         'application.components.jpgraph.*',
         'application.components.excelwriter.*',
         'application.components.excelwriter.PHPExcel.*'
@@ -70,8 +70,7 @@ return array(
 			),
 		),
         'db'=>array(
-            'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
-
+            'connectionString'=>'pgsql:host=localhost;port=5432;dbname=dev_sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
             'password'=>'Nsusfd8263',

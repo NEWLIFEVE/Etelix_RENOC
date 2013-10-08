@@ -136,7 +136,7 @@ ajax.prototype.run=function()
         //compruebo que al menos un reporte este seleccionado
         if(numero.length<=0)
         {
-            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/>";
+            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
             self.crearCapa(mensaje);
             setTimeout(function()
             {
@@ -221,7 +221,9 @@ ajax.prototype.run=function()
                 }
                 else if(tipo=="mailRenoc")
                 {
-                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div></div>";
+                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+                             class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
+                             <p><label><b>Aceptar</b></label></div></div>";
                     self.crearCapa(mensaje);
                     $('#cancelar, #confirma').on('click',function()
                     {
@@ -255,7 +257,6 @@ ajax.prototype.genExcel=function()
         valor=self.formulario[i].value;
         if(nombre!="lista[todos]" && nombre!="fecha")
         {
-            console.log(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor);
             ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
         }
     }
@@ -273,10 +274,9 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
-    console.log(self.ruta,self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/>";
+        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
         self.crearCapa(mensaje);
         setTimeout(function()
         {

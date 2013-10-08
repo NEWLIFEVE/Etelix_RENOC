@@ -22,7 +22,6 @@ $this->pageTitle = Yii::app()->name;
             </h1>
         </div>
     </div>
-    <!--<div class="div row-fluid">-->
     <div class="vistas">
     </div>
 </div>
