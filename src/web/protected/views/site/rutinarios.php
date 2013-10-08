@@ -21,15 +21,15 @@ $this->layout=$this->getLayoutFile('menuContent');
             <footer>
                 <div id="excel" class="botones">
                     <img src="/images/excel.png" class='ver'>
-                    <img src="/images/excel1.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
                 </div>
                 <div id="mailRenoc" class="botones">
                     <img src="/images/mailRenoc.png" class='ver'>
-                    <img src="/images/mailRenoc1.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                    <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
                 </div>
                 <div id="mail" class="botones">
                     <img src="/images/mail.png" class='ver'>
-                    <img src="/images/mail1.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                    <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
                 </div>
             </footer>
         </article>
