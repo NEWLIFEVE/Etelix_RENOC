@@ -18,93 +18,24 @@ class RankingCompraVenta extends Reportes
         $cuerpo.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
         $cuerpo.="<thead>
                   <tbody>";
+        //Vendedores
         $cuerpo.=self::managers(true,$fecha);
-        $sqlTotalVendedores="SELECT SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-							FROM(SELECT id_carrier_customer, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-							     FROM balance 
-							     WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-							     GROUP BY id_carrier_customer)b";
+        
         $cuerpo.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-		$totalVendedores=Balance::model()->findBySql($sqlTotalVendedores);
-		if($totalVendedores->minutes!=null)
-		{
-			$cuerpo.="<tr>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-        					</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-        					TOTAL
-        					</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-        					Yii::app()->format->format_decimal($totalVendedores->minutes).
-        					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-        					Yii::app()->format->format_decimal($totalVendedores->revenue).
-        					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-        					Yii::app()->format->format_decimal($totalVendedores->margin).
-        					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-        					</td>
-        				  </tr>";
-		}
-		else
-        {
-        	$cuerpo.="<tr>
-        				<td colspan='6'>No se encontraron resultados</td>
-        			  </tr>";
-        }
+		//total vendedores
+        $cuerpo.=self::totales(true,$fecha);
         $cuerpo.="</tbody></table>";
-        $sqlCompradores="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-						FROM(SELECT id_carrier_supplier, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-						     FROM balance 
-						     WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-						     GROUP BY id_carrier_supplier)b,
-						     managers m,
-						     carrier_managers cm
-						WHERE m.id = cm.id_managers AND b.id_carrier_supplier = cm.id_carrier
-						GROUP BY m.name, m.lastname
-						ORDER BY margin DESC";
 		$cuerpo.="<br>
 		<table >
                     <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
         $cuerpo.="<thead>
                   <tbody>";
+        //Compradores
         $cuerpo.=self::managers(false,$fecha);
         $cuerpo.=self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $sqlTotalCompradores="SELECT SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-								FROM(SELECT id_carrier_supplier, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-								     FROM balance 
-								     WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-								     GROUP BY id_carrier_supplier)b";
-		$totalCompradores=Balance::model()->findBySql($sqlTotalCompradores);
-		if($totalCompradores->minutes!=null)
-		{
-			$cuerpo.="<tr>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-        					</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-        					TOTAL
-        					</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-        					Yii::app()->format->format_decimal($totalCompradores->minutes).
-        					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-        					Yii::app()->format->format_decimal($totalCompradores->revenue).
-        					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-        					Yii::app()->format->format_decimal($totalCompradores->margin).
-        					"</td>
-        					<td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-        					</td>
-        				  </tr>";
-		}
-		else
-        {
-        	$cuerpo.="<tr>
-        				<td colspan='6'>No se encontraron resultados</td>
-        			  </tr>";
-        }
+        //total compradores
+        $cuerpo.=self::totales(false,$fecha);
         $cuerpo.="</tbody></table>";
         $cuerpo.="<br>
 		<table >
@@ -193,7 +124,7 @@ class RankingCompraVenta extends Reportes
         				<td colspan='4'>No se encontraron resultados</td>
         			  </tr>";
         }
-        $cuerpo.="<tr>
+        /*$cuerpo.="<tr>
         					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
         					</td>
         					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
@@ -205,7 +136,7 @@ class RankingCompraVenta extends Reportes
         					<td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
         					</td>
         				  </tr>";
-        $cuerpo.="</div>";
+        $cuerpo.="</div>";*/
         return $cuerpo;
 	}
 
@@ -249,10 +180,10 @@ class RankingCompraVenta extends Reportes
               GROUP BY m.name, m.lastname
               ORDER BY margin DESC";
 
-        $vendedores=Balance::model()->findAllBySql($sql);
-        if($vendedores!=null)
+        $managers=Balance::model()->findAllBySql($sql);
+        if($managers!=null)
         {
-            foreach ($vendedores as $key => $vendedor)
+            foreach ($managers as $key => $unManager)
             {
                 $pos=$key+1;
                 $cuerpo.="<tr>
@@ -260,22 +191,84 @@ class RankingCompraVenta extends Reportes
                             $pos.
                             "</td>
                             <td style='".self::colorRankingCV($color)."'>".
-                            $vendedor->apellido.
+                            $unManager->apellido.
                             "</td>
                             <td style='".self::colorRankingCV($color)."'>".
-                            Yii::app()->format->format_decimal($vendedor->minutes).
+                            Yii::app()->format->format_decimal($unManager->minutes).
                             "</td>
                             <td style='".self::colorRankingCV($color)."'>".
-                            Yii::app()->format->format_decimal($vendedor->revenue).
+                            Yii::app()->format->format_decimal($unManager->revenue).
                             "</td>
                             <td style='".self::colorRankingCV($color)."'>".
-                            Yii::app()->format->format_decimal($vendedor->margin).
+                            Yii::app()->format->format_decimal($unManager->margin).
                             "</td>
                             <td style='".self::colorRankingCV($color)."'>".
                             $pos.
                             "</td>
                           </tr>";
             }
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='6'>No se encontraron resultados</td>
+                      </tr>";
+        }
+        return $cuerpo;
+    }
+
+    /**
+     * Genera el HTML de los totales para cada tipo de managers
+     * @access private
+     * @param date $inicio fecha de inicio de consulta
+     * @param date $fin fecha fin de la consulta
+     * @param boolean $tipo si es true es vendedor, si es false es comprador
+     * @return string $cuerpo html construido con los datos
+     */
+    private static function totales($tipo=true,$inicio,$fin=null)
+    {
+        $cuerpo="";
+        $fechaInicio=$fechaFin=null;
+        $manager="id_carrier_customer";
+        if($fin==null)
+        {
+            $fechaFin=$fechaInicio=$inicio;
+        }
+        else
+        {
+            $fechaInicio=$inicio;
+            $fechaFin=$fin;
+        }
+        if($tipo==false)
+        {
+            $manager="id_carrier_supplier";
+        }
+        $sql="SELECT SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
+              FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   FROM balance 
+                   WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                   GROUP BY {$manager})b";
+        $total=Balance::model()->findBySql($sql);
+        if($total->minutes!=null)
+        {
+            $cuerpo.="<tr>
+                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
+                            </td>
+                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
+                            TOTAL
+                            </td>
+                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
+                            Yii::app()->format->format_decimal($total->minutes).
+                            "</td>
+                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
+                            Yii::app()->format->format_decimal($total->revenue).
+                            "</td>
+                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
+                            Yii::app()->format->format_decimal($total->margin).
+                            "</td>
+                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
+                            </td>
+                          </tr>";
         }
         else
         {
