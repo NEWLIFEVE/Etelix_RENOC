@@ -618,5 +618,25 @@ class reportes extends CApplicationComponent
             return date('d',mktime(0,0,0,$arrayFecha[1]+1,0,$arrayFecha[0]));
         }
     }
+
+    /**
+     * Retorna la cantidad de meses entre dos fechas
+     * @access protected
+     * @param date $inicio la fecha menor
+     * @param date $fin la fecha final
+     * @return int el numero de meses
+     */
+    protected static function howManyMonths($inicio,$fin)
+    {
+        if(strpos($inicio,'-'))
+        {
+            $arrayInicio=explode('-', $inicio);
+        }
+        if(strpos($fin,'-'))
+        {
+            $arrayFin=explode('-', $fin);
+        }
+        return $arrayFin[1]-$arrayInicio[1]+1;
+    }
 }
 ?>
