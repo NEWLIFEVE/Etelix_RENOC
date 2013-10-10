@@ -682,7 +682,7 @@ class reportes extends CApplicationComponent
         {
             $arrayFecha=explode("-", $fecha);
         }
-        return $mes[$$arrayFecha[1]];
+        return $mes[$arrayFecha[1]];
     }
 
     /**
