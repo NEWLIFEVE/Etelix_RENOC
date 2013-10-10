@@ -654,5 +654,20 @@ class reportes extends CApplicationComponent
         }
         return $mes[$arrayFecha[1]];
     }
+
+    /**
+     * Retorna la cantidad de dias que existe de una fecha a otra
+     * @access protected
+     * @param date $inicio la fecha menor a consultar
+     * @param date $fina la fecha mayor del rango a consultar
+     * @return int con el numero de dias entre ambas fechas
+     */
+    protected static function howManyDaysBetween($inicio,$fin)
+    {
+        $i=strtotime($inincio);
+        $f=strtotime($fin);
+        $cant=$f-$i;
+        return date('d',$cant);
+    }
 }
 ?>
