@@ -637,60 +637,77 @@ class reportes extends CApplicationComponent
         }
     }
 
-    /**
+    /** 
      * Retorna la cantidad de dias de un mes
+     * @access protected
+     * @param date $fecha la fecha que se dira la cantidad de dias que tiene el mes
+     * @return int 
      */
     protected static function howManyDays($fecha=null)
     {
-        if(strpos($fecha,"-"))
+        if(strpos($fecha,'-'))
         {
-            $arrayFecha=explode("-", $fecha);
+            $arrayFecha=explode('-',$fecha);
         }
-        if( is_callable("cal_days_in_month"))
+        if(is_callable('cal_days_in_month'))
         {
             return cal_days_in_month(CAL_GREGORIAN, $arrayFecha[1], $arrayFecha[0]);
         }
         else
         {
-            return date("d",mktime(0,0,0,$arrayFecha[1]+1,0,$arrayFecha[0]));
+            return date('d',mktime(0,0,0,$arrayFecha[1]+1,0,$arrayFecha[0]));
         }
     }
 
     /**
-     * retorna la cantidad de meses entre dos fechas
+     * Retorna la cantidad de meses entre dos fechas
+     * @access protected
+     * @param date $inicio la fecha menor
+     * @param date $fin la fecha final
+     * @return int el numero de meses
      */
     protected static function howManyMonths($inicio,$fin)
     {
-       if(strpos($inicio,"-"))
-       {
-          $arrayInicio=explode("-", $inicio);
-       }
-       if(strpos($fin,"-"))
-       {
-          $arrayFin=explode("-", $fin);
-       }
-       return $arrayFin[1]-$arrayInicio[1]+1;
+        if(strpos($inicio,'-'))
+        {
+            $arrayInicio=explode('-', $inicio);
+        }
+        if(strpos($fin,'-'))
+        {
+            $arrayFin=explode('-', $fin);
+        }
+        return $arrayFin[1]-$arrayInicio[1]+1;
     }
 
     /**
-     * retorna el nombre del mes de una fecha
+     * Retorna el nombre del mes de una fecha dada
+     * @access protected
+     * @param date $fecha es la fecha que se quiere consultar
+     * @return string el nombre del mes
      */
-    protected static function getMonth($fecha)
+    protected static function getNameMonth($fecha)
     {
-        $mes=array(01=>'Enero',02=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre');
-        if(strpos($fecha,"-"))
+        $mes=array(1=>'Enero',2=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre');
+        if(strpos($fecha,'-'))
         {
-            $arrayFecha=explode("-", $fecha);
+            $arrayFecha=explode('-',$fecha);
         }
         return $mes[$arrayFecha[1]];
     }
 
     /**
-     *
+     * Retorna la cantidad de dias que existe de una fecha a otra
+     * @access protected
+     * @param date $inicio la fecha menor a consultar
+     * @param date $fina la fecha mayor del rango a consultar
+     * @return int con el numero de dias entre ambas fechas
      */
     protected static function howManyDaysBetween($inicio,$fin)
     {
-        
+        $i=strtotime($inincio);
+        $f=strtotime($fin);
+        $cant=$f-$i;
+        return date('d',$cant);
     }
 }
 ?>
