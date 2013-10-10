@@ -638,5 +638,21 @@ class reportes extends CApplicationComponent
         }
         return $arrayFin[1]-$arrayInicio[1]+1;
     }
+
+    /**
+     * Retorna el nombre del mes de una fecha dada
+     * @access protected
+     * @param date $fecha es la fecha que se quiere consultar
+     * @return string el nombre del mes
+     */
+    protected static function getNameMonth($fecha)
+    {
+        $mes=array(1=>'Enero',2=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre');
+        if(strpos($fecha,'-'))
+        {
+            $arrayFecha=explode('-',$fecha);
+        }
+        return $mes[$arrayFecha[1]];
+    }
 }
 ?>
