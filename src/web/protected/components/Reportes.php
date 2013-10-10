@@ -6,6 +6,7 @@ class reportes extends CApplicationComponent
 {
     public $tipo;
     protected $fecha;
+
     /**
     * Init method for the application component mode.
     */
@@ -13,6 +14,7 @@ class reportes extends CApplicationComponent
     {
         
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -23,6 +25,7 @@ class reportes extends CApplicationComponent
       $variable=AltoImpactoVendedor::Vendedor($fecha);
       return $variable;
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -33,6 +36,7 @@ class reportes extends CApplicationComponent
       $variable=Perdidas::reporte($fecha);
       return $variable;
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -43,6 +47,7 @@ class reportes extends CApplicationComponent
         $variable=AltoImpacto::reporte($fecha);
         return $variable;
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -53,7 +58,6 @@ class reportes extends CApplicationComponent
         $variable=AltoImpactoRetail::reporte($fecha);
         return $variable;
     }
-
 
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta
@@ -66,9 +70,10 @@ class reportes extends CApplicationComponent
         $variable=PosicionNeta::reporte($fecha);
         return $variable;
     }
+
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
-    * @access  public
+    * @access public
     * @param $fecha date es la fecha que se necesita el reporte
     * @return $variable string con el cuerpo del reporte
     */
@@ -78,6 +83,7 @@ class reportes extends CApplicationComponent
         $variable=$reporte->reporte();
         return $variable;
     }
+
     /**
     * Metodo encargado de generar el reporte de distribucion comercial
     * @access  public
@@ -89,40 +95,72 @@ class reportes extends CApplicationComponent
         $variable=DistComercialVendedor::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialTerminoPago($fecha)
     {
         $variable=DistComercialTerminoPago::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialMonetizable($fecha)
     {
         $variable=DistComercialMonetizable::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialCompany($fecha)
     {
         $variable=DistComercialCompany::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialCarrier($fecha)
     {
         $variable=DistComercialCarrier::reporte($fecha);
         return $variable;
     }
+
     /**
     * Metodo encargado de generar el reporte de Ranking Compra Venta
-    * @access  public
+    * @access public
     * @param $fecha date lafecha que se quiere consultar
     * @return $variable string con el cuerpo del reporte
     */
-    public function RankingCompraVenta($fecha)
+    public function RankingCompraVenta($inicio,$fin=null)
     {
-        $variable=RankingCompraVenta::reporte($fecha);
+        $fechaInicio=$fechaFin=null;
+        if($fin==null)
+        {
+            $fechaFin=$fechaInicio=$inicio;
+        }
+        else
+        {
+            $fechaInicio=$inicio;
+            $fechaFin=$fin;
+        }
+        if(self::howManyMonths($fechaInicio,$fechaFin)<=2)
+        {
+
+        }
+        $variable=RankingCompraVenta::reporte('2013-10-01','2013-10-31');
         return $variable;
     }
+
     /**
     * Metodo encargado de generar el reporte de Arbol de Trafico
-    * @access  public
+    * @access public
     * @param $fecha date lafecha que se quiere consultar
     * @param $tipo bollean el tipo de reporte internal o external, true=external default, false=internal
     * @return $variable string con el cuerpo del reporte
@@ -134,6 +172,7 @@ class reportes extends CApplicationComponent
         $variable=$reporte->reporte();
         return $variable;
     }
+
     /**
      * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
      * @access  public
@@ -531,6 +570,7 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+
     /**
     * Se encarga de crear una fila con los datos pasados
     * @param $etiquetas array lista de etiquetas para lacabeceras
@@ -595,6 +635,62 @@ class reportes extends CApplicationComponent
                 return "-".$negativos;
             }
         }
+    }
+
+    /**
+     * Retorna la cantidad de dias de un mes
+     */
+    protected static function howManyDays($fecha=null)
+    {
+        if(strpos($fecha,"-"))
+        {
+            $arrayFecha=explode("-", $fecha);
+        }
+        if( is_callable("cal_days_in_month"))
+        {
+            return cal_days_in_month(CAL_GREGORIAN, $arrayFecha[1], $arrayFecha[0]);
+        }
+        else
+        {
+            return date("d",mktime(0,0,0,$arrayFecha[1]+1,0,$arrayFecha[0]));
+        }
+    }
+
+    /**
+     * retorna la cantidad de meses entre dos fechas
+     */
+    protected static function howManyMonths($inicio,$fin)
+    {
+       if(strpos($inicio,"-"))
+       {
+          $arrayInicio=explode("-", $inicio);
+       }
+       if(strpos($fin,"-"))
+       {
+          $arrayFin=explode("-", $fin);
+       }
+       return $arrayFin[1]-$arrayInicio[1]+1;
+    }
+
+    /**
+     * retorna el nombre del mes de una fecha
+     */
+    protected static function getMonth($fecha)
+    {
+        $mes=array(01=>'Enero',02=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre');
+        if(strpos($fecha,"-"))
+        {
+            $arrayFecha=explode("-", $fecha);
+        }
+        return $mes[$$arrayFecha[1]];
+    }
+
+    /**
+     *
+     */
+    protected static function howManyDaysBetween($inicio,$fin)
+    {
+        
     }
 }
 ?>

@@ -6,21 +6,14 @@
 class RankingCompraVenta extends Reportes
 {
 	/**
-    * @param $fecha date fecha que va a ser consultada
-    * @return $cuerpo string con el cuerpo de la tabla
-    */
-	public static function reporte($inicio,$fin=null)
+     * genera el reporte de compraventa
+     * @access public
+     * @param date $inicio fecha de inicio de la consulta
+     * @param date $fin fecha final para ser consultada
+     * @return string $cuerpo con el cuerpo de la tabla
+     */
+	public static function reporte($fechaInicio,$fechaFin,$mes=false)
 	{
-        $fechaInicio=$fechaFin=null;
-        if($fin==null)
-        {
-            $fechaFin=$fechaInicio=$inicio;
-        }
-        else
-        {
-            $fechaInicio=$inicio;
-            $fechaFin=$fin;
-        }
 		$cuerpo="<div><table><thead>";
         $cuerpo.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
         $cuerpo.="</thead><tbody>";
@@ -171,7 +164,7 @@ class RankingCompraVenta extends Reportes
     /**
      * Metodo encargado de generar el HTML de la tabla de consolidados
      * @access private
-     * @param date $inicio si no existe fecha final, esta es la fecha que sera consultada
+     * @param date $inicio fecha de inicio que se va a consultar
      * @param date $fin es la fecha final a ser consultada.
      * @return string $cuerpo es el HTML en tabla de los datos consultados(solo las filas)
      */
