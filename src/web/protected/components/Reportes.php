@@ -596,5 +596,27 @@ class reportes extends CApplicationComponent
             }
         }
     }
+
+    /** 
+     * Retorna la cantidad de dias de un mes
+     * @access protected
+     * @param date $fecha la fecha que se dira la cantidad de dias que tiene el mes
+     * @return int 
+     */
+    protected static function howManyDays($fecha=null)
+    {
+        if(strpos($fecha,'-'))
+        {
+            $arrayFecha=explode('-',$fecha);
+        }
+        if(is_callable('cal_days_in_month'))
+        {
+            return cal_days_in_month(CAL_GREGORIAN, $arrayFecha[1], $arrayFecha[0]);
+        }
+        else
+        {
+            return date('d',mktime(0,0,0,$arrayFecha[1]+1,0,$arrayFecha[0]));
+        }
+    }
 }
 ?>
