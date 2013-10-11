@@ -133,14 +133,15 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Metodo encargado de generar el reporte de Ranking Compra Venta
-    * @access public
-    * @param $fecha date lafecha que se quiere consultar
-    * @return $variable string con el cuerpo del reporte
-    */
+     * Metodo encargado de generar el reporte de Ranking Compra Venta
+     * @access public
+     * @param date $inicio la fecha menor a ser consultada.
+     * @param date $fin la fecha mayor a ser consultada, en caso de ser nula la fecha inicio sera la fecha final
+     * @return $variable string con el cuerpo del reporte
+     */
     public function RankingCompraVenta($inicio,$fin=null)
     {
-        $fechaInicio=$fechaFin=null;
+        $fechaInicio=$fechaFin=$variable=null;
         if($fin==null)
         {
             $fechaFin=$fechaInicio=$inicio;
@@ -152,9 +153,36 @@ class reportes extends CApplicationComponent
         }
         if(self::howManyMonths($fechaInicio,$fechaFin)<=2)
         {
-
+            if(self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
+            {
+                $variable="<table><thead>";
+                $variable.="<tr><td>".$fechaInicio." a ".$fechaFin."</td></tr></thead>";
+                $variable.=RankingCompraVenta::reporte($fechaInicio,$fechaFin);   
+            }
         }
-        $variable=RankingCompraVenta::reporte('2013-10-01','2013-10-31');
+        else
+        {
+            $variable="<table><tr>";
+            $fechaInicioTemp=$fechaInicio;
+            $fechaFinTemp=$fechaFin;
+            $arrayInicioTemp=null;
+            while (self::isLower($fechaInicioTemp,$fechaFin))
+            {
+                $variable.="<td>";
+                $arrayInicioTemp=explode('-',$fechaInicioTemp);
+                $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
+                $variable.="<div>";
+                $variable.=RankingCompraVenta::managers(true,$fechaInicioTemp,$fechaFinTemp);
+                $variable.="</div><div>";
+                $variable.=RankingCompraVenta::managers(false,$fechaInicioTemp,$fechaFinTemp);
+                $variable.="</div><div>";
+                $variable.=RankingCompraVenta::consolidados($fechaInicioTemp,$fechaFinTemp);
+                $variable.="</div>";
+                $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
+                $variable.="</td>";
+            }
+            $variable.="</tr></table>";
+        }            
         return $variable;
     }
 
@@ -175,7 +203,7 @@ class reportes extends CApplicationComponent
 
     /**
      * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
-     * @access  public
+     * @access public
      * @param $fecha date la fecha que se quiere consultar
      * @param $tipo boolean el tipo de reporte clientes o proveedores, true=clientes default, false=proveedores
      * @return $variable string con el cuerpo del reporte
@@ -683,16 +711,25 @@ class reportes extends CApplicationComponent
      * Retorna el nombre del mes de una fecha dada
      * @access protected
      * @param date $fecha es la fecha que se quiere consultar
+     * @param booleam $tipo si es true devuelve un string, si es false devuelve un int
      * @return string el nombre del mes
+     * @return int el numero del mes
      */
-    protected static function getNameMonth($fecha)
+    protected static function getNameMonth($fecha,$tipo=true)
     {
         $mes=array(1=>'Enero',2=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre');
         if(strpos($fecha,'-'))
         {
             $arrayFecha=explode('-',$fecha);
         }
-        return $mes[$arrayFecha[1]];
+        if($tipo==true)
+        {
+            return $mes[$arrayFecha[1]];
+        }
+        else
+        {
+            return $arrayFecha[1];
+        }
     }
 
     /**
@@ -704,10 +741,52 @@ class reportes extends CApplicationComponent
      */
     protected static function howManyDaysBetween($inicio,$fin)
     {
-        $i=strtotime($inincio);
+        $i=strtotime($inicio);
         $f=strtotime($fin);
         $cant=$f-$i;
-        return date('d',$cant);
+        return $cant/(60*60*24);
+    }
+
+    /**
+     * Funcion que verifica si una fecha en parametro uno es menor que la fecha en el 
+     * parametro dos
+     * @access protected
+     * @param date $uno primera fecha
+     * @param date $dos segunda fecha
+     * @return boolean true si es menor el primero y false si es menor el segundo 
+     */
+    protected static function isLower($uno,$dos)
+    {
+        $uno=strtotime($uno);
+        $dos=strtotime($dos);
+        if($uno<$dos)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Metodo que retorna la fecha pasada mientras esta sea menor a la fecha maxima,
+     * de lo contrario retorna la fecha maxima
+     * @access protected
+     * @param date $nueva fecha nueva generada
+     * @param date $max es la maxima fecha que puede tener el parametro $nueva
+     * @return date
+     */
+    protected static function maxDate($nueva,$max)
+    {
+        if(self::isLower($nueva,$max))
+        {
+            return $nueva;
+        }
+        else
+        {
+            return $max;
+        }
     }
 }
 ?>

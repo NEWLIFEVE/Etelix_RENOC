@@ -154,6 +154,14 @@ class SiteController extends Controller
         $this->redirect(Yii::app()->homeUrl);
     }
 
+    public function actionRankin()
+    {
+        $inicio=$_GET['inicio'];
+        $fin=$_GET['fin'];
+        $correo=Yii::app()->reportes->RankingCompraVenta($inicio,$fin);
+        $this->genExcel('Rankin Compra Venta',$correo);
+    }
+
     /**
     * Action encargada de envuiar por mail el tipo de reporte seleccionado,
     * las especificaciones seran recibidas desde el array $_GET
