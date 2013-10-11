@@ -10,56 +10,45 @@ class RankingCompraVenta extends Reportes
      * @access public
      * @param date $inicio fecha de inicio de la consulta
      * @param date $fin fecha final para ser consultada
-     * @return string $cuerpo con el cuerpo de la tabla
+     * @return string $cuerpo con el cuerpo de la tabla(<tbody>)
      */
-    public static function reporte($fechaInicio,$fechaFin,$mes=false)
+    public static function reporte($fechaInicio,$fechaFin)
     {
-        $cuerpo="<div><table><thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.="</thead><tbody>";
+        $cuerpo="<tbody><tr><td>";
         //Vendedores
-        $cuerpo.=self::managers(true,$fechaInicio,$fechaFin);
-        $cuerpo.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        //total vendedores
-        $cuerpo.=self::totales(true,$fechaInicio,$fechaFin);
-        $cuerpo.="</tbody></table>";
-        $cuerpo.="<br><table><thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.="</thead><tbody>";
+        $cuerpo.=RankingCompraVenta::managers(true,$fechaInicio,$fechaFin);
+        $cuerpo.="</td></tr><tr><td>";
         //Compradores
-        $cuerpo.=self::managers(false,$fechaInicio,$fechaFin);
-        $cuerpo.=self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        //total compradores
-        $cuerpo.=self::totales(false,$fechaInicio,$fechaFin);
-        $cuerpo.="</tbody></table>";
-        $cuerpo.="<br><table><thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.="</thead><tbody>";
-        $cuerpo.=self::consolidados($fechaInicio,$fechaFin);
-        $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.=self::totalConsolidado($fechaInicio,$fechaFin);
-        $cuerpo.="</tbody></table></div>";
+        $cuerpo.=RankingCompraVenta::managers(false,$fechaInicio,$fechaFin);
+        $cuerpo.="</td></tr><tr><td>";
+        $cuerpo.=RankingCompraVenta::consolidados($fechaInicio,$fechaFin);
+        $cuerpo.="</td></tr></tbody></table>";
         return $cuerpo;
     }
 
     /**
      * Genera el html de vendedores o compradores dependiendo de los parametros
-     * @access private
+     * @access public
      * @param date $inicio fecha de inicio de consulta
      * @param date $fin fecha fin de la consulta
      * @param boolean $tipo si es true es vendedor, si es false es comprador
      * @return string $cuerpo html construido con los datos(solo las filas)
      */
-    private static function managers($tipo=true,$fechaInicio,$fechaFin)
+    public static function managers($tipo=true,$fechaInicio,$fechaFin)
     {
-        $cuerpo="";
         $manager="id_carrier_customer";
+        $titulo="Vendedor";
         $color=1;
         if($tipo==false)
         {
             $manager="id_carrier_supplier";
             $color=2;
+            $titulo="Comprador";
         }
+        $cuerpo="<table><thead>";
+        $cuerpo.=self::cabecera(array('Ranking',$titulo,'Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+        $cuerpo.="</thead><tbody>";
+
 
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
               FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
@@ -106,18 +95,22 @@ class RankingCompraVenta extends Reportes
                         <td colspan='6'>No se encontraron resultados</td>
                       </tr>";
         }
+        $cuerpo.=self::cabecera(array('Ranking',$titulo,'Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+        //total vendedores
+        $cuerpo.=self::totales($tipo,$fechaInicio,$fechaFin);
+        $cuerpo.="</tbody></table>";
         return $cuerpo;
     }
 
     /**
      * Genera el HTML de los totales para cada tipo de managers
-     * @access private
+     * @access public
      * @param date $inicio fecha de inicio de consulta
      * @param date $fin fecha fin de la consulta
      * @param boolean $tipo si es true es vendedor, si es false es comprador
      * @return string $cuerpo html construido con los datos(solo las filas)
      */
-    private static function totales($tipo=true,$fechaInicio,$fechaFin)
+    public static function totales($tipo=true,$fechaInicio,$fechaFin)
     {
         $cuerpo="";
         $manager="id_carrier_customer";
@@ -163,14 +156,16 @@ class RankingCompraVenta extends Reportes
 
     /**
      * Metodo encargado de generar el HTML de la tabla de consolidados
-     * @access private
+     * @access public
      * @param date $inicio fecha de inicio que se va a consultar
      * @param date $fin es la fecha final a ser consultada.
      * @return string $cuerpo es el HTML en tabla de los datos consultados(solo las filas)
      */
-    private static function consolidados($fechaInicio,$fechaFin)
+    public static function consolidados($fechaInicio,$fechaFin)
     {
-        $cuerpo="";
+        $cuerpo="<table><thead>";
+        $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+        $cuerpo.="</thead><tbody>";
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
               FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
@@ -214,17 +209,20 @@ class RankingCompraVenta extends Reportes
                         <td colspan='4'>No se encontraron resultados</td>
                       </tr>";
         }
+        $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+        $cuerpo.=self::totalConsolidado($fechaInicio,$fechaFin);
+        $cuerpo.="</tbody></table>";
         return $cuerpo;
     }
 
     /**
      * metodo que genera la fila con el total de consolidados
-     * @access private
+     * @access public
      * @param date $inicio fecha de inicio de la consulta
      * @param date $fin fecha fin de la consulta
      * @return string $cuerpo las filas de la tabla con los datos consultados
      */
-    private static function totalConsolidado($fechaInicio,$fechaFin)
+    public static function totalConsolidado($fechaInicio,$fechaFin)
     {
         $cuerpo="";
          $sqlTotalConsolidado="SELECT SUM(cs.margin) AS margin
@@ -285,6 +283,11 @@ class RankingCompraVenta extends Reportes
                       </tr>";
         }
         return $cuerpo;
+    }
+
+    public static function retornaFecha($titulo, $inicio, $fin)
+    {
+        return "Por ".$titulo." a la fecha inicial ".$inicio." y la fecha fin ".$fin;
     }
 }
 ?>
