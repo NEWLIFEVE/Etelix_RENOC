@@ -171,11 +171,11 @@ class reportes extends CApplicationComponent
                 $variable.="<td>";
                 $arrayInicioTemp=explode('-',$fechaInicioTemp);
                 $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
-                $variable.="<div>";
+                $variable.="<div>".self::reportTitle($fechaInicioTemp,$fechaFinTemp);
                 $variable.=RankingCompraVenta::managers(true,$fechaInicioTemp,$fechaFinTemp);
-                $variable.="</div><div>";
+                $variable.="</div><div>".self::reportTitle($fechaInicioTemp,$fechaFinTemp);
                 $variable.=RankingCompraVenta::managers(false,$fechaInicioTemp,$fechaFinTemp);
-                $variable.="</div><div>";
+                $variable.="</div><div>".self::reportTitle($fechaInicioTemp,$fechaFinTemp);
                 $variable.=RankingCompraVenta::consolidados($fechaInicioTemp,$fechaFinTemp);
                 $variable.="</div>";
                 $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
@@ -717,14 +717,14 @@ class reportes extends CApplicationComponent
      */
     protected static function getNameMonth($fecha,$tipo=true)
     {
-        $mes=array(1=>'Enero',2=>'Febrero',3=>'Marzo',4=>'Abril',5=>'Mayo',6=>'Junio',7=>'Julio',8=>'Agosto',9=>'Septiembre',10=>'Octubre',11=>'Noviembre',12=>'Diciembre');
+        $mes=array('January'=>'Enero','February'=>'Febrero','March'=>'Marzo','April'=>'Abril','May'=>'Mayo','June'=>'Junio','July'=>'Julio','August'=>'Agosto','September'=>'Septiembre','October'=>'Octubre','November'=>'Noviembre','December'=>'Diciembre');
         if(strpos($fecha,'-'))
         {
             $arrayFecha=explode('-',$fecha);
         }
         if($tipo==true)
         {
-            return $mes[$arrayFecha[1]];
+            return $mes[strftime("%B",strtotime($fecha))];
         }
         else
         {
@@ -787,6 +787,26 @@ class reportes extends CApplicationComponent
         {
             return $max;
         }
+    }
+
+    /**
+     * metodo encargado de validar el titulo por tabla creada en reportes, si la fecha inicial y final son
+     * la de inicio y fin del respectivo mes retorna el nombre del mes, de lo contrario regresa el texto
+     * con las fechas.
+     * @access protected
+     * @param date $inicio es la fecha de inicio del reporte consultado
+     * @param date $fin es la fecha final del reporte consultado
+     * @return string
+     */
+    protected static function reportTitle($inicio,$fin)
+    {
+        $i=explode('-', $inicio);
+        $f=explode('-', $fin);
+        if($i[2]==1 && $f[2]==self::howManyDays($fin))
+        {
+            return self::getNameMonth($inicio,true);
+        }
+        return "Del ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
     }
 }
 ?>
