@@ -136,7 +136,7 @@ ajax.prototype.run=function()
         //compruebo que al menos un reporte este seleccionado
         if(numero.length<=0)
         {
-            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/>";
+            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
             self.crearCapa(mensaje);
             setTimeout(function()
             {
@@ -276,7 +276,7 @@ ajax.prototype.enviar=function()
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/>";
+        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
         self.crearCapa(mensaje);
         setTimeout(function()
         {

@@ -180,7 +180,9 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
-                    <input name="fecha" type="hidden"  id="datepicker_value" value="<?php mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")); echo date("Y-m-d"); ?>"/>
+                
+                    <input name="fecha" type="hidden"  id="datepicker_value" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
+        echo $nuevafecha=date('Y-m-d',$nuevafecha);?>"/>
             </form>
         </article>
     </section>
