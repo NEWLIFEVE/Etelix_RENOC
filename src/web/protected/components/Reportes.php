@@ -6,6 +6,7 @@ class reportes extends CApplicationComponent
 {
     public $tipo;
     protected $fecha;
+
     /**
     * Init method for the application component mode.
     */
@@ -13,6 +14,7 @@ class reportes extends CApplicationComponent
     {
         
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -23,6 +25,7 @@ class reportes extends CApplicationComponent
       $variable=AltoImpactoVendedor::Vendedor($fecha);
       return $variable;
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -33,6 +36,7 @@ class reportes extends CApplicationComponent
       $variable=Perdidas::reporte($fecha);
       return $variable;
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -43,6 +47,7 @@ class reportes extends CApplicationComponent
         $variable=AltoImpacto::reporte($fecha);
         return $variable;
     }
+
     /**
     * @access  public
     * @param $fecha date fecha para ser consuldada
@@ -53,7 +58,6 @@ class reportes extends CApplicationComponent
         $variable=AltoImpactoRetail::reporte($fecha);
         return $variable;
     }
-
 
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta
@@ -66,9 +70,10 @@ class reportes extends CApplicationComponent
         $variable=PosicionNeta::reporte($fecha);
         return $variable;
     }
+
     /**
     * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
-    * @access  public
+    * @access public
     * @param $fecha date es la fecha que se necesita el reporte
     * @return $variable string con el cuerpo del reporte
     */
@@ -78,6 +83,7 @@ class reportes extends CApplicationComponent
         $variable=$reporte->reporte();
         return $variable;
     }
+
     /**
     * Metodo encargado de generar el reporte de distribucion comercial
     * @access  public
@@ -89,26 +95,43 @@ class reportes extends CApplicationComponent
         $variable=DistComercialVendedor::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialTerminoPago($fecha)
     {
         $variable=DistComercialTerminoPago::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialMonetizable($fecha)
     {
         $variable=DistComercialMonetizable::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialCompany($fecha)
     {
         $variable=DistComercialCompany::reporte($fecha);
         return $variable;
     }
+
+    /**
+     *
+     */
     public function DistComercialCarrier($fecha)
     {
         $variable=DistComercialCarrier::reporte($fecha);
         return $variable;
     }
+
     /**
      * Metodo encargado de generar el reporte de Ranking Compra Venta
      * @access public
@@ -162,6 +185,7 @@ class reportes extends CApplicationComponent
         }            
         return $variable;
     }
+
     /**
     * Metodo encargado de generar el reporte de Arbol de Trafico
     * @access public
@@ -176,6 +200,7 @@ class reportes extends CApplicationComponent
         $variable=$reporte->reporte();
         return $variable;
     }
+
     /**
      * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
      * @access public
@@ -573,6 +598,7 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+
     /**
     * Se encarga de crear una fila con los datos pasados
     * @param $etiquetas array lista de etiquetas para lacabeceras
