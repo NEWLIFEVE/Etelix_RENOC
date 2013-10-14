@@ -29,6 +29,7 @@ class RankingCompraVenta extends Reportes
     /**
      * Genera el html de vendedores o compradores dependiendo de los parametros
      * @access public
+     * @static
      * @param date $inicio fecha de inicio de consulta
      * @param date $fin fecha fin de la consulta
      * @param boolean $tipo si es true es vendedor, si es false es comprador
@@ -64,6 +65,7 @@ class RankingCompraVenta extends Reportes
         $managers=Balance::model()->findAllBySql($sql);
         if($managers!=null)
         {
+            natsort($managers);
             foreach ($managers as $key => $unManager)
             {
                 $pos=$key+1;
@@ -105,6 +107,7 @@ class RankingCompraVenta extends Reportes
     /**
      * Genera el HTML de los totales para cada tipo de managers
      * @access public
+     * @static
      * @param date $inicio fecha de inicio de consulta
      * @param date $fin fecha fin de la consulta
      * @param boolean $tipo si es true es vendedor, si es false es comprador
@@ -157,6 +160,7 @@ class RankingCompraVenta extends Reportes
     /**
      * Metodo encargado de generar el HTML de la tabla de consolidados
      * @access public
+     * @static
      * @param date $inicio fecha de inicio que se va a consultar
      * @param date $fin es la fecha final a ser consultada.
      * @return string $cuerpo es el HTML en tabla de los datos consultados(solo las filas)
@@ -184,6 +188,7 @@ class RankingCompraVenta extends Reportes
         $consolidados=Balance::model()->findAllBySql($sql);
         if($consolidados!=null)
         {
+            //natsort($consolidados);
             foreach($consolidados as $key => $consolidado)
             {
                 $pos=$key+1;
@@ -218,6 +223,7 @@ class RankingCompraVenta extends Reportes
     /**
      * metodo que genera la fila con el total de consolidados
      * @access public
+     * @static
      * @param date $inicio fecha de inicio de la consulta
      * @param date $fin fecha fin de la consulta
      * @return string $cuerpo las filas de la tabla con los datos consultados

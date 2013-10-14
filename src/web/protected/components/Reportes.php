@@ -1,25 +1,25 @@
 <?php
 /**
-* @package components
-*/
+ * @package components
+ */
 class reportes extends CApplicationComponent
 {
     public $tipo;
     protected $fecha;
 
     /**
-    * Init method for the application component mode.
-    */
+     * Init method for the application component mode.
+     */
     public function init() 
     {
         
     }
 
     /**
-    * @access  public
-    * @param $fecha date fecha para ser consuldada
-    * @return $variable string cuerpo de reporte
-    */
+     * @access public
+     * @param $fecha date fecha para ser consuldada
+     * @return $variable string cuerpo de reporte
+     */
     public function AltoImpactoVendedor($fecha)
     {
       $variable=AltoImpactoVendedor::Vendedor($fecha);
@@ -27,10 +27,10 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * @access  public
-    * @param $fecha date fecha para ser consuldada
-    * @return $variable string cuerpo de reporte
-    */
+     * @access public
+     * @param $fecha date fecha para ser consuldada
+     * @return $variable string cuerpo de reporte
+     */
     public function Perdidas($fecha)
     {
       $variable=Perdidas::reporte($fecha);
@@ -38,10 +38,10 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * @access  public
-    * @param $fecha date fecha para ser consuldada
-    * @return $variable string cuerpo de reporte
-    */
+     * @access public
+     * @param $fecha date fecha para ser consuldada
+     * @return $variable string cuerpo de reporte
+     */
     public function AltoImpacto($fecha)
     {
         $variable=AltoImpacto::reporte($fecha);
@@ -49,10 +49,10 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * @access  public
-    * @param $fecha date fecha para ser consuldada
-    * @return $variable string cuerpo de reporte
-    */
+     * @access public
+     * @param $fecha date fecha para ser consuldada
+     * @return $variable string cuerpo de reporte
+     */
     public function AltoImpactoRetail($fecha)
     {
         $variable=AltoImpactoRetail::reporte($fecha);
@@ -60,11 +60,11 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Encargado de generar el cuerpo del reporte de posicion neta
-    * @access  public
-    * @param $fecha date es la fecha que se necesita el reporte
-    * @return $variable string con el cuerpo del reporte
-    */
+     * Encargado de generar el cuerpo del reporte de posicion neta
+     * @access public
+     * @param $fecha date es la fecha que se necesita el reporte
+     * @return $variable string con el cuerpo del reporte
+     */
     public function PosicionNeta($fecha)
     {
         $variable=PosicionNeta::reporte($fecha);
@@ -72,11 +72,11 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
-    * @access public
-    * @param $fecha date es la fecha que se necesita el reporte
-    * @return $variable string con el cuerpo del reporte
-    */
+     * Encargado de generar el cuerpo del reporte de posicion neta por vendedor
+     * @access public
+     * @param $fecha date es la fecha que se necesita el reporte
+     * @return $variable string con el cuerpo del reporte
+     */
     public function PosicionNetaVendedor($fecha)
     {
         $reporte=new PosicionNetaVendedor($fecha);
@@ -85,11 +85,11 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Metodo encargado de generar el reporte de distribucion comercial
-    * @access  public
-    * @param $fecha date la fecha que se quiere consultar
-    * @return $variable string con el cuerpo del reporte
-    */
+     * Metodo encargado de generar el reporte de distribucion comercial
+     * @access public
+     * @param $fecha date la fecha que se quiere consultar
+     * @return $variable string con el cuerpo del reporte
+     */
     public function DistComercialVendedor($fecha)
     {
         $variable=DistComercialVendedor::reporte($fecha);
@@ -97,7 +97,9 @@ class reportes extends CApplicationComponent
     }
 
     /**
-     *
+     * @access public
+     * @param date $fecha
+     * @return string $variable
      */
     public function DistComercialTerminoPago($fecha)
     {
@@ -106,7 +108,9 @@ class reportes extends CApplicationComponent
     }
 
     /**
-     *
+     * @access public
+     * @param date $fecha
+     * @return string $variable
      */
     public function DistComercialMonetizable($fecha)
     {
@@ -115,7 +119,9 @@ class reportes extends CApplicationComponent
     }
 
     /**
-     *
+     * @access public
+     * @param date $fecha
+     * @return string $variable
      */
     public function DistComercialCompany($fecha)
     {
@@ -124,7 +130,9 @@ class reportes extends CApplicationComponent
     }
 
     /**
-     *
+     * @access public
+     * @param date $fecha
+     * @return string $variable
      */
     public function DistComercialCarrier($fecha)
     {
@@ -171,13 +179,12 @@ class reportes extends CApplicationComponent
                 $variable.="<td>";
                 $arrayInicioTemp=explode('-',$fechaInicioTemp);
                 $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
-                $variable.="<div>".self::reportTitle($fechaInicioTemp,$fechaFinTemp);
-                $variable.=RankingCompraVenta::managers(true,$fechaInicioTemp,$fechaFinTemp);
-                $variable.="</div><div>".self::reportTitle($fechaInicioTemp,$fechaFinTemp);
-                $variable.=RankingCompraVenta::managers(false,$fechaInicioTemp,$fechaFinTemp);
-                $variable.="</div><div>".self::reportTitle($fechaInicioTemp,$fechaFinTemp);
-                $variable.=RankingCompraVenta::consolidados($fechaInicioTemp,$fechaFinTemp);
-                $variable.="</div>";
+                $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div>".RankingCompraVenta::managers(true,$fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div>".RankingCompraVenta::managers(false,$fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div>".RankingCompraVenta::consolidados($fechaInicioTemp,$fechaFinTemp)."</div>";
                 $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
                 $variable.="</td>";
             }
@@ -189,7 +196,7 @@ class reportes extends CApplicationComponent
     /**
     * Metodo encargado de generar el reporte de Arbol de Trafico
     * @access public
-    * @param $fecha date lafecha que se quiere consultar
+    * @param date $fecha date lafecha que se quiere consultar
     * @param $tipo bollean el tipo de reporte internal o external, true=external default, false=internal
     * @return $variable string con el cuerpo del reporte
     */
@@ -217,7 +224,7 @@ class reportes extends CApplicationComponent
     }
 
     /**
-     * genera el reporte de evolucion
+     * Genera el reporte de evolucion
      * @access  public 
      * @param $fecha date la fecha que sera consultada
      */
@@ -229,10 +236,11 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Metodo encargado de pintar las filas de los reportes
-    * @access  public
-    * @param int $pos es un numero indicando que color debe regresar
-    */
+     * Metodo encargado de pintar las filas de los reportes
+     * @access public
+     * @static
+     * @param int $pos es un numero indicando que color debe regresar
+     */
     public static function color($pos)
     {
         $color=null;
@@ -266,6 +274,13 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+
+    /**
+     * @access public
+     * @static
+     * @param int $pos
+     * @return string $color 
+     */
     public static function colorEstilo($pos)
     {
         $color=null;
@@ -298,6 +313,13 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+
+    /**
+     * @access public
+     * @static
+     * @param int $tipo
+     * @return string $color
+     */
     public static function colorRankingCV($tipo){
         switch($tipo)
         {
@@ -313,6 +335,15 @@ class reportes extends CApplicationComponent
         }
         return $color;
     }
+
+    /**
+     * @access public
+     * @static
+     * @param $var
+     * @param $alarmaStr
+     * @param $alarmaInt
+     * @return string $color
+     */
     public static function colorVendedor($var,$alarmaStr=NULL,$alarmaInt=NULL)
     {
         $color=null;
@@ -382,6 +413,15 @@ class reportes extends CApplicationComponent
         
         return $color;
     }
+
+    /**
+     * @access public
+     * @static
+     * @param $var
+     * @param $alarmaStr
+     * @param $alarmaInt
+     * @return string $color
+     */
     public static function colorTP($var,$alarmaStr=NULL,$alarmaInt=NULL)
     {
         $color=null;
@@ -438,6 +478,15 @@ class reportes extends CApplicationComponent
         }    
         return $color;
     }
+
+    /**
+     * @access public 
+     * @static
+     * @param $var
+     * @param $alarmaStr
+     * @param $alarmaInt
+     * @return string $color
+     */
     public static function colorM($var,$alarmaStr=NULL,$alarmaInt=NULL)
     {
         $color=null;
@@ -465,6 +514,15 @@ class reportes extends CApplicationComponent
         }  
         return $color;
     }
+
+    /**
+     * @access public
+     * @static
+     * @param $var
+     * @param $alarmaStr
+     * @param $alarmaInt
+     * @return string $color
+     */
     public static function colorCom($var,$alarmaStr=NULL,$alarmaInt=NULL)
     {
         $color=null;
@@ -496,16 +554,27 @@ class reportes extends CApplicationComponent
         }  
         return $color;
     }
+
+    /**
+     * @access public
+     * @static
+     * @param $var
+     * @param $alarmaStr
+     * @param $alarmaInt
+     * @return string $color
+     */
     public static function colorCarrier($var,$alarmaStr=NULL,$alarmaInt=NULL)
     {
         $color=null;
         
-        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0)){
+        if((isset($alarmaStr) && substr_count($alarmaStr, 'Sin Asignar') >= 1) || (isset($alarmaInt) && $alarmaInt < 0))
+        {
             $color="color:white; background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
-        }else{
+        }
+        else
+        {
             $color="color:#584E4E; background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
-        }        
-  
+        }
         return $color;
     }
     
@@ -519,10 +588,13 @@ class reportes extends CApplicationComponent
             return "-" . $pos;
         }
     }
+
     /**
-    * @param $var string a identificar
-    * @return string con la fila coloreada
-    */
+     * @access public
+     * @static
+     * @param $var string a identificar
+     * @return string con la fila coloreada
+     */
     public static function colorDestino($var)
     {
         if(substr_count($var, 'USA') >= 1 || substr_count($var, 'CANADA') >= 1)
@@ -600,11 +672,13 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Se encarga de crear una fila con los datos pasados
-    * @param $etiquetas array lista de etiquetas para lacabeceras
-    * @param $estilos string con los estilos para la fila
-    * @return string con la fila construida
-    */
+     * Se encarga de crear una fila con los datos pasados
+     * @access public
+     * @static
+     * @param $etiquetas array lista de etiquetas para lacabeceras
+     * @param $estilos string con los estilos para la fila
+     * @return string con la fila construida
+     */
     public static function cabecera($etiquetas,$estilos)
     {
         if(count($etiquetas)>1)
@@ -630,35 +704,50 @@ class reportes extends CApplicationComponent
     }
 
     /**
-    * Metodo encargado de realizar los rankings
-    * @param $posicion int valor a rankear
-    * @param $max int valor a dividir
-    * @return $valor int
-    */
+     * Metodo encargado de realizar los rankings
+     * @access public
+     * @static
+     * @param int $pos valor a rankear
+     * @param int $max valor a dividir
+     * @param $margin
+     * @param $marginText
+     * @return $valor int
+     */
     public static function ranking($pos, $max, $margin = NULL,$marginText=NULL) 
     {
-        if (is_null($margin)) {
-            if ($max > 10) {
-                $mitad = ($max / 2) + 1;
-                if ($pos < $mitad) {
+        if(is_null($margin))
+        {
+            if($max>10)
+            {
+                $mitad=($max/2)+1;
+                if($pos<$mitad)
+                {
                     return $pos;
-                } else {
-                    $diferencia = $pos - $mitad;
-                    $valor = ($mitad - $diferencia) - 1;
-                    return "-" . $valor;
                 }
-            } else {
+                else
+                {
+                    $diferencia=$pos-$mitad;
+                    $valor=($mitad-$diferencia)-1;
+                    return "-".$valor;
+                }
+            }
+            else
+            {
                 return $pos;
             }
-        } else {
-
-            if($margin>0){
+        }
+        else
+        {
+            if($margin>0)
+            {
                 return $pos;
             }
-            if($marginText=="0,00"){
+            if($marginText=="0,00")
+            {
                 return 0;
             }
-            if($margin<0){
+            if($margin<0)
+            {
                 $negativos=$max-$pos;
                 return "-".$negativos;
             }
@@ -668,6 +757,7 @@ class reportes extends CApplicationComponent
     /** 
      * Retorna la cantidad de dias de un mes
      * @access protected
+     * @static
      * @param date $fecha la fecha que se dira la cantidad de dias que tiene el mes
      * @return int 
      */
@@ -690,6 +780,7 @@ class reportes extends CApplicationComponent
     /**
      * Retorna la cantidad de meses entre dos fechas
      * @access protected
+     * @static
      * @param date $inicio la fecha menor
      * @param date $fin la fecha final
      * @return int el numero de meses
@@ -710,6 +801,7 @@ class reportes extends CApplicationComponent
     /**
      * Retorna el nombre del mes de una fecha dada
      * @access protected
+     * @static
      * @param date $fecha es la fecha que se quiere consultar
      * @param booleam $tipo si es true devuelve un string, si es false devuelve un int
      * @return string el nombre del mes
@@ -735,6 +827,7 @@ class reportes extends CApplicationComponent
     /**
      * Retorna la cantidad de dias que existe de una fecha a otra
      * @access protected
+     * @static
      * @param date $inicio la fecha menor a consultar
      * @param date $fina la fecha mayor del rango a consultar
      * @return int con el numero de dias entre ambas fechas
@@ -751,6 +844,7 @@ class reportes extends CApplicationComponent
      * Funcion que verifica si una fecha en parametro uno es menor que la fecha en el 
      * parametro dos
      * @access protected
+     * @static
      * @param date $uno primera fecha
      * @param date $dos segunda fecha
      * @return boolean true si es menor el primero y false si es menor el segundo 
@@ -773,6 +867,7 @@ class reportes extends CApplicationComponent
      * Metodo que retorna la fecha pasada mientras esta sea menor a la fecha maxima,
      * de lo contrario retorna la fecha maxima
      * @access protected
+     * @static
      * @param date $nueva fecha nueva generada
      * @param date $max es la maxima fecha que puede tener el parametro $nueva
      * @return date
@@ -794,6 +889,7 @@ class reportes extends CApplicationComponent
      * la de inicio y fin del respectivo mes retorna el nombre del mes, de lo contrario regresa el texto
      * con las fechas.
      * @access protected
+     * @static
      * @param date $inicio es la fecha de inicio del reporte consultado
      * @param date $fin es la fecha final del reporte consultado
      * @return string
