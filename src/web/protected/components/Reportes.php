@@ -180,9 +180,9 @@ class reportes extends CApplicationComponent
                 $arrayInicioTemp=explode('-',$fechaInicioTemp);
                 $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
                 $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div>".RankingCompraVenta::managers(true,$fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div>".RankingCompraVenta::getHtmlManagers(true,$fechaInicioTemp,$fechaFinTemp)."</div>";
                 $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div>".RankingCompraVenta::managers(false,$fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div>".RankingCompraVenta::getHtmlManagers(false,$fechaInicioTemp,$fechaFinTemp)."</div>";
                 $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
                 $variable.="<div>".RankingCompraVenta::consolidados($fechaInicioTemp,$fechaFinTemp)."</div>";
                 $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
