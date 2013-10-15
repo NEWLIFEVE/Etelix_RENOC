@@ -71,11 +71,9 @@ return array(
 		),
         'db'=>array(
             'connectionString'=>'pgsql:host=localhost;port=5432;dbname=dev_sori',
-//            'connectionString'=>'pgsql:host=192.168.1.29;port=5432;dbname=dev_sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
             'password'=>'Nsusfd8263',
-//            'password'=>'123',
 			'charset'=>'utf8',
             ),
         'errorHandler'=>array(

@@ -6,8 +6,9 @@ class SiteController extends Controller
 {
     protected $letra;
     /**
-    * Declares class-based actions.
-    */
+     * Declares class-based actions.
+     * @access public
+     */
     public function actions()
     {
         return array(
@@ -27,6 +28,7 @@ class SiteController extends Controller
     /**
      * This is the default 'index' action that is invoked
      * when an action is not explicitly requested by users.
+     * @access public
      */
     public function actionIndex()
     {
@@ -60,6 +62,7 @@ class SiteController extends Controller
 
     /**
      * This is the action to handle external exceptions.
+     * @access public
      */
     public function actionError()
     {
@@ -73,32 +76,35 @@ class SiteController extends Controller
     }
 
     /**
-    * renderiza vista rutinarios
-    */
+     * renderiza vista rutinarios
+     * @access public
+     */
     public function actionRutinarios()
     {
         $this->render('rutinarios');
     }
 
     /**
-    * Renderiza vista personalizados
-    */
+     * Renderiza vista personalizados
+     * @access public
+     */
     public function actionPersonalizados()
     {
         $this->render('personalizados');
     }
 
     /**
-    * renderiza vista especificos
-    */
+     * Renderiza vista especificos
+     * @access public
+     */
     public function actionEspecificos()
     {
         $this->render('especificos');
     }
 
     /**
-    *
-    */
+     * @access public
+     */
     public function actionContact()
     {
         $model=new ContactForm;
@@ -123,6 +129,7 @@ class SiteController extends Controller
 
     /**
      * Displays the login page
+     * @access public
      */
     public function actionLogin()
     {
@@ -147,6 +154,7 @@ class SiteController extends Controller
 
     /**
      * Logs out the current user and redirect to homepage.
+     * @access public
      */
     public function actionLogout()
     {
@@ -154,7 +162,7 @@ class SiteController extends Controller
         $this->redirect(Yii::app()->homeUrl);
     }
 
-    public function actionRankin()
+    public function actionRanking()
     {
         $inicio=$_GET['inicio'];
         $fin=$_GET['fin'];
@@ -163,9 +171,10 @@ class SiteController extends Controller
     }
 
     /**
-    * Action encargada de envuiar por mail el tipo de reporte seleccionado,
-    * las especificaciones seran recibidas desde el array $_GET
-    */
+     * Action encargada de envuiar por mail el tipo de reporte seleccionado,
+     * las especificaciones seran recibidas desde el array $_GET
+     * @access public
+     */
     public function actionMail()
     {
         $this->vaciarAdjuntos();
@@ -308,6 +317,10 @@ class SiteController extends Controller
         }
         echo "Mensaje Enviado";
     }
+
+    /**
+     * @access public
+     */
     public function actionExcel()
     {
         $this->vaciarAdjuntos();
@@ -411,10 +424,12 @@ class SiteController extends Controller
             $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
         }
     }
+
     /**
-    * Action encargada de enviar por mail el tipo de reporte seleccionado,
-    * las especificaciones seran recibidas desde el array $_GET
-    */
+     * Action encargada de enviar por mail el tipo de reporte seleccionado,
+     * las especificaciones seran recibidas desde el array $_GET
+     * @access public
+     */
     public function actionMaillista()
     {
         $this->vaciarAdjuntos();
@@ -557,6 +572,10 @@ class SiteController extends Controller
         }
         echo "Mensaje Enviado";
     }
+
+    /**
+     * @access public
+     */
     public function genExcel($nombre,$html,$salida=true)
     {
         if(stripos($nombre,"Evolucion"))
@@ -592,8 +611,9 @@ class SiteController extends Controller
             }
         }
     }
+
     /**
-     *
+     * @access public
      */
     public function vaciarAdjuntos()
     {
