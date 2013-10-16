@@ -130,7 +130,9 @@ class Evolucion extends Reportes
             foreach ($resultados[$key] as $llave => $valores)
             {
                 $pos=$llave+2;
-                $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $valores->date_balance)->setCellValue('B'.$pos, $valores->minutes)->setCellValue('C'.$pos, $valores->$nombresDatos[$key]);
+                $seg=strtotime($valores->date_balance);
+                $fecha=date("m/d/Y",$seg);
+                $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $fecha)->setCellValue('B'.$pos, $valores->minutes)->setCellValue('C'.$pos, $valores->$nombresDatos[$key]);
             }
         }
 
