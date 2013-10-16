@@ -5,6 +5,11 @@
 class reportes extends CApplicationComponent
 {
     public $tipo;
+
+    /**
+     * @access protected
+     * @var date
+     */
     protected $fecha;
 
     /**
@@ -159,14 +164,11 @@ class reportes extends CApplicationComponent
             $fechaInicio=$inicio;
             $fechaFin=$fin;
         }
-        if(self::howManyMonths($fechaInicio,$fechaFin)<=2)
+        if(self::howManyMonths($fechaInicio,$fechaFin)<=2 && self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
         {
-            if(self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
-            {
-                $variable="<table><thead>";
-                $variable.="<tr><td>".$fechaInicio." a ".$fechaFin."</td></tr></thead>";
-                $variable.=RankingCompraVenta::reporte($fechaInicio,$fechaFin);   
-            }
+            $variable="<table><thead>";
+            $variable.="<tr><td>".$fechaInicio." a ".$fechaFin."</td></tr></thead>";
+            $variable.=RankingCompraVenta::reporte($fechaInicio,$fechaFin);   
         }
         else
         {
@@ -184,7 +186,7 @@ class reportes extends CApplicationComponent
                 $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
                 $variable.="<div>".RankingCompraVenta::getHtmlManagers(false,$fechaInicioTemp,$fechaFinTemp)."</div>";
                 $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div>".RankingCompraVenta::consolidados($fechaInicioTemp,$fechaFinTemp)."</div>";
+                $variable.="<div>".RankingCompraVenta::getHtmlConsolidados($fechaInicioTemp,$fechaFinTemp)."</div>";
                 $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
                 $variable.="</td>";
             }
@@ -903,6 +905,23 @@ class reportes extends CApplicationComponent
             return self::getNameMonth($inicio,true);
         }
         return "Del ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
+    }
+
+    /**
+     * Retorna un array con los apellidos de los managers
+     * @access protected
+     * @static
+     * @return array $array
+     */
+    protected static function getManagers()
+    {
+        $array=array();
+        $managers=Managers::getManagers();
+        foreach ($managers as $key => $manager)
+        {
+            $array[$manager->lastname]=$manager->lastname;
+        }
+        return $array;
     }
 }
 ?>
