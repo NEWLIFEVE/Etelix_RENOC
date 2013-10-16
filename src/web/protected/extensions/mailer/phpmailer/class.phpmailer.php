@@ -40,461 +40,460 @@ if (version_compare(PHP_VERSION, '5.0.0', '<') ) exit("Sorry, this version of PH
  * PHP email creation and transport class
  * @package PHPMailer
  */
-class PHPMailer {
+class PHPMailer
+{
+    /**
+     * PROPERTIES, PUBLIC
+     */
 
-  /////////////////////////////////////////////////
-  // PROPERTIES, PUBLIC
-  /////////////////////////////////////////////////
+    /**
+     * Email priority (1 = High, 3 = Normal, 5 = low).
+     * @var int
+     */
+    public $Priority=3;
 
-  /**
-   * Email priority (1 = High, 3 = Normal, 5 = low).
-   * @var int
-   */
-  public $Priority          = 3;
+    /**
+     * Sets the CharSet of the message.
+     * @var string
+     */
+    public $CharSet='iso-8859-1';
 
-  /**
-   * Sets the CharSet of the message.
-   * @var string
-   */
-  public $CharSet           = 'iso-8859-1';
+    /**
+     * Sets the Content-type of the message.
+     * @var string
+     */
+    public $ContentType='text/plain';
 
-  /**
-   * Sets the Content-type of the message.
-   * @var string
-   */
-  public $ContentType       = 'text/plain';
+    /**
+     * Sets the Encoding of the message. Options for this are
+     * "8bit", "7bit", "binary", "base64", and "quoted-printable".
+     * @var string
+     */
+    public $Encoding='8bit';
 
-  /**
-   * Sets the Encoding of the message. Options for this are
-   *  "8bit", "7bit", "binary", "base64", and "quoted-printable".
-   * @var string
-   */
-  public $Encoding          = '8bit';
+    /**
+     * Holds the most recent mailer error message.
+     * @var string
+     */
+    public $ErrorInfo='';
 
-  /**
-   * Holds the most recent mailer error message.
-   * @var string
-   */
-  public $ErrorInfo         = '';
+    /**
+     * Sets the From email address for the message.
+     * @var string
+     */
+    public $From='root@localhost';
 
-  /**
-   * Sets the From email address for the message.
-   * @var string
-   */
-  public $From              = 'root@localhost';
+    /**
+     * Sets the From name of the message.
+     * @var string
+     */
+    public $FromName='Root User';
 
-  /**
-   * Sets the From name of the message.
-   * @var string
-   */
-  public $FromName          = 'Root User';
+    /**
+     * Sets the Sender email (Return-Path) of the message. If not empty,
+     * will be sent via -f to sendmail or as 'MAIL FROM' in smtp mode.
+     * @var string
+     */
+    public $Sender='';
 
-  /**
-   * Sets the Sender email (Return-Path) of the message.  If not empty,
-   * will be sent via -f to sendmail or as 'MAIL FROM' in smtp mode.
-   * @var string
-   */
-  public $Sender            = '';
+    /**
+     * Sets the Return-Path of the message.  If empty, it will
+     * be set to either From or Sender.
+     * @var string
+     */
+    public $ReturnPath='';
 
-  /**
-   * Sets the Return-Path of the message.  If empty, it will
-   * be set to either From or Sender.
-   * @var string
-   */
-  public $ReturnPath        = '';
+    /**
+     * Sets the Subject of the message.
+     * @var string
+     */
+    public $Subject='';
 
-  /**
-   * Sets the Subject of the message.
-   * @var string
-   */
-  public $Subject           = '';
+    /**
+     * Sets the Body of the message. This can be either an HTML or text body.
+     * If HTML then run IsHTML(true).
+     * @var string
+     */
+    public $Body='';
 
-  /**
-   * Sets the Body of the message.  This can be either an HTML or text body.
-   * If HTML then run IsHTML(true).
-   * @var string
-   */
-  public $Body              = '';
+    /**
+     * Sets the text-only body of the message.  This automatically sets the
+     * email to multipart/alternative. This body can be read by mail
+     * clients that do not have HTML email capability such as mutt. Clients
+     * that can read HTML will view the normal Body.
+     * @var string
+     */
+    public $AltBody='';
 
-  /**
-   * Sets the text-only body of the message.  This automatically sets the
-   * email to multipart/alternative.  This body can be read by mail
-   * clients that do not have HTML email capability such as mutt. Clients
-   * that can read HTML will view the normal Body.
-   * @var string
-   */
-  public $AltBody           = '';
+    /**
+     * Stores the complete compiled MIME message body.
+     * @var string
+     * @access protected
+     */
+    protected $MIMEBody='';
 
-  /**
-   * Stores the complete compiled MIME message body.
-   * @var string
-   * @access protected
-   */
-  protected $MIMEBody       = '';
+    /**
+     * Stores the complete compiled MIME message headers.
+     * @var string
+     * @access protected
+     */
+    protected $MIMEHeader='';
 
-  /**
-   * Stores the complete compiled MIME message headers.
-   * @var string
-   * @access protected
-   */
-  protected $MIMEHeader     = '';
+    /**
+     * Stores the extra header list which CreateHeader() doesn't fold in
+     * @var string
+     * @access protected
+     */
+    protected $mailHeader='';
 
-  /**
-   * Stores the extra header list which CreateHeader() doesn't fold in
-   * @var string
-   * @access protected
-  */
-  protected $mailHeader     = '';
+    /**
+     * Sets word wrapping on the body of the message to a given number of characters.
+     * @var int
+     */
+    public $WordWrap=0;
 
-  /**
-   * Sets word wrapping on the body of the message to a given number of
-   * characters.
-   * @var int
-   */
-  public $WordWrap          = 0;
+    /**
+     * Method to send mail: ("mail", "sendmail", or "smtp").
+     * @var string
+     */
+    public $Mailer='mail';
 
-  /**
-   * Method to send mail: ("mail", "sendmail", or "smtp").
-   * @var string
-   */
-  public $Mailer            = 'mail';
+    /**
+     * Sets the path of the sendmail program.
+     * @var string
+     */
+    public $Sendmail='/usr/sbin/sendmail';
 
-  /**
-   * Sets the path of the sendmail program.
-   * @var string
-   */
-  public $Sendmail          = '/usr/sbin/sendmail';
+    /**
+     * Determine if mail() uses a fully sendmail compatible MTA that
+     * supports sendmail's "-oi -f" options
+     * @var boolean
+     */
+    public $UseSendmailOptions=true;
 
-  /**
-   * Determine if mail() uses a fully sendmail compatible MTA that
-   * supports sendmail's "-oi -f" options
-   * @var boolean
-   */
-  public $UseSendmailOptions	= true;
-  
-  /**
-   * Path to PHPMailer plugins.  Useful if the SMTP class
-   * is in a different directory than the PHP include path.
-   * @var string
-   */
-  public $PluginDir         = '';
+    /**
+     * Path to PHPMailer plugins. Useful if the SMTP class
+     * is in a different directory than the PHP include path.
+     * @var string
+     */
+    public $PluginDir='';
 
-  /**
-   * Sets the email address that a reading confirmation will be sent.
-   * @var string
-   */
-  public $ConfirmReadingTo  = '';
+    /**
+     * Sets the email address that a reading confirmation will be sent.
+     * @var string
+     */
+    public $ConfirmReadingTo='';
 
-  /**
-   * Sets the hostname to use in Message-Id and Received headers
-   * and as default HELO string. If empty, the value returned
-   * by SERVER_NAME is used or 'localhost.localdomain'.
-   * @var string
-   */
-  public $Hostname          = '';
+    /**
+     * Sets the hostname to use in Message-Id and Received headers
+     * and as default HELO string. If empty, the value returned
+     * by SERVER_NAME is used or 'localhost.localdomain'.
+     * @var string
+     */
+    public $Hostname='';
 
-  /**
-   * Sets the message ID to be used in the Message-Id header.
-   * If empty, a unique id will be generated.
-   * @var string
-   */
-  public $MessageID         = '';
+    /**
+     * Sets the message ID to be used in the Message-Id header.
+     * If empty, a unique id will be generated.
+     * @var string
+     */
+    public $MessageID='';
 
-  /**
-   * Sets the message Date to be used in the Date header.
-   * If empty, the current date will be added.
-   * @var string
-   */
-  public $MessageDate       = '';
+    /**
+     * Sets the message Date to be used in the Date header.
+     * If empty, the current date will be added.
+     * @var string
+     */
+    public $MessageDate='';
 
-  /////////////////////////////////////////////////
-  // PROPERTIES FOR SMTP
-  /////////////////////////////////////////////////
+    /**
+     * PROPERTIES FOR SMTP
+     */
 
-  /**
-   * Sets the SMTP hosts.
-   *
-   * All hosts must be separated by a
-   * semicolon.  You can also specify a different port
-   * for each host by using this format: [hostname:port]
-   * (e.g. "smtp1.example.com:25;smtp2.example.com").
-   * Hosts will be tried in order.
-   * @var string
-   */
-  public $Host          = 'localhost';
+    /**
+     * Sets the SMTP hosts.
+     *
+     * All hosts must be separated by a
+     * semicolon.  You can also specify a different port
+     * for each host by using this format: [hostname:port]
+     * (e.g. "smtp1.example.com:25;smtp2.example.com").
+     * Hosts will be tried in order.
+     * @var string
+     */
+    public $Host='localhost';
 
-  /**
-   * Sets the default SMTP server port.
-   * @var int
-   */
-  public $Port          = 25;
+    /**
+     * Sets the default SMTP server port.
+     * @var int
+     */
+    public $Port=25;
 
-  /**
-   * Sets the SMTP HELO of the message (Default is $Hostname).
-   * @var string
-   */
-  public $Helo          = '';
+    /**
+     * Sets the SMTP HELO of the message (Default is $Hostname).
+     * @var string
+     */
+    public $Helo='';
 
-  /**
-   * Sets connection prefix. Options are "", "ssl" or "tls"
-   * @var string
-   */
-  public $SMTPSecure    = '';
+    /**
+     * Sets connection prefix. Options are "", "ssl" or "tls"
+     * @var string
+     */
+    public $SMTPSecure='';
 
-  /**
-   * Sets SMTP authentication. Utilizes the Username and Password variables.
-   * @var bool
-   */
-  public $SMTPAuth      = false;
+    /**
+     * Sets SMTP authentication. Utilizes the Username and Password variables.
+     * @var bool
+     */
+    public $SMTPAuth=false;
 
-  /**
-   * Sets SMTP username.
-   * @var string
-   */
-  public $Username      = '';
+    /**
+     * Sets SMTP username.
+     * @var string
+     */
+    public $Username='';
 
-  /**
-   * Sets SMTP password.
-   * @var string
-   */
-  public $Password      = '';
+    /**
+     * Sets SMTP password.
+     * @var string
+     */
+    public $Password='';
 
-  /**
-   *  Sets SMTP auth type. Options are LOGIN | PLAIN | NTLM  (default LOGIN)
-   *  @var string
-   */
-  public $AuthType      = '';
-  
-  /**
-   *  Sets SMTP realm.
-   *  @var string
-   */
-  public $Realm         = '';
+    /**
+     * Sets SMTP auth type. Options are LOGIN | PLAIN | NTLM  (default LOGIN)
+     * @var string
+     */
+    public $AuthType='';
 
-  /**
-   *  Sets SMTP workstation.
-   *  @var string
-   */
-  public $Workstation   = '';
+    /**
+     * Sets SMTP realm.
+     * @var string
+     */
+    public $Realm='';
 
-  /**
-   * Sets the SMTP server timeout in seconds.
-   * This function will not work with the win32 version.
-   * @var int
-   */
-  public $Timeout       = 10;
+      /**
+       *  Sets SMTP workstation.
+       *  @var string
+       */
+      public $Workstation   = '';
 
-  /**
-   * Sets SMTP class debugging on or off.
-   * @var bool
-   */
-  public $SMTPDebug     = false;
+      /**
+       * Sets the SMTP server timeout in seconds.
+       * This function will not work with the win32 version.
+       * @var int
+       */
+      public $Timeout       = 10;
 
-  /**
-   * Sets the function/method to use for debugging output.
-   * Right now we only honor "echo" or "error_log"
-   * @var string
-   */
-  public $Debugoutput     = "echo";
+      /**
+       * Sets SMTP class debugging on or off.
+       * @var bool
+       */
+      public $SMTPDebug     = false;
 
-  /**
-   * Prevents the SMTP connection from being closed after each mail
-   * sending.  If this is set to true then to close the connection
-   * requires an explicit call to SmtpClose().
-   * @var bool
-   */
-  public $SMTPKeepAlive = false;
+      /**
+       * Sets the function/method to use for debugging output.
+       * Right now we only honor "echo" or "error_log"
+       * @var string
+       */
+      public $Debugoutput     = "echo";
 
-  /**
-   * Provides the ability to have the TO field process individual
-   * emails, instead of sending to entire TO addresses
-   * @var bool
-   */
-  public $SingleTo      = false;
+      /**
+       * Prevents the SMTP connection from being closed after each mail
+       * sending.  If this is set to true then to close the connection
+       * requires an explicit call to SmtpClose().
+       * @var bool
+       */
+      public $SMTPKeepAlive = false;
 
-   /**
-   * If SingleTo is true, this provides the array to hold the email addresses
-   * @var bool
-   */
-  public $SingleToArray = array();
+      /**
+       * Provides the ability to have the TO field process individual
+       * emails, instead of sending to entire TO addresses
+       * @var bool
+       */
+      public $SingleTo      = false;
 
- /**
-   * Provides the ability to change the generic line ending
-   * NOTE: The default remains '\n'. We force CRLF where we KNOW
-   *        it must be used via self::CRLF
-   * @var string
-   */
-  public $LE              = "\n";
+       /**
+       * If SingleTo is true, this provides the array to hold the email addresses
+       * @var bool
+       */
+      public $SingleToArray = array();
 
-   /**
-   * Used with DKIM Signing
-   * required parameter if DKIM is enabled
-   *
-   * domain selector example domainkey
-   * @var string
-   */
-  public $DKIM_selector   = '';
+     /**
+       * Provides the ability to change the generic line ending
+       * NOTE: The default remains '\n'. We force CRLF where we KNOW
+       *        it must be used via self::CRLF
+       * @var string
+       */
+      public $LE              = "\n";
 
-  /**
-   * Used with DKIM Signing
-   * required if DKIM is enabled, in format of email address 'you@yourdomain.com' typically used as the source of the email
-   * @var string
-   */
-  public $DKIM_identity   = '';
+       /**
+       * Used with DKIM Signing
+       * required parameter if DKIM is enabled
+       *
+       * domain selector example domainkey
+       * @var string
+       */
+      public $DKIM_selector   = '';
 
-  /**
-   * Used with DKIM Signing
-   * optional parameter if your private key requires a passphras
-   * @var string
-   */
-  public $DKIM_passphrase   = '';
+      /**
+       * Used with DKIM Signing
+       * required if DKIM is enabled, in format of email address 'you@yourdomain.com' typically used as the source of the email
+       * @var string
+       */
+      public $DKIM_identity   = '';
 
-  /**
-   * Used with DKIM Singing
-   * required if DKIM is enabled, in format of email address 'domain.com'
-   * @var string
-   */
-  public $DKIM_domain     = '';
+      /**
+       * Used with DKIM Signing
+       * optional parameter if your private key requires a passphras
+       * @var string
+       */
+      public $DKIM_passphrase   = '';
 
-  /**
-   * Used with DKIM Signing
-   * required if DKIM is enabled, path to private key file
-   * @var string
-   */
-  public $DKIM_private    = '';
+      /**
+       * Used with DKIM Singing
+       * required if DKIM is enabled, in format of email address 'domain.com'
+       * @var string
+       */
+      public $DKIM_domain     = '';
 
-  /**
-   * Callback Action function name.
-   * The function that handles the result of the send email action.
-   * It is called out by Send() for each email sent.
-   *
-   * Value can be:
-   * - 'function_name' for function names
-   * - 'Class::Method' for static method calls
-   * - array($object, 'Method') for calling methods on $object
-   * See http://php.net/is_callable manual page for more details.
-   *
-   * Parameters:
-   *   bool    $result        result of the send action
-   *   string  $to            email address of the recipient
-   *   string  $cc            cc email addresses
-   *   string  $bcc           bcc email addresses
-   *   string  $subject       the subject
-   *   string  $body          the email body
-   *   string  $from          email address of sender
-   * @var string
-   */
-  public $action_function = ''; //'callbackAction';
+      /**
+       * Used with DKIM Signing
+       * required if DKIM is enabled, path to private key file
+       * @var string
+       */
+      public $DKIM_private    = '';
 
-  /**
-   * Sets the PHPMailer Version number
-   * @var string
-   */
-  public $Version         = '5.2.4';
+      /**
+       * Callback Action function name.
+       * The function that handles the result of the send email action.
+       * It is called out by Send() for each email sent.
+       *
+       * Value can be:
+       * - 'function_name' for function names
+       * - 'Class::Method' for static method calls
+       * - array($object, 'Method') for calling methods on $object
+       * See http://php.net/is_callable manual page for more details.
+       *
+       * Parameters:
+       *   bool    $result        result of the send action
+       *   string  $to            email address of the recipient
+       *   string  $cc            cc email addresses
+       *   string  $bcc           bcc email addresses
+       *   string  $subject       the subject
+       *   string  $body          the email body
+       *   string  $from          email address of sender
+       * @var string
+       */
+      public $action_function = ''; //'callbackAction';
 
-  /**
-   * What to use in the X-Mailer header
-   * @var string NULL for default, whitespace for None, or actual string to use
-   */
-  public $XMailer         = '';
+      /**
+       * Sets the PHPMailer Version number
+       * @var string
+       */
+      public $Version         = '5.2.4';
 
-  /////////////////////////////////////////////////
-  // PROPERTIES, PRIVATE AND PROTECTED
-  /////////////////////////////////////////////////
+      /**
+       * What to use in the X-Mailer header
+       * @var string NULL for default, whitespace for None, or actual string to use
+       */
+      public $XMailer         = '';
 
-  /**
-   * @var SMTP An instance of the SMTP sender class
-   * @access protected
-   */
-  protected   $smtp           = null;
-  /**
-   * @var array An array of 'to' addresses
-   * @access protected
-   */
-  protected   $to             = array();
-  /**
-   * @var array An array of 'cc' addresses
-   * @access protected
-   */
-  protected   $cc             = array();
-  /**
-   * @var array An array of 'bcc' addresses
-   * @access protected
-   */
-  protected   $bcc            = array();
-  /**
-   * @var array An array of reply-to name and address
-   * @access protected
-   */
-  protected   $ReplyTo        = array();
-  /**
-   * @var array An array of all kinds of addresses: to, cc, bcc, replyto
-   * @access protected
-   */
-  protected   $all_recipients = array();
-  /**
-   * @var array An array of attachments
-   * @access protected
-   */
-  protected   $attachment     = array();
-  /**
-   * @var array An array of custom headers
-   * @access protected
-   */
-  protected   $CustomHeader   = array();
-  /**
-   * @var string The message's MIME type
-   * @access protected
-   */
-  protected   $message_type   = '';
-  /**
-   * @var array An array of MIME boundary strings
-   * @access protected
-   */
-  protected   $boundary       = array();
-  /**
-   * @var array An array of available languages
-   * @access protected
-   */
-  protected   $language       = array();
-  /**
-   * @var integer The number of errors encountered
-   * @access protected
-   */
-  protected   $error_count    = 0;
-  /**
-   * @var string The filename of a DKIM certificate file
-   * @access protected
-   */
-  protected   $sign_cert_file = '';
-  /**
-   * @var string The filename of a DKIM key file
-   * @access protected
-   */
-  protected   $sign_key_file  = '';
-  /**
-   * @var string The password of a DKIM key
-   * @access protected
-   */
-  protected   $sign_key_pass  = '';
-  /**
-   * @var boolean Whether to throw exceptions for errors
-   * @access protected
-   */
-  protected   $exceptions     = false;
+      /////////////////////////////////////////////////
+      // PROPERTIES, PRIVATE AND PROTECTED
+      /////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////
-  // CONSTANTS
-  /////////////////////////////////////////////////
+      /**
+       * @var SMTP An instance of the SMTP sender class
+       * @access protected
+       */
+      protected   $smtp           = null;
+      /**
+       * @var array An array of 'to' addresses
+       * @access protected
+       */
+      protected   $to             = array();
+      /**
+       * @var array An array of 'cc' addresses
+       * @access protected
+       */
+      protected   $cc             = array();
+      /**
+       * @var array An array of 'bcc' addresses
+       * @access protected
+       */
+      protected   $bcc            = array();
+      /**
+       * @var array An array of reply-to name and address
+       * @access protected
+       */
+      protected   $ReplyTo        = array();
+      /**
+       * @var array An array of all kinds of addresses: to, cc, bcc, replyto
+       * @access protected
+       */
+      protected   $all_recipients = array();
+      /**
+       * @var array An array of attachments
+       * @access protected
+       */
+      protected   $attachment     = array();
+      /**
+       * @var array An array of custom headers
+       * @access protected
+       */
+      protected   $CustomHeader   = array();
+      /**
+       * @var string The message's MIME type
+       * @access protected
+       */
+      protected   $message_type   = '';
+      /**
+       * @var array An array of MIME boundary strings
+       * @access protected
+       */
+      protected   $boundary       = array();
+      /**
+       * @var array An array of available languages
+       * @access protected
+       */
+      protected   $language       = array();
+      /**
+       * @var integer The number of errors encountered
+       * @access protected
+       */
+      protected   $error_count    = 0;
+      /**
+       * @var string The filename of a DKIM certificate file
+       * @access protected
+       */
+      protected   $sign_cert_file = '';
+      /**
+       * @var string The filename of a DKIM key file
+       * @access protected
+       */
+      protected   $sign_key_file  = '';
+      /**
+       * @var string The password of a DKIM key
+       * @access protected
+       */
+      protected   $sign_key_pass  = '';
+      /**
+       * @var boolean Whether to throw exceptions for errors
+       * @access protected
+       */
+      protected   $exceptions     = false;
 
-  const STOP_MESSAGE  = 0; // message only, continue processing
-  const STOP_CONTINUE = 1; // message?, likely ok to continue processing
-  const STOP_CRITICAL = 2; // message, plus full stop, critical error reached
-  const CRLF = "\r\n";     // SMTP RFC specified EOL
-  
-  /////////////////////////////////////////////////
-  // METHODS, VARIABLES
-  /////////////////////////////////////////////////
+      /////////////////////////////////////////////////
+      // CONSTANTS
+      /////////////////////////////////////////////////
+
+      const STOP_MESSAGE  = 0; // message only, continue processing
+      const STOP_CONTINUE = 1; // message?, likely ok to continue processing
+      const STOP_CRITICAL = 2; // message, plus full stop, critical error reached
+      const CRLF = "\r\n";     // SMTP RFC specified EOL
+      
+      /////////////////////////////////////////////////
+      // METHODS, VARIABLES
+      /////////////////////////////////////////////////
 
   /**
    * Calls actual mail() function, but in a safe_mode aware fashion
