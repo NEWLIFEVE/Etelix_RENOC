@@ -176,7 +176,27 @@ class reportes extends CApplicationComponent
             $fechaInicioTemp=$fechaInicio;
             $fechaFinTemp=$fechaFin;
             $arrayInicioTemp=null;
+            $apellidos=self::getManagers();
+            $objetos=array();
+            $ordenados=array();
+            $index=0;
             while (self::isLower($fechaInicioTemp,$fechaFin))
+            {
+                $arrayInicioTemp=explode('-',$fechaInicioTemp);
+                $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
+                $objetos[$index]['Titulo']=self::reportTitle($fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['Vendedores']=RankingCompraVenta::getManagers(true,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalVendedores']=RankingCompraVenta::getTotalManagers(true,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['Compradores']=RankingCompraVenta::getManagers(false,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalCompradores']=RankingCompraVenta::getTotalManagers(false,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['Consolidados']=RankingCompraVenta::getConsolidados(false,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalConsolidados']=RankingCompraVenta::getTotalConsolidado(false,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalMargen']=RankingCompraVenta::getMargenTotal(false,$fechaInicioTemp,$fechaFinTemp);
+                $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
+                $index+=1;
+            }
+
+            /*while (self::isLower($fechaInicioTemp,$fechaFin))
             {
                 $variable.="<td>";
                 $arrayInicioTemp=explode('-',$fechaInicioTemp);
@@ -189,7 +209,7 @@ class reportes extends CApplicationComponent
                 $variable.="<div>".RankingCompraVenta::getHtmlConsolidados($fechaInicioTemp,$fechaFinTemp)."</div>";
                 $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
                 $variable.="</td>";
-            }
+            }*/
             $variable.="</tr></table>";
         }            
         return $variable;
@@ -922,6 +942,41 @@ class reportes extends CApplicationComponent
             $array[$manager->lastname]=$manager->lastname;
         }
         return $array;
+    }
+
+    /**
+     * Recibe un array y objeto CActiveRecord y ordena el array de acuerdo al objeto
+     * @access protected
+     * @static
+     * @param array $lista
+     * @param CActiveRecord $objeto
+     * @return array
+     */
+    protected static function ordernar($lista,$objeto)
+    {
+        $ordenado=$temp=array();
+        foreach ($objeto as $key => $value)
+        {
+            $temp[$value->apellido]=$value->apellido;
+        }
+        if(count($temp) == count($lista))
+        {
+            return $temp;
+        }
+        elseif(count($temp)<count($lista))
+        {
+            foreach($temp as $key => $value)
+            {
+                $ordenado[]=$lista[$value];
+            }
+            foreach ($lista as $key => $value)
+            {
+                if($temp[$value]==null)
+                {
+                    $ordenado[]=$value;
+                }
+            }
+        }
     }
 }
 ?>
