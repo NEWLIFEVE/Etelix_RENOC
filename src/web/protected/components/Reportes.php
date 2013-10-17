@@ -223,7 +223,7 @@ class reportes extends CApplicationComponent
                 $variable.=RankingCompraVenta::getHeadManagers(false,$key,$ultimo);
                 $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalCompradores'],$key,$ultimo)."</table></div></td><br>";
             }
-            $variable.="</tr></table>";
+            $variable.="</tr></table><br>";
             $variable.="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
@@ -381,6 +381,15 @@ class reportes extends CApplicationComponent
                 break;
             case 3:
                 $color="background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 4:
+                $color="background-color:#0092F4; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 5:
+                $color="background-color:#FF5100; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+                break;
+            case 6:
+                $color="background-color:#51DA02; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
                 break;
         }
         return $color;
