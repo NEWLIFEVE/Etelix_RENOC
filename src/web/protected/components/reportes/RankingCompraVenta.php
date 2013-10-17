@@ -418,9 +418,10 @@ class RankingCompraVenta extends Reportes
             }
             if($value->apellido == $apellido)
             {
-                return "<tr>".$left."<td>".$value->minutes."</td><td>".$value->revenue."</td><td>".$value->margin."</td>".$right."</tr>";
+                return "<tr>".$left."<td>".Yii::app()->format->format_decimal($value->minutes)."</td><td>".Yii::app()->format->format_decimal($value->revenue)."</td><td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
             }
         }
+        return "<tr>".$left."<td>--</td><td>--</td><td>--</td>".$right."</tr>";
     }
 
     /**
@@ -437,7 +438,7 @@ class RankingCompraVenta extends Reportes
         {
             $right="<td></td>";
         }
-        return "<tr>".$left."<td>".$objeto->minutes."</td><td>".$objeto->revenue."</td><td>".$objeto->margin."</td>".$right."</tr>";
+        return "<tr>".$left."<td>".Yii::app()->format->format_decimal($objeto->minutes)."</td><td>".Yii::app()->format->format_decimal($objeto->revenue)."</td><td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
     }
 
     /**
@@ -465,7 +466,7 @@ class RankingCompraVenta extends Reportes
             }
             if($value->apellido == $apellido)
             {
-                return "<tr>".$left."<td>".$value->margin."</td>".$right."</tr>";
+                return "<tr>".$left."<td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
             }
         }
     }
@@ -484,7 +485,7 @@ class RankingCompraVenta extends Reportes
         {
             $right="<td></td>";
         }
-        return "<tr>".$left."<td>".$objeto->margin."</td>".$right."</tr>";
+        return "<tr>".$left."<td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
     }
 
     /**
@@ -511,6 +512,26 @@ class RankingCompraVenta extends Reportes
         if($column>=$last)
         {
             $array=array('Minutos','Revenue','Margin','Ranking');
+        }
+        return self::cabecera($array,'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+    }
+
+    /**
+     * Retorna la cabecera de la tabla para los consolidados
+     * @access protected
+     * @static
+     * @param
+     */
+    protected static function getHeadConsolidados($column,$last)
+    {
+        $array=array('Margin');
+        if($column==0)
+        {
+            $array=array('Ranking','Consolidado (Ventas + Compras)','Margin');
+        }
+        if($column>=$last)
+        {
+            $array=array('Margin','Ranking');
         }
         return self::cabecera($array,'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
     }
