@@ -178,7 +178,6 @@ class reportes extends CApplicationComponent
             $arrayInicioTemp=null;
             $apellidos=self::getManagers();
             $objetos=array();
-            $ordenados=array();
             $index=0;
             while (self::isLower($fechaInicioTemp,$fechaFin))
             {
@@ -186,30 +185,53 @@ class reportes extends CApplicationComponent
                 $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
                 $objetos[$index]['Titulo']=self::reportTitle($fechaInicioTemp,$fechaFinTemp);
                 $objetos[$index]['Vendedores']=RankingCompraVenta::getManagers(true,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalVendedores']=RankingCompraVenta::getTotalManagers(true,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalVendedores']=RankingCompraVenta::getHtmlTotalManagers(true,$fechaInicioTemp,$fechaFinTemp);
                 $objetos[$index]['Compradores']=RankingCompraVenta::getManagers(false,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalCompradores']=RankingCompraVenta::getTotalManagers(false,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['Consolidados']=RankingCompraVenta::getConsolidados(false,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalConsolidados']=RankingCompraVenta::getTotalConsolidado(false,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalMargen']=RankingCompraVenta::getMargenTotal(false,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalCompradores']=RankingCompraVenta::getHtmlTotalManagers(false,$fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['Consolidados']=RankingCompraVenta::getConsolidados($fechaInicioTemp,$fechaFinTemp);
+                $objetos[$index]['TotalConsolidados']=RankingCompraVenta::getHtmlTotalConsolidado($fechaInicioTemp,$fechaFinTemp);
                 $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
                 $index+=1;
             }
-
-            /*while (self::isLower($fechaInicioTemp,$fechaFin))
+            $ordenados['Vendedores']=self::ordernar($apellidos,$objetos[count($objetos)-1]['Vendedores']);
+            $ordenados['Compradores']=self::ordernar($apellidos,$objetos[count($objetos)-1]['Vendedores']);
+            $ordenados['Consolidados']=self::ordernar($apellidos,$objetos[count($objetos)-1]['Vendedores']);
+            foreach ($objetos as $key => $objeto)
             {
-                $variable.="<td>";
-                $arrayInicioTemp=explode('-',$fechaInicioTemp);
-                $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
-                $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div>".RankingCompraVenta::getHtmlManagers(true,$fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div>".RankingCompraVenta::getHtmlManagers(false,$fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div style='align:center;'>".self::reportTitle($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $variable.="<div>".RankingCompraVenta::getHtmlConsolidados($fechaInicioTemp,$fechaFinTemp)."</div>";
-                $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
-                $variable.="</td>";
-            }*/
+                $variable.="<td><div>".$objeto['Titulo']."</div>";
+                //Vendedores
+                $variable.="<div><table>".self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+                $posicion=0;
+                foreach($ordenados['Vendedores'] as $key => $vendedor)
+                {
+                    $posicion+=1;
+                    $variable.=RankingCompraVenta::getRowManagers($vendedor,$objeto['Vendedores'],$posicion);
+                }
+                $variable.=self::cabecera(array('Ranking','Vendedor','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+                $variable.=$objeto['TotalVendedores']."</table></div>";
+                //Compradores
+                $variable.="<div>".$objeto['Titulo']."</div>";
+                $variable.="<div><table>".self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+                $posicion=0;
+                foreach($ordenados['Compradores'] as $key => $comprador)
+                {
+                    $posicion+=1;
+                    $variable.=RankingCompraVenta::getRowManagers($comprador,$objeto['Compradores'],$posicion);
+                }
+                $variable.=self::cabecera(array('Ranking','Comprador','Minutos','Revenue','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+                $variable.=$objeto['TotalCompradores']."</table></div>";
+                //Consolidados
+                $variable.="<div>".$objeto['Titulo']."</div>";
+                $variable.="<div><table>".self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+                $posicion=0;
+                foreach($ordenados['Consolidados'] as $key => $consolidado)
+                {
+                    $posicion+=1;
+                    $variable.=RankingCompraVenta::getRowConsolidado($consolidado,$objeto['Consolidados'],$posicion);
+                }
+                $variable.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+                $variable.=$objeto['TotalConsolidados']."</table></div></td>";
+            }
             $variable.="</tr></table>";
         }            
         return $variable;
