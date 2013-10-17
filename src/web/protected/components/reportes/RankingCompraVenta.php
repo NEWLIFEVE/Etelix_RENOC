@@ -424,6 +424,23 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
+     *
+     */
+    protected static function getRowTotalManagers($objeto,$column,$last)
+    {
+        $left=$right="";
+        if($column==0)
+        {
+            $left="<td></td><td>TOTAL</td>";
+        }
+        if($column>=$last)
+        {
+            $right="<td></td>";
+        }
+        return "<tr>".$left."<td>".$objeto->minutes."</td><td>".$objeto->revenue."</td><td>".$objeto->margin."</td>".$right."</tr>";
+    }
+
+    /**
      * Recibe un objeto de modelo y un apellido, retorna una fila <tr> con los datos del objeto
      * @access protected
      * @static
@@ -451,6 +468,23 @@ class RankingCompraVenta extends Reportes
                 return "<tr>".$left."<td>".$value->margin."</td>".$right."</tr>";
             }
         }
+    }
+
+    /**
+     *
+     */
+    protected static function getRowTotalConsolidado($objeto,$column,$last)
+    {
+        $left=$right="";
+        if($column==0)
+        {
+            $left="<td></td><td>Total Consolidado</td>";
+        }
+        if($column>=$last)
+        {
+            $right="<td></td>";
+        }
+        return "<tr>".$left."<td>".$objeto->margin."</td>".$right."</tr>";
     }
 
     /**
