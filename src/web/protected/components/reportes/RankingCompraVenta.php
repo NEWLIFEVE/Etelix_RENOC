@@ -398,15 +398,27 @@ class RankingCompraVenta extends Reportes
      * @static
      * @param string $apellido
      * @param CActiveRecord $objeto
+     * @param int $number es la posicion que tiene en el ranking
+     * @param int $column es el numero del mes
+     * @param int $last es el numero del ultimo mes
      * @return string
      */
-    protected static function getRowManagers($apellido,$objeto,$number)
+    protected static function getRowManagers($apellido,$objeto,$number,$column,$last)
     {
+        $left=$right="";
         foreach ($objeto as $key => $value)
         {
+            if($column==0)
+            {
+                $left="<td>".$number."</td><td>".$value->apellido."</td>";
+            }
+            if($column>=$last)
+            {
+                $right="<td>".$number."</td>";
+            }
             if($value->apellido == $apellido)
             {
-                return "<tr><td>".$number."</td><td>".$value->apellido."</td><td>".$value->minutes."</td><td>".$value->revenue."</td><td>".$value->margin."</td><td>".$number."</td></tr>";
+                return "<tr>".$left."<td>".$value->minutes."</td><td>".$value->revenue."</td><td>".$value->margin."</td>".$right."</tr>";
             }
         }
     }
@@ -417,17 +429,57 @@ class RankingCompraVenta extends Reportes
      * @static
      * @param string $apellido
      * @param CActiveRecord $objeto
+     * @param int $column es el numero del mes
+     * @param int $last es el numero del ultimo mes
      * @return string
      */
-    protected static function getRowConsolidado($apellido,$objeto,$number)
+    protected static function getRowConsolidado($apellido,$objeto,$number,$column,$last)
     {
+        $left=$right="";
         foreach ($objeto as $key => $value)
         {
+            if($column==0)
+            {
+                $left="<td>".$number."</td><td>".$value->apellido."</td>";
+            }
+            if($column>=$last)
+            {
+                $right="<td>".$number."</td>";
+            }
             if($value->apellido == $apellido)
             {
-                return "<tr><td>".$number."</td><td>".$value->apellido."</td><td>".$value->margin."</td><td>".$number."</td></tr>";
+                return "<tr>".$left."<td>".$value->margin."</td>".$right."</tr>";
             }
         }
     }
+
+    /**
+     * Retorna la cabecera de la tabla para los managers
+     * @access protected
+     * @static
+     * @param
+     */
+    protected static function getHeadManagers($type,$column,$last)
+    {
+        if($type)
+        {
+            $manager="Vendedor";
+        }
+        else
+        {
+            $manager="Comprador";
+        }
+        $array=array('Minutos','Revenue','Margin');
+        if($column==0)
+        {
+            $array=array('Ranking',$manager,'Minutos','Revenue','Margin');
+        }
+        if($column>=$last)
+        {
+            $array=array('Minutos','Revenue','Margin','Ranking');
+        }
+        return self::cabecera($array,'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+    }
+
 }
 ?>
