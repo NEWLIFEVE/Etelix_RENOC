@@ -400,13 +400,13 @@ class RankingCompraVenta extends Reportes
      * @param CActiveRecord $objeto
      * @return string
      */
-    protected static function getRowManagers($apellido,$objeto)
+    protected static function getRowManagers($apellido,$objeto,$number)
     {
         foreach ($objeto as $key => $value)
         {
             if($value->apellido == $apellido)
             {
-                return "<tr><td>".$value->apellido."</td><td>".$value->minutes."</td><td>".$value->revenue."</td><td>".$value->margin."</td></tr>";
+                return "<tr><td>".$number."</td><td>".$value->apellido."</td><td>".$value->minutes."</td><td>".$value->revenue."</td><td>".$value->margin."</td><td>".$number."</td></tr>";
             }
         }
     }
@@ -419,13 +419,13 @@ class RankingCompraVenta extends Reportes
      * @param CActiveRecord $objeto
      * @return string
      */
-    protected static function getRowConsolidado($apellido,$objeto)
+    protected static function getRowConsolidado($apellido,$objeto,$number)
     {
         foreach ($objeto as $key => $value)
         {
             if($value->apellido == $apellido)
             {
-                return "<tr><td>".$value->apellido."</td><td>".$value->margin."</td></tr>";
+                return "<tr><td>".$number."</td><td>".$value->apellido."</td><td>".$value->margin."</td><td>".$number."</td></tr>";
             }
         }
     }
