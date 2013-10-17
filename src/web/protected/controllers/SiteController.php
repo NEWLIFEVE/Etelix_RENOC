@@ -167,7 +167,7 @@ class SiteController extends Controller
         $inicio=$_GET['inicio'];
         $fin=$_GET['fin'];
         $correo=Yii::app()->reportes->RankingCompraVenta($inicio,$fin);
-        $this->genExcel('Rankin Compra Venta',$correo);
+        $this->genExcel('Rankin CompraVenta de '.str_replace("-","",$inicio).' al '.str_replace("-","",$fin),$correo);
     }
 
     /**
