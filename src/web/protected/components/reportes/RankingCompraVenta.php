@@ -410,5 +410,24 @@ class RankingCompraVenta extends Reportes
             }
         }
     }
+
+    /**
+     * Recibe un objeto de modelo y un apellido, retorna una fila <tr> con los datos del objeto
+     * @access protected
+     * @static
+     * @param string $apellido
+     * @param CActiveRecord $objeto
+     * @return string
+     */
+    protected static function getRowConsolidado($apellido,$objeto)
+    {
+        foreach ($objeto as $key => $value)
+        {
+            if($value->apellido == $apellido)
+            {
+                return "<tr><td>".$value->apellido."</td><td>".$value->margin."</td></tr>";
+            }
+        }
+    }
 }
 ?>
