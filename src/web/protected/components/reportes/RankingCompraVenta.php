@@ -403,9 +403,19 @@ class RankingCompraVenta extends Reportes
      * @param int $last es el numero del ultimo mes
      * @return string
      */
-    protected static function getRowManagers($apellido,$objeto,$number,$column,$last)
+    protected static function getRowManagers($apellido,$objeto,$number,$column,$last,$tipo=true)
     {
         $left=$right="";
+        $n=array(
+            true=>array('par'=>1,'impar'=>4),
+            false=>array('par'=>2,'impar'=>5)
+            );
+        if ($column%2==0){
+            $color=$n[$tipo]['par'];
+        }else{
+            $color=$n[$tipo]['impar'];
+        }
+        $style=self::colorRankingCV($color);
         foreach ($objeto as $key => $value)
         {
             if($column==0)
@@ -418,10 +428,10 @@ class RankingCompraVenta extends Reportes
             }
             if($value->apellido == $apellido)
             {
-                return "<tr>".$left."<td>".Yii::app()->format->format_decimal($value->minutes)."</td><td>".Yii::app()->format->format_decimal($value->revenue)."</td><td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
+                return "<tr style='".$style."'>".$left."<td>".Yii::app()->format->format_decimal($value->minutes)."</td><td>".Yii::app()->format->format_decimal($value->revenue)."</td><td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
             }
         }
-        return "<tr>".$left."<td>--</td><td>--</td><td>--</td>".$right."</tr>";
+        return "<tr style='".$style."'>".$left."<td>--</td><td>--</td><td>--</td>".$right."</tr>";
     }
 
     /**
@@ -438,7 +448,7 @@ class RankingCompraVenta extends Reportes
         {
             $right="<td></td>";
         }
-        return "<tr>".$left."<td>".Yii::app()->format->format_decimal($objeto->minutes)."</td><td>".Yii::app()->format->format_decimal($objeto->revenue)."</td><td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
+        return "<tr style='background-color:#999999; color:#FFFFFF; text-align:center;'>".$left."<td>".Yii::app()->format->format_decimal($objeto->minutes)."</td><td>".Yii::app()->format->format_decimal($objeto->revenue)."</td><td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
     }
 
     /**
@@ -453,6 +463,12 @@ class RankingCompraVenta extends Reportes
      */
     protected static function getRowConsolidado($apellido,$objeto,$number,$column,$last)
     {
+        if ($column%2==0){
+            $color=3;
+        }else{
+            $color=6;
+        }
+        $style=self::colorRankingCV($color);
         $left=$right="";
         foreach ($objeto as $key => $value)
         {
@@ -466,7 +482,7 @@ class RankingCompraVenta extends Reportes
             }
             if($value->apellido == $apellido)
             {
-                return "<tr>".$left."<td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
+                return "<tr style='".$style."'>".$left."<td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
             }
         }
     }
@@ -474,18 +490,19 @@ class RankingCompraVenta extends Reportes
     /**
      *
      */
-    protected static function getRowTotalConsolidado($objeto,$column,$last)
+    protected static function getRowTotalConsolidado($objeto,$column,$last,$type=true)
     {
         $left=$right="";
+        $n=array(true=>'Total Consolidado',false=>'Total Margen');
         if($column==0)
         {
-            $left="<td></td><td>Total Consolidado</td>";
+            $left="<td></td><td>".$n[$type]."</td>";
         }
         if($column>=$last)
         {
             $right="<td></td>";
         }
-        return "<tr>".$left."<td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
+        return "<tr style='background-color:#999999; color:#FFFFFF; text-align:center;'>".$left."<td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
     }
 
     /**

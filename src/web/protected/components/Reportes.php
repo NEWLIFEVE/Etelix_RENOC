@@ -200,25 +200,25 @@ class reportes extends CApplicationComponent
             $variable="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
-                $variable.="<td><div>".$objeto['Titulo']."</div>";
+                $variable.="<td><div style='background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
                 //Vendedores
                 $variable.="<div><table>".RankingCompraVenta::getHeadManagers(true,$key,$ultimo);
                 $posicion=0;
                 foreach($ordenados['Vendedores'] as $keyV => $vendedor)
                 {
                     $posicion+=1;
-                    $variable.=RankingCompraVenta::getRowManagers($vendedor,$objeto['Vendedores'],$posicion,$key,$ultimo);
+                    $variable.=RankingCompraVenta::getRowManagers($vendedor,$objeto['Vendedores'],$posicion,$key,$ultimo,true);
                 }
                 $variable.=RankingCompraVenta::getHeadManagers(true,$key,$ultimo);
                 $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalVendedores'],$key,$ultimo)."</table></div><br>";
                 //Compradores
-                $variable.="<div>".$objeto['Titulo']."</div>";
+                $variable.="<div style='background-color:#FFC8AE; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
                 $variable.="<div><table>".RankingCompraVenta::getHeadManagers(false,$key,$ultimo);
                 $posicion=0;
                 foreach($ordenados['Compradores'] as $keyC => $comprador)
                 {
                     $posicion+=1;
-                    $variable.=RankingCompraVenta::getRowManagers($comprador,$objeto['Compradores'],$posicion,$key,$ultimo);
+                    $variable.=RankingCompraVenta::getRowManagers($comprador,$objeto['Compradores'],$posicion,$key,$ultimo,false);
                 }
                 $variable.=RankingCompraVenta::getHeadManagers(false,$key,$ultimo);
                 $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalCompradores'],$key,$ultimo)."</table></div></td><br>";
@@ -227,7 +227,7 @@ class reportes extends CApplicationComponent
             $variable.="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
-                $variable.="<td><div>".$objeto['Titulo']."</div>";
+                $variable.="<td><div style='background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
                 $variable.="<div><table>".RankingCompraVenta::getHeadConsolidados($key,$ultimo);
                 $posicion=0;
                 foreach($ordenados['Consolidados'] as $keyC => $consolidado)
@@ -236,7 +236,8 @@ class reportes extends CApplicationComponent
                     $variable.=RankingCompraVenta::getRowConsolidado($consolidado,$objeto['Consolidados'],$posicion,$key,$ultimo);
                 }
                 $variable.=RankingCompraVenta::getHeadConsolidados($key,$ultimo);
-                $variable.=RankingCompraVenta::getRowTotalConsolidado($objeto['TotalConsolidados'],$key,$ultimo)."</table></div></td>";
+                $variable.=RankingCompraVenta::getRowTotalConsolidado($objeto['TotalMargen'],$key,$ultimo,true);
+                $variable.=RankingCompraVenta::getRowTotalConsolidado($objeto['TotalConsolidados'],$key,$ultimo,false)."</table></div></td>";
             }
             $variable.="</tr></table>";
         }            
@@ -370,7 +371,8 @@ class reportes extends CApplicationComponent
      * @param int $tipo
      * @return string $color
      */
-    public static function colorRankingCV($tipo){
+    public static function colorRankingCV($tipo)
+    {
         switch($tipo)
         {
             case 1:
