@@ -194,9 +194,9 @@ class reportes extends CApplicationComponent
                 $index+=1;
             }
             $ultimo=count($objetos)-1;
-            $ordenados['Vendedores']=self::ordernar($apellidos,$objetos[$ultimo]['Vendedores']);
-            $ordenados['Compradores']=self::ordernar($apellidos,$objetos[$ultimo]['Vendedores']);
-            $ordenados['Consolidados']=self::ordernar($apellidos,$objetos[$ultimo]['Vendedores']);
+            $ordenados['Vendedores']=self::ordenar($apellidos,$objetos[$ultimo]['Vendedores']);
+            $ordenados['Compradores']=self::ordenar($apellidos,$objetos[$ultimo]['Compradores']);
+            $ordenados['Consolidados']=self::ordenar($apellidos,$objetos[$ultimo]['Consolidados']);
             $variable="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
@@ -995,7 +995,7 @@ class reportes extends CApplicationComponent
      * @param CActiveRecord $objeto
      * @return array
      */
-    protected static function ordernar($lista,$objeto)
+    protected static function ordenar($lista,$objeto)
     {
         $ordenado=$temp=array();
         foreach ($objeto as $key => $value)
@@ -1014,12 +1014,13 @@ class reportes extends CApplicationComponent
             }
             foreach ($lista as $key => $value)
             {
-                if($temp[$value]==null)
+                if(!isset($temp[$value]))
                 {
                     $ordenado[]=$value;
                 }
             }
         }
+        return $ordenado;
     }
 }
 ?>
