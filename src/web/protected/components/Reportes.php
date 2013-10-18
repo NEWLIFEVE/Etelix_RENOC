@@ -224,7 +224,7 @@ class reportes extends CApplicationComponent
                 $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalCompradores'],$key,$ultimo)."</table></div></td><br>";
             }
             $variable.="</tr></table><br>";
-            $variable.="<table><tr>";
+            $variable.="<p></p><table><tr>";
             foreach ($objetos as $key => $objeto)
             {
                 $variable.="<td><div style='background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
@@ -965,7 +965,7 @@ class reportes extends CApplicationComponent
         $f=explode('-', $fin);
         if($i[2]==1 && $f[2]==self::howManyDays($fin))
         {
-            return self::getNameMonth($inicio,true);
+            return self::getNameMonth($inicio,true)." ".$f[0];
         }
         return "Del ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
     }
