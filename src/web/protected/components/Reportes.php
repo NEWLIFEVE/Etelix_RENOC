@@ -97,8 +97,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialVendedor($fecha)
     {
-        $variable=DistComercialVendedor::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("vendedor");
     }
 
     /**
@@ -108,8 +107,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialTerminoPago($fecha)
     {
-        $variable=DistComercialTerminoPago::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("pago");
     }
 
     /**
@@ -119,8 +117,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialMonetizable($fecha)
     {
-        $variable=DistComercialMonetizable::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("monetizable");
     }
 
     /**
@@ -130,8 +127,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialCompany($fecha)
     {
-        $variable=DistComercialCompany::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("company");
     }
 
     /**
@@ -141,8 +137,17 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialCarrier($fecha)
     {
-        $variable=DistComercialCarrier::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("carrier");
+    }
+
+    /**
+     * @access public
+     * @param date $fecha
+     * @return string $variable
+     */
+    public function DistComercialUnidad($fecha)
+    {
+        return DistribucionComercial::reporte("unidad");
     }
 
     /**
