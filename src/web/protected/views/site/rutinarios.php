@@ -189,6 +189,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
+                        <input type="checkbox" value="true" id="DCUP" class="custom-checkbox" name="lista[DCUP]">
+                        <label for="DCUP">
+                            <h4 id="td5">
+                                DC Unidad Produccion
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
                         <input type="checkbox" value="true" id="Ev" class="custom-checkbox" name="lista[Ev]">
                         <label for="Ev">
                             <h4 id="td5">

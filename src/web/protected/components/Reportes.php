@@ -145,7 +145,7 @@ class reportes extends CApplicationComponent
      * @param date $fecha
      * @return string $variable
      */
-    public function DistComercialUnidadProdducion($fecha)
+    public function DistComercialUnidadProduccion($fecha)
     {
         return DistribucionComercial::reporte("unidad");
     }
@@ -291,7 +291,7 @@ class reportes extends CApplicationComponent
         $reporte->genExcel($nombre);
         return "Revisar archivo adjunto";
     }
-
+    
     /**
      * Metodo encargado de pintar las filas de los reportes
      * @access public
