@@ -311,6 +311,13 @@ class SiteController extends Controller
                 $correos['distribucionComercialCarrier']['cuerpo']=Yii::app()->reportes->distComercialCarrier($fecha);
                 $correos['distribucionComercialCarrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Carrier al ".str_replace("-","",$fecha).".xls";
             }
+            //Distribucion Comercial por Unidad de Produccion
+            if(isset($_POST['lista']['DCUP']))
+            {
+                $correos['DCUP']['asunto']="DC Unidad de Produccion al ".str_replace("-","",$fecha);
+                $correos['DCUP']['cuerpo']=Yii::app()->reportes->DistComercialUnidadProdducion($fecha);
+                $correos['DCUP']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."DC Carrier al ".str_replace("-","",$fecha).".xls";
+            }
             if(isset($_POST['lista']['Ev']))
             {
                 $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$fecha).".xlsx";
@@ -439,6 +446,12 @@ class SiteController extends Controller
             {
                 $archivos['distribucionComercialCarrier']['nombre']="DC Carrier al ".str_replace("-","",$fecha);
                 $archivos['distribucionComercialCarrier']['cuerpo']=Yii::app()->reportes->distComercialCarrier($fecha);
+            }
+            //Distribucion Comercial por Unidad de Produccion
+            if(isset($_GET['lista']['DCUP']))
+            {
+                $archivos['DCUP']['nombre']="DC Unidad de Produccion al ".str_replace("-","",$fecha);
+                $archivos['DCUP']['cuerpo']=Yii::app()->reportes->DistComercialUnidadProdducion($fecha);
             }
             if(isset($_GET['lista']['Ev']))
             {
