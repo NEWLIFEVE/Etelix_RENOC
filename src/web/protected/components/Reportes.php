@@ -145,7 +145,7 @@ class reportes extends CApplicationComponent
      * @param date $fecha
      * @return string $variable
      */
-    public function DistComercialUnidad($fecha)
+    public function DistComercialUnidadProdducion($fecha)
     {
         return DistribucionComercial::reporte("unidad");
     }
