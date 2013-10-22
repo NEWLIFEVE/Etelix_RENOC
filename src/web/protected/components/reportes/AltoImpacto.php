@@ -1031,24 +1031,7 @@ class AltoImpacto extends Reportes
         $cuerpo.="</thead>
                  <tbody>";
         //Destinos con mas de 10$ de margen
-        $sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, 
-                            CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage,
-                            CASE WHEN x.minutes=0 THEN 0 ELSE(x.cost/x.minutes)*100 END AS costmin, 
-                            CASE WHEN x.minutes=0 THEN 0 ELSE(x.revenue/x.minutes)*100 END AS ratemin, 
-                            CASE WHEN x.minutes=0 THEN 0 ELSE((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin
-                            FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, 
-                                (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, 
-                                CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd,
-                                (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, 
-                                SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                                FROM balance
-                                WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL
-                                GROUP BY id_destination
-                                ORDER BY margin DESC) x, destination d
-                            WHERE x.margin > 10 AND x.id_destination = d.id
-                            ORDER BY x.margin DESC";
-
-        $destinos=Balance::model()->findAllBySql($sqlDestinos);
+        $destinos=self::getDestination($startDate,$endingDate,true,true);
         if($destinos!=null)
         {
             foreach($destinos as $key => $destino)
@@ -1117,7 +1100,7 @@ class AltoImpacto extends Reportes
                      </tr>";
         }
 
-        // Selecciono la suma de los totales de los destinos con mas de 10 doleres de margen
+        // Los totales de destinos con mas de 10$ de margen
         $sqlDestinosTotal="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
                            FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance 
@@ -1739,9 +1722,10 @@ class AltoImpacto extends Reportes
      * @param date $startDate fecha inicio de la consulta
      * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeDestination true=external, false=internal
+     * @param boolean $type true=+10$, false=-10$
      * @return array $models
      */
-    private static function getDestinos($startDate,$endingDate,$typeDestination=true,$type=true)
+    private static function getDestination($startDate,$endingDate,$typeDestination=true,$type=true)
     {
         if($type)
             $condicion="x.margin>10";
@@ -1768,6 +1752,44 @@ class AltoImpacto extends Reportes
                       WHERE {$condicion} AND x.{$select}=d.id
                       ORDER BY x.margin DESC";
         return Balance::model()->findAllBySql($sql);
+    }
+
+    /**
+     * Retorna el total de la data de los destinos
+     * @access private
+     * @static
+     * @param date $startDate fecha inicio de la consulta
+     * @param date $endingDate fecha fin de la consulta
+     * @param boolean $typeDestination true=external, false=internal
+     * @param boolean $type true=+10$, false=-10$
+     * @return object $model
+     */
+    private static function getTotalDestination($startDate,$endingDate,$typeDestination=true,$type=true)
+    {
+        if($type)
+            $condicion="margin>10";
+        else
+            $condicion="margin<10";
+
+        if($typeCarrier)
+        {
+            $select="id_destination";
+            $table="destination";
+        }
+        else
+        {
+            $select="id_destination_int";
+            $table="destination_int";
+        }
+
+        $sql="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   FROM balance
+                   WHERE date_balance>='{$startDate}' AND date_balance<={$endingDate} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
+                   GROUP BY {$select}
+                   ORDER BY margin DESC) balance
+              WHERE {$condicion}";
+        return Balance::model()->findBySql($sql);
     }
 }
 ?>
