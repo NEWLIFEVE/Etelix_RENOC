@@ -6,11 +6,22 @@ class AltoImpacto extends Reportes
 {
 	/**
 	* Genera la tabla de Alto Impacto (+10$)
-	* @param $fecha date fecha a consultar
+	* @param date $start fecha inicio a consultar
+    * @param date $ending fecha fin a consultar
 	* @return string con la tabla armada
 	*/
-	public static function reporte($fecha)
+	public static function reporte($start,$ending=null)
 	{
+        $startDate=$endingDate=$variable=null;
+        if($ending==null)
+        {
+            $endingDate=$startDate=$start;
+        }
+        else
+        {
+            $startDate=$start;
+            $endingDate=$ending;
+        }
         $cuerpo="<div>
                   <table>
                   <thead>";
@@ -1788,5 +1799,47 @@ class AltoImpacto extends Reportes
         
         return $cuerpo;
 	}
+
+    /**
+     * Encargado de traer los datos de los clientes
+     * @access private
+     * @static
+     * @param date $startDate
+     * @param date $endingDate
+     * @param boolean $type
+     * @return array $models
+     */
+    private static function getClientes($startDate,$endingDate,$type=true)
+    {
+        if($type)
+            $condicion="x.margin>10";
+        else
+            $condicion="x.margin<10";
+
+        $sql="SELECT c.name AS cliente, x.id_carrier_customer AS id, x.total_calls, x.complete_calls, x.minutes, x.asr,x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, cs.posicion_neta AS posicion_neta
+              FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   FROM balance
+                   WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                   GROUP BY id_carrier_customer
+                   ORDER BY margin DESC) x,
+                  (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
+                   FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                        FROM balance
+                        WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                        GROUP BY id_carrier_customer
+                        UNION
+                        SELECT id_carrier_supplier AS id,CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                        FROM balance
+                        WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                        GROUP BY id_carrier_supplier
+                        ORDER BY id ASC)t
+                   GROUP BY id
+                   ORDER BY posicion_neta DESC)cs,
+                   carrier c
+              WHERE {$condicion} AND x.id_carrier_customer=c.id AND x.id_carrier_customer=cs.id
+              ORDER BY x.margin DESC";
+        return  Balance::model()->findAllBySql($sql);
+    }
+
 }
 ?>
