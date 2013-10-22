@@ -150,7 +150,7 @@ class AltoImpacto extends Reportes
                      </tr>";
         }
         //Selecciono la suma de todos los totales
-        $clientesTotalCompleto=self::getTotalCompleteClients($startDate,$endingDate)
+        $clientesTotalCompleto=self::getTotalCompleteCarriers($startDate,$endingDate)
         if($clientesTotalCompleto->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -402,7 +402,7 @@ class AltoImpacto extends Reportes
                      </tr>";
         }
         //Selecciono la suma de todos los totales
-        $clientesTotalCompleto=self::getTotalCompleteClients($startDate,$endingDate)
+        $clientesTotalCompleto=self::getTotalCompleteCarriers($startDate,$endingDate,true)
         if($clientesTotalCompleto->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
@@ -1766,15 +1766,21 @@ class AltoImpacto extends Reportes
      * @static
      * @param date $startDate
      * @param date $endingDate
+     * @param boolean $typeCarrier true=clientes, false=proveedores
      * @return array $models
      */
-    private static function getTotalCompleteClients($startDate,$endingDate)
+    private static function getTotalCompleteCarriers($startDate,$endingDate,$typeCarrier=true)
     {
+        if($typeCarrier)
+            $select="id_carrier_customer";
+        else
+            $select="id_carrier_supplier";
+
         $sql="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage
-              FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<={$endingDate} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                   GROUP BY id_carrier_customer
+                   GROUP BY {$select}
                    ORDER BY margin DESC) balance";
         return Balance::model()->findBySql($sql);
     }
