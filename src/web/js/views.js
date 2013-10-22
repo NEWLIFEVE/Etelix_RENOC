@@ -257,10 +257,9 @@ ajax.prototype.genExcel=function()
         fecha=self.formulario[self.formulario.length-1].value;
         nombre=self.formulario[i].name;
         valor=self.formulario[i].value;
-        if(self.formulario[i].name!="lista[todos]" && self.formulario[i].name!="fecha")
+        if(nombre!="lista[todos]" && nombre!="fecha")
         {
-            console.log(i,self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor);
-            //ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+            ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
         }
     }
 }
