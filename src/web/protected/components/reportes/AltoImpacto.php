@@ -1731,5 +1731,43 @@ class AltoImpacto extends Reportes
                    ORDER BY margin DESC) balance";
         return Balance::model()->findBySql($sql);
     }
+
+    /**
+     * Retorna la data de los destinos
+     * @access private
+     * @static
+     * @param date $startDate fecha inicio de la consulta
+     * @param date $endingDate fecha fin de la consulta
+     * @param boolean $typeDestination true=external, false=internal
+     * @return array $models
+     */
+    private static function getDestinos($startDate,$endingDate,$typeDestination=true,$type=true)
+    {
+        if($type)
+            $condicion="x.margin>10";
+        else
+            $condicion="x.margin<10";
+
+        if($typeCarrier)
+        {
+            $select="id_destination";
+            $table="destination";
+        }
+        else
+        {
+            $select="id_destination_int";
+            $table="destination_int";
+        }
+
+        $sql="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, CASE WHEN x.minutes=0 THEN 0 ELSE(x.cost/x.minutes)*100 END AS costmin, CASE WHEN x.minutes=0 THEN 0 ELSE(x.revenue/x.minutes)*100 END AS ratemin, CASE WHEN x.minutes=0 THEN 0 ELSE((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin
+                      FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                           FROM balance
+                           WHERE date_balance>='{$startDate}' AND date_balance<={$endingDate} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
+                           GROUP BY {$select}
+                           ORDER BY margin DESC) x, {$table} d
+                      WHERE {$condicion} AND x.{$select}=d.id
+                      ORDER BY x.margin DESC";
+        return Balance::model()->findAllBySql($sql);
+    }
 }
 ?>
