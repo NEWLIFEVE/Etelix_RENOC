@@ -6,7 +6,7 @@
 class RankingCompraVenta extends Reportes
 {
     /**
-     * genera el reporte de compraventa
+     * Genera el reporte de compraventa
      * @access public
      * @static
      * @param date $inicio fecha de inicio de la consulta
@@ -17,12 +17,12 @@ class RankingCompraVenta extends Reportes
     {
         $cuerpo="<tbody><tr><td>";
         //Vendedores
-        $cuerpo.=RankingCompraVenta::getHtmlManagers(true,$fechaInicio,$fechaFin);
+        $cuerpo.=self::getHtmlManagers(true,$fechaInicio,$fechaFin);
         $cuerpo.="</td></tr><tr><td>";
         //Compradores
-        $cuerpo.=RankingCompraVenta::getHtmlManagers(false,$fechaInicio,$fechaFin);
+        $cuerpo.=self::getHtmlManagers(false,$fechaInicio,$fechaFin);
         $cuerpo.="</td></tr><tr><td>";
-        $cuerpo.=RankingCompraVenta::consolidados($fechaInicio,$fechaFin);
+        $cuerpo.=self::getHtmlConsolidados($fechaInicio,$fechaFin);
         $cuerpo.="</td></tr></tbody></table>";
         return $cuerpo;
     }
@@ -36,7 +36,7 @@ class RankingCompraVenta extends Reportes
      * @param boolean $tipo si es true es vendedor, si es false es comprador
      * @return string $cuerpo html construido con los datos(solo las filas)
      */
-    public static function getHtmlManagers($tipo=true,$fechaInicio,$fechaFin)
+    public static function getHtmlManagers($tipo,$fechaInicio,$fechaFin)
     {
         $titulo="Vendedor";
         $color=1;
@@ -102,7 +102,7 @@ class RankingCompraVenta extends Reportes
     {
         $cuerpo="";
         $total=self::getTotalManagers($tipo,$fechaInicio,$fechaFin);
-        if($total->minutes!=null)
+        if($total!=false)
         {
             $cuerpo.="<tr>
                             <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
@@ -140,30 +140,14 @@ class RankingCompraVenta extends Reportes
      * @param date $fin es la fecha final a ser consultada.
      * @return string $cuerpo es el HTML en tabla de los datos consultados(solo las filas)
      */
-    public static function consolidados($fechaInicio,$fechaFin)
+    public static function getHtmlConsolidados($fechaInicio,$fechaFin)
     {
         $cuerpo="<table><thead>";
         $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
         $cuerpo.="</thead><tbody>";
-        $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
-              FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                   FROM balance
-                   WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                   GROUP BY id_carrier_customer
-                   UNION
-                   SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                   FROM balance 
-                   WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                   GROUP BY id_carrier_supplier)cs,
-                   managers m,
-                   carrier_managers cm
-              WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
-              GROUP BY m.name, m.lastname
-              ORDER BY margin DESC";
-        $consolidados=Balance::model()->findAllBySql($sql);
-        if($consolidados!=null)
+        $consolidados=self::getConsolidados($fechaInicio,$fechaFin);
+        if($consolidados!=false)
         {
-            //snatsort($consolidados);
             foreach($consolidados as $key => $consolidado)
             {
                 $pos=$key+1;
@@ -190,7 +174,7 @@ class RankingCompraVenta extends Reportes
                       </tr>";
         }
         $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.=self::totalConsolidado($fechaInicio,$fechaFin);
+        $cuerpo.=self::getHtmlTotalConsolidado($fechaInicio,$fechaFin);
         $cuerpo.="</tbody></table>";
         return $cuerpo;
     }
@@ -203,21 +187,11 @@ class RankingCompraVenta extends Reportes
      * @param date $fin fecha fin de la consulta
      * @return string $cuerpo las filas de la tabla con los datos consultados
      */
-    public static function totalConsolidado($fechaInicio,$fechaFin)
+    public static function getHtmlTotalConsolidado($fechaInicio,$fechaFin)
     {
         $cuerpo="";
-         $sqlTotalConsolidado="SELECT SUM(cs.margin) AS margin
-                               FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                                    FROM balance
-                                    WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                                    GROUP BY id_carrier_customer
-                                    UNION
-                                    SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                                    FROM balance 
-                                    WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                                    GROUP BY id_carrier_supplier)cs";
-        $totalConsolidado=Balance::model()->findBySql($sqlTotalConsolidado);
-        if($totalConsolidado->margin!=null)
+        $totalConsolidado=self::getTotalConsolidado($fechaInicio,$fechaFin);
+        if($totalConsolidado!=false)
         {
             $cuerpo.="<tr>
                             <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
@@ -238,11 +212,8 @@ class RankingCompraVenta extends Reportes
                         <td colspan='4'>No se encontraron resultados</td>
                       </tr>";
         }
-        $sql="SELECT SUM(margin) AS margin
-              FROM balance
-              WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
-        $totalMargin=Balance::model()->findBySql($sql);
-        if($totalMargin->margin!=null)
+        $totalMargin=self::getMargenTotal($fechaInicio,$fechaFin);
+        if($totalMargin!=false)
         {
             $cuerpo.="<tr>
                         <td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
@@ -275,7 +246,7 @@ class RankingCompraVenta extends Reportes
      * @param date $fin fecha fin de la consulta
      * @return CActiveRecord $managers
      */
-    public static function getManagers($tipo=true,$fechaInicio,$fechaFin)
+    public static function getManagers($tipo,$fechaInicio,$fechaFin)
     {
         $manager="id_carrier_customer";
         if($tipo==false)
@@ -294,14 +265,7 @@ class RankingCompraVenta extends Reportes
               ORDER BY margin DESC";
 
         $managers=Balance::model()->findAllBySql($sql);
-        if($managers!=null)
-        {
-            return $managers;
-        }
-        else
-        {
-            return false;
-        }
+        return $managers;
     }
 
     /**
@@ -337,18 +301,15 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
-     * Metodo encargado de generar el HTML de la tabla de consolidados
+     * Metodo encargado de conseguir los datos de los consolidados
      * @access public
      * @static
      * @param date $inicio fecha de inicio que se va a consultar
      * @param date $fin es la fecha final a ser consultada.
      * @return string $cuerpo es el HTML en tabla de los datos consultados(solo las filas)
      */
-   /* public static function consolidados($fechaInicio,$fechaFin)
+    public static function getConsolidados($fechaInicio,$fechaFin)
     {
-        $cuerpo="<table><thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.="</thead><tbody>";
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
               FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
@@ -367,36 +328,12 @@ class RankingCompraVenta extends Reportes
         $consolidados=Balance::model()->findAllBySql($sql);
         if($consolidados!=null)
         {
-            //snatsort($consolidados);
-            foreach($consolidados as $key => $consolidado)
-            {
-                $pos=$key+1;
-                $cuerpo.="<tr>
-                            <td style='".self::colorRankingCV(3)."'>".
-                            $pos.
-                            "</td>
-                            <td style='".self::colorRankingCV(3)."'>".
-                            $consolidado->apellido.
-                            "</td>
-                            <td style='".self::colorRankingCV(3)."'>".
-                            Yii::app()->format->format_decimal($consolidado->margin).
-                            "</td>
-                            <td style='".self::colorRankingCV(3)."'>".
-                            $pos.
-                            "</td>
-                          </tr>";
-            }
+            return $consolidados;
         }
         else
         {
-            $cuerpo.="<tr>
-                        <td colspan='4'>No se encontraron resultados</td>
-                      </tr>";
+            return false;
         }
-        $cuerpo.=self::cabecera(array('Ranking','Consolidado (Ventas + Compras)','Margin','Ranking'),'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
-        $cuerpo.=self::totalConsolidado($fechaInicio,$fechaFin);
-        $cuerpo.="</tbody></table>";
-        return $cuerpo;
     }
 
     /**
@@ -407,67 +344,214 @@ class RankingCompraVenta extends Reportes
      * @param date $fin fecha fin de la consulta
      * @return string $cuerpo las filas de la tabla con los datos consultados
      */
-   /* public static function totalConsolidado($fechaInicio,$fechaFin)
+    public static function getTotalConsolidado($fechaInicio,$fechaFin)
     {
-        $cuerpo="";
-         $sqlTotalConsolidado="SELECT SUM(cs.margin) AS margin
-                               FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                                    FROM balance
-                                    WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                                    GROUP BY id_carrier_customer
-                                    UNION
-                                    SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                                    FROM balance 
-                                    WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                                    GROUP BY id_carrier_supplier)cs";
-        $totalConsolidado=Balance::model()->findBySql($sqlTotalConsolidado);
-        if($totalConsolidado->margin!=null)
+         $sql="SELECT SUM(cs.margin) AS margin
+               FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                    GROUP BY id_carrier_customer
+                    UNION
+                    SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                    GROUP BY id_carrier_supplier)cs";
+        $total=Balance::model()->findBySql($sql);
+        if($total->margin!=null)
         {
-            $cuerpo.="<tr>
-                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-                            </td>
-                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-                            Total Consolidado
-                            </td>
-                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>".
-                            Yii::app()->format->format_decimal($totalConsolidado->margin).
-                            "</td>
-                            <td style='background-color:#999999; color:#FFFFFF; text-align:center;'>
-                            </td>
-                          </tr>";
+            return $total;
         }
         else
         {
-            $cuerpo.="<tr>
-                        <td colspan='4'>No se encontraron resultados</td>
-                      </tr>";
+            return false;
         }
-        $sql="SELECT SUM(margin) AS margin
+    }
+
+    /**
+     * Metodo que retorna el total de margen de un periodo especifico
+     * @access public
+     * @static
+     * @param date $fechaInicio
+     * @param date $fechaFin
+     * @return CActiveRecord
+     */
+    public static function getMargenTotal($fechaInicio,$fechaFin)
+    {
+        $sql="SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
               FROM balance
               WHERE date_balance>='{$fechaInicio}' AND date_balance<='{$fechaFin}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
-        $totalMargin=Balance::model()->findBySql($sql);
-        if($totalMargin->margin!=null)
+
+        $margin=Balance::model()->findBySql($sql);
+        if($margin->margin!=null)
         {
-            $cuerpo.="<tr>
-                        <td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
-                        </td>
-                        <td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
-                        Total Margen
-                        </td>
-                        <td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>".
-                        Yii::app()->format->format_decimal($totalMargin->margin).
-                        "</td>
-                        <td style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
-                        </td>
-                      </tr>";
+            return $margin;
         }
         else
         {
-            $cuerpo.="<tr>
-                        <td colspan='4'>No se encontraron resultados</td>
-                      </tr>";
+            return false;
         }
-        return $cuerpo;
-    }*/
+    }
+
+    /**
+     * Recibe un objeto de modelo y un apellido, retorna una fila <tr> con los datos del objeto
+     * @access protected
+     * @static
+     * @param string $apellido
+     * @param CActiveRecord $objeto
+     * @param int $number es la posicion que tiene en el ranking
+     * @param int $column es el numero del mes
+     * @param int $last es el numero del ultimo mes
+     * @return string
+     */
+    protected static function getRowManagers($apellido,$objeto,$number,$column,$last,$tipo=true)
+    {
+        $left=$right="";
+        $n=array(
+            true=>array('par'=>1,'impar'=>4),
+            false=>array('par'=>2,'impar'=>5)
+            );
+        if ($column%2==0){
+            $color=$n[$tipo]['par'];
+        }else{
+            $color=$n[$tipo]['impar'];
+        }
+        $style=self::colorRankingCV($color);
+        foreach ($objeto as $key => $value)
+        {
+            if($column==0)
+            {
+                $left="<td>".$number."</td><td>".$value->apellido."</td>";
+            }
+            if($column>=$last)
+            {
+                $right="<td>".$number."</td>";
+            }
+            if($value->apellido == $apellido)
+            {
+                return "<tr style='".$style."'>".$left."<td>".Yii::app()->format->format_decimal($value->minutes)."</td><td>".Yii::app()->format->format_decimal($value->revenue)."</td><td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
+            }
+        }
+        return "<tr style='".$style."'>".$left."<td>--</td><td>--</td><td>--</td>".$right."</tr>";
+    }
+
+    /**
+     *
+     */
+    protected static function getRowTotalManagers($objeto,$column,$last)
+    {
+        $left=$right="";
+        if($column==0)
+        {
+            $left="<td></td><td>TOTAL</td>";
+        }
+        if($column>=$last)
+        {
+            $right="<td></td>";
+        }
+        return "<tr style='background-color:#999999; color:#FFFFFF; text-align:center;'>".$left."<td>".Yii::app()->format->format_decimal($objeto->minutes)."</td><td>".Yii::app()->format->format_decimal($objeto->revenue)."</td><td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
+    }
+
+    /**
+     * Recibe un objeto de modelo y un apellido, retorna una fila <tr> con los datos del objeto
+     * @access protected
+     * @static
+     * @param string $apellido
+     * @param CActiveRecord $objeto
+     * @param int $column es el numero del mes
+     * @param int $last es el numero del ultimo mes
+     * @return string
+     */
+    protected static function getRowConsolidado($apellido,$objeto,$number,$column,$last)
+    {
+        if ($column%2==0){
+            $color=3;
+        }else{
+            $color=6;
+        }
+        $style=self::colorRankingCV($color);
+        $left=$right="";
+        foreach ($objeto as $key => $value)
+        {
+            if($column==0)
+            {
+                $left="<td>".$number."</td><td>".$value->apellido."</td>";
+            }
+            if($column>=$last)
+            {
+                $right="<td>".$number."</td>";
+            }
+            if($value->apellido == $apellido)
+            {
+                return "<tr style='".$style."'>".$left."<td>".Yii::app()->format->format_decimal($value->margin)."</td>".$right."</tr>";
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    protected static function getRowTotalConsolidado($objeto,$column,$last,$type=true)
+    {
+        $left=$right="";
+        $n=array(true=>'Total Consolidado',false=>'Total Margen');
+        if($column==0)
+        {
+            $left="<td></td><td>".$n[$type]."</td>";
+        }
+        if($column>=$last)
+        {
+            $right="<td></td>";
+        }
+        return "<tr style='background-color:#999999; color:#FFFFFF; text-align:center;'>".$left."<td>".Yii::app()->format->format_decimal($objeto->margin)."</td>".$right."</tr>";
+    }
+
+    /**
+     * Retorna la cabecera de la tabla para los managers
+     * @access protected
+     * @static
+     * @param
+     */
+    protected static function getHeadManagers($type,$column,$last)
+    {
+        if($type)
+        {
+            $manager="Vendedor";
+        }
+        else
+        {
+            $manager="Comprador";
+        }
+        $array=array('Minutos','Revenue','Margin');
+        if($column==0)
+        {
+            $array=array('Ranking',$manager,'Minutos','Revenue','Margin');
+        }
+        if($column>=$last)
+        {
+            $array=array('Minutos','Revenue','Margin','Ranking');
+        }
+        return self::cabecera($array,'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+    }
+
+    /**
+     * Retorna la cabecera de la tabla para los consolidados
+     * @access protected
+     * @static
+     * @param
+     */
+    protected static function getHeadConsolidados($column,$last)
+    {
+        $array=array('Margin');
+        if($column==0)
+        {
+            $array=array('Ranking','Consolidado (Ventas + Compras)','Margin');
+        }
+        if($column>=$last)
+        {
+            $array=array('Margin','Ranking');
+        }
+        return self::cabecera($array,'background-color:#295FA0; color:#ffffff; width:10%; height:100%;');
+    }
+
 }
 ?>

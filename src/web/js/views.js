@@ -122,8 +122,10 @@ var ajax=function()
 ajax.prototype.run=function()
 {
     var self=this;
+    console.log("justo despues del click");
     $('#mail,#excel,#mailRenoc').on('click',function(e)
     {
+
         var id=tipo=numero=valor=nombre=fecha=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
@@ -325,12 +327,15 @@ ajax.prototype.setCero=function()
 */
 function marcar(source)
 {
-    checkboxes = document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
-    for (i = 0; i < checkboxes.length; i++) //recoremos todos los controles
+    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
+    if(checkboxes.length>0)
     {
-        if (checkboxes[i].type == "checkbox") //solo si es un checkbox entramos
+        for(i=0,j=checkboxes.length-1; i<=j; i++) //recoremos todos los controles
         {
-            checkboxes[i].checked = source.checked; //si es un checkbox le damos el valor del checkbox que lo llamó (Marcar/Desmarcar Todos)
+            if(checkboxes[i].type=="checkbox") //solo si es un checkbox entramos
+            {
+                checkboxes[i].checked = source.checked; //si es un checkbox le damos el valor del checkbox que lo llamó (Marcar/Desmarcar Todos)
+            }
         }
     }
 };
@@ -343,11 +348,11 @@ $(document).on('ready',function()
     ventana.run();
     fecha.run();
     marcar();
-    $(this).ajaxComplete(function()
+    /*$(this).ajaxComplete(function()
     {
         fecha.run();
         marcar();
-    });
+    });*/
 });
 
 $(document).on('ready',function(muestramensaje)

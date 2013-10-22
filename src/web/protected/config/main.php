@@ -17,7 +17,6 @@ return array(
         'application.models.*',
         'application.components.*',
         'application.components.reportes.*',
-        'application.components.jpgraph.*',
         'application.components.excelwriter.*',
         'application.components.excelwriter.PHPExcel.*'
     ),
@@ -38,9 +37,6 @@ return array(
         ),
     // application components
     'components'=>array(
-        'grafico'=>array(
-            'class'=>'application.components.Grafico',
-            ),
         'PHPExcel'=>array(
             'class'=>'application.components.excelwriter.PHPExcel'
             ),

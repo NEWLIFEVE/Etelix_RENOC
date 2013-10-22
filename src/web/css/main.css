@@ -215,7 +215,7 @@
     color: #848484;
     font-size: 21px;
     height:32px; 
-    margin-bottom: 0spx;
+    margin-bottom: 0px;
     margin-left: 103px;
     margin-top: -43px; 
     text-align:rigth;
@@ -238,16 +238,6 @@
     margin-left: -228px;
     margin-top: 307px;
     width: 144px;
-}
-#barraVerde2
-{
-    background:rgb(104, 173, 104);
-    border:1px solid white;
-    height:300px; 
-    margin-bottom: 0spx;  
-    margin-left: 78px;
-    text-align:rigth;
-    width:5px; 
 }
 #tablagris
 {
