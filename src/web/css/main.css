@@ -1078,6 +1078,12 @@ height: 61px;
     width: 49%;
     margin-left: 1%;
 }
+.choice_parametros{
+    /*float: left;*/
+    color: grey;
+    width: 49%;
+    margin-left: 1%;
+}
 .especificos_reportes div.choice
 {  
     width: 105% !important;
@@ -1088,6 +1094,14 @@ height: 61px;
     background: #E6E6E6;
     padding: 6%;
     margin: -3% 0 4% 12%;
+    height: 30px;
+}
+.choice_parametros label h4
+{
+    text-align: left;
+    background: #E6E6E6;
+    padding: 6%;
+    margin: -3% 56% 3% 12%;
     height: 30px;
 }
 

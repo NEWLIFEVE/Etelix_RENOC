@@ -16,24 +16,61 @@ $this->layout=$this->getLayoutFile('menuContent');
     </article>
     <article class="parametros">
         <p>Seleccione los parametros</p>
-        <br>
-        <br>
-        <br>
-        <br>
+                    <form id="formRutinarios">
+                <div class="choice_parametros fecha">
+                    <input type="checkbox" value="true" id="fecha" class="custom-checkbox" name="lista[fecha]">
+                    <label for="fecha">
+                        <h4 id="td1">
+                            Fecha
+                        </h4>
+                    </label>
+                    <input name="fechaini" id="datepicker" type="text" />
+                    <input name="fechafin" id="datepicker" type="text" class="hasDatepicker"/>
+                </div>
+                <div class="choice_parametros">
+                        <input type="checkbox" value="true" id="Hora" class="custom-checkbox" name="lista[Hora]">
+                        <label for="Hora">
+                            <h4 id="td1">
+                                Hora
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice_parametros">
+                        <input type="checkbox" value="true" id="Mes" class="custom-checkbox" name="lista[Mes]">
+                        <label for="Mes">
+                            <h4 id="td1">
+                                Mes
+                            </h4>
+                        </label>
+                    </div>
+            </form>
         <p>PARAMETROS</p>
-   
+      <footer>
+                <div id="excel" class="botones">
+                    <img src="/images/excel.png" class='ver'>
+                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                </div>
+                <div id="mailRenoc" class="botones">
+                    <img src="/images/mailRenoc.png" class='ver'>
+                    <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                </div>
+                <div id="mail" class="botones">
+                    <img src="/images/mail.png" class='ver'>
+                    <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                </div>
+            </footer>
     </article> 
         <article class='especificos_reportes'>
             <p>Seleccione los Reportes</p>
             <form id="formEspecificos">
-                <div class="choice">
+<!--                <div class="choice">
                     <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
                     <label for="todos">
                         <h4 id="td1">
                             Todos
                         </h4>
                     </label>
-                </div>
+                </div>-->
                 <div class="choice primeras">
                         <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]">
                         <label for="compraventa">
@@ -42,7 +79,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
-                    <div class="choice">
+<!--                    <div class="choice">
                         <input type="checkbox" value="true" id="perdidas" class="custom-checkbox" name="lista[perdidas]">
                         <label for="perdidas">
                             <h4 id="td1">
@@ -169,7 +206,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                                 Evolucion
                             </h4>
                         </label>
-                    </div>
+                    </div>-->
                     <input name="fecha" type="hidden"  id="datepicker_value" value="<?php mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")); echo date("Y-m-d"); ?>"/>
             </form>
         </article>
@@ -178,3 +215,12 @@ $this->layout=$this->getLayoutFile('menuContent');
 <script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+<script>
+    $(".fecha").on('click',function(){
+//        alert('hola');
+        $(".fecha label h4").addClass("stretchRight");
+        
+    });
+    
+    
+</script>
