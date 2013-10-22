@@ -97,7 +97,7 @@ class AltoImpacto extends Reportes
                      </tr>";
         }
         //El total de clientes con mas de 10$ de margen   
-        $clientesTotal=self::getTotalClients($startDate,$endingDate,true);
+        $clientesTotal=self::getTotalCarriers($startDate,$endingDate,true,true);
         if($clientesTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
@@ -349,7 +349,7 @@ class AltoImpacto extends Reportes
                      </tr>";
         }
         //Selecciono la suma de todos los totales menores a 10 dolares de margen
-        $clientesTotalResto=self::getTotalClients($startDate,$endingDate,false);
+        $clientesTotalResto=self::getTotalCarriers($startDate,$endingDate,true,false);
         if($clientesTotalResto->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
@@ -532,7 +532,7 @@ class AltoImpacto extends Reportes
         $cuerpo.="</thead>
                  <tbody>";
         // Proveedores con margen mayor a 10$
-        $proveedores=self::getCarriers($startDate,$endingDate,false,true)
+        $proveedores=self::getCarriers($startDate,$endingDate,false,true);
         if($proveedores!=null)
         {
             foreach($proveedores as $key => $proveedor)
@@ -600,14 +600,7 @@ class AltoImpacto extends Reportes
                      </tr>";
         }
         // Selecciono la suma de totales de los proveedores con mas de 10 dolares de margen
-        $sqlProveedoresTotal="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
-                              FROM(SELECT id_carrier_supplier, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                                  FROM balance
-                                  WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                                  GROUP BY id_carrier_supplier
-                                  ORDER BY margin DESC) balance
-                              WHERE margin>10";
-        $proveedoresTotal=Balance::model()->findBySql($sqlProveedoresTotal);
+        $proveedoresTotal=self::getTotalCarriers($startDate,$endingDate,false,true);
         if($proveedoresTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
@@ -1683,11 +1676,11 @@ class AltoImpacto extends Reportes
 	}
 
     /**
-     * Encargado de traer los datos de los clientes
+     * Encargado de traer los datos de los carriers
      * @access private
      * @static
-     * @param date $startDate
-     * @param date $endingDate
+     * @param date $startDate fecha de inicio de la consulta
+     * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeCarrier true=clientes, false=proveedores
      * @param boolean $type true=+10$, false=-10$
      * @return array $models
@@ -1736,28 +1729,34 @@ class AltoImpacto extends Reportes
     }
 
     /**
-     * trae el total de todos los clientes con mas de 10$ de margen
+     * trae el total de todos los carriers
      * @access private
      * @static
-     * @param date $startDate
-     * @param date $endingDate
-     * @param boolean $type
+     * @param date $startDate fecha inicio de la consulta
+     * @param date $endingDate fecha fin de la consulta
+     * @param boolean $typeCarrier true=clientes, false=proveedores
+     * @param boolean $type true=margen mayor a 10$, false=margen menor a 10$
      * @return object $model
      */
-    private static function getTotalClients($startDate,$endingDate,$type=true)
+    private static function getTotalCarriers($startDate,$endingDate,$typeCarrier=true,$type=true)
     {
         if($type)
             $condicion="margin>10";
         else
             $condicion="margin<10";
 
+        if($typeCarrier)
+            $select="id_carrier_customer";
+        else
+            $select="id_carrier_supplier";
+        
         $sql="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin
-              FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<={$endingDate} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                   GROUP BY id_carrier_customer
+                   GROUP BY {$select}
                    ORDER BY margin DESC) balance
-              WHERE ".$condicion;
+              WHERE {$condicion}";
         return Balance::model()->findBySql($sql);
     }
 
