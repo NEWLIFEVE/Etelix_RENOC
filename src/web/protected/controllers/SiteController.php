@@ -545,6 +545,10 @@ class SiteController extends Controller
             {
                 $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
             }
+            if(stripos($correo['asunto'], "RETAIL"))
+            {
+                Yii::app()->mail->enviar($correo['cuerpo'], 'CarlosBuona@etelix.com', $correo['asunto'],$correo['ruta']);
+            }
             Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
         }
         echo "Mensaje Enviado";
