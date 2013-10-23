@@ -17,6 +17,8 @@ $this->layout=$this->getLayoutFile('menuContent');
         <article class="parametros">
             <p>Seleccione los parametros</p>
             <p>PARAMETROS</p>
+            <input name="fechaInicio" placeholder="Fecha de Inicio"/>
+            <input name="fechaFin" placeholder="Fecha Fin"/>
         </article>
         <article class='especificos_reportes'>
             <p>Seleccione los Reportes</p>
