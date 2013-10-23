@@ -44,7 +44,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
             </form>
-        <p>PARAMETROS</p>
+<!--        <p>PARAMETROS</p>-->
       <footer>
                 <div id="excel" class="botones">
                     <img src="/images/excel.png" class='ver'>
@@ -60,6 +60,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                 </div>
             </footer>
     </article> 
+
         <article class='especificos_reportes'>
             <p>Seleccione los Reportes</p>
             <form id="formEspecificos">
@@ -72,6 +73,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </div>-->
                 <div class="choice primeras">
+
                         <input type="checkbox" value="true" id="compraventa" class="custom-checkbox" name="lista[compraventa]">
                         <label for="compraventa">
                             <h4 id="td1">
@@ -208,6 +210,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>-->
                     <input name="fecha" type="hidden"  id="datepicker_value" value="<?php mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")); echo date("Y-m-d"); ?>"/>
+
             </form>
         </article>
     </section>
