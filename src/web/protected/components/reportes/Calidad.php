@@ -25,7 +25,7 @@ class Calidad extends Reportes
         	foreach ($model as $key => $destino)
         	{
         		$cuerpo.="<tr>
-        					<td>".$key+1."</td>
+        					<td>".$key."</td>
         					<td>".$destino->destino."</td>
         					<td>".$destino->minutes."</td>
         					<td>".$destino->total_calls."</td>
@@ -35,7 +35,8 @@ class Calidad extends Reportes
         					<td>".$destino->asr_inc."</td>
         					<td>".$destino->asr_exc."</td>
         					<td>".$destino->delta."</td>
-        					<td>".$destino->acd."</td><td></td></tr>";
+        					<td>".$destino->acd."</td>
+        				</tr>";
         	}
 			$cuerpo.="</table>";
 			return $cuerpo;
