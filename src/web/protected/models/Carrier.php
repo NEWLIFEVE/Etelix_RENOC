@@ -42,12 +42,12 @@ class Carrier extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, record_date', 'required'),
-			array('name', 'length', 'max'=>50),
-			array('address', 'safe'),
+			array('name,record_date','required'),
+			array('name','length','max'=>50),
+			array('address','safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, address, record_date', 'safe', 'on'=>'search'),
+			array('id, name, address, record_date','safe','on'=>'search'),
 		);
 	}
 
@@ -59,9 +59,9 @@ class Carrier extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'carrierManagers' => array(self::HAS_MANY, 'CarrierManagers', 'id_carrier'),
-			'balances' => array(self::HAS_MANY, 'Balance', 'id_carrier_supplier'),
-			'balances1' => array(self::HAS_MANY, 'Balance', 'id_carrier_customer'),
+			'carrierManagers'=>array(self::HAS_MANY,'CarrierManagers','id_carrier'),
+			'balances'=>array(self::HAS_MANY,'Balance','id_carrier_supplier'),
+			'balances1'=>array(self::HAS_MANY,'Balance','id_carrier_customer'),
 		);
 	}
 
@@ -71,10 +71,10 @@ class Carrier extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'address' => 'Address',
-			'record_date' => 'Record Date',
+			'id'=>'ID',
+			'name'=>'Name',
+			'address'=>'Address',
+			'record_date'=>'Record Date',
 		);
 	}
 
@@ -97,5 +97,17 @@ class Carrier extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	/**
+	 * Obtiene el nombre de un carrier a traves del id
+	 * @access public
+	 * @static
+	 * @param int $id id del carrier
+	 * @return string $name el nombre del carrier
+	 */
+	public static function getName($id)
+	{
+		return self::model()->findByPk($id)->name;
 	}
 }
