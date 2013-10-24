@@ -170,6 +170,16 @@ class SiteController extends Controller
         $this->genExcel('Rankin CompraVenta de '.str_replace("-","",$inicio).' al '.str_replace("-","",$fin),$correo);
     }
 
+    public function actionCalidad()
+    {
+        $inicio=$_GET['inicio'];
+        $fin=$_GET['fin'];
+        $carrier=$_GET['carrier'];
+        $correo=Yii::app()->reportes->Calidad($inicio,$fin,$carrier);
+        $this->genExcel('Rankin Calidad de '.Carrier::getName($carrier)." al ".str_replace("-","",$inicio).' al '.str_replace("-","",$fin),$correo);
+    }
+
+
     /**
      * Action encargada de envuiar por mail el tipo de reporte seleccionado,
      * las especificaciones seran recibidas desde el array $_GET
