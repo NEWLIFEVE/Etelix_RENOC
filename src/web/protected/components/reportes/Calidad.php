@@ -27,15 +27,15 @@ class Calidad extends Reportes
         		$cuerpo.="<tr>
         					<td>".$key."</td>
         					<td>".$destino->destino."</td>
-        					<td>".$destino->minutes."</td>
-        					<td>".$destino->total_calls."</td>
-        					<td>".$destino->complete_calls_exc."</td>
-        					<td>".$destino->incomplete_calls_inc."</td>
-        					<td>".$destino->incomplete_calls_exc."</td>
-        					<td>".$destino->asr_inc."</td>
-        					<td>".$destino->asr_exc."</td>
-        					<td>".$destino->delta."</td>
-        					<td>".$destino->acd."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->minutes)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->total_calls)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->complete_calls_exc)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->incomplete_calls_inc)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->incomplete_calls_exc)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->asr_inc)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->asr_exc)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->delta)."</td>
+        					<td>".Yii::app()->format->format_decimal($destino->acd)."</td>
         				</tr>";
         	}
 			$cuerpo.="</table>";
