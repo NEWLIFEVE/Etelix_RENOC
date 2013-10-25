@@ -11,8 +11,18 @@ class EnviarEmail extends CApplicationComponent {
     public function init() {
         
     }
-
-    public function enviar($html, $user, $asunto, $ruta)
+    
+    /**
+     * Encargado de controlar el envio de correos
+     * @access public
+     * @static
+     * @param string $html cuerpo del mail
+     * @param string $user direccion a quien sera enviado el mail
+     * @param string $asunto es el asunto del correo
+     * @param string $ruta es la ruta donde esta el archivo adjunto
+     * @param array $copia direcciones que seran copiadas al envio del correo
+     */
+    public function enviar($html, $user, $asunto, $ruta, $copia=null)
     {
         if (isset($html) && isset($user))
         {
@@ -31,6 +41,13 @@ class EnviarEmail extends CApplicationComponent {
             $mailer->From = 'sinca.test@gmail.com';
             $mailer->AddReplyTo('sinca.test@gmail.com');
             $mailer->AddAddress($user);
+            if($copia!=null)
+            {
+                foreach ($copia as $key => $value)
+                {
+                    $mailer->addCC($value);
+                }
+            }
             $mailer->FromName = 'RENOC';
             $mailer->CharSet = 'UTF-8';
             $mailer->Subject = Yii::t('', $asunto);
