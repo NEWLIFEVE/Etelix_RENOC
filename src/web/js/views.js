@@ -122,7 +122,6 @@ var ajax=function()
 ajax.prototype.run=function()
 {
     var self=this;
-    console.log("justo despues del click");
     $('#mail,#excel,#mailRenoc').on('click',function(e)
     {
 

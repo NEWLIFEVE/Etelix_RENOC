@@ -218,11 +218,19 @@ $this->layout=$this->getLayoutFile('menuContent');
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
 <script>
-    $(".fecha").on('click',function(){
-//        alert('hola');
-        $(".fecha label h4").addClass("stretchRight");
-        
-    });
+    /*$(".fecha").on('click',function()
+    {
+        console.log("itadakimasu");
+        /*if($(".fecha label h4").attr('class')=="stretchRight")
+        {
+            $(".fecha label h4").removeClass("stretchRight");
+        }
+        else
+        {
+            $(".fecha label h4").addClass("stretchRight");
+        }*/
+   /*     
+    });*/
     
     
 </script>
