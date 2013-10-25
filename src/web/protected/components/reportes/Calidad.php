@@ -20,22 +20,23 @@ class Calidad extends Reportes
 		if($model!=null)
 		{
 			$cuerpo="<table>";
-			$cuerpo.="<tr><td colspan='11'>".Carrier::getName($carrier)."</td></tr>";
+			$cuerpo.="<tr><td colspan='11' style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>".Carrier::getName($carrier)."</td></tr>";
         	$cuerpo.=self::cabecera(array('Ranking','Destino','Minutos','Intentos Totales','Intentos Completados','Intentos NC Inc. RI','Intentos NC Exc. RI','ASR Inc. RI','ASR Exc. RI','&Delta; ASR','ACD'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         	foreach ($model as $key => $destino)
         	{
+        		$pos=$key+1;
         		$cuerpo.="<tr>
-        					<td>".$key."</td>
-        					<td>".$destino->destino."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->minutes)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->total_calls)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->complete_calls_exc)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->incomplete_calls_inc)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->incomplete_calls_exc)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->asr_inc)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->asr_exc)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->delta)."</td>
-        					<td>".Yii::app()->format->format_decimal($destino->acd)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".$pos."</td>
+        					<td style='".self::colorEstilo($pos)."'>".$destino->destino."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->minutes)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->total_calls)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->complete_calls_exc)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_inc)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_exc)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->asr_inc)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->asr_exc)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->delta)."</td>
+        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->acd)."</td>
         				</tr>";
         	}
 			$cuerpo.="</table>";
