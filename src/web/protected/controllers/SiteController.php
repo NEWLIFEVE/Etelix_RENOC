@@ -547,9 +547,13 @@ class SiteController extends Controller
             }
             if(stripos($correo['asunto'], "RETAIL"))
             {
-                Yii::app()->mail->enviar($correo['cuerpo'], 'CarlosBuona@etelix.com', $correo['asunto'],$correo['ruta']);
+                $lista=array('CarlosBuona@etelix.com');
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
+            else
+            {
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
+            }
         }
         echo "Mensaje Enviado";
     }
