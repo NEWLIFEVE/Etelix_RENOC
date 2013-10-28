@@ -1116,3 +1116,58 @@ stretchRight
 		margin-right: 5%;
 	}	
 }
+
+.offStretchRight{
+	animation-name: offStretchRight;
+	-webkit-animation-name: offStretchRight;	
+
+	animation-duration: 0.3s;	
+	-webkit-animation-duration: 0.3s;
+
+	animation-timing-function:linear;	
+	-webkit-animation-timing-function: linear;	
+
+	transform-origin: 0% 0%;
+	-ms-transform-origin: 0% 0%;
+	-webkit-transform-origin: 0% 0%; 
+               
+        margin-right: 45% ! important;
+}
+
+@keyframes offStretchRight {
+	0% {
+		margin-right: 5%;
+	}
+	40% {
+		margin-right: 15%;
+	}
+	60% {
+		margin-right: 25%;
+	}
+	80% {
+		margin-right: 35%;
+	}
+	100% {
+		margin-right: 45%;
+	}
+        
+        }
+
+
+@-webkit-keyframes offStretchRight {		
+	0% {
+		margin-right: 5%;
+	}
+	40% {
+		margin-right: 15%;
+	}
+	60% {
+		margin-right: 25%;
+	}
+	80% {
+		margin-right: 35%;
+	}
+	100% {
+		margin-right: 45%;
+	}	
+}
