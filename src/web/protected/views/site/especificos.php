@@ -24,8 +24,8 @@ $this->layout=$this->getLayoutFile('menuContent');
                             Fecha
                         </h4>
                     </label>
-                    <input name="fechaini" id="datepicker" type="text" />
-                    <input name="fechafin" id="datepicker" type="text" class="hasDatepicker"/>
+                    <!--<input name="startDate" id="startDate" type="text"/>
+                    <input name="endingDate" id="endingDate" type="text"/>-->
                 </div>
                 <div class="choice_parametros">
                         <input type="checkbox" value="true" id="Hora" class="custom-checkbox" name="lista[Hora]">
@@ -232,5 +232,6 @@ $this->layout=$this->getLayoutFile('menuContent');
    /*     
     });*/
     
+$RENOC.UI.init();
     
 </script>

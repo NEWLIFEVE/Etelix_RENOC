@@ -66,6 +66,7 @@ navegar.prototype.ida=function()
     {
         self.objetoMain.toggle('slide');
         self.objetoNueva.fadeIn('fast');
+        $RENOC.UI.init();
     });
 }
 /**
@@ -339,7 +340,7 @@ function marcar(source)
     }
 };
 var ventana=new navegar();
-var fecha=new selector("#datepicker");
+var fecha=new selector("#inicio,#datepicker,#fin");
 var ejecutar=new ajax();
 $(document).on('ready',function()
 {  
@@ -347,25 +348,22 @@ $(document).on('ready',function()
     ventana.run();
     fecha.run();
     marcar();
-    /*$(this).ajaxComplete(function()
-    {
-        fecha.run();
-        marcar();
-    });*/
-});
-
-$(document).on('ready',function(muestramensaje)
-{
     $.ajax({ 
         url: "Log/revisarRR",     
         success: function(data) 
         {
             if(data==true){
-                var espere = $(".cargandosori");
+                var espere=$(".cargandosori");
                 espere.prop("display",'block');
                 espere.slideDown('slow');
             }        
         }
     });
-
+    
+    /*$(this).ajaxComplete(function()
+    {
+        fecha.run();
+        marcar();
+        
+    });*/
 });
