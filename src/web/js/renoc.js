@@ -80,16 +80,14 @@
 	}
 
 	/**
-	 *
+	 * Recibe un strimng de ubicacion tipo jQuery y esta oculta y luego elimina el elemento
+	 * @access private
+	 * @param string spot es la ubicacion tipo jQuery
 	 */
-	function _hideCheck()
+	function _hideElement(spot)
 	{
-		start=$(_createElement('input','startDate','startDate')).datepicker().css('display','none');
-		ending=$(_createElement('input','endingDate','endingDate')).datepicker().css('display','none');
-		$("div.choice_parametros.fecha").append(start,ending);
-		start.fadeIn('slow');
-		ending.fadeIn('slow');
-		start=ending=null;
+		$(spot).fadeOut('slow');
+		$(spot).remove();
 	}
 
 	/**
