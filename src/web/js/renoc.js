@@ -35,20 +35,34 @@
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
+			_showCheck();
 		}
-		_showCheck();
 		obj=null;
 	}
 
 	/**
-	 *
+	 * Crea un elemento html con todas caracteristicas
+	 * @access private
+	 * @param string element es el nombre del elemento a crear
+	 * @param string id es el id que se le asigna al elemento
+	 * @param string name es el nombre del elemento
+	 * @param string className son la/las clases que llevara el elemento
+	 * @return dom newElement
 	 */
-	function _createElement(element,id,name)
+	function _createElement(element,id,name,className)
 	{
-		newElement=document.createElement(element);
-		newElement.id=id;
-		newElement.name=name;
-		return newElement;
+		if (element!=undefined)
+		{
+			newElement=document.createElement(element);
+			if (id!=undefined) newElement.id=id;
+			if (name!=undefined) newElement.name=name;
+			if (className!=undefined) newElement.className=className;
+			return newElement;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -61,6 +75,20 @@
 		$("div.choice_parametros.fecha").append(start,ending);
 		start.fadeIn('slow');
 		ending.fadeIn('slow');
+		start=null;
+	}
+
+	/**
+	 *
+	 */
+	function _hideCheck()
+	{
+		start=$(_createElement('input','startDate','startDate')).datepicker().css('display','none');
+		ending=$(_createElement('input','endingDate','endingDate')).datepicker().css('display','none');
+		$("div.choice_parametros.fecha").append(start,ending);
+		start.fadeIn('slow');
+		ending.fadeIn('slow');
+		start=ending=null;
 	}
 
 	/**
