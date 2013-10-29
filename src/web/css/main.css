@@ -964,6 +964,42 @@ img.oculta
     display: inline;
 }
 
+/*Especificos*/
+.start, .end
+{
+    position: relative;
+    width: 90px;
+}
+.start
+{
+    left: 273px;
+}
+.middle
+{
+    left: 285px;
+    position: relative;
+}
+.end
+{
+    left: 300px;
+}
+.date
+{
+    top:-57px;
+}
+.time
+{
+    top:-100px;
+}
+.month
+{
+    top:-143px;
+}
+
+/*position: relative;
+top: -57px;
+*/
+
 /*#excel
 {
 background: url(/images/excel.png);  
@@ -1021,7 +1057,8 @@ height: 61px;
     margin-left: 1%;
     width: 49%;
 }
-.choice_parametros{
+.choice_parametros
+{
     /*float: left;*/
     color: grey;
     width: 49%;
