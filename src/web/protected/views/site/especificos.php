@@ -11,55 +11,61 @@ $this->layout=$this->getLayoutFile('menuContent');
         </h1>
     </header>
     <section>
-    <article class="titulo90">
-        ESPECIFICOS
-    </article>
-    <article class="parametros">
-        <p>Seleccione los parametros</p>
-                    <form id="formRutinarios">
-                <div class="choice_parametros fecha">
-                    <input type="checkbox" value="true" id="fecha" class="custom-checkbox" name="lista[fecha]">
-                    <label for="fecha">
-                        <h4 id="td1">
-                            Fecha
-                        </h4>
-                    </label>
-                    <!--<input name="startDate" id="startDate" type="text"/>
-                    <input name="endingDate" id="endingDate" type="text"/>-->
-                </div>
-                <div class="choice_parametros">
+        <article class="titulo90">
+            ESPECIFICOS
+        </article>
+        <article class="parametros">
+            <p>Seleccione los parametros</p>
+                <form id="formRutinarios">
+                    <div class="choice_parametros fecha">
+                        <input type="checkbox" value="true" id="fecha" class="custom-checkbox" name="lista[Fecha]">
+                        <label for="fecha">
+                            <h4 id="td1">
+                                Fecha
+                            </h4>
+                        </label>
+                        <!--<input name="startDate" id="startDate" type="text" class="start date"/>
+                        <input name="checkDate" id="checkDate" type="checkbox" class="middle date"/>
+                        <input name="endingDate" id="endingDate" type="text" class="end date"/>-->
+                    </div>
+                    <div class="choice_parametros hora">
                         <input type="checkbox" value="true" id="Hora" class="custom-checkbox" name="lista[Hora]">
                         <label for="Hora">
                             <h4 id="td1">
                                 Hora
                             </h4>
                         </label>
+                        <!--<input name="startTime" id="startTime" type="text" class="start time"/>
+                        <input name="checkTime" id="checkTime" type="checkbox" class="middle time"/>
+                        <input name="endingTime" id="endingTime" type="text" class="end time"/>-->
                     </div>
-                    <div class="choice_parametros">
+                    <div class="choice_parametros mes">
                         <input type="checkbox" value="true" id="Mes" class="custom-checkbox" name="lista[Mes]">
                         <label for="Mes">
                             <h4 id="td1">
                                 Mes
                             </h4>
                         </label>
+                        <!--<input name="startMonth" id="startMonth" type="text" class="start month"/>
+                        <input name="checkMonth" id="checkMonth" type="checkbox" class="middle month"/>
+                        <input name="endingMonth" id="endingMonth" type="text" class="end month"/>-->
                     </div>
-            </form>
-<!--        <p>PARAMETROS</p>-->
-      <footer>
-                <div id="excel" class="botones">
-                    <img src="/images/excel.png" class='ver'>
-                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
-                </div>
-                <div id="mailRenoc" class="botones">
-                    <img src="/images/mailRenoc.png" class='ver'>
-                    <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
-                </div>
-                <div id="mail" class="botones">
-                    <img src="/images/mail.png" class='ver'>
-                    <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
-                </div>
-            </footer>
-    </article> 
+                </form>
+                <footer>
+                    <div id="excel" class="botones">
+                        <img src="/images/excel.png" class='ver'>
+                        <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                    </div>
+                    <div id="mailRenoc" class="botones">
+                        <img src="/images/mailRenoc.png" class='ver'>
+                        <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                    </div>
+                    <div id="mail" class="botones">
+                        <img src="/images/mail.png" class='ver'>
+                        <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                    </div>
+                </footer>
+        </article>
         <article class='especificos_reportes'>
             <p>Seleccione los Reportes</p>
             <form id="formEspecificos">
@@ -217,21 +223,3 @@ $this->layout=$this->getLayoutFile('menuContent');
 <script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
-<script>
-    /*$(".fecha").on('click',function()
-    {
-        console.log("itadakimasu");
-        /*if($(".fecha label h4").attr('class')=="stretchRight")
-        {
-            $(".fecha label h4").removeClass("stretchRight");
-        }
-        else
-        {
-            $(".fecha label h4").addClass("stretchRight");
-        }*/
-   /*     
-    });*/
-    
-$RENOC.UI.init();
-    
-</script>

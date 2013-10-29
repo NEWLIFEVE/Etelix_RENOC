@@ -14,10 +14,47 @@
  	 */
  	function init()
  	{
- 		var checkFecha=document.getElementsByName('lista[fecha]');
+ 		var checkFecha=document.getElementsByName('lista[Fecha]');
  		if(checkFecha!="undefined")
  		{
- 			checkFecha[0].onclick=function(){_changeClass($('.fecha label h4'),'stretchRight','offStretchRight')};
+ 			optionsDate={
+ 				elemento:'input',
+ 				idInput:'startDate',
+ 				idCheck:'checkDate',
+ 				name:'startDate',
+ 				nameClassPicker:'start date',
+ 				nameClassCheck:'middle date',
+ 				spot:'div.choice_parametros.fecha'
+ 			};
+ 			checkFecha[0].onclick=function(){_changeClass($('.fecha label h4'),'stretchRight','offStretchRight',optionsDate)};
+ 		}
+ 		var checkTime=document.getElementsByName('lista[Hora]');
+ 		if(checkTime!="undefined")
+ 		{
+ 			optionsTime={
+ 				elemento:'input',
+ 				idInput:'startTime',
+ 				idCheck:'checkTime',
+ 				name:'startTime',
+ 				nameClassPicker:'start time',
+ 				nameClassCheck:'middle time',
+ 				spot:'div.choice_parametros.hora'
+ 			};
+ 			checkTime[0].onclick=function(){_changeClass($('.hora label h4'),'stretchRight','offStretchRight',optionsTime)};
+ 		}
+ 		var checkMonth=document.getElementsByName('lista[Mes]');
+ 		if(checkMonth!="undefined")
+ 		{
+ 			optionsMonth={
+ 				elemento:'input',
+ 				idInput:'startMonth',
+ 				idCheck:'checkMonth',
+ 				name:'startMonth',
+ 				nameClassPicker:'start month',
+ 				nameClassCheck:'middle month',
+ 				spot:'div.choice_parametros.mes'
+ 			};
+ 			checkMonth[0].onclick=function(){_changeClass($('.mes label h4'),'stretchRight','offStretchRight',optionsMonth)};
  		}
  	}
 
@@ -26,18 +63,18 @@
 	 * @access private
 	 * @param jQuery obj es el objeto de la fila que se quiere manipular
 	 */
-	function _changeClass(obj,activeClass,desactiveClass)
+	function _changeClass(obj,activeClass,desactiveClass,options)
 	{
 		if(obj.attr('class')==activeClass)
 		{
 			obj.removeClass(activeClass).addClass(desactiveClass);
-			_hideElement('#startDate');
+			_hideElement('#'+options.idInput+', #'+options.idCheck);
 		}
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showElement($(_createElement('input','startDate','startDate','startDate')).datepicker(),'div.choice_parametros.fecha');
-			_showElement(_createElement('input','checkFin','checkFin','','checkbox'),'div.choice_parametros.fecha');
+			_showElement($(_createElement(options.elemento,options.idInput,options.name,options.nameClassPicker)).datepicker(),options.spot);
+			_showElement(_createElement(options.elemento,options.idCheck,options.name,options.nameClassCheck,'checkbox'),options.spot);
 		}
 		obj=null;
 	}

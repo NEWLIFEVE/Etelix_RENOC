@@ -969,14 +969,15 @@ img.oculta
 {
     position: relative;
     width: 90px;
+    margin-bottom: 0px;
 }
 .start
 {
-    left: 273px;
+    left: 16em;
 }
 .middle
 {
-    left: 285px;
+    left: 17em;
     position: relative;
 }
 .end
@@ -985,15 +986,15 @@ img.oculta
 }
 .date
 {
-    top:-57px;
+    top:-4em;
 }
 .time
 {
-    top:-100px;
+    top:-4em;
 }
 .month
 {
-    top:-143px;
+    top:-4em;
 }
 
 /*position: relative;
