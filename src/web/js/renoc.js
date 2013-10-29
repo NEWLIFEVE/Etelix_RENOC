@@ -36,7 +36,8 @@
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showElement(_createElement('input','startDate','startDate','startDate'),'div.choice_parametros.fecha');
+			_showElement($(_createElement('input','startDate','startDate','startDate')).datepicker(),'div.choice_parametros.fecha');
+			_showElement(_createElement('input','checkFin','checkFin','','checkbox'),'div.choice_parametros.fecha');
 		}
 		obj=null;
 	}
@@ -76,7 +77,7 @@
 	 */
 	function _showElement(object,spot)
 	{
-		$element=$(object).datepicker().css('display','none');
+		$element=$(object).css('display','none');
 		$(spot).append($element);
 		$element.fadeIn('slow');
 		$element=null;
