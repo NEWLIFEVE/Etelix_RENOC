@@ -983,6 +983,9 @@ img.oculta
 .end
 {
     left: 300px;
+    padding-left: 16px;
+    margin-left: -50px;
+    margin-right: -64px;
 }
 .date
 {

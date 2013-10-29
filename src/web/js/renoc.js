@@ -19,42 +19,67 @@
  		{
  			optionsDate={
  				elemento:'input',
- 				idInput:'startDate',
+ 				idInputStart:'startDate',
+ 				idInputEnd:'endingDate',
  				idCheck:'checkDate',
- 				name:'startDate',
  				nameClassPicker:'start date',
  				nameClassCheck:'middle date',
  				spot:'div.choice_parametros.fecha'
  			};
- 			checkFecha[0].onclick=function(){_changeClass($('.fecha label h4'),'stretchRight','offStretchRight',optionsDate)};
+ 			checkFecha[0].onclick=function()
+ 			{
+ 				_changeClass($('.fecha label h4'),'stretchRight','offStretchRight',optionsDate);
+ 				document.getElementById(optionsDate.idCheck).onclick=function()
+ 				{
+ 					if (this.checked) _showElement($(_createElement(optionsDate.elemento,optionsDate.idInputEnd,optionsDate.idInputEnd,'end date')).datepicker(),optionsDate.spot);
+ 					else _hideElement('#'+optionsDate.idInputEnd);
+ 				}
+ 			};
  		}
  		var checkTime=document.getElementsByName('lista[Hora]');
  		if(checkTime!="undefined")
  		{
  			optionsTime={
  				elemento:'input',
- 				idInput:'startTime',
+ 				idInputStart:'startTime',
+ 				idInputEnd:'endingTime',
  				idCheck:'checkTime',
- 				name:'startTime',
  				nameClassPicker:'start time',
  				nameClassCheck:'middle time',
  				spot:'div.choice_parametros.hora'
  			};
- 			checkTime[0].onclick=function(){_changeClass($('.hora label h4'),'stretchRight','offStretchRight',optionsTime)};
+ 			checkTime[0].onclick=function()
+ 			{
+ 				_changeClass($('.hora label h4'),'stretchRight','offStretchRight',optionsTime);
+ 				document.getElementById(optionsTime.idCheck).onclick=function()
+ 				{
+	 				if (this.checked) _showElement($(_createElement(optionsTime.elemento,optionsTime.idInputEnd,optionsTime.idInputEnd,'end time')).datepicker(),optionsTime.spot);
+	 				else _hideElement('#'+optionsTime.idInputEnd);
+ 				};
+ 			};
+ 			
  		}
  		var checkMonth=document.getElementsByName('lista[Mes]');
  		if(checkMonth!="undefined")
  		{
  			optionsMonth={
  				elemento:'input',
- 				idInput:'startMonth',
+ 				idInputStart:'startMonth',
+ 				idInputEnd:'endingMonth',
  				idCheck:'checkMonth',
- 				name:'startMonth',
  				nameClassPicker:'start month',
  				nameClassCheck:'middle month',
  				spot:'div.choice_parametros.mes'
  			};
- 			checkMonth[0].onclick=function(){_changeClass($('.mes label h4'),'stretchRight','offStretchRight',optionsMonth)};
+ 			checkMonth[0].onclick=function()
+ 			{
+ 				_changeClass($('.mes label h4'),'stretchRight','offStretchRight',optionsMonth);
+ 				document.getElementById(optionsMonth.idCheck).onclick=function()
+	 			{
+	 				if (this.checked) _showElement($(_createElement(optionsMonth.elemento,optionsMonth.idInputEnd,optionsMonth.idInputEnd,'end month')).datepicker(),optionsMonth.spot);
+	 				else _hideElement('#'+optionsMonth.idInputEnd);
+	 			};
+ 			};
  		}
  	}
 
@@ -68,13 +93,13 @@
 		if(obj.attr('class')==activeClass)
 		{
 			obj.removeClass(activeClass).addClass(desactiveClass);
-			_hideElement('#'+options.idInput+', #'+options.idCheck);
+			_hideElement('#'+options.idInputStart+', #'+options.idCheck+',#'+options.idInputEnd);
 		}
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showElement($(_createElement(options.elemento,options.idInput,options.name,options.nameClassPicker)).datepicker(),options.spot);
-			_showElement(_createElement(options.elemento,options.idCheck,options.name,options.nameClassCheck,'checkbox'),options.spot);
+			_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker)).datepicker(),options.spot);
+			_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
 		}
 		obj=null;
 	}
@@ -121,7 +146,7 @@
 	}
 
 	/**
-	 * Recibe un strimng de ubicacion tipo jQuery y esta oculta y luego elimina el elemento
+	 * Recibe un string de ubicacion tipo jQuery y esta oculta y luego elimina el elemento
 	 * @access private
 	 * @param string spot es la ubicacion tipo jQuery
 	 */
