@@ -31,7 +31,7 @@
  				_changeClass($('.fecha label h4'),'stretchRight','offStretchRight',optionsDate);
  				document.getElementById(optionsDate.idCheck).onclick=function()
  				{
- 					if (this.checked) _showElement($(_createElement(optionsDate.elemento,optionsDate.idInputEnd,optionsDate.idInputEnd,'end date')).datepicker(),optionsDate.spot);
+ 					if (this.checked) _showElement($(_createElement(optionsDate.elemento,optionsDate.idInputEnd,optionsDate.idInputEnd,'end date',undefined,'Fin')).datepicker(),optionsDate.spot);
  					else _hideElement('#'+optionsDate.idInputEnd);
  				}
  			};
@@ -53,7 +53,7 @@
  				_changeClass($('.hora label h4'),'stretchRight','offStretchRight',optionsTime);
  				document.getElementById(optionsTime.idCheck).onclick=function()
  				{
-	 				if (this.checked) _showElement($(_createElement(optionsTime.elemento,optionsTime.idInputEnd,optionsTime.idInputEnd,'end time')).datepicker(),optionsTime.spot);
+	 				if (this.checked) _showElement($(_createElement(optionsTime.elemento,optionsTime.idInputEnd,optionsTime.idInputEnd,'end time',undefined,'Fin')).datepicker(),optionsTime.spot);
 	 				else _hideElement('#'+optionsTime.idInputEnd);
  				};
  			};
@@ -76,7 +76,7 @@
  				_changeClass($('.mes label h4'),'stretchRight','offStretchRight',optionsMonth);
  				document.getElementById(optionsMonth.idCheck).onclick=function()
 	 			{
-	 				if (this.checked) _showElement($(_createElement(optionsMonth.elemento,optionsMonth.idInputEnd,optionsMonth.idInputEnd,'end month')).datepicker(),optionsMonth.spot);
+	 				if (this.checked) _showElement($(_createElement(optionsMonth.elemento,optionsMonth.idInputEnd,optionsMonth.idInputEnd,'end month',undefined,'Fin')).datepicker(),optionsMonth.spot);
 	 				else _hideElement('#'+optionsMonth.idInputEnd);
 	 			};
  			};
@@ -98,7 +98,7 @@
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker)).datepicker(),options.spot);
+			_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker(),options.spot);
 			_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
 		}
 		obj=null;
@@ -114,7 +114,7 @@
 	 * @param string type tipo de elemento
 	 * @return dom newElement
 	 */
-	function _createElement(element,id,name,className,type)
+	function _createElement(element,id,name,className,type,placeholder)
 	{
 		if (element!=undefined)
 		{
@@ -123,6 +123,7 @@
 			if (name!=undefined) newElement.name=name;
 			if (className!=undefined) newElement.className=className;
 			if (type!=undefined) newElement.type=type;
+			if (placeholder!=undefined) newElement.placeholder=placeholder;
 			return newElement;
 		}
 		else
