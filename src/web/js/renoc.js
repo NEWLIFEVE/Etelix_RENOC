@@ -66,16 +66,17 @@
 	}
 
 	/**
-	 *
+	 * Recibe un objeto html y una ubicacion jQuery este mostrara el elemento
+	 * @access private
+	 * @param dom object es el elemento html a agregar y mostrar
+	 * @param string spot es la ubicacion tipo jQuery donde agregar el elemento
 	 */
-	function _showCheck()
+	function _showElement(object,spot)
 	{
-		start=$(_createElement('input','startDate','startDate')).datepicker().css('display','none');
-		ending=$(_createElement('input','endingDate','endingDate')).datepicker().css('display','none');
-		$("div.choice_parametros.fecha").append(start,ending);
-		start.fadeIn('slow');
-		ending.fadeIn('slow');
-		start=null;
+		$element=$(objeto).datepicker().css('display','none');
+		$(spot).append($element);
+		$element.fadeIn('slow');
+		$element=null;
 	}
 
 	/**
