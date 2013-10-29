@@ -31,11 +31,12 @@
 		if(obj.attr('class')==activeClass)
 		{
 			obj.removeClass(activeClass).addClass(desactiveClass);
+			_hideElement('#startDate');
 		}
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showCheck();
+			_showElement(_createElement('input','startDate','startDate','startDate'),'div.choice_parametros.fecha');
 		}
 		obj=null;
 	}
@@ -47,9 +48,10 @@
 	 * @param string id es el id que se le asigna al elemento
 	 * @param string name es el nombre del elemento
 	 * @param string className son la/las clases que llevara el elemento
+	 * @param string type tipo de elemento
 	 * @return dom newElement
 	 */
-	function _createElement(element,id,name,className)
+	function _createElement(element,id,name,className,type)
 	{
 		if (element!=undefined)
 		{
@@ -57,6 +59,7 @@
 			if (id!=undefined) newElement.id=id;
 			if (name!=undefined) newElement.name=name;
 			if (className!=undefined) newElement.className=className;
+			if (type!=undefined) newElement.type=type;
 			return newElement;
 		}
 		else
@@ -73,7 +76,7 @@
 	 */
 	function _showElement(object,spot)
 	{
-		$element=$(objeto).datepicker().css('display','none');
+		$element=$(object).datepicker().css('display','none');
 		$(spot).append($element);
 		$element.fadeIn('slow');
 		$element=null;
