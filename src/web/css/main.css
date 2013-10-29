@@ -970,6 +970,7 @@ img.oculta
     position: relative;
     width: 90px;
     margin-bottom: 0px;
+    background: none !important;
 }
 .start
 {
@@ -1067,6 +1068,7 @@ height: 61px;
     color: grey;
     width: 49%;
     margin-left: 1%;
+    height: 6.8em;
 }
 .especificos_reportes div.choice
 {  
