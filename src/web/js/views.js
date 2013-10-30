@@ -123,7 +123,7 @@ var ajax=function()
 ajax.prototype.run=function()
 {
     var self=this;
-    $('#mail,#excel,#mailRenoc').on('click',function(e)
+    $('#mail,#excel,#lista').on('click',function(e)
     {
 
         var id=tipo=numero=valor=nombre=fecha=mensaje=null, ventana={};
@@ -174,7 +174,7 @@ ajax.prototype.run=function()
                             self.getFormPost();
                             self.enviar();
                         }
-                        else if(tipo=="mailRenoc")
+                        else if(tipo=="lista")
                         {
                             mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/>";
                             self.crearCapa(mensaje);
@@ -221,7 +221,7 @@ ajax.prototype.run=function()
                     self.getFormPost();
                     self.enviar();
                 }
-                else if(tipo=="mailRenoc")
+                else if(tipo=="lista")
                 {
                     mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
                              class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
@@ -251,21 +251,49 @@ ajax.prototype.run=function()
 }
 ajax.prototype.genExcel=function()
 {
-    var self=this;
+    var self=this,lista=Array();
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
-        fecha=self.formulario[self.formulario.length-1].value;
-        nombre=self.formulario[i].name;
-        valor=self.formulario[i].value;
-        if(nombre!="lista[todos]" && nombre!="fecha")
+        if(self.formulario[i].name!='checkDate')
         {
-            ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+            lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
+        }
+    };
+    if(lista['endingDate']==undefined)
+    {
+        lista['endingDate']={name:'endingDate',value:null};
+    }
+    if(lista['lista[Fecha]']==undefined)
+    {
+        lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
+    }
+    if(lista['lista[Hora]']==undefined)
+    {
+        lista['lista[Hora]']={name:'lista[Hora]',value:false};
+    }
+    if(lista['lista[Mes]']==undefined)
+    {
+        lista['lista[Mes]']={name:'lista[Mes]',value:false};
+    }
+    console.dir(lista);
+    if(lista['lista[Fecha]'].value || lista['lista[Hora]'].value || lista['lista[Mes]'].value)
+    {
+        for (var key in lista)
+        {
+            if (lista[key].name!='startDate' && lista[key].name!='endingDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+        }
+    }
+    else
+    {
+        for (var key in lista)
+        {
+            if (lista[key].name!='endingDate' && lista[key].name!='startDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
         }
     }
 }
 ajax.prototype.getFormPost=function()
 {
-    this.formulario=$("#formRutinarios").serializeArray();
+    this.formulario=$("#formulario").serializeArray();
 }
 ajax.prototype.enviar=function()
 {

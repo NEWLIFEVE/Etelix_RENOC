@@ -31,7 +31,7 @@
  				_changeClass($('.fecha label h4'),'stretchRight','offStretchRight',optionsDate);
  				document.getElementById(optionsDate.idCheck).onclick=function()
  				{
- 					if (this.checked) _showElement($(_createElement(optionsDate.elemento,optionsDate.idInputEnd,optionsDate.idInputEnd,'end date',undefined,'Fin')).datepicker(),optionsDate.spot);
+ 					if (this.checked) _showElement($(_createElement(optionsDate.elemento,optionsDate.idInputEnd,optionsDate.idInputEnd,'end date',undefined,'Fin')).datepicker({dateFormat: 'yy-mm-dd'}),optionsDate.spot);
  					else _hideElement('#'+optionsDate.idInputEnd);
  				}
  			};
@@ -53,7 +53,7 @@
  				_changeClass($('.hora label h4'),'stretchRight','offStretchRight',optionsTime);
  				document.getElementById(optionsTime.idCheck).onclick=function()
  				{
-	 				if (this.checked) _showElement($(_createElement(optionsTime.elemento,optionsTime.idInputEnd,optionsTime.idInputEnd,'end time',undefined,'Fin')).datepicker(),optionsTime.spot);
+	 				if (this.checked) _showElement($(_createElement(optionsTime.elemento,optionsTime.idInputEnd,optionsTime.idInputEnd,'end time',undefined,'Fin')).datepicker({dateFormat: 'yy-mm-dd'}),optionsTime.spot);
 	 				else _hideElement('#'+optionsTime.idInputEnd);
  				};
  			};
@@ -76,7 +76,7 @@
  				_changeClass($('.mes label h4'),'stretchRight','offStretchRight',optionsMonth);
  				document.getElementById(optionsMonth.idCheck).onclick=function()
 	 			{
-	 				if (this.checked) _showElement($(_createElement(optionsMonth.elemento,optionsMonth.idInputEnd,optionsMonth.idInputEnd,'end month',undefined,'Fin')).datepicker(),optionsMonth.spot);
+	 				if (this.checked) _showElement($(_createElement(optionsMonth.elemento,optionsMonth.idInputEnd,optionsMonth.idInputEnd,'end month',undefined,'Fin')).datepicker({dateFormat: 'yy-mm-dd'}),optionsMonth.spot);
 	 				else _hideElement('#'+optionsMonth.idInputEnd);
 	 			};
  			};
@@ -98,7 +98,7 @@
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker(),options.spot);
+			_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker({dateFormat: 'yy-mm-dd'}),options.spot);
 			_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
 		}
 		obj=null;
@@ -164,3 +164,41 @@
 		init:init
 	}
  })();
+
+/**
+ * Submodulo de manejo de peticiones AJAX
+ */
+$RENOC.AJAX=(function()
+{
+	/**
+	 * Obtiene los datos del formulario 
+	 * @access private
+	 * @param string id es el id tipo jQuery para llamar el formulario
+	 */
+	function _getFormPost(id)
+	{
+	    return $(id).serializeArray();
+	}
+
+	/**
+	 *
+	 */
+	/*function action()
+	{
+		$('#excelEspecificos,#listaEspecificos,#mailEspecificos').on('click',function()
+		{
+			$tipo=$(this).attr('id');
+			switch($tipo)
+			{
+			case 'mailEspecificos':
+			  execute code block 1
+			  break;
+			case 2:
+			  execute code block 2
+			  break;
+			default:
+			  code to be executed if n is different from case 1 and 2
+			}
+		});
+	}*/
+})();
