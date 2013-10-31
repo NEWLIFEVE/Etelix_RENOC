@@ -209,6 +209,18 @@ $RENOC.AJAX=(function()
 	}
 
 	/**
+	 * Crea un array con los nombres y id de los carriers
+	 * @access private
+	 */
+	function _getNamesCarriers()
+	{
+		$.ajax({url:"carrier/nombres",success:function(datos)
+		{
+			
+		},);
+	}
+
+	/**
 	 *
 	 */
 	/*function action()
@@ -230,3 +242,7 @@ $RENOC.AJAX=(function()
 		});
 	}*/
 })();
+
+$RENOC.DATA={
+	carriers:''
+};
