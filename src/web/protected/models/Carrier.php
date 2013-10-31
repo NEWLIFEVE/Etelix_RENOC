@@ -110,4 +110,12 @@ class Carrier extends CActiveRecord
 	{
 		return self::model()->findByPk($id)->name;
 	}
+
+	/**
+	 *
+	 */
+	public static function getNames()
+	{
+		return self::model()->findAll();
+	}
 }

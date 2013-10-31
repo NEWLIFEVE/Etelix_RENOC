@@ -59,26 +59,21 @@
  			};
  			
  		}
- 		var checkMonth=document.getElementsByName('lista[Mes]');
- 		if(checkMonth!="undefined")
+ 		var checkCarrier=document.getElementsByName('lista[Carrier]');
+ 		if(checkCarrier!="undefined")
  		{
  			optionsMonth={
  				elemento:'input',
- 				idInputStart:'startMonth',
- 				idInputEnd:'endingMonth',
- 				idCheck:'checkMonth',
- 				nameClassPicker:'start month',
- 				nameClassCheck:'middle month',
- 				spot:'div.choice_parametros.mes'
+ 				idInputStart:'carrier',
+ 				idInputEnd:'',
+ 				idCheck:'',
+ 				nameClassPicker:'start carrier',
+ 				nameClassCheck:'middle carrier',
+ 				spot:'div.choice_parametros.carrier'
  			};
- 			checkMonth[0].onclick=function()
+ 			checkCarrier[0].onclick=function()
  			{
- 				_changeClass($('.mes label h4'),'stretchRight','offStretchRight',optionsMonth);
- 				document.getElementById(optionsMonth.idCheck).onclick=function()
-	 			{
-	 				if (this.checked) _showElement($(_createElement(optionsMonth.elemento,optionsMonth.idInputEnd,optionsMonth.idInputEnd,'end month',undefined,'Fin')).datepicker({dateFormat: 'yy-mm-dd'}),optionsMonth.spot);
-	 				else _hideElement('#'+optionsMonth.idInputEnd);
-	 			};
+ 				_changeClass($('.carrier label h4'),'stretchRight','offStretchRight',optionsMonth);
  			};
  		}
  	}
@@ -98,8 +93,41 @@
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker({dateFormat: 'yy-mm-dd'}),options.spot);
-			_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
+			if(options.idInputStart!='carrier')
+			{
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker({dateFormat: 'yy-mm-dd'}),options.spot);
+				_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
+			}
+			else
+			{
+				var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Carrier')).autocomplete({
+      source: availableTags
+    }),options.spot);
+			}
 		}
 		obj=null;
 	}

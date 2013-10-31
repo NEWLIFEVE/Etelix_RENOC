@@ -33,11 +33,11 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>
-                <div class="choice_parametros mes">
-                    <input type="checkbox" value="true" id="Mes" class="custom-checkbox" name="lista[Mes]">
-                    <label for="Mes">
+                <div class="choice_parametros carrier">
+                    <input type="checkbox" value="true" id="Carrier" class="custom-checkbox" name="lista[Carrier]">
+                    <label for="Carrier">
                         <h4 id="td1">
-                            Mes
+                            Carrier
                         </h4>
                     </label>
                 </div>
