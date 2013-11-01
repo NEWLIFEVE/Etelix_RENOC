@@ -151,6 +151,14 @@ class reportes extends CApplicationComponent
     }
 
     /**
+     *
+     */
+    public function Calidad($inicio,$fin,$carrier)
+    {
+        return Calidad::getHtmlDestinations($inicio,$fin,$carrier);
+    }
+
+    /**
      * Metodo encargado de generar el reporte de Ranking Compra Venta
      * @access public
      * @param date $inicio la fecha menor a ser consultada.

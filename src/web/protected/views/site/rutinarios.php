@@ -23,7 +23,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <img src="/images/excel.png" class='ver'>
                     <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
                 </div>
-                <div id="mailRenoc" class="botones">
+                <div id="lista" class="botones">
                     <img src="/images/mailRenoc.png" class='ver'>
                     <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
                 </div>
@@ -35,7 +35,7 @@ $this->layout=$this->getLayoutFile('menuContent');
         </article>
         <article class='rutinarios_reportes'>
             <p>Seleccione los Reportes</p>
-            <form id="formRutinarios">
+            <form id="formulario">
                 <div class="choice">
                     <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
                     <label for="todos">
@@ -204,7 +204,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
-                    <input name="fecha" type="hidden"  id="datepicker_value" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
+                    <input name="startDate" type="hidden"  id="datepicker_value" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
         echo $nuevafecha=date('Y-m-d',$nuevafecha);?>"/>
             </form>
         </article>

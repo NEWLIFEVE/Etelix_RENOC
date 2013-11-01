@@ -7,6 +7,7 @@
     <meta charset="utf-8"/>
     <!-- blueprint CSS framework -->
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/animations.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui.css" media="jquery" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/custom-ui.css" media="ui" />
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />  
@@ -78,9 +79,14 @@
         Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.1.6
     </div>
     <div class="clear"></div>
-        <div class='cargandosori'><h6><b>Re-Rate en proceso &nbsp;<img src='/images/cargandosori.gif'width='15px' height='5px'/><b></h6></div>
+    <div class='cargandosori'>
+        <h6>
+            <b>Re-Rate en proceso &nbsp;<img src='/images/cargandosori.gif'width='15px' height='5px'/><b>
+        </h6>
+    </div>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"/></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.js"/></script>
     <script src="http://malsup.github.io/jquery.blockUI.js"></script>
 </body>
 </html>

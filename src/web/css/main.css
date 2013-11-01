@@ -964,6 +964,47 @@ img.oculta
     display: inline;
 }
 
+/*Especificos*/
+.start, .end
+{
+    position: relative;
+    width: 90px;
+    margin-bottom: 0px;
+    background: none !important;
+}
+.start
+{
+    left: 16em;
+}
+.middle
+{
+    left: 17em;
+    position: relative;
+}
+.end
+{
+    left: 300px;
+    padding-left: 16px;
+    margin-left: -50px;
+    margin-right: -64px;
+}
+.date
+{
+    top:-4em;
+}
+.time
+{
+    top:-4em;
+}
+.carrier
+{
+    top:-4em;
+}
+
+/*position: relative;
+top: -57px;
+*/
+
 /*#excel
 {
 background: url(/images/excel.png);  
@@ -1021,6 +1062,14 @@ height: 61px;
     margin-left: 1%;
     width: 49%;
 }
+.choice_parametros
+{
+    /*float: left;*/
+    color: grey;
+    width: 49%;
+    margin-left: 1%;
+    height: 6.8em;
+}
 .especificos_reportes div.choice
 {  
     width: 105% !important;
@@ -1032,6 +1081,14 @@ height: 61px;
     margin: -3% 0 4% 12%;
     padding: 6%;
     text-align: left;
+}
+.choice_parametros label h4
+{
+    text-align: left;
+    background: #E6E6E6;
+    padding: 6%;
+    margin: -3% 56% 3% 12%;
+    height: 30px;
 }
 
 @media screen and (max-width: 980px) {
