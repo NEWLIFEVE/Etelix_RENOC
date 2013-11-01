@@ -67,6 +67,7 @@ navegar.prototype.ida=function()
         self.objetoMain.toggle('slide');
         self.objetoNueva.fadeIn('fast');
         $RENOC.UI.init();
+        $RENOC.AJAX.init();
     });
 }
 /**

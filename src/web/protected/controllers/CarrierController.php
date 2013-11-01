@@ -54,9 +54,12 @@ class CarrierController extends Controller
 	{
 		$model=Carrier::getNames();
 		$array=array();
+		$pos=0;
 		foreach ($model as $key => $value)
 		{
-			$array[$value->name]=$value->id;
+			$array[$pos]['id']=$value->id;
+			$array[$pos]['name']=$value->name;
+			$pos=$pos+1;
 		}
 		echo json_encode($array);
 	}

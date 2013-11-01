@@ -98,9 +98,9 @@
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker({dateFormat: 'yy-mm-dd'}),options.spot);
 				_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
 			}
-			else
+			/*else
 			{
-				var availableTags = [
+				/*var availableTags = [
       "ActionScript",
       "AppleScript",
       "Asp",
@@ -124,10 +124,8 @@
       "Scala",
       "Scheme"
     ];
-				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Carrier')).autocomplete({
-      source: availableTags
-    }),options.spot);
-			}
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Carrier')).autocomplete({source:$RENOC.DATA.nombresCarriers}),options.spot);
+			}*/
 		}
 		obj=null;
 	}
@@ -216,8 +214,28 @@ $RENOC.AJAX=(function()
 	{
 		$.ajax({url:"carrier/nombres",success:function(datos)
 		{
+			$RENOC.DATA.carriers=JSON.parse(datos);
+			$RENOC.DATA.IDS=Array();
+			$RENOC.DATA.nombresCarriers=Array();
+			for (var i = 0, j=$RENOC.DATA.carriers.length-1; i >= j; i++)
+			{
+				$RENOC.DATA.nombresCarriers[i]=$RENOC.DATA.carriers[i].name;
+				$RENOC.DATA.IDS[$RENOC.DATA.carriers[i].name]=$RENOC.DATA.carriers[i].id;
+				
+			};
+
 			
-		},);
+		}
+		});
+	}
+
+	/**
+	 * Inicializa las funciones del submodulo
+	 * @access public
+	 */
+	function init()
+	{
+		_getNamesCarriers();
 	}
 
 	/**
@@ -241,8 +259,7 @@ $RENOC.AJAX=(function()
 			}
 		});
 	}*/
+	return {init:init}
 })();
 
-$RENOC.DATA={
-	carriers:''
-};
+$RENOC.DATA={};
