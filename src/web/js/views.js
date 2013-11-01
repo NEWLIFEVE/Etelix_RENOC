@@ -281,14 +281,14 @@ ajax.prototype.genExcel=function()
     {
         for (var key in lista)
         {
-            if (lista[key].name!='startDate' && lista[key].name!='endingDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+            if (lista[key].name!='startDate' && lista[key].name!='endingDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
         }
     }
     else
     {
         for (var key in lista)
         {
-            if (lista[key].name!='endingDate' && lista[key].name!='startDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+            if (lista[key].name!='endingDate' && lista[key].name!='startDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
         }
     }
 }
