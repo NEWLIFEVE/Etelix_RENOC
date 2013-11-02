@@ -11,7 +11,7 @@ $this->layout=$this->getLayoutFile('menuContent');
         </h1>
     </header>
     <section>
-        <article class='titulosec'>
+        <article class='titulo90'>
             RUTINARIOS
         </article>
         <article class='calendario'>
@@ -19,14 +19,23 @@ $this->layout=$this->getLayoutFile('menuContent');
             <div id="datepicker">
             </div>
             <footer>
-                <img src="/images/excel.png" title='Exportar Reportes en Excel' class='botones' id='excel' value="Activar Función">
-                <img src="/images/mailRenoc.png" title='Enviar Reportes a Correo Electronico RENOC' class='botones' id='mailRenoc' value="Activar Función">
-                <img src="/images/mail.png" title='Enviar Reportes a su Correo Electronico' class='botones' id='mail' value="Activar Función">
+                <div id="excel" class="botones">
+                    <img src="/images/excel.png" class='ver'>
+                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                </div>
+                <div id="lista" class="botones">
+                    <img src="/images/mailRenoc.png" class='ver'>
+                    <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                </div>
+                <div id="mail" class="botones">
+                    <img src="/images/mail.png" class='ver'>
+                    <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                </div>
             </footer>
         </article>
         <article class='rutinarios_reportes'>
             <p>Seleccione los Reportes</p>
-            <form id="formRutinarios">
+            <form id="formulario">
                 <div class="choice">
                     <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
                     <label for="todos">
@@ -95,7 +104,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="ADI" class="custom-checkbox" name="lista[ADI]">
                         <label for="ADI">
                             <h4 id="td3">
-                                Arbol Destinos Internal
+                                AD Internal
                             </h4>
                         </label>
                     </div>
@@ -103,23 +112,39 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="ADE" class="custom-checkbox" name="lista[ADE]">
                         <label for="ADE">
                             <h4 id="td3">
-                                Arbol Destinos External
+                                AD External
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="AC" class="custom-checkbox" name="lista[AC]">
-                        <label for="AC">
+                        <input type="checkbox" value="true" id="ACI" class="custom-checkbox" name="lista[ACI]">
+                        <label for="ACI">
                             <h4 id="td3">
-                                Arbol Clientes
+                                AC Internal
                             </h4>
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="AP" class="custom-checkbox" name="lista[AP]">
-                        <label for="AP">
+                        <input type="checkbox" value="true" id="ACE" class="custom-checkbox" name="lista[ACE]">
+                        <label for="ACE">
                             <h4 id="td3">
-                                Arbol Proveedores
+                                AC External
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="API" class="custom-checkbox" name="lista[API]">
+                        <label for="API">
+                            <h4 id="td3">
+                                AP Internal
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
+                        <input type="checkbox" value="true" id="APE" class="custom-checkbox" name="lista[APE]">
+                        <label for="APE">
+                            <h4 id="td3">
+                                AP External
                             </h4>
                         </label>
                     </div>
@@ -164,6 +189,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
+                        <input type="checkbox" value="true" id="DCUP" class="custom-checkbox" name="lista[DCUP]">
+                        <label for="DCUP">
+                            <h4 id="td5">
+                                DC Unidad Produccion
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="choice">
                         <input type="checkbox" value="true" id="Ev" class="custom-checkbox" name="lista[Ev]">
                         <label for="Ev">
                             <h4 id="td5">
@@ -171,9 +204,8 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
-                    <input name="fecha" type="hidden"  id="datepicker_value" value="<?php mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")); echo date("Y-m-d"); ?>"/>
-                </div>
-
+                    <input name="startDate" type="hidden"  id="datepicker_value" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
+        echo $nuevafecha=date('Y-m-d',$nuevafecha);?>"/>
             </form>
         </article>
     </section>

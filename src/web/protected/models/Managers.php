@@ -24,6 +24,8 @@ class Managers extends CActiveRecord
 	public $dias_disputa;
 	public $limite_credito;
 	public $limite_compra;
+	public $production_unit;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -50,12 +52,12 @@ class Managers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name,lastname, record_date', 'required'),
-			array('name,lastname, position', 'length', 'max'=>50),
-			array('address', 'safe'),
+			array('name,lastname, record_date','required'),
+			array('name,lastname, position','length','max'=>50),
+			array('address','safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name,lastname, address, record_date, position', 'safe', 'on'=>'search'),
+			array('id, name,lastname, address, record_date, position','safe','on'=>'search'),
 		);
 	}
 
@@ -67,7 +69,7 @@ class Managers extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'carrierManagers' => array(self::HAS_MANY, 'CarrierManagers', 'id_managers'),
+			'carrierManagers'=>array(self::HAS_MANY,'CarrierManagers','id_managers'),
 		);
 	}
 
@@ -77,12 +79,12 @@ class Managers extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'lastname' => 'Last Name',
-			'address' => 'Address',
-			'record_date' => 'Record Date',
-			'position' => 'Position',
+			'id'=>'ID',
+			'name'=>'Name',
+			'lastname'=>'Last Name',
+			'address'=>'Address',
+			'record_date'=>'Record Date',
+			'position'=>'Position',
 		);
 	}
 
@@ -110,8 +112,9 @@ class Managers extends CActiveRecord
 	}
 
 	/**
-	*
-	*/
+	 * @access public
+	 * @static
+	 */
 	public static function getName($id)
 	{
 		$model=self::model()->find('id=:id',array(':id'=>$id));
@@ -123,5 +126,16 @@ class Managers extends CActiveRecord
 		{
 			return FALSE;
 		}
+	}
+
+	/**
+	 * @access public
+	 * @static
+	 * @return CActiveRecord
+	 */
+	public static function getManagers()
+	{
+		$model=self::model()->findAll();
+		return $model;
 	}
 }
