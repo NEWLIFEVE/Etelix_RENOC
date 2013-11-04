@@ -66,6 +66,8 @@ navegar.prototype.ida=function()
     {
         self.objetoMain.toggle('slide');
         self.objetoNueva.fadeIn('fast');
+        $RENOC.UI.init();
+        $RENOC.AJAX.init();
     });
 }
 /**
@@ -122,8 +124,9 @@ var ajax=function()
 ajax.prototype.run=function()
 {
     var self=this;
-    $('#mail,#excel,#mailRenoc').on('click',function(e)
+    $('#mail,#excel,#lista').on('click',function(e)
     {
+
         var id=tipo=numero=valor=nombre=fecha=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
@@ -136,7 +139,7 @@ ajax.prototype.run=function()
         //compruebo que al menos un reporte este seleccionado
         if(numero.length<=0)
         {
-            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop1.png'width='45px' height='45px'/>";
+            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
             self.crearCapa(mensaje);
             setTimeout(function()
             {
@@ -172,7 +175,7 @@ ajax.prototype.run=function()
                             self.getFormPost();
                             self.enviar();
                         }
-                        else if(tipo=="mailRenoc")
+                        else if(tipo=="lista")
                         {
                             mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/>";
                             self.crearCapa(mensaje);
@@ -219,9 +222,11 @@ ajax.prototype.run=function()
                     self.getFormPost();
                     self.enviar();
                 }
-                else if(tipo=="mailRenoc")
+                else if(tipo=="lista")
                 {
-                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div></div></div>";
+                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+                             class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
+                             <p><label><b>Aceptar</b></label></div></div>";
                     self.crearCapa(mensaje);
                     $('#cancelar, #confirma').on('click',function()
                     {
@@ -247,21 +252,48 @@ ajax.prototype.run=function()
 }
 ajax.prototype.genExcel=function()
 {
-    var self=this;
+    var self=this,lista=Array();
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
-        fecha=self.formulario[self.formulario.length-1].value;
-        nombre=self.formulario[i].name;
-        valor=self.formulario[i].value;
-        if(nombre!="lista[todos]" && nombre!="fecha")
+        if(self.formulario[i].name!='checkDate')
         {
-            ventana[i]=window.open(self.ruta+"?fecha="+fecha+"&"+nombre+"="+valor,nombre,'width=200px,height=100px');
+            lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
+        }
+    };
+    if(lista['endingDate']==undefined)
+    {
+        lista['endingDate']={name:'endingDate',value:null};
+    }
+    if(lista['lista[Fecha]']==undefined)
+    {
+        lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
+    }
+    if(lista['lista[Hora]']==undefined)
+    {
+        lista['lista[Hora]']={name:'lista[Hora]',value:false};
+    }
+    if(lista['lista[Mes]']==undefined)
+    {
+        lista['lista[Mes]']={name:'lista[Mes]',value:false};
+    }
+    if(lista['lista[Fecha]'].value || lista['lista[Hora]'].value || lista['lista[Mes]'].value)
+    {
+        for (var key in lista)
+        {
+            if (lista[key].name!='startDate' && lista[key].name!='endingDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+        }
+    }
+    else
+    {
+        for (var key in lista)
+        {
+            if (lista[key].name!='endingDate' && lista[key].name!='startDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
         }
     }
 }
 ajax.prototype.getFormPost=function()
 {
-    this.formulario=$("#formRutinarios").serializeArray();
+    this.formulario=$("#formulario").serializeArray();
 }
 ajax.prototype.enviar=function()
 {
@@ -274,7 +306,7 @@ ajax.prototype.enviar=function()
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px'/>";
+        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
         self.crearCapa(mensaje);
         setTimeout(function()
         {
@@ -323,17 +355,20 @@ ajax.prototype.setCero=function()
 */
 function marcar(source)
 {
-    checkboxes = document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
-    for (i = 0; i < checkboxes.length; i++) //recoremos todos los controles
+    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
+    if(checkboxes.length>0)
     {
-        if (checkboxes[i].type == "checkbox") //solo si es un checkbox entramos
+        for(i=0,j=checkboxes.length-1; i<=j; i++) //recoremos todos los controles
         {
-            checkboxes[i].checked = source.checked; //si es un checkbox le damos el valor del checkbox que lo llamó (Marcar/Desmarcar Todos)
+            if(checkboxes[i].type=="checkbox") //solo si es un checkbox entramos
+            {
+                checkboxes[i].checked = source.checked; //si es un checkbox le damos el valor del checkbox que lo llamó (Marcar/Desmarcar Todos)
+            }
         }
     }
 };
 var ventana=new navegar();
-var fecha=new selector("#datepicker");
+var fecha=new selector("#inicio,#datepicker,#fin");
 var ejecutar=new ajax();
 $(document).on('ready',function()
 {  
@@ -341,25 +376,22 @@ $(document).on('ready',function()
     ventana.run();
     fecha.run();
     marcar();
-    $(this).ajaxComplete(function()
-    {
-        fecha.run();
-        marcar();
-    });
-});
-
-$(document).on('ready',function(muestramensaje)
-{
     $.ajax({ 
         url: "Log/revisarRR",     
         success: function(data) 
         {
             if(data==true){
-                var espere = $(".cargandosori");
+                var espere=$(".cargandosori");
                 espere.prop("display",'block');
                 espere.slideDown('slow');
             }        
         }
     });
-
+    
+    /*$(this).ajaxComplete(function()
+    {
+        fecha.run();
+        marcar();
+        
+    });*/
 });

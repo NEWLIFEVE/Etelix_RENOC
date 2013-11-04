@@ -20,5 +20,3 @@
 <div id="instruccion2" class="span1">
     EN DESARROLLO!!
 </div> 
-
-
