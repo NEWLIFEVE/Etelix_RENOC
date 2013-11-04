@@ -930,7 +930,7 @@ div.errorMessage
     height: 400px;
     padding-left: 1%;
     padding-right: 1%;
-    width: 58%;
+    width: 56%;
 }
 #datepicker
 {
@@ -974,16 +974,16 @@ img.oculta
 }
 .start
 {
-    left: 16em;
+    left: 15em;
 }
 .middle
 {
-    left: 17em;
+    left: 16em;
     position: relative;
 }
 .end
 {
-    left: 300px;
+    left: 20.5em;
     padding-left: 16px;
     margin-left: -50px;
     margin-right: -64px;
@@ -1000,7 +1000,10 @@ img.oculta
 {
     top:-4em;
 }
-
+#footer_especificos
+{
+    margin-top: 14em;
+}
 /*position: relative;
 top: -57px;
 */

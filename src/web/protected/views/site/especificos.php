@@ -25,14 +25,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>
-                <div class="choice_parametros hora">
+                <!--<div class="choice_parametros hora">
                     <input type="checkbox" value="true" id="Hora" class="custom-checkbox" name="lista[Hora]">
                     <label for="Hora">
                         <h4 id="td1">
                             Hora
                         </h4>
                     </label>
-                </div>
+                </div>-->
                 <!--<div class="choice_parametros carrier">
                     <input type="checkbox" value="true" id="Carrier" class="custom-checkbox" name="lista[Carrier]">
                     <label for="Carrier">
@@ -41,7 +41,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>-->
-                <footer>
+                <footer id="footer_especificos">
                     <div id="excel" class="botones">
                         <img src="/images/excel.png" class='ver'>
                         <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
@@ -63,6 +63,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <label for="compraventa">
                         <h4 id="td1">
                             Ranking Compra Venta
+                        </h4>
+                    </label>
+                </div>
+                <div class="choice">
+                    <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
+                    <label for="calidad">
+                        <h4 id="td1">
+                            Calidad BSG
                         </h4>
                     </label>
                 </div>

@@ -2,9 +2,17 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.2.0
+- Agregado modulo de reportes especificos con los siguientes reportes
+	. RENOC Ranking Compra Venta
+	. RENOC Calidad(BSG)
+- Agregado unidad de produccion en los reportes de Distribucion Comercial
+- Agregado destinos internos e alto impacto
+
 Release 1.1.7
 - Modificado: Arbol de Trafico, ahora Clientes y Proveedor con destinos external e internal.
 - Modificado: Reporte CompraVenta generado por mes
+
 Release 1.1.6
 - Modificacion en nombre de Arbol de Trafico Internal y External a Arbol Destino Internal y External.
 - Agregados reportes de Arbol de Trafico por Clientes y Proveedores.
