@@ -59,7 +59,7 @@
  			};
  			
  		}*/
- 		var checkCarrier=document.getElementsByName('lista[Carrier]');
+ 		/*var checkCarrier=document.getElementsByName('lista[Carrier]');
  		if(checkCarrier!="undefined")
  		{
  			optionsMonth={
@@ -75,7 +75,7 @@
  			{
  				_changeClass($('.carrier label h4'),'stretchRight','offStretchRight',optionsMonth);
  			};
- 		}
+ 		}*/
  	}
 
  	/**
