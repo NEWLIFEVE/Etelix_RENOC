@@ -162,24 +162,6 @@ class SiteController extends Controller
         $this->redirect(Yii::app()->homeUrl);
     }
 
-    public function actionRanking()
-    {
-        $inicio=$_GET['inicio'];
-        $fin=$_GET['fin'];
-        $correo=Yii::app()->reportes->RankingCompraVenta($inicio,$fin);
-        $this->genExcel('Rankin CompraVenta de '.str_replace("-","",$inicio).' al '.str_replace("-","",$fin),$correo);
-    }
-
-    public function actionCalidad()
-    {
-        $inicio=$_GET['inicio'];
-        $fin=$_GET['fin'];
-        $carrier=$_GET['carrier'];
-        $correo=Yii::app()->reportes->Calidad($inicio,$fin,$carrier);
-        $this->genExcel('Rankin Calidad de '.Carrier::getName($carrier)." al ".str_replace("-","",$inicio).' al '.str_replace("-","",$fin),$correo);
-    }
-
-
     /**
      * Action encargada de envuiar por mail el tipo de reporte seleccionado,
      * las especificaciones seran recibidas desde el array $_GET
@@ -190,7 +172,15 @@ class SiteController extends Controller
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['startDate']);
         $startDate=null;
-        $endingDate=null;
+        if(isset($_POST['endingDate']))
+        {
+            $endingDate=(string)$_POST['endingDate'];
+        }
+        $endTitle="";
+        if($endingDate!=null)
+        {
+            $endTitle=" al ".str_replace("-","",$endingDate);
+        }
         $correos=null;
         $user=UserIdentity::getEmail();
         if(isset($_POST['startDate']))
@@ -200,9 +190,9 @@ class SiteController extends Controller
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
-                $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate);
+                $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate).$endTitle;
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
-                $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate).".xls";
+                $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate).$endTitle.".xls";
             }
             //Perdidas
             if(isset($_POST['lista']['perdidas']))
@@ -337,6 +327,12 @@ class SiteController extends Controller
                 $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$nombre);
                 $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Evolucion al ".str_replace("-","",$startDate).".xlsx";
             }
+            if(isset($_POST['lista']['calidad']))
+            {
+                $correos['calidad']['asunto']="RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle;
+                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
+                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle.".xlsx";
+            }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
@@ -360,6 +356,15 @@ class SiteController extends Controller
         $this->letra=Log::preliminar($_GET['startDate']);
         $startDate=null;
         $endingDate=null;
+        if(isset($_GET['endingDate']))
+        {
+            $endingDate=(string)$_GET['endingDate'];
+        }
+        $endTitle="";
+        if($endingDate!=null)
+        {
+            $endTitle=" al ".str_replace("-","",$endingDate);
+        }
         $archivos=array();
         if(isset($_GET['startDate']))
         {
@@ -477,6 +482,11 @@ class SiteController extends Controller
                 $nombre="RENOC".$this->letra." Evolucion al ".str_replace("-","",$startDate).".xlsx";
                 $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion al ".str_replace("-","",$startDate);
                 $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$nombre);
+            }
+            if(isset($_GET['lista']['calidad']))
+            {
+                $archivos['calidad']['nombre']="RENOC".$this->letra." Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
+                $archivos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
             }
         }
         foreach($archivos as $key => $archivo)
