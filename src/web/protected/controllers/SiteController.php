@@ -329,9 +329,9 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['calidad']))
             {
-                $correos['calidad']['asunto']="RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle;
+                $correos['calidad']['asunto']="RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
                 $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
-                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle.".xlsx";
+                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle.".xls";
             }
         }
         $tiempo=30*count($correos);
@@ -485,7 +485,7 @@ class SiteController extends Controller
             }
             if(isset($_GET['lista']['calidad']))
             {
-                $archivos['calidad']['nombre']="RENOC".$this->letra." Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
+                $archivos['calidad']['nombre']="RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
                 $archivos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
             }
         }
@@ -654,9 +654,9 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['calidad']))
             {
-                $correos['calidad']['asunto']="RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle;
+                $correos['calidad']['asunto']="RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
                 $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
-                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle.".xlsx";
+                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle.".xls";
             }
         }
         $tiempo=30*count($correos);
