@@ -36,7 +36,7 @@
  				}
  			};
  		}
- 		var checkTime=document.getElementsByName('lista[Hora]');
+ 		/*var checkTime=document.getElementsByName('lista[Hora]');
  		if(checkTime!="undefined")
  		{
  			optionsTime={
@@ -58,7 +58,7 @@
  				};
  			};
  			
- 		}
+ 		}*/
  		var checkCarrier=document.getElementsByName('lista[Carrier]');
  		if(checkCarrier!="undefined")
  		{
