@@ -25,6 +25,8 @@ class Calidad extends Reportes
         	foreach ($model as $key => $destino)
         	{
         		$pos=$key+1;
+        		$letra="";
+        		if($destino->delta>1) $letra="color:yellow;";
         		$cuerpo.="<tr>
         					<td style='".self::colorEstilo($pos)."'>".$pos."</td>
         					<td style='".self::colorEstilo($pos)."'>".$destino->destino."</td>
@@ -35,7 +37,7 @@ class Calidad extends Reportes
         					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_exc)."</td>
         					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->asr_inc)."</td>
         					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->asr_exc)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->delta)."</td>
+        					<td style='".self::colorEstilo($pos).$letra."'>".Yii::app()->format->format_decimal($destino->delta)."</td>
         					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->acd)."</td>
         				</tr>";
         	}

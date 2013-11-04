@@ -276,7 +276,6 @@ ajax.prototype.genExcel=function()
     {
         lista['lista[Mes]']={name:'lista[Mes]',value:false};
     }
-    console.dir(lista);
     if(lista['lista[Fecha]'].value || lista['lista[Hora]'].value || lista['lista[Mes]'].value)
     {
         for (var key in lista)
