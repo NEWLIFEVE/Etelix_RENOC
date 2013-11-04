@@ -2,7 +2,7 @@
 /**
  * @package components
  */
-class reportes extends CApplicationComponent
+class Reportes extends CApplicationComponent
 {
     public $tipo;
 

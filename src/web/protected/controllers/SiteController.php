@@ -507,8 +507,7 @@ class SiteController extends Controller
         $startDate=null;
         $endingDate=null;
         $correos=null;
-        //$user="renoc@etelix.com";
-        $user="mmzmm3z@gmail.com";
+        $user="renoc@etelix.com";
         if(isset($_POST['startDate']))
         {
             $startDate=(string)$_POST['startDate'];
@@ -653,6 +652,12 @@ class SiteController extends Controller
                 $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$nombre);
                 $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Evolucion al ".str_replace("-","",$startDate).".xlsx";
             }
+            if(isset($_POST['lista']['calidad']))
+            {
+                $correos['calidad']['asunto']="RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle;
+                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
+                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Calidad BSG al ".str_replace("-","",$startDate).$endTitle.".xlsx";
+            }
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
@@ -664,8 +669,14 @@ class SiteController extends Controller
             }
             if(stripos($correo['asunto'], "RETAIL"))
             {
-                /*$lista=array('CarlosBuona@etelix.com');
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);*/
+                $lista=array('CarlosBuona@etelix.com');
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
+            }
+            elseif (stripos($correo['asunto'], "Calidad"))
+            {
+                $userDif="ceo@etelix.com";
+                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','txadmin@netuno.net');
+                Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
             }
             else
             {
