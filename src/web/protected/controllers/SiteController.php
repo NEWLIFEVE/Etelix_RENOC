@@ -171,15 +171,11 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['startDate']);
-        $startDate=null;
-        if(isset($_POST['endingDate']))
-        {
-            $endingDate=(string)$_POST['endingDate'];
-        }
+        $startDate=$endingDate=null;
         $endTitle="";
-        if($endingDate!=null)
+        if(isset($_POST['endingDate']) && $_POST['endingDate']!=null)
         {
-            $endTitle=" al ".str_replace("-","",$endingDate);
+            $endTitle=" al ".str_replace("-","",$_POST['endingDate']);
         }
         $correos=null;
         $user=UserIdentity::getEmail();
@@ -354,16 +350,11 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_GET['startDate']);
-        $startDate=null;
-        $endingDate=null;
-        if(isset($_GET['endingDate']))
-        {
-            $endingDate=(string)$_GET['endingDate'];
-        }
+        $startDate=$endingDate=null;
         $endTitle="";
-        if($endingDate!=null)
+        if(isset($_GET['endingDate']) && $_GET['endingDate']!=null)
         {
-            $endTitle=" al ".str_replace("-","",$endingDate);
+            $endTitle=" al ".str_replace("-","",$_GET['endingDate']);
         }
         $archivos=array();
         if(isset($_GET['startDate']))
@@ -504,8 +495,12 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['startDate']);
-        $startDate=null;
-        $endingDate=null;
+        $startDate=$endingDate=null;
+        $endTitle="";
+        if(isset($_POST['endingDate']) && $_POST['endingDate']!=null)
+        {
+            $endTitle=" al ".str_replace("-","",$_POST['endingDate']);
+        }
         $correos=null;
         $user="renoc@etelix.com";
         if(isset($_POST['startDate']))
