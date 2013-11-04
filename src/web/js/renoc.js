@@ -36,7 +36,7 @@
  				}
  			};
  		}
- 		var checkTime=document.getElementsByName('lista[Hora]');
+ 		/*var checkTime=document.getElementsByName('lista[Hora]');
  		if(checkTime!="undefined")
  		{
  			optionsTime={
@@ -58,8 +58,8 @@
  				};
  			};
  			
- 		}
- 		var checkCarrier=document.getElementsByName('lista[Carrier]');
+ 		}*/
+ 		/*var checkCarrier=document.getElementsByName('lista[Carrier]');
  		if(checkCarrier!="undefined")
  		{
  			optionsMonth={
@@ -75,7 +75,7 @@
  			{
  				_changeClass($('.carrier label h4'),'stretchRight','offStretchRight',optionsMonth);
  			};
- 		}
+ 		}*/
  	}
 
  	/**
