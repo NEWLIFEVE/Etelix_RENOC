@@ -97,8 +97,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialVendedor($fecha)
     {
-        $variable=DistComercialVendedor::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("vendedor");
     }
 
     /**
@@ -108,8 +107,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialTerminoPago($fecha)
     {
-        $variable=DistComercialTerminoPago::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("pago");
     }
 
     /**
@@ -119,8 +117,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialMonetizable($fecha)
     {
-        $variable=DistComercialMonetizable::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("monetizable");
     }
 
     /**
@@ -130,8 +127,7 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialCompany($fecha)
     {
-        $variable=DistComercialCompany::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("company");
     }
 
     /**
@@ -141,8 +137,25 @@ class reportes extends CApplicationComponent
      */
     public function DistComercialCarrier($fecha)
     {
-        $variable=DistComercialCarrier::reporte($fecha);
-        return $variable;
+        return DistribucionComercial::reporte("carrier");
+    }
+
+    /**
+     * @access public
+     * @param date $fecha
+     * @return string $variable
+     */
+    public function DistComercialUnidadProduccion($fecha)
+    {
+        return DistribucionComercial::reporte("unidad");
+    }
+
+    /**
+     *
+     */
+    public function Calidad($inicio,$fin,$carrier)
+    {
+        return Calidad::getHtmlDestinations($inicio,$fin,$carrier);
     }
 
     /**
@@ -194,9 +207,9 @@ class reportes extends CApplicationComponent
                 $index+=1;
             }
             $ultimo=count($objetos)-1;
-            $ordenados['Vendedores']=self::ordernar($apellidos,$objetos[$ultimo]['Vendedores']);
-            $ordenados['Compradores']=self::ordernar($apellidos,$objetos[$ultimo]['Vendedores']);
-            $ordenados['Consolidados']=self::ordernar($apellidos,$objetos[$ultimo]['Vendedores']);
+            $ordenados['Vendedores']=self::ordenar($apellidos,$objetos[$ultimo]['Vendedores']);
+            $ordenados['Compradores']=self::ordenar($apellidos,$objetos[$ultimo]['Compradores']);
+            $ordenados['Consolidados']=self::ordenar($apellidos,$objetos[$ultimo]['Consolidados']);
             $variable="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
@@ -224,7 +237,7 @@ class reportes extends CApplicationComponent
                 $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalCompradores'],$key,$ultimo)."</table></div></td><br>";
             }
             $variable.="</tr></table><br>";
-            $variable.="<table><tr>";
+            $variable.="<p></p><table><tr>";
             foreach ($objetos as $key => $objeto)
             {
                 $variable.="<td><div style='background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
@@ -262,14 +275,15 @@ class reportes extends CApplicationComponent
     /**
      * Metodo encargado de generar el reporte de Arbol de trafico por clientes y proveedores
      * @access public
-     * @param $fecha date la fecha que se quiere consultar
-     * @param $tipo boolean el tipo de reporte clientes o proveedores, true=clientes default, false=proveedores
+     * @param date $fecha la fecha que se quiere consultar
+     * @param boolean $tipo el tipo de reporte clientes o proveedores, true=clientes default, false=proveedores
+     * @param boolean $destino determina el tipo de destino, si es internal o external
      * @return $variable string con el cuerpo del reporte
      */
-    public function ArbolTrafico($fecha,$tipo=true)
+    public function ArbolTrafico($fecha,$tipo=true,$destino=true)
     {
         ini_set('max_execution_time', 60);
-        $reporte=new ArbolTrafico($fecha,$tipo);
+        $reporte=new ArbolTrafico($fecha,$tipo,$destino);
         $variable=$reporte->reporte();
         return $variable;
     }
@@ -285,7 +299,7 @@ class reportes extends CApplicationComponent
         $reporte->genExcel($nombre);
         return "Revisar archivo adjunto";
     }
-
+    
     /**
      * Metodo encargado de pintar las filas de los reportes
      * @access public
@@ -965,7 +979,7 @@ class reportes extends CApplicationComponent
         $f=explode('-', $fin);
         if($i[2]==1 && $f[2]==self::howManyDays($fin))
         {
-            return self::getNameMonth($inicio,true);
+            return self::getNameMonth($inicio,true)." ".$f[0];
         }
         return "Del ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
     }
@@ -995,7 +1009,7 @@ class reportes extends CApplicationComponent
      * @param CActiveRecord $objeto
      * @return array
      */
-    protected static function ordernar($lista,$objeto)
+    protected static function ordenar($lista,$objeto)
     {
         $ordenado=$temp=array();
         foreach ($objeto as $key => $value)
@@ -1014,12 +1028,13 @@ class reportes extends CApplicationComponent
             }
             foreach ($lista as $key => $value)
             {
-                if($temp[$value]==null)
+                if(!isset($temp[$value]))
                 {
                     $ordenado[]=$value;
                 }
             }
         }
+        return $ordenado;
     }
 }
 ?>

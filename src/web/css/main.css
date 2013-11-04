@@ -215,7 +215,7 @@
     color: #848484;
     font-size: 21px;
     height:32px; 
-    margin-bottom: 0spx;
+    margin-bottom: 0px;
     margin-left: 103px;
     margin-top: -43px; 
     text-align:rigth;
@@ -238,16 +238,6 @@
     margin-left: -228px;
     margin-top: 307px;
     width: 144px;
-}
-#barraVerde2
-{
-    background:rgb(104, 173, 104);
-    border:1px solid white;
-    height:300px; 
-    margin-bottom: 0spx;  
-    margin-left: 78px;
-    text-align:rigth;
-    width:5px; 
 }
 #tablagris
 {
@@ -940,7 +930,7 @@ div.errorMessage
     height: 400px;
     padding-left: 1%;
     padding-right: 1%;
-    width: 58%;
+    width: 56%;
 }
 #datepicker
 {
@@ -973,6 +963,50 @@ img.oculta
 {
     display: inline;
 }
+
+/*Especificos*/
+.start, .end
+{
+    position: relative;
+    width: 90px;
+    margin-bottom: 0px;
+    background: none !important;
+}
+.start
+{
+    left: 15em;
+}
+.middle
+{
+    left: 16em;
+    position: relative;
+}
+.end
+{
+    left: 20.5em;
+    padding-left: 16px;
+    margin-left: -50px;
+    margin-right: -64px;
+}
+.date
+{
+    top:-4em;
+}
+.time
+{
+    top:-4em;
+}
+.carrier
+{
+    top:-4em;
+}
+#footer_especificos
+{
+    margin-top: 14em;
+}
+/*position: relative;
+top: -57px;
+*/
 
 /*#excel
 {
@@ -1031,6 +1065,14 @@ height: 61px;
     margin-left: 1%;
     width: 49%;
 }
+.choice_parametros
+{
+    /*float: left;*/
+    color: grey;
+    width: 49%;
+    margin-left: 1%;
+    height: 6.8em;
+}
 .especificos_reportes div.choice
 {  
     width: 105% !important;
@@ -1042,6 +1084,14 @@ height: 61px;
     margin: -3% 0 4% 12%;
     padding: 6%;
     text-align: left;
+}
+.choice_parametros label h4
+{
+    text-align: left;
+    background: #E6E6E6;
+    padding: 6%;
+    margin: -3% 56% 3% 12%;
+    height: 30px;
 }
 
 @media screen and (max-width: 980px) {
