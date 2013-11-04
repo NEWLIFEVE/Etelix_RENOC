@@ -664,15 +664,6 @@ class SiteController extends Controller
             }
             if(stripos($correo['asunto'], "RETAIL"))
             {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                $lista=array('CarlosBuona@etelix.com');
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
-=======
-                /*$lista=array('CarlosBuona@etelix.com');
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);*/
->>>>>>> 0345bb25903e76b21b5b944fcbe7fddc917d48c3
-=======
                 $lista=array('CarlosBuona@etelix.com');
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
@@ -681,7 +672,6 @@ class SiteController extends Controller
                 $userDif="ceo@etelix.com";
                 $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','txadmin@netuno.net');
                 Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
->>>>>>> dev
             }
             else
             {
