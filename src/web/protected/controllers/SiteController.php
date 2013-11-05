@@ -171,7 +171,7 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['startDate']);
-        $startDate=$endingDate=null;
+        $startDate=$endingDate=$carrier=null;
         $endTitle="";
         if(isset($_POST['endingDate']) && $_POST['endingDate']!=null)
         {
@@ -183,6 +183,7 @@ class SiteController extends Controller
         {
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
+            if(isset($_POST['carrier'])) $carrier=$_POST['carrier'];
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
@@ -326,7 +327,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['calidad']))
             {
                 $correos['calidad']['asunto']="RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
-                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
+                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$carrier))->id);
                 $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle.".xls";
             }
         }
@@ -350,7 +351,7 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_GET['startDate']);
-        $startDate=$endingDate=null;
+        $startDate=$endingDate=$carrier=null;
         $endTitle="";
         if(isset($_GET['endingDate']) && $_GET['endingDate']!=null)
         {
@@ -361,6 +362,7 @@ class SiteController extends Controller
         {
             $startDate=(string)$_GET['startDate'];
             if(isset($_GET['endingDate'])) $endingDate=$_GET['endingDate'];
+            if(isset($_GET['carrier'])) $carrier=$_GET['carrier'];
             if(isset($_GET['lista']['compraventa']))
             {
                 $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate);
@@ -477,7 +479,7 @@ class SiteController extends Controller
             if(isset($_GET['lista']['calidad']))
             {
                 $archivos['calidad']['nombre']="RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
-                $archivos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
+                $archivos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$carrier))->id);
             }
         }
         foreach($archivos as $key => $archivo)
@@ -495,7 +497,7 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['startDate']);
-        $startDate=$endingDate=null;
+        $startDate=$endingDate=$carrier=null;
         $endTitle="";
         if(isset($_POST['endingDate']) && $_POST['endingDate']!=null)
         {
@@ -507,6 +509,7 @@ class SiteController extends Controller
         {
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
+            if(isset($_POST['carrier'])) $carrier=$_POST['carrier'];
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
@@ -650,7 +653,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['calidad']))
             {
                 $correos['calidad']['asunto']="RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle;
-                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>"BSG"))->id);
+                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$carrier))->id);
                 $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC Calidad BSG desde ".str_replace("-","",$startDate).$endTitle.".xls";
             }
         }

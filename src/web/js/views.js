@@ -253,6 +253,7 @@ ajax.prototype.run=function()
 ajax.prototype.genExcel=function()
 {
     var self=this,lista=Array();
+    console.dir(self.formulario);
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
         if(self.formulario[i].name!='checkDate')
@@ -268,26 +269,35 @@ ajax.prototype.genExcel=function()
     {
         lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
     }
-    if(lista['lista[Hora]']==undefined)
+    for(var key in lista)
     {
-        lista['lista[Hora]']={name:'lista[Hora]',value:false};
-    }
-    if(lista['lista[Mes]']==undefined)
-    {
-        lista['lista[Mes]']={name:'lista[Mes]',value:false};
-    }
-    if(lista['lista[Fecha]'].value || lista['lista[Hora]'].value || lista['lista[Mes]'].value)
-    {
-        for (var key in lista)
+        switch(key)
         {
-            if (lista[key].name!='startDate' && lista[key].name!='endingDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
-        }
-    }
-    else
-    {
-        for (var key in lista)
-        {
-            if (lista[key].name!='endingDate' && lista[key].name!='startDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+            case "lista[compraventa]":
+            case "lista[perdidas]":
+            case "lista[AIR]":
+            case "lista[AI10]":
+            case "lista[AI10V]":
+            case "lista[PN]":
+            case "lista[PNV]":
+            case "lista[ADI]":
+            case "lista[ADE]":
+            case "lista[ACI]":
+            case "lista[ACE]":
+            case "lista[API]":
+            case "lista[APE]":
+            case "lista[DCV]":
+            case "lista[DCTP]":
+            case "lista[DCM]":
+            case "lista[DCCom]":
+            case "lista[DCCarrier]":
+            case "lista[DCUP]":
+            case "lista[Ev]":
+                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+                break;
+            case "lista[calidad]":
+                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
+                break;
         }
     }
 }
@@ -304,6 +314,7 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
+    console.log(self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
         mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
