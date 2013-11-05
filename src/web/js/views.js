@@ -314,7 +314,6 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
-    console.log(self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
         mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
