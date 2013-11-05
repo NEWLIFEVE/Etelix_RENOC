@@ -25,22 +25,28 @@ class Calidad extends Reportes
         	foreach ($model as $key => $destino)
         	{
         		$pos=$key+1;
-        		$letra="";
-        		if($destino->delta>1) $letra="color:yellow;";
+        		if($destino->delta>1)
+        		{
+        			$estilo="background-color:yellow; color:#584E4E; border: 1px solid rgb(121, 115, 115);";
+        		}
+        		else
+        		{
+        			$estilo=self::colorEstilo($pos);
+        		}
         		$cuerpo.="<tr>
-        					<td style='".self::colorEstilo($pos)."'>".$pos."</td>
-        					<td style='".self::colorEstilo($pos)."'>".$destino->destino."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->minutes)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->total_calls)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->complete_calls_exc)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_inc)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_exc)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->asr_inc)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->asr_exc)."</td>
-        					<td style='".self::colorEstilo($pos).$letra."'>".Yii::app()->format->format_decimal($destino->delta)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->acd)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->pdd_inc)."</td>
-        					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->pdd_exc)."</td>
+        					<td style='".$estilo."'>".$pos."</td>
+        					<td style='".$estilo."'>".$destino->destino."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->minutes)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->total_calls)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->complete_calls_exc)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_inc)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->incomplete_calls_exc)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->asr_inc)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->asr_exc)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->delta)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->acd)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->pdd_inc)."</td>
+        					<td style='".$estilo."'>".Yii::app()->format->format_decimal($destino->pdd_exc)."</td>
         				</tr>";
         	}
         	$cuerpo.=self::cabecera(array('Ranking','Destino','Minutos','Intentos Totales','Intentos Completados','Intentos NC Inc. RI','Intentos NC Exc. RI','ASR Inc. RI','ASR Exc. RI','&Delta; ASR','ACD','PDD Inc. RI','PDD Exc. RI'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
