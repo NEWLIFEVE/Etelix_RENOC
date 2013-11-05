@@ -98,7 +98,7 @@ class Evolucion extends Reportes
             'fill'=>array(
                 'type'=>PHPExcel_Style_Fill::FILL_SOLID,
                 'startColor'=>array(
-                    'argb'=>'FFCFDAE7',
+                    'argb'=>'198217241',
                     ),
                 )
             );
