@@ -70,7 +70,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
                     <label for="calidad">
                         <h4 id="td1">
-                            Calidad BSG
+                            Calidad
                         </h4>
                     </label>
                 </div>
