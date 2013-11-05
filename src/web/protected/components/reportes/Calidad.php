@@ -84,7 +84,7 @@ class Calidad extends Reportes
 	private static function getDestinations($startDate,$endingDate,$carrier)
 	{
 		$sql="SELECT d.name AS destino, b.minutes, b.total_calls, b.complete_calls_exc, b.incomplete_calls_inc, b.incomplete_calls_exc, b.asr_inc, b.asr_exc, b.asr_exc-b.asr_inc AS delta, b.acd, b.pdd_inc, b.pdd_exc
-			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, (SUM(b.complete_calls_inc)*100/SUM(b.incomplete_calls_inc+b.complete_calls_inc)) AS asr_inc, CASE WHEN SUM(b.complete_calls_exc)=0 THEN 0 ELSE (SUM(b.complete_calls_exc)*100/SUM(b.incomplete_calls_exc+b.complete_calls_exc)) END AS asr_exc, CASE WHEN SUM(b.minutes)=0 THEN 0 ELSE (SUM(b.minutes)/SUM(b.complete_calls_exc)) END AS acd, (SUM(pdd_inc)/SUM(incomplete_calls_inc+complete_calls_inc)) AS pdd_inc, (SUM(pdd_exc)/SUM(incomplete_calls_exc+complete_calls_exc)) AS pdd_exc
+			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, CASE WHEN SUM(b.complete_calls_inc)=0 THEN 0 ELSE (SUM(b.complete_calls_inc)*100/SUM(b.incomplete_calls_inc+b.complete_calls_inc)) END AS asr_inc, CASE WHEN SUM(b.complete_calls_exc)=0 THEN 0 ELSE (SUM(b.complete_calls_exc)*100/SUM(b.incomplete_calls_exc+b.complete_calls_exc)) END AS asr_exc, CASE WHEN SUM(b.minutes)=0 THEN 0 ELSE (SUM(b.minutes)/SUM(b.complete_calls_exc)) END AS acd, CASE WHEN SUM(pdd_inc)=0 THEN 0 ELSE (SUM(pdd_inc)/SUM(incomplete_calls_inc+complete_calls_inc)) END AS pdd_inc, CASE WHEN SUM(pdd_exc)=0 THEN 0 ELSE (SUM(pdd_exc)/SUM(incomplete_calls_exc+complete_calls_exc)) END AS pdd_exc
 			  	   FROM(SELECT id_destination, SUM(minutes) AS minutes, SUM(incomplete_calls) AS incomplete_calls_exc, CAST(0 AS double precision) AS incomplete_calls_inc, SUM(complete_calls) AS complete_calls_exc, CAST(0 AS double precision) AS complete_calls_inc, SUM(pdd) AS pdd_exc, CAST(0 AS double precision) AS pdd_inc
 			  	   		FROM balance
 			  	   		WHERE id_carrier_customer={$carrier} AND date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
@@ -97,8 +97,8 @@ class Calidad extends Reportes
 			  	   		GROUP BY id_destination) b
 				   GROUP BY id_destination
 				   ORDER BY minutes DESC) b, destination d
-			  WHERE b.id_destination=d.id AND b.minutes>0
-			  ORDER by b.minutes DESC";
+			  WHERE b.id_destination=d.id
+			ORDER by b.minutes DESC";
 		return Balance::model()->findAllBySql($sql);
 	}
 
@@ -125,8 +125,7 @@ class Calidad extends Reportes
 			  	   		WHERE id_carrier_customer={$carrier} AND date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
 			  	   		GROUP BY id_destination) b
 				   GROUP BY id_destination
-				   ORDER BY minutes DESC) b
-			  WHERE b.minutes>0";
+				   ORDER BY minutes DESC) b";
 		return Balance::model()->findBySql($sql);
 	}
 }
