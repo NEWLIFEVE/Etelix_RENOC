@@ -80,6 +80,28 @@ class Evolucion extends Reportes
      */
     public function genExcel($nombre)
     {
+        $estilos=array(
+            'font'=>array(
+                'bold' => true, 
+                ),
+            'aligment'=>array(
+                'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                ),
+            'borders'=>array(
+                'allborders'=>array(
+                    'style'=>PHPExcel_Style_Border::BORDER_THICK,
+                    'color'=>array(
+                        'argb'=>'00000000',
+                        )
+                    )
+                ),
+            'fill'=>array(
+                'type'=>PHPExcel_Style_Fill::FILL_SOLID,
+                'startColor'=>array(
+                    'argb'=>'FFCFDAE7',
+                    ),
+                )
+            );
         $objPHPExcel = Yii::app()->PHPExcel;
         $objPHPExcel->getProperties()->setCreator("RENOC")
                              ->setLastModifiedBy("RENOC")
@@ -133,6 +155,7 @@ class Evolucion extends Reportes
                 $seg=strtotime($valores->date_balance);
                 $fecha=date("m/d/Y",$seg);
                 $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $fecha)->setCellValue('B'.$pos, $valores->minutes)->setCellValue('C'.$pos, $valores->$nombresDatos[$key]);
+                $objPHPExcel->getActiveSheet()->getStyle('A1:C1')->applyFromArray($estilos);
             }
         }
 
