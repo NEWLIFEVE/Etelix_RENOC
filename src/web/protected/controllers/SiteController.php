@@ -659,7 +659,6 @@ class SiteController extends Controller
         }
         $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
-        $team=array('sig@etelix.com');
         foreach($correos as $key => $correo)
         {
             if(stripos($correo['asunto'],"Evolucion")==false)
@@ -668,20 +667,19 @@ class SiteController extends Controller
             }
             if(stripos($correo['asunto'], "RETAIL"))
             {
-                $lista=array('CarlosBuona@etelix.com');
-                $unido=array_merge($team,$lista);
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$unido);
+                $lista=array('CarlosBuona@etelix.com','sig@etelix.com');
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
             elseif (stripos($correo['asunto'], "Calidad"))
             {
                 $userDif="ceo@etelix.com";
-                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','txadmin@netuno.net');
-                $unido=array_merge($team,$lista);
-                Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$unido);
+                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','txadmin@netuno.net','sig@etelix.com');
+                Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
             }
             else
             {
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$team);
+                $lista=array('sig@etelix.com');
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
         }
         echo "Mensaje Enviado";
