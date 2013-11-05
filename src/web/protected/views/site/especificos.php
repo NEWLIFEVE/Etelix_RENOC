@@ -33,14 +33,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>-->
-                <!--<div class="choice_parametros carrier">
+                <div class="choice_parametros carrier">
                     <input type="checkbox" value="true" id="Carrier" class="custom-checkbox" name="lista[Carrier]">
                     <label for="Carrier">
                         <h4 id="td1">
                             Carrier
                         </h4>
                     </label>
-                </div>-->
+                </div>
                 <footer id="footer_especificos">
                     <div id="excel" class="botones">
                         <img src="/images/excel.png" class='ver'>
@@ -70,7 +70,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
                     <label for="calidad">
                         <h4 id="td1">
-                            Calidad BSG
+                            Calidad
                         </h4>
                     </label>
                 </div>
