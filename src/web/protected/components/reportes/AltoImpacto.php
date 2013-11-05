@@ -1554,7 +1554,7 @@ class AltoImpacto extends Reportes
         }
         $cuerpo.="<table>
                  <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Destino Internal (+10$)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.=self::cabecera(array('Ranking','Destino Internal (+10$)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino Internal (+10$)','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
                  <tbody>";
         //Destinos Internos con mas de 10$ de margen
@@ -1608,13 +1608,13 @@ class AltoImpacto extends Reportes
                             $pos.
                         "</td>
                          <td style='text-align: left;' class='costmin'>".
-                            Yii::app()->format->format_decimal($destino->costmin).
+                            Yii::app()->format->format_decimal($destinoInternal->costmin).
                         "</td>
                          <td style='text-align: left;' class='ratemin'>".
-                            Yii::app()->format->format_decimal($destino->ratemin).
+                            Yii::app()->format->format_decimal($destinoInternal->ratemin).
                         "</td>
                          <td style='text-align: left;' class='marginmin'>".
-                            Yii::app()->format->format_decimal($destino->marginmin).
+                            Yii::app()->format->format_decimal($destinoInternal->marginmin).
                         "</td>
 
                     </tr>";
@@ -1790,6 +1790,269 @@ class AltoImpacto extends Reportes
                         </td>
                         <td style='text-align: right;' class='margin'>".
                             Yii::app()->format->format_decimal(($destinosInternosTotal->margin/$destinosInternosTotalCompleto->margin)*(100))."%
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                    </tr>
+                    </tbody>
+                   </table>
+                <br>";
+          }
+          else
+          {
+            $cuerpo.="<tr>
+                        <td colspan='13'>No se encontraron resultados</td>
+                     </tr>
+                    </table>
+                <br>";
+          }
+        $cuerpo.="<table>
+                 <thead>";
+        $cuerpo.=self::cabecera(array('Ranking','Destino Internal (RESTO)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino Internal (RESTO)','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $cuerpo.="</thead>
+                 <tbody>";
+        //Destinos Internos con menos de 10$ de margen
+        $destinosInternalResto=self::getDestination($startDate,$endingDate,false,false);
+        if($destinosInternalResto!=null)
+        {
+            foreach($destinosInternalResto as $key => $destinoInternalResto)
+            {
+                $pos=$pos+1;
+                $cuerpo.=self::colorDestino($destinoInternalResto->destino);
+                $cuerpo.="<td style='text-align: center;' class='diferencialBancario'>".
+                            $pos.
+                        "</td>
+                         <td colspan='2' style='text-align: left;' class='destino'>".
+                            $destinoInternalResto->destino.
+                        "</td>
+                         <td style='text-align: left;' class='totalcalls'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->total_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->complete_calls,0).
+                        "</td>
+                         <td style='text-align: left;' class='minutos'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->minutes).
+                        "</td>
+                         <td style='text-align: left;' class='asr'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->asr).
+                        "</td>
+                         <td style='text-align: left;' class='acd'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->acd).
+                        "</td>
+                         <td style='text-align: left;' class='pdd'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->pdd).
+                        "</td>
+                         <td style='text-align: left;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->cost).
+                        "</td>
+                         <td style='text-align: left;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->revenue).
+                        "</td>
+                         <td style='text-align: left;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->margin).
+                        "</td>
+                         <td style='text-align: left;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->margin_percentage)."%
+                        </td>
+                        <td style='text-align: left;' class='destino'>".
+                            $destinoInternalResto->destino.
+                        "</td>
+                         <td style='text-align: center;' class='diferencialBancario'>".
+                            $pos.
+                        "</td>
+                         <td style='text-align: left;' class='costmin'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->costmin).
+                        "</td>
+                         <td style='text-align: left;' class='ratemin'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->ratemin).
+                        "</td>
+                         <td style='text-align: left;' class='marginmin'>".
+                            Yii::app()->format->format_decimal($destinoInternalResto->marginmin).
+                        "</td>
+
+                    </tr>";
+            }
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+
+        // La suma de los totales de destinos internos con mas de 10$ de margen
+        $destinosInternosRestoTotal=self::getTotalDestination($startDate,$endingDate,false,false);
+        if($destinosInternosRestoTotal->total_calls!=null)
+        {
+             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                            TOTAL
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completecalls'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutos'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>
+                        </td>
+                        <td style='text-align: center;' class='acd'>
+                        </td>
+                        <td style='text-align: center;' class='pdd'>
+                        </td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->margin).
+                       "</td>
+                        <td style='text-align: center;' class='etiqueta'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                        TOTAL
+                        </td>
+                        <td style='text-align: center;' class='costmin'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->costmin).
+                       "</td>
+                        <td style='text-align: center;' class='ratemin'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->ratemin).
+                       "</td>
+                        <td style='text-align: center;' class='marginmin'>".
+                            Yii::app()->format->format_decimal($destinosInternosRestoTotal->marginmin).
+                       "</td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        //La suma de los totales de todos los destinos
+        if($destinosInternosTotalCompleto->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td colspan='2' style='text-align: center;' class='etiqueta'>
+                            Total
+                        </td>
+                        <td style='text-align: center;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->total_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->complete_calls,0).
+                       "</td>
+                        <td style='text-align: center;' class='minutes'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->minutes).
+                       "</td>
+                        <td style='text-align: center;' class='asr'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->asr).
+                       "</td>
+                        <td style='text-align: center;' class='acd'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->acd).
+                       "</td>
+                        <td style='text-align: center;' class='pdd'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->pdd).
+                       "</td>
+                        <td style='text-align: center;' class='cost'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->cost).
+                       "</td>
+                        <td style='text-align: center;' class='revenue'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->revenue).
+                       "</td>
+                        <td style='text-align: center;' class='margin'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->margin).
+                       "</td>
+                        <td style='text-align: center;' class='margin_percentage'>".
+                            Yii::app()->format->format_decimal($destinosInternosTotalCompleto->margin_percentage).
+                       "</td>
+                         <td colspan='2' style='text-align: center;' class='etiqueta'>
+                          Total
+                        </td>
+                        <td style='text-align: center;' class='marginmin'>
+                        </td>
+                        <td style='text-align: left; class='marginmin'>
+                        </td>
+                        <td style='text-align: left; class='marginmin'>
+                        </td>
+                    </tr>";
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        $cuerpo.=self::cabecera(array('','','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min',),
+                                array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#f8f8f8',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                                    'background-color:#f8f8f8',
+                                    'background-color:#f8f8f8'));
+        if($destinosInternosRestoTotal->total_calls!=null)
+        {
+            $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td colspan='2' style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: right;' class='totalCalls'>".
+                            Yii::app()->format->format_decimal(($destinosInternosRestoTotal->total_calls/$destinosInternosTotalCompleto->total_calls)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='completeCalls'>".
+                            Yii::app()->format->format_decimal(($destinosInternosRestoTotal->complete_calls/$destinosInternosTotalCompleto->complete_calls)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='minutes'>".
+                            Yii::app()->format->format_decimal(($destinosInternosRestoTotal->minutes/$destinosInternosTotalCompleto->minutes)*(100))."%
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
+                        </td>
+                        <td style='text-align: right;' class='cost'>".
+                            Yii::app()->format->format_decimal(($destinosInternosRestoTotal->cost/$destinosInternosTotalCompleto->cost)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='revenue'>".
+                            Yii::app()->format->format_decimal(($destinosInternosRestoTotal->revenue/$destinosInternosTotalCompleto->revenue)*(100))."%
+                        </td>
+                        <td style='text-align: right;' class='margin'>".
+                            Yii::app()->format->format_decimal(($destinosInternosRestoTotal->margin/$destinosInternosTotalCompleto->margin)*(100))."%
                         </td>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                         </td>
