@@ -43,6 +43,23 @@ class Calidad extends Reportes
         					<td style='".self::colorEstilo($pos)."'>".Yii::app()->format->format_decimal($destino->pdd_exc)."</td>
         				</tr>";
         	}
+        	$cuerpo.=self::cabecera(array('Ranking','Destino','Minutos','Intentos Totales','Intentos Completados','Intentos NC Inc. RI','Intentos NC Exc. RI','ASR Inc. RI','ASR Exc. RI','&Delta; ASR','ACD','PDD Inc. RI','PDD Exc. RI'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+			$total=self::getTotalDestinations($startDate,$endingDate,$carrier);
+			$cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
+						<td></td>
+						<td> TOTAL </td>
+						<td>".Yii::app()->format->format_decimal($total->minutes)."</td>
+						<td>".Yii::app()->format->format_decimal($total->total_calls)."</td>
+						<td>".Yii::app()->format->format_decimal($total->complete_calls_exc)."</td>
+						<td>".Yii::app()->format->format_decimal($total->incomplete_calls_inc)."</td>
+						<td>".Yii::app()->format->format_decimal($total->incomplete_calls_exc)."</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					  </tr>";
 			$cuerpo.="</table>";
 			return $cuerpo;
 		}
@@ -74,7 +91,8 @@ class Calidad extends Reportes
 			  	   		GROUP BY id_destination) b
 				   GROUP BY id_destination
 				   ORDER BY minutes DESC) b, destination d
-			  WHERE b.id_destination=d.id AND b.minutes>0";
+			  WHERE b.id_destination=d.id AND b.minutes>0
+			  ORDER by b.minutes DESC";
 		return Balance::model()->findAllBySql($sql);
 	}
 
@@ -92,18 +110,18 @@ class Calidad extends Reportes
 			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc
 			  	   FROM(SELECT id_destination, SUM(minutes) AS minutes, SUM(incomplete_calls) AS incomplete_calls_exc, CAST(0 AS double precision) AS incomplete_calls_inc, SUM(complete_calls) AS complete_calls_exc, CAST(0 AS double precision) AS complete_calls_inc
 			  	   		FROM balance
-			  	   		WHERE id_carrier_customer=50 AND date_balance>='2013-10-29' AND date_balance<='2013-11-04' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
+			  	   		WHERE id_carrier_customer={$carrier} AND date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
 			  	   		GROUP BY id_destination
 			  	   		UNION
 			  	   		/*Trae los datos sin Unkwon_carrier*/
 			  	   		SELECT id_destination, CAST(0 AS double precision) AS minutes, CAST(0 AS double precision) AS incomplete_calls_exc, SUM(incomplete_calls) AS incomplete_calls_inc, CAST(0 AS double precision) AS complete_calls_exc, SUM(complete_calls) AS complete_calls_inc
 			  	   		FROM balance
-			  	   		WHERE id_carrier_customer=50 AND date_balance>='2013-10-29' AND date_balance<='2013-11-04' AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
+			  	   		WHERE id_carrier_customer={$carrier} AND date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
 			  	   		GROUP BY id_destination) b
 				   GROUP BY id_destination
 				   ORDER BY minutes DESC) b
 			  WHERE b.minutes>0";
-		return Balance::model()->findAllBySql($sql);
+		return Balance::model()->findBySql($sql);
 	}
 }
 ?>
