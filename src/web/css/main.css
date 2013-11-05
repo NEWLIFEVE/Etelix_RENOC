@@ -965,7 +965,7 @@ img.oculta
 }
 
 /*Especificos*/
-.start, .end
+.start, .end, .middle_carrier
 {
     position: relative;
     width: 90px;
@@ -980,6 +980,11 @@ img.oculta
 {
     left: 16em;
     position: relative;
+}
+.middle_carrier
+{
+    left: 100%;
+    width: 75%;
 }
 .end
 {
@@ -1002,8 +1007,37 @@ img.oculta
 }
 #footer_especificos
 {
-    margin-top: 14em;
+    margin-top: 8em;
 }
+/*Estilos del autocompletar*/
+#ui-datepicker-div table.ui-datepicker-calendar
+{
+    background: #F5F5F5 !important;
+}
+#ui-datepicker-div div.ui-datepicker-title,
+#ui-datepicker-div table.ui-datepicker-calendar thead
+{
+    color:white;
+}
+.ui-state-default
+{
+    border-color: #F5F5F5 !important;
+}
+ul.ui-widget-content
+{
+    background: #F5F5F5 !important;
+}
+li.ui-menu-item a
+{
+    color:#848484;
+}
+.ui-state-focus
+{
+    background: rgb(104, 173, 104) !important;
+    color:white !important;
+}
+
+/***Especificos**/
 /*position: relative;
 top: -57px;
 */
@@ -1094,6 +1128,8 @@ height: 61px;
     height: 30px;
 }
 
+
+
 @media screen and (max-width: 980px) {
     /*Vista del login*/
     .bodylogin
@@ -1170,4 +1206,5 @@ height: 61px;
         margin-left: 0px !important;
     }
 }
+
 

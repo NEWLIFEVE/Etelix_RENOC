@@ -75,6 +75,8 @@ class Balance extends CActiveRecord
 	public $asr_inc;
 	public $asr_exc;
 	public $delta;
+	public $pdd_inc;
+	public $pdd_exc;
 	
 	/**
 	 * Returns the static model of the specified AR class.
