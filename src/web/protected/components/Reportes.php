@@ -13,6 +13,13 @@ class Reportes extends CApplicationComponent
     protected $fecha;
 
     /**
+     * Continene la ruta de los archivos excel de los reportes
+     * @access protected
+     * @var string
+     */
+    protected $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+
+    /**
      * Init method for the application component mode.
      */
     public function init() 
