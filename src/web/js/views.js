@@ -286,12 +286,7 @@ ajax.prototype.genExcel=function()
             case "lista[ACE]":
             case "lista[API]":
             case "lista[APE]":
-            case "lista[DCV]":
-            case "lista[DCTP]":
-            case "lista[DCM]":
-            case "lista[DCCom]":
-            case "lista[DCCarrier]":
-            case "lista[DCUP]":
+            case "lista[DC]":
             case "lista[Ev]":
                 ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
                 break;
