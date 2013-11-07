@@ -4,11 +4,100 @@
 */
 class DistribucionComercial extends Reportes
 {
+    /**
+     * Contiene el objeto del excel
+     * @access private
+     * @var $excel;
+     */
+    private $excel;
+
+    /**
+     * Instancio el objeto del excel
+     */
+    function __construct()
+    {
+        $this->excel=new PHPExcel();
+        $this->excel->getProperties()->setCreator("RENOC")->setLastModifiedBy("RENOC")->setTitle("RENOC Distribucion Comercial")->setSubject("RENOC Distribucion Comercial")->setDescription("Reportes de Distribucion Comercial")->setKeywords("RENOC Reportes Distribucion Comercial")->setCategory("Distribucion Comercial Reportes");
+    }
+
+    public function genExcel($name)
+    {    
+        $titles=array(
+            'A'=>'Cargo',
+            'B'=>'Responsable',
+            'C'=>'Posicion',
+            'D'=>'Operador',
+            'E'=>'Compañia',
+            'F'=>'Termino Pago',
+            'G'=>'Monetizable',
+            'H'=>'Dias de Disputa',
+            'I'=>'Limite de Credito',
+            'J'=>'Limite de Compra',
+            'K'=>'Unidad de Produccion'
+            );
+        $this->setDataToSheet('Vendedor',self::getData('vendedor'),$titles);
+        $this->excel->setActiveSheetIndex(0);
+        $this->writeFile($name);
+    }
+
+    /**
+     * Introduce los datos recibidos en la hoja excel con los nombres indicados
+     * @access private
+     * @param string $name es el nombre que va a llevar la hoja de estilo
+     * @param CActiveRecord $data es el objeto con el modelo del reporte
+     * @param array $titles son los titulos que llevara la tabla creada,
+     * para facilitar la carga de los nombres de las columnas colocar la letra que acompaña cada tituto
+     * @return void
+     */
+    private function setDataToSheet($name,$data,$titles)
+    {
+        $hoja = new PHPExcel_Worksheet($this->excel,$name);
+        $this->excel->addSheet($hoja,0);
+        $this->excel->setActiveSheetIndexByName($name);
+        //Asigno los nombres de las columnas al principio
+        foreach ($titles as $column => $value)
+        {
+            $row=1;
+            $this->excel->getActiveSheet()->setCellValue($column.$row,$value);
+        }
+        //cargo los datos en las celdas
+        foreach ($data as $key => $registro)
+        {
+            $row=$key+2;
+            $pos=$key+1;
+            $this->excel->getActiveSheet()
+                        ->setCellValue("A".$row,$registro->position)
+                        ->setCellValue("B".$row,$registro->vendedor)
+                        ->setCellValue("C".$row,$pos)
+                        ->setCellValue("D".$row,$registro->operador)
+                        ->setCellValue("E".$row,$registro->company)
+                        ->setCellValue("F".$row,$registro->termino_pago)
+                        ->setCellValue("G".$row,$registro->monetizable)
+                        ->setCellValue("H".$row,$registro->dias_disputa)
+                        ->setCellValue("I".$row,$registro->limite_credito)
+                        ->setCellValue("J".$row,$registro->limite_compra)
+                        ->setCellValue("K".$row,$registro->production_unit);
+        }
+    }
+
+    /**
+     * Escribe el excel en la ruta asignada
+     * @access private
+     * @return void
+     */
+    private function writeFile($name)
+    {
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+        $writer=PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+        $writer->save($ruta.$name);
+    }
+
+
 	/**
 	* @param $fecha date fecha a ser consultada
 	* @return $cuerpo string cuerpo del reporte
 	*/
-	public static function reporte($type)
+	/*public static function reporte($type)
 	{
         switch($type)
         {
@@ -146,7 +235,7 @@ class DistribucionComercial extends Reportes
         }
         $cuerpo.="</tbody></table>";
         return $cuerpo;
-	}
+	}*/
 
     /**
      * Metodo encargado de traer los datos
@@ -188,7 +277,7 @@ class DistribucionComercial extends Reportes
               FROM carrier c, managers m, carrier_managers cm
               WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
               $order;
-        return $managers=Managers::model()->findAllBySql($sql);
+        return Managers::model()->findAllBySql($sql);
     }
 
     /**
@@ -199,7 +288,7 @@ class DistribucionComercial extends Reportes
      * @param $alarmaInt
      * @return string $color
      */
-    public static function color($var,$alarma=NULL)
+    /*public static function color($var,$alarma=NULL)
     {
         $color=null;
         $j=0;
@@ -280,6 +369,6 @@ class DistribucionComercial extends Reportes
             $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
         }
         return $color;
-    }
+    }*/
 }
 ?>
