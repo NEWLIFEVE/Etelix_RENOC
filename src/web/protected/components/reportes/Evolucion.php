@@ -81,9 +81,6 @@ class Evolucion extends Reportes
     public function genExcel($nombre)
     {
         $estilos=array(
-            'font'=>array(
-                'bold' => true, 
-                ),
             'aligment'=>array(
                 'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                 ),
@@ -97,8 +94,8 @@ class Evolucion extends Reportes
                 ),
             'fill'=>array(
                 'type'=>PHPExcel_Style_Fill::FILL_SOLID,
-                'startColor'=>array(
-                    'argb'=>'198217241',
+                'startcolor'=>array(
+                    'argb'=>'FFC6D9F1',
                     ),
                 )
             );
