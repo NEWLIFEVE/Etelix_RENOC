@@ -84,9 +84,9 @@
             <b>Re-Rate en proceso &nbsp;<img src='/images/cargandosori.gif'width='15px' height='5px'/><b>
         </h6>
     </div>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"/></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui.js"/></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.js"/></script>
-    <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.blockUI.js"></script>
 </body>
 </html>
