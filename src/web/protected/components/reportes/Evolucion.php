@@ -102,7 +102,7 @@ class Evolucion extends Reportes
                     ),
                 )
             );
-        $objPHPExcel = Yii::app()->PHPExcel;
+        $objPHPExcel = new PHPExcel();
         $objPHPExcel->getProperties()->setCreator("RENOC")
                              ->setLastModifiedBy("RENOC")
                              ->setTitle("RENOC Evolucion")
