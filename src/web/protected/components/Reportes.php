@@ -1001,5 +1001,24 @@ class Reportes extends CApplicationComponent
         }
         return $array;
     }
+
+    /**
+     * Recibe un objeto CActiveRecord y un string haciendo referencia a un atributo del objeto,
+     * retorna un array enlistando los atributos usando un key numerico
+     * @access protected
+     * @static
+     * @param CActiveRecord $objeto
+     * @param string $attribute
+     * @return array
+     */
+    protected static function sort($objeto,$attribute)
+    {
+        $lista=array();
+        foreach ($objeto as $key => $value)
+        {
+            $lista[]=$value->$attribute;
+        }
+        return $lista;
+    }
 }
 ?>
