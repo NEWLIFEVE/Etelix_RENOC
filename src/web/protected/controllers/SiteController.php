@@ -172,11 +172,6 @@ class SiteController extends Controller
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_POST['startDate']);
         $startDate=$endingDate=$carrier=null;
-        $endTitle="";
-        if(isset($_POST['endingDate']) && $_POST['endingDate']!=null)
-        {
-            $endTitle=" al ".str_replace("-","",$_POST['endingDate']);
-        }
         $correos=null;
         $user=UserIdentity::getEmail();
         if(isset($_POST['startDate']))
@@ -187,9 +182,9 @@ class SiteController extends Controller
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
-                $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate).$endTitle;
+                $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
-                $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate).$endTitle.".xls";
+                $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Ranking CompraVenta".$correos['compraventa']['asunto'].".xls";
             }
             //Perdidas
             if(isset($_POST['lista']['perdidas']))
@@ -209,7 +204,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['AI10']))
             {
                 $correos['altoImpacto']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$startDate);
-                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate);
+                $correos['altoImpacto']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate);
                 $correos['altoImpacto']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Alto Impacto (+10$) al ".str_replace("-","",$startDate).".xls";
             }
             //Alto Impacto +10$ por Vendedor
@@ -319,11 +314,6 @@ class SiteController extends Controller
         $this->vaciarAdjuntos();
         $this->letra=Log::preliminar($_GET['startDate']);
         $startDate=$endingDate=$carrier=null;
-        $endTitle="";
-        if(isset($_GET['endingDate']) && $_GET['endingDate']!=null)
-        {
-            $endTitle=" al ".str_replace("-","",$_GET['endingDate']);
-        }
         $archivos=array();
         if(isset($_GET['startDate']))
         {
@@ -332,7 +322,7 @@ class SiteController extends Controller
             if(isset($_GET['carrier'])) $carrier=$_GET['carrier'];
             if(isset($_GET['lista']['compraventa']))
             {
-                $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta al ".str_replace("-","",$startDate);
+                $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
                 $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
             }
             if(isset($_GET['lista']['perdidas']))
@@ -650,6 +640,29 @@ class SiteController extends Controller
                     }
                 }
             }
+    }
+
+    /**
+     * Metodo encargado de ajustar nombre de archivo dependiendo de las fechas,
+     * si se le pasa una sola fecha, retornará algo como: al $fecha
+     * si se le pasan dos fechas retornará algo como: desde $fecha hasta $fecha
+     * la las fechas completan principio y fin de un mismo mes retornará algom como: al $mes
+     * @access private
+     * @static
+     * @param date $start fecha incial
+     * @param date $end fecha fin
+     * @return string con el texto apropiado
+     */
+    private static function reportTitle($start,$end=null)
+    {
+        if($end==null)
+        {
+            return " al ".str_replace("-","",$start);
+        }
+        else
+        {
+            return Reportes::reportTitle($start,$end);
+        }
     }
 }
 ?>
