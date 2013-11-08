@@ -59,12 +59,12 @@ class Calidad extends Reportes
 						<td>".Yii::app()->format->format_decimal($total->complete_calls_exc)."</td>
 						<td>".Yii::app()->format->format_decimal($total->incomplete_calls_inc)."</td>
 						<td>".Yii::app()->format->format_decimal($total->incomplete_calls_exc)."</td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td>".Yii::app()->format->format_decimal($total->asr_inc)."</td>
+    					<td>".Yii::app()->format->format_decimal($total->asr_exc)."</td>
+    					<td>".Yii::app()->format->format_decimal($total->delta)."</td>
+    					<td>".Yii::app()->format->format_decimal($total->acd)."</td>
+    					<td>".Yii::app()->format->format_decimal($total->pdd_inc)."</td>
+    					<td>".Yii::app()->format->format_decimal($total->pdd_exc)."</td>
 					  </tr>";
 			$cuerpo.="</table>";
 			return $cuerpo;
@@ -112,20 +112,20 @@ class Calidad extends Reportes
 	 */
 	private static function getTotalDestinations($startDate,$endingDate,$carrier)
 	{
-		$sql="SELECT SUM(b.minutes) AS minutes, SUM(b.total_calls) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc
-			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc
-			  	   FROM(SELECT id_destination, SUM(minutes) AS minutes, SUM(incomplete_calls) AS incomplete_calls_exc, CAST(0 AS double precision) AS incomplete_calls_inc, SUM(complete_calls) AS complete_calls_exc, CAST(0 AS double precision) AS complete_calls_inc
+		$sql="SELECT SUM(b.minutes) AS minutes, SUM(b.total_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.complete_calls_inc) AS complete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, (SUM(b.complete_calls_inc)*100)/SUM(b.total_calls_inc) AS asr_inc, (SUM(b.complete_calls_exc)*100)/SUM(b.total_calls_exc) AS asr_exc, SUM(b.minutes)/SUM(b.complete_calls_exc) AS acd, ((SUM(b.complete_calls_exc)*100)/SUM(b.total_calls_exc)-(SUM(b.complete_calls_inc)*100)/SUM(b.total_calls_inc)) AS delta, (SUM(b.pdd_inc)/SUM(b.incomplete_calls_inc+b.complete_calls_inc)) AS pdd_inc, (SUM(b.pdd_exc)/SUM(b.incomplete_calls_exc+b.complete_calls_exc)) AS pdd_exc
+			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls_inc, SUM(b.incomplete_calls_exc+b.complete_calls_exc) AS total_calls_exc, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.complete_calls_inc) AS complete_calls_inc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, SUM(b.pdd_exc) AS pdd_exc, SUM(b.pdd_inc) AS pdd_inc
+			  	   FROM(SELECT id_destination, SUM(minutes) AS minutes, SUM(incomplete_calls) AS incomplete_calls_exc, CAST(0 AS double precision) AS incomplete_calls_inc, SUM(complete_calls) AS complete_calls_exc, CAST(0 AS double precision) AS complete_calls_inc, SUM(pdd) AS pdd_exc, CAST(0 AS double precision) AS pdd_inc
 			  	   		FROM balance
 			  	   		WHERE id_carrier_customer={$carrier} AND date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
 			  	   		GROUP BY id_destination
 			  	   		UNION
 			  	   		/*Trae los datos sin Unkwon_carrier*/
-			  	   		SELECT id_destination, CAST(0 AS double precision) AS minutes, CAST(0 AS double precision) AS incomplete_calls_exc, SUM(incomplete_calls) AS incomplete_calls_inc, CAST(0 AS double precision) AS complete_calls_exc, SUM(complete_calls) AS complete_calls_inc
+			  	   		SELECT id_destination, CAST(0 AS double precision) AS minutes, CAST(0 AS double precision) AS incomplete_calls_exc, SUM(incomplete_calls) AS incomplete_calls_inc, CAST(0 AS double precision) AS complete_calls_exc, SUM(complete_calls) AS complete_calls_inc, CAST(0 AS double precision) AS pdd_exc, SUM(pdd) AS pdd_inc
 			  	   		FROM balance
 			  	   		WHERE id_carrier_customer={$carrier} AND date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination')
 			  	   		GROUP BY id_destination) b
-				   GROUP BY id_destination
-				   ORDER BY minutes DESC) b";
+			  	   GROUP BY id_destination
+			  	   ORDER BY minutes DESC) b";
 		return Balance::model()->findBySql($sql);
 	}
 }
