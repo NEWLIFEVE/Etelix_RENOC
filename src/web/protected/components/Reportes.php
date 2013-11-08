@@ -116,7 +116,7 @@ class Reportes extends CApplicationComponent
     public function RankingCompraVenta($inicio,$fin=null)
     {
         $fechaInicio=$fechaFin=$variable=null;
-        $array=self::valDates($start,$end);
+        $array=self::valDates($inicio,$fin);
         $fechaInicio=$array['startDate'];
         $fechaFin=$array['endingDate'];
         if(self::howManyMonths($fechaInicio,$fechaFin)<=2 && self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
@@ -996,7 +996,7 @@ class Reportes extends CApplicationComponent
         else
         {
             $array['startDate']=$start;
-            $array['endingDate']=$ending;
+            $array['endingDate']=$end;
         }
         return $array;
     }
