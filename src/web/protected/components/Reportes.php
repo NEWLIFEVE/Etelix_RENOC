@@ -149,9 +149,9 @@ class Reportes extends CApplicationComponent
                 $index+=1;
             }
             $ultimo=count($objetos)-1;
-            $ordenados['Vendedores']=self::ordenar($apellidos,$objetos[$ultimo]['Vendedores'],'apellido');
-            $ordenados['Compradores']=self::ordenar($apellidos,$objetos[$ultimo]['Compradores'],'apellido');
-            $ordenados['Consolidados']=self::ordenar($apellidos,$objetos[$ultimo]['Consolidados'],'apellido');
+            $ordenados['Vendedores']=self::sortByList($apellidos,$objetos[$ultimo]['Vendedores'],'apellido');
+            $ordenados['Compradores']=self::sortByList($apellidos,$objetos[$ultimo]['Compradores'],'apellido');
+            $ordenados['Consolidados']=self::sortByList($apellidos,$objetos[$ultimo]['Consolidados'],'apellido');
             $variable="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
@@ -944,7 +944,7 @@ class Reportes extends CApplicationComponent
     }
 
     /**
-     * Recibe un array y objeto CActiveRecord y ordena el array de acuerdo al objeto
+     * Recibe un array con una lista y objeto CActiveRecord y ordena el array de acuerdo al objeto
      * @access protected
      * @static
      * @param array $lista
@@ -952,7 +952,7 @@ class Reportes extends CApplicationComponent
      * @param string $attribute
      * @return array
      */
-    protected static function ordenar($lista,$objeto,$attribute)
+    protected static function sortByList($lista,$objeto,$attribute)
     {
         $ordenado=$temp=array();
         foreach ($objeto as $key => $value)
