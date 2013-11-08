@@ -50,10 +50,9 @@ class Reportes extends CApplicationComponent
      * @param $fecha date fecha para ser consuldada
      * @return $variable string cuerpo de reporte
      */
-    public function AltoImpacto($fecha)
+    public function AltoImpacto($starDate,$endingDate)
     {
-        $variable=AltoImpacto::reporte($fecha);
-        return $variable;
+        return AltoImpacto::reporte($starDate,$endingDate);
     }
 
     /**
@@ -916,21 +915,21 @@ class Reportes extends CApplicationComponent
      * metodo encargado de validar el titulo por tabla creada en reportes, si la fecha inicial y final son
      * la de inicio y fin del respectivo mes retorna el nombre del mes, de lo contrario regresa el texto
      * con las fechas.
-     * @access protected
+     * @access public
      * @static
      * @param date $inicio es la fecha de inicio del reporte consultado
      * @param date $fin es la fecha final del reporte consultado
      * @return string
      */
-    protected static function reportTitle($inicio,$fin)
+    public static function reportTitle($inicio,$fin)
     {
         $i=explode('-', $inicio);
         $f=explode('-', $fin);
         if($i[2]==1 && $f[2]==self::howManyDays($fin))
         {
-            return self::getNameMonth($inicio,true)." ".$f[0];
+            return " ".self::getNameMonth($inicio,true)." ".$f[0];
         }
-        return "Del ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
+        return " desde ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
     }
 
     /**
