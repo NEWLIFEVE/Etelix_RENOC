@@ -116,15 +116,9 @@ class Reportes extends CApplicationComponent
     public function RankingCompraVenta($inicio,$fin=null)
     {
         $fechaInicio=$fechaFin=$variable=null;
-        if($fin==null)
-        {
-            $fechaFin=$fechaInicio=$inicio;
-        }
-        else
-        {
-            $fechaInicio=$inicio;
-            $fechaFin=$fin;
-        }
+        $array=self::valDates($start,$end);
+        $fechaInicio=$array['startDate'];
+        $fechaFin=$array['endingDate'];
         if(self::howManyMonths($fechaInicio,$fechaFin)<=2 && self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
         {
             $variable="<table><thead>";
