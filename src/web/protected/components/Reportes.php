@@ -984,5 +984,27 @@ class Reportes extends CApplicationComponent
         }
         return $ordenado;
     }
+
+    /**
+     * Se encarga de verificar las fechas de recibidas por los reportes
+     * @access protected
+     * @static
+     * @param date $start fecha inincio
+     * @param date $end fecha fin
+     * @return array con los valores start y end validados
+     */
+    protected static function valDates($start,$end)
+    {
+        if($end==null)
+        {
+            $array['endingDate']=$array['startDate']=$start;
+        }
+        else
+        {
+            $array['startDate']=$start;
+            $array['endingDate']=$ending;
+        }
+        return $array;
+    }
 }
 ?>
