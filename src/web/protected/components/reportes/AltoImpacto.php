@@ -10,20 +10,69 @@ class AltoImpacto extends Reportes
     * @param date $ending fecha fin a consultar
 	* @return string con la tabla armada
 	*/
-	public static function reporte($start,$ending=null)
+	public static function reporte($start,$end=null)
 	{
-        $startDate=$endingDate=$variable=null;
-        if($ending==null)
+        //verifico las fechas
+        $array=self::valDates($start,$end);
+        $startDateTemp=$startDate=$array['startDate'];
+        $endingDateTemp=$endingDate=$array['endingDate'];
+        $arrayStartTemp=null;
+        $objetos=array();
+        $index=0;
+        while (self::isLower($startDateTemp,$endingDate))
         {
-            $endingDate=$startDate=$start;
+            $arrayStartTemp=explode('-',$startDateTemp);
+            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$fechaFin);
+            //El titulo que va a llevar la seccion
+            $objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            /***/
+            //Guardo los datos de los clientes con mas de 10 dolares de ganancia
+            $objetos[$index]['customersWithMoreThanTenDollars']=self::getCarriers($startDateTemp,$endingDateTemp,true,true);
+            //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
+            $objetos[$index]['clientsTotalMoreThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
+            //Guardo los datos de los totales de todos los clientes
+            $objetos[$index]['totalCustomer']=self::getTotalCompleteCarriers($startDateTemp,$endingDateTemp,true);
+            //Guardo los datos de los clientes con menos de 10 dolares de ganancia 
+            $objetos[$index]['customersWithLessThanTenDollars']=self::getCarriers($startDate,$endingDate,true,false);
+            //Guardo los datos de los totales de los clientes con menis de 10 dolares de ganancia
+            $objetos[$index]['clientsTotalLessThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,true,false);
+            /***/
+            //Guardo los datos de los proveedores con mas de 10 dolares de ganancia
+            $objetos[$index]['providersWithMoreThanTenDollars']=self::getCarriers($startDateTemp,$endingDateTemp,false,true);
+            //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
+            $objetos[$index]['suppliersTotalMoreThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
+            //Guardo los datos de los totales de todos los proveedores
+            $objetos[$index]['totalSuppliers']=self::getTotalCompleteCarriers($startDateTemp,$endingDateTemp,false);
+            //Guardo los datos de los proveedores con menos de 10 dolares de ganancia
+            $objetos[$index]['providersWithLessThanTenDollars']=self::getCarriers($startDateTemp,$endingDateTemp,false,false);
+            //Gurado los datos de los totales de los proveedores con menos de 10 dolares de ganancia
+            $objetos[$index]['suppliersTotalLessThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,false,false);
+            /***/
+            //Guardo los datos de los destinos externos con mas de 10 dolares de ganancia
+            $objetos[$index]['externalDestinationsMoreThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,true,true);
+            //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
+            $objetos[$index]['totalExternalDestinationsMoreThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,true,true);
+            //Guardo los datos de los totales de los destinos externos
+            $objetos[$index]['totalExternalDestinations']=self::getTotalCompleteDestination($startDateTemp,$endingDateTemp,true);
+            //Guardo los datos de los destinos externos con menos de 10 dolares de ganancia
+            $objetos[$index]['externalDestinationsLessThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,true,false);
+            //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
+            $objetos[$index]['totalExternalDestinationsLessThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,true,false);
+            /***/
+            //Guardo los datos de los destinos internos con mas de 10 dolares de ganancia
+            $objetos[$index]['internalDestinationsWithMoreThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,false,true);
+            //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia
+            $objetos[$index]['totalInternalDestinationsWithMoreThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,false,true);
+            //Guardo los datos de los totales de los destinos internos
+            $objetos[$index]['totalInternalDestinations']=self::getTotalCompleteDestination($startDateTemp,$endingDateTemp,false);
+            //Guardo los datos de los destinos internos con menos de 10 dolares de ganancia
+            $objetos[$index]['internalDestinationsWithLessThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,false,false);
+            //Guardo los datos de los totales de los destinos internos con menos de 10 dolares de ganancia
+            $objetos[$index]['totalInternalDestinationsWithLessThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,false,false);
+            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
+            $index+=1;
         }
-        else
-        {
-            $startDate=$start;
-            $endingDate=$ending;
-        }
-
-        $cuerpo="Fecha de inicio: ".$startDate." fecha fin: ".$endingDate;
+        $ultimo=count($objetos)-1;
 
 
 
