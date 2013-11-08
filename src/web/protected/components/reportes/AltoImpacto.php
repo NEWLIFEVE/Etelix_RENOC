@@ -22,7 +22,12 @@ class AltoImpacto extends Reportes
             $startDate=$start;
             $endingDate=$ending;
         }
-        $cuerpo="<div>
+
+        $cuerpo="Fecha de inicio: ".$startDate." fecha fin: ".$endingDate;
+
+
+
+        /*$cuerpo="<div>
                   <table>
                   <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Cliente (+10$)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
@@ -274,7 +279,7 @@ class AltoImpacto extends Reportes
                     <br>";
             }
             /******************************************CLIENTES RESTO******************************************************/
-        $cuerpo.="<table>
+      /*  $cuerpo.="<table>
                   <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Cliente (RESTO)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
@@ -524,7 +529,7 @@ class AltoImpacto extends Reportes
             <br>";
             }
 /*********************************************************************PROVEEDORES +10$*********************************************************************/
-        $cuerpo.="<table>
+     /*   $cuerpo.="<table>
                  <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Proveedor (+10$)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
@@ -775,7 +780,7 @@ class AltoImpacto extends Reportes
           }
           
 /************************************************************PROVEEDORES RESTO*****************************************************************************/          
-        $cuerpo.="<table>
+     /*   $cuerpo.="<table>
                  <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Proveedor (RESTO)','Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Proveedor','Ranking','Vendedor','PN'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
@@ -1025,7 +1030,7 @@ class AltoImpacto extends Reportes
                 <br>";
           }
 /******************************************************************DESTINOS (+10$)************************************************************************/
-        $cuerpo.="<table>
+   /*     $cuerpo.="<table>
                  <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Destino (+10$)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
@@ -1290,7 +1295,7 @@ class AltoImpacto extends Reportes
                 <br>";
           }
 /************************************************************************DESTINOS (RESTO)*****************************************************************/
-                $cuerpo.="<table>
+    /*            $cuerpo.="<table>
                  <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Destino (RESTO)','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
@@ -2078,7 +2083,7 @@ class AltoImpacto extends Reportes
                      </tr>
                     </table>
                 <br>";
-          }
+          }*/
         return $cuerpo;
 	}
 
