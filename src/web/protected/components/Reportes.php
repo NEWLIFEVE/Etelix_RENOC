@@ -4,6 +4,9 @@
  */
 class Reportes extends CApplicationComponent
 {
+    /**
+     * @access public
+     */
     public $tipo;
 
     /**
@@ -17,7 +20,7 @@ class Reportes extends CApplicationComponent
      */
     public function init() 
     {
-        
+
     }
 
     /**
@@ -89,65 +92,11 @@ class Reportes extends CApplicationComponent
         return $variable;
     }
 
-    /**
-     * Metodo encargado de generar el reporte de distribucion comercial
-     * @access public
-     * @param $fecha date la fecha que se quiere consultar
-     * @return $variable string con el cuerpo del reporte
-     */
-    public function DistComercialVendedor($fecha)
+    public function DistribucionComercial($nombre)
     {
-        return DistribucionComercial::reporte("vendedor");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialTerminoPago($fecha)
-    {
-        return DistribucionComercial::reporte("pago");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialMonetizable($fecha)
-    {
-        return DistribucionComercial::reporte("monetizable");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialCompany($fecha)
-    {
-        return DistribucionComercial::reporte("company");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialCarrier($fecha)
-    {
-        return DistribucionComercial::reporte("carrier");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialUnidadProduccion($fecha)
-    {
-        return DistribucionComercial::reporte("unidad");
+        $reporte=new DistribucionComercial();
+        $reporte->genExcel($nombre);
+        return "Revisar Archivo Adjunto";
     }
 
     /**
