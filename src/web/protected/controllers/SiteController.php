@@ -336,7 +336,7 @@ class SiteController extends Controller
             if(isset($_GET['lista']['AI10']))
             {
                 $archivos['AI10']['nombre']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
-                $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate);
+                $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate);
             } 
             if(isset($_GET['lista']['AI10V']))
             {
@@ -454,7 +454,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['AI10']))
             {
                 $correos['AI10']['asunto']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
-                $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate);
+                $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate);
                 $correos['AI10']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10']['asunto'].".xls";
             }
             //Alto Impacto +10$ por Vendedor
