@@ -22,7 +22,7 @@ class AltoImpacto extends Reportes
         while (self::isLower($startDateTemp,$endingDate))
         {
             $arrayStartTemp=explode('-',$startDateTemp);
-            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$fechaFin);
+            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
             $objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /***/
@@ -72,7 +72,163 @@ class AltoImpacto extends Reportes
             $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
             $index+=1;
         }
-        $ultimo=count($objetos)-1;
+        $num=count($objetos);
+        $last=$num-1;
+        $sorted['customersWithMoreThanTenDollars']=self::sort($objetos[$last]['customersWithMoreThanTenDollars'],'cliente');
+        $cuerpo="<table>";
+        for ($row=0; $row < 8; $row++)
+        { 
+            $cuerpo.="<tr>";
+            switch ($row)
+            {
+                case 0:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 1:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 2:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 3:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 4:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 5:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 6:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+                case 7:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>Principio</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>Fin</td>";
+                        }
+                    }
+                    break;
+            }
+            $cuerpo.="</tr>";
+        }
+        
+        $cuerpo.="</table>";
+        /*$sorted['']=
+        $sorted['']=
+        $sorted['']=
+        $sorted['']=
+        $sorted['']=
+        $sorted['']=
+        $sorted['']=*/
 
 
 
