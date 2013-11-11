@@ -1027,7 +1027,8 @@ class Reportes extends CApplicationComponent
         $lista=array();
         foreach ($objeto as $key => $value)
         {
-            $lista[]=$value->$attribute;
+            $lista[]['attribute']=$value->$attribute;
+            $lista[]['id']=$value->id;
         }
         return $lista;
     }
