@@ -927,7 +927,14 @@ class Reportes extends CApplicationComponent
         {
             return " ".self::getNameMonth($inicio,true)." ".$f[0];
         }
-        return " desde ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
+        elseif($inicio==$fin)
+        {
+            return " al ".$inicio;
+        }
+        else
+        {
+            return " desde ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
+        }
     }
 
     /**
