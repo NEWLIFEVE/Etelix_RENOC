@@ -97,16 +97,26 @@ class AltoImpacto extends Reportes
         {
             $body.="<td>".self::getHtmlTableCarriers($objeto['providersWithLessThanTenDollars'],'Proveedores (Resto)','proveedor')."</td><td></td>";
         }
-        /*$body.="</tr><tr><td></td></tr><tr>";
+        $body.="</tr><tr><td></td></tr><tr>";
         foreach ($objetos as $key => $objeto)
         {
-            $body.="<td>".self::getHtmlTableCarriers($objeto['externalDestinationsMoreThanTenDollars'],'Destinos Externos (+10$)','proveedor')."</td><td></td>";
+            $body.="<td>".self::getHtmlTableDestinations($objeto['externalDestinationsMoreThanTenDollars'],'Destinos Externos (+10$)')."</td><td></td>";
         }
         $body.="</tr><tr><td></td></tr><tr>";
         foreach ($objetos as $key => $objeto)
         {
-            $body.="<td>".self::getHtmlTableCarriers($objeto['externalDestinationsLessThanTenDollars'],'Proveedores (Resto)','proveedor')."</td><td></td>";
-        }*/
+            $body.="<td>".self::getHtmlTableDestinations($objeto['externalDestinationsLessThanTenDollars'],'Destinos Externos (Resto)')."</td><td></td>";
+        }
+        $body.="</tr><tr><td></td></tr><tr>";
+        foreach ($objetos as $key => $objeto)
+        {
+            $body.="<td>".self::getHtmlTableDestinations($objeto['internalDestinationsWithMoreThanTenDollars'],'Destinos Externos (Resto)')."</td><td></td>";
+        }
+        $body.="</tr><tr><td></td></tr><tr>";
+        foreach ($objetos as $key => $objeto)
+        {
+            $body.="<td>".self::getHtmlTableDestinations($objeto['internalDestinationsWithLessThanTenDollars'],'Destinos Externos (Resto)')."</td><td></td>";
+        }
         $body.="</tr></table>";
 
         
@@ -290,6 +300,12 @@ class AltoImpacto extends Reportes
 
     /**
      * Obtiene el html de las tablas para los carriers
+     * @access private
+     * @static
+     * @param CActiveRecord $data el objeto a llevar a tabla
+     * @param string $name es el nombre que va a incluir las cabeceras de la tabla
+     * @param string $attribute este parametro es para que la funcion funcione tanto con carrier customer como con supplier
+     * @return string $body es el html de la tabla formada
      */
     private static function getHtmlTableCarriers($data,$name,$attribute)
     {
@@ -298,32 +314,85 @@ class AltoImpacto extends Reportes
         $body.=self::cabecera(array('Ranking',$name,'Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','PN','Vendedor',$name,'Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $body.="</thead>
                  <tbody>";
-        foreach ($data as $key => $carrier)
+        if($data!=NULL)
         {
-            $pos=$key+1;
-            $style=self::colorEstilo($pos);
-            $body.="
-                        <td style='".$style."text-align: center;' class='position'>".$pos."</td>
-                        <td style='".$style."text-align: left;' class='carrier'>".$carrier->$attribute."</td>
-                        <td style='".$style."text-align: left;' class='Vendedor'>".CarrierManagers::getManager($carrier->id)."</td>
-                        <td style='".$style."text-align: left;' class='totalCalls'>".Yii::app()->format->format_decimal($carrier->total_calls,0)."</td>
-                        <td style='".$style."text-align: left;' class='completeCalls'>".Yii::app()->format->format_decimal($carrier->complete_calls,0)."</td>
-                        <td style='".$style."text-align: left;' class='minutes'>".Yii::app()->format->format_decimal($carrier->minutes)."</td>
-                        <td style='".$style."text-align: left;' class='asr'>".Yii::app()->format->format_decimal($carrier->asr)."</td>
-                        <td style='".$style."text-align: center;' class='acd'>".Yii::app()->format->format_decimal($carrier->acd)."</td>
-                        <td style='".$style."text-align: left;' class='pdd'>".Yii::app()->format->format_decimal($carrier->pdd)."</td>
-                        <td style='".$style."text-align: left;' class='cost'>".Yii::app()->format->format_decimal($carrier->cost)."</td>
-                        <td style='".$style."text-align: left;' class='revenue'>".Yii::app()->format->format_decimal($carrier->revenue)."</td>
-                        <td style='".$style."text-align: left;' class='margin'>".Yii::app()->format->format_decimal($carrier->margin)."</td>
-                        <td style='".$style."text-align: left;' class='margin_percentage'>".Yii::app()->format->format_decimal($carrier->margin_percentage)."%</td>
-                        <td style='".$style."text-align: left;' class='posicionNeta'>".Yii::app()->format->format_decimal($carrier->posicion_neta)."</td>
-                        <td style='".$style."text-align: left;' class='Vendedor'>".CarrierManagers::getManager($carrier->id)."</td>
-                        <td style='".$style."text-align: left;' class='carrier'>".$carrier->$attribute."</td>
-                        <td style='".$style."text-align: center;' class='position'>".$pos."</td>
-                    </tr>";
+            foreach ($data as $key => $carrier)
+            {
+                $pos=$key+1;
+                $style=self::colorEstilo($pos);
+                $body.="
+                            <td style='".$style."text-align: center;' class='position'>".$pos."</td>
+                            <td style='".$style."text-align: left;' class='carrier'>".$carrier->$attribute."</td>
+                            <td style='".$style."text-align: left;' class='Vendedor'>".CarrierManagers::getManager($carrier->id)."</td>
+                            <td style='".$style."text-align: left;' class='totalCalls'>".Yii::app()->format->format_decimal($carrier->total_calls,0)."</td>
+                            <td style='".$style."text-align: left;' class='completeCalls'>".Yii::app()->format->format_decimal($carrier->complete_calls,0)."</td>
+                            <td style='".$style."text-align: left;' class='minutes'>".Yii::app()->format->format_decimal($carrier->minutes)."</td>
+                            <td style='".$style."text-align: left;' class='asr'>".Yii::app()->format->format_decimal($carrier->asr)."</td>
+                            <td style='".$style."text-align: center;' class='acd'>".Yii::app()->format->format_decimal($carrier->acd)."</td>
+                            <td style='".$style."text-align: left;' class='pdd'>".Yii::app()->format->format_decimal($carrier->pdd)."</td>
+                            <td style='".$style."text-align: left;' class='cost'>".Yii::app()->format->format_decimal($carrier->cost)."</td>
+                            <td style='".$style."text-align: left;' class='revenue'>".Yii::app()->format->format_decimal($carrier->revenue)."</td>
+                            <td style='".$style."text-align: left;' class='margin'>".Yii::app()->format->format_decimal($carrier->margin)."</td>
+                            <td style='".$style."text-align: left;' class='margin_percentage'>".Yii::app()->format->format_decimal($carrier->margin_percentage)."%</td>
+                            <td style='".$style."text-align: left;' class='posicionNeta'>".Yii::app()->format->format_decimal($carrier->posicion_neta)."</td>
+                            <td style='".$style."text-align: left;' class='Vendedor'>".CarrierManagers::getManager($carrier->id)."</td>
+                            <td style='".$style."text-align: left;' class='carrier'>".$carrier->$attribute."</td>
+                            <td style='".$style."text-align: center;' class='position'>".$pos."</td>
+                        </tr>";
+            }
+        }
+        else
+        {
+            $body.="<tr><td colspan='17'>No se encontraron resultados</td></tr>";
         }
         $body.="</tbody>
                  </table>";
+        return $body;
+    }
+
+    /**
+     *
+     */
+    private static function getHtmlTableDestinations($data,$name)
+    {
+        $body="<table>
+                 <thead>";
+        $body.=self::cabecera(array('Ranking',$name,'','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min',$name,'Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $body.="</thead>
+                 <tbody>";
+        if($data!=null)
+        {
+            foreach($data as $key => $destino)
+            {
+                $pos=$key+1;
+                $body.=self::colorDestino($destino->destino);
+                $body.="<td style='text-align: center;' class='diferencialBancario'>".$pos."</td>
+                        <td colspan='2' style='text-align: left;' class='destino'>".$destino->destino."</td>
+                        <td style='text-align: left;' class='totalcalls'>".Yii::app()->format->format_decimal($destino->total_calls,0)."</td>
+                        <td style='text-align: left;' class='completeCalls'>".Yii::app()->format->format_decimal($destino->complete_calls,0)."</td>
+                        <td style='text-align: left;' class='minutos'>".Yii::app()->format->format_decimal($destino->minutes)."</td>
+                        <td style='text-align: left;' class='asr'>".Yii::app()->format->format_decimal($destino->asr)."</td>
+                        <td style='text-align: left;' class='acd'>".Yii::app()->format->format_decimal($destino->acd)."</td>
+                        <td style='text-align: left;' class='pdd'>".Yii::app()->format->format_decimal($destino->pdd)."</td>
+                        <td style='text-align: left;' class='cost'>".Yii::app()->format->format_decimal($destino->cost)."</td>
+                        <td style='text-align: left;' class='revenue'>".Yii::app()->format->format_decimal($destino->revenue)."</td>
+                        <td style='text-align: left;' class='margin'>".Yii::app()->format->format_decimal($destino->margin)."</td>
+                        <td style='text-align: left;' class='margin_percentage'>".Yii::app()->format->format_decimal($destino->margin_percentage)."%</td>
+                        <td style='text-align: left;' class='destino'>".$destino->destino."</td>
+                        <td style='text-align: left;' class='costmin'>".Yii::app()->format->format_decimal($destino->costmin)."</td>
+                        <td style='text-align: left;' class='ratemin'>".Yii::app()->format->format_decimal($destino->ratemin)."</td>
+                        <td style='text-align: left;' class='marginmin'>".Yii::app()->format->format_decimal($destino->marginmin)."</td>
+                        <td style='text-align: center;' class='diferencialBancario'>".$pos."</td>
+                    </tr>";
+            }
+        }
+        else
+        {
+            $cuerpo.="<tr>
+                        <td colspan='15'>No se encontraron resultados</td>
+                     </tr>";
+        }
+        $body.="</tbody></table>";
         return $body;
     }
 
