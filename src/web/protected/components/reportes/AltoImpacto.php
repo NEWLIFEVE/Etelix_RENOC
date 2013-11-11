@@ -107,11 +107,15 @@ class AltoImpacto extends Reportes
                     }
                     break;
                 case 1:
+                    $head=array(
+                        'title'=>'Clientes (+10)',
+                        'style'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;'
+                        );
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>".self::getHtml($head,$lista,$type=true)."</td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],true)."</td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
@@ -119,7 +123,7 @@ class AltoImpacto extends Reportes
                         }
                         else
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],false)."</td>";
                         }
                     }
                     break;
@@ -2325,7 +2329,7 @@ class AltoImpacto extends Reportes
      * @param array $list lista de nombres incluidos para contruir la tabla
      * @param boolean $type si es true es para el principio, false al final
      */
-    private static function getHtml($head,$lista,$type=true)
+    private static function getHtmlTable($head,$lista,$type=true)
     {
         $body="<table>";
         if($type)
