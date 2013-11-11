@@ -76,17 +76,25 @@ class AltoImpacto extends Reportes
         $last=$num-1;
         $sorted['customersWithMoreThanTenDollars']=self::sort($objetos[$last]['customersWithMoreThanTenDollars'],'cliente');
         $cuerpo="<table>";
-        for ($row=0; $row < 8; $row++)
+        for ($row=0; $row < 17; $row++)
         { 
             $cuerpo.="<tr>";
             switch ($row)
             {
                 case 0:
+                case 2:
+                case 4:
+                case 6:
+                case 8:
+                case 10:
+                case 12:
+                case 14:
+                case 16:
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>Principio</td>";
+                            $cuerpo.="<td></td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
@@ -94,7 +102,7 @@ class AltoImpacto extends Reportes
                         }
                         else
                         {
-                            $cuerpo.="<td>Fin</td>";
+                            $cuerpo.="<td></td>";
                         }
                     }
                     break;
@@ -103,32 +111,15 @@ class AltoImpacto extends Reportes
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>Principio</td>";
+                            $cuerpo.="<td></td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                            $cuerpo.="<td>Clientes(+10$)</td>";
                         }
                         else
                         {
-                            $cuerpo.="<td>Fin</td>";
-                        }
-                    }
-                    break;
-                case 2:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>Principio</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>Fin</td>";
+                            $cuerpo.="<td></td>";
                         }
                     }
                     break;
@@ -137,32 +128,15 @@ class AltoImpacto extends Reportes
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>Principio</td>";
+                            $cuerpo.="<td></td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                            $cuerpo.="<td>Clientes Resto</td>";
                         }
                         else
                         {
-                            $cuerpo.="<td>Fin</td>";
-                        }
-                    }
-                    break;
-                case 4:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>Principio</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>Fin</td>";
+                            $cuerpo.="<td></td>";
                         }
                     }
                     break;
@@ -171,32 +145,15 @@ class AltoImpacto extends Reportes
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>Principio</td>";
+                            $cuerpo.="<td></td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                            $cuerpo.="<td>Proveedores (+10$)</td>";
                         }
                         else
                         {
-                            $cuerpo.="<td>Fin</td>";
-                        }
-                    }
-                    break;
-                case 6:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>Principio</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>Fin</td>";
+                            $cuerpo.="<td></td>";
                         }
                     }
                     break;
@@ -205,15 +162,83 @@ class AltoImpacto extends Reportes
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>Principio</td>";
+                            $cuerpo.="<td></td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                            $cuerpo.="<td>Proveedores Resto</td>";
                         }
                         else
                         {
-                            $cuerpo.="<td>Fin</td>";
+                            $cuerpo.="<td></td>";
+                        }
+                    }
+                    break;
+                case 9:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>Destinos (+10)</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                    }
+                    break;
+                case 11:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>Destinos Resto</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                    }
+                    break;
+                case 13:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>Destinos Internal (+10$)</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                    }
+                    break;
+                case 15:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>Destinos Internal Resto</td>";
+                        }
+                        else
+                        {
+                            $cuerpo.="<td></td>";
                         }
                     }
                     break;
