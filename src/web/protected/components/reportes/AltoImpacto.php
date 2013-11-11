@@ -111,7 +111,7 @@ class AltoImpacto extends Reportes
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtml($head,$lista,$type=true)."</td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
@@ -2316,6 +2316,39 @@ class AltoImpacto extends Reportes
           }*/
         return $cuerpo;
 	}
+
+    /**
+     * Genera una tabla con la lista y ranking del dato pasado
+     * @access private
+     * @static
+     * @param array $head titulo que lleva la cabezera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
+     * @param array $list lista de nombres incluidos para contruir la tabla
+     * @param boolean $type si es true es para el principio, false al final
+     */
+    private static function getHtml($head,$lista,$type=true)
+    {
+        $body="<table>";
+        if($type)
+        {
+            $body.=self::cabecera(array('Ranking',$head['title'],'Vendedor'),$head['style']);
+            foreach ($lista as $key => $value)
+            {
+                $pos=$key+1;
+                $body.="<tr><td>".$pos."</td><td>".$value['attribute']."</td><td>".CarrierManagers::getManager($value['id'])."</td></tr>";
+            }
+        }
+        else
+        {
+            $body.=self::cabecera(array('Vendedor',$head['title'],'Ranking'),$head['style']);
+            foreach ($lista as $key => $value)
+            {
+                $pos=$key+1;
+                $body.="<tr><td>".CarrierManagers::getManager($value['id'])."</td><td>".$value['attribute']."</td><td>".$pos."</td></tr>";
+            }
+        }
+        $body.="</table>";
+        return $body;
+    }
 
     /**
      * Encargado de traer los datos de los carriers
