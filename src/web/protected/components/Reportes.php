@@ -878,6 +878,10 @@ class Reportes extends CApplicationComponent
         {
             return true;
         }
+        elseif ($uno==$dos)
+        {
+            return true;
+        }
         else
         {
             return false;
