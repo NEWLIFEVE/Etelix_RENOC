@@ -253,7 +253,6 @@ ajax.prototype.run=function()
 ajax.prototype.genExcel=function()
 {
     var self=this,lista=Array();
-    console.dir(self.formulario);
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
         if(self.formulario[i].name!='checkDate')
@@ -263,7 +262,7 @@ ajax.prototype.genExcel=function()
     };
     if(lista['endingDate']==undefined)
     {
-        lista['endingDate']={name:'endingDate',value:null};
+        lista['endingDate']={name:'endingDate',value:''};
     }
     if(lista['lista[Fecha]']==undefined)
     {
@@ -286,12 +285,7 @@ ajax.prototype.genExcel=function()
             case "lista[ACE]":
             case "lista[API]":
             case "lista[APE]":
-            case "lista[DCV]":
-            case "lista[DCTP]":
-            case "lista[DCM]":
-            case "lista[DCCom]":
-            case "lista[DCCarrier]":
-            case "lista[DCUP]":
+            case "lista[DC]":
             case "lista[Ev]":
                 ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
                 break;
