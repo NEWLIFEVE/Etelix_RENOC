@@ -142,7 +142,7 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             $registro['monetizable']=$vendedor->monetizable;
             $registro['termino_pago']="(".$vendedor->termino_pago.")";
             $registro['production_unit']=$vendedor->production_unit;
-            if($key>0)
+            /*if($key>0)
             {
                 if($data[$com]->$order==$vendedor->$order)
                 {
@@ -178,7 +178,7 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
                 {
                     $registro['production_unit']="";
                 }
-            }
+            }*/
             $row=$key+2;
             $this->excel->getActiveSheet()->setCellValue("A".$row,$registro['cargo']);
             //$this->excel->getActiveSheet()->getStyle("A".$row)->applyFromArray(self::color($registro['estilo']));                
