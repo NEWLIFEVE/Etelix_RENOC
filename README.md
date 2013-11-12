@@ -2,6 +2,9 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.2.3
+- Aumento de Destinos/Clientes/Proveedor de cinco a siete en Reportes de Arbol de Trafico
+
 Release 1.2.2
 - Se quitan el no repetir nombres en Distribucion Comercial
 - Totales de ASR, PDD, etc en Reporte Calidad
