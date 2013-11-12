@@ -2,6 +2,12 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.2.2
+- Se quitan el no repetir nombres en Distribucion Comercial
+- Totales de ASR, PDD, etc en Reporte Calidad
+Release 1.2.1
+- Reporte Distribucion Comercial en un solo archivo excel
+
 Release 1.2.0
 - Agregado modulo de reportes especificos con los siguientes reportes
 	. RENOC Ranking Compra Venta

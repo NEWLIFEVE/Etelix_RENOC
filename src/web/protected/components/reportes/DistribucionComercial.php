@@ -4,13 +4,62 @@
 */
 class DistribucionComercial extends Reportes
 {
-	/**
-	* @param $fecha date fecha a ser consultada
-	* @return $cuerpo string cuerpo del reporte
-	*/
-	public static function reporte($type)
-	{
-        switch($type)
+    /**
+     * Contiene el objeto del excel
+     * @access private
+     * @var $excel;
+     */
+    private $excel;
+
+    /**
+     * Instancio el objeto del excel
+     */
+    function __construct()
+    {
+        $this->excel=new PHPExcel();
+        $this->excel->getProperties()->setCreator("RENOC")->setLastModifiedBy("RENOC")->setTitle("RENOC Distribucion Comercial")->setSubject("RENOC Distribucion Comercial")->setDescription("Reportes de Distribucion Comercial")->setKeywords("RENOC Reportes Distribucion Comercial")->setCategory("Distribucion Comercial Reportes");
+        $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_wincache;
+$cacheSettings = array( 'cacheTime'        => 600
+                      );
+PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+    }
+
+    public function genExcel($name)
+    {    
+        $titles=array(
+            'A'=>'Cargo',
+            'B'=>'Responsable',
+            'C'=>'Posicion',
+            'D'=>'Operador',
+            'E'=>'Compañia',
+            'F'=>'Termino Pago',
+            'G'=>'Monetizable',
+            'H'=>'Dias de Disputa',
+            'I'=>'Limite de Credito',
+            'J'=>'Limite de Compra',
+            'K'=>'Unidad de Produccion'
+            );
+        $hojas=array('carrier','company','monetizable','pago','unidad','vendedor');
+        foreach ($hojas as $key => $value)
+        {
+            $this->setDataToSheet($value,self::getData($value),$titles,$key);
+        }
+        $this->excel->setActiveSheetIndex(0);
+        $this->writeFile($name);
+    }
+
+    /**
+     * Introduce los datos recibidos en la hoja excel con los nombres indicados
+     * @access private
+     * @param string $name es el nombre que va a llevar la hoja de estilo
+     * @param CActiveRecord $data es el objeto con el modelo del reporte
+     * @param array $titles son los titulos que llevara la tabla creada,
+     * para facilitar la carga de los nombres de las columnas colocar la letra que acompaña cada tituto
+     * @return void
+     */
+    private function setDataToSheet($name,$data,$titles,$index)
+    {
+        switch($name)
         {
             case 'carrier':
                 $order="operador";
@@ -31,122 +80,144 @@ class DistribucionComercial extends Reportes
                 $order="vendedor";
                 break;
         }
-        $cuerpo="<table >
-                    <thead>
-                        <tr>
-                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%; border: 1px black;'>
-                                Cargo
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:15%; height:100%; border: 1px black;'>
-                                Responsable
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Pos
-                                </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Operador
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Compania
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Termino Pago
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Monetizable
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Dias Disputa
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Limite Credito
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Limite Compra
-                            </th>
-                            <th style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>
-                                Unidad de produccion
-                            </th>
-                        </tr>
-                    </thead>
-                    </tbody>";
-        $vendedores=self::getData($type);
-        if($vendedores!=null)
+        $hoja = new PHPExcel_Worksheet($this->excel,$name);
+        $this->excel->addSheet($hoja,$index);
+        $this->excel->setActiveSheetIndexByName($name);
+        //Asigno los nombres de las columnas al principio
+        foreach ($titles as $column => $value)
         {
-            $registro=array();
-            $registro['posicion']=1;
-            $registro['estilo']=1;
-            foreach ($vendedores as $key => $vendedor)
+            $row=1;
+            $this->excel->getActiveSheet()->setCellValue($column.$row,$value);
+        }
+        $estilosCabecera=array(
+            'font'=>array(
+                'bold'=>true,
+                'color'=>array(
+                    'argb'=>'FF62C25E'
+                    ),
+                ),
+            'aligment'=>array(
+                'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                ),
+            'borders'=>array(
+                'allborders'=>array(
+                    'style'=>PHPExcel_Style_Border::BORDER_THICK,
+                    'color'=>array(
+                        'argb'=>'00000000',
+                        )
+                    )
+                ),
+            'fill'=>array(
+                'type'=>PHPExcel_Style_Fill::FILL_SOLID,
+                'startcolor'=>array(
+                    'argb'=>'FF615E5E',
+                    ),
+                )
+            );
+        //Asigno colores a la primra fila
+        $this->excel->getActiveSheet()->getStyle('A1:K1')->applyFromArray($estilosCabecera);
+        //Habilito un  auto tamaño en las columnas
+        $this->excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+        //cargo los datos en las celdas
+        $registro=array();
+        $registro['posicion']=1;
+        $registro['estilo']=1;
+        foreach ($data as $key => $vendedor)
+        {
+            $com=$key-1;
+            $registro['cargo']=$vendedor->position;
+            $registro['operador']=$vendedor->operador;
+            $registro['company']=$vendedor->company;
+            $registro['vendedor']=$vendedor->vendedor;
+            $registro['monetizable']=$vendedor->monetizable;
+            $registro['termino_pago']="(".$vendedor->termino_pago.")";
+            $registro['production_unit']=$vendedor->production_unit;
+            /*if($key>0)
             {
-                $com=$key-1;
-                $registro['cargo']=$vendedor->position;
-                $registro['operador']=$vendedor->operador;
-                $registro['company']=$vendedor->company;
-                $registro['vendedor']=$vendedor->vendedor;
-                $registro['monetizable']=$vendedor->monetizable;
-                $registro['termino_pago']="(".$vendedor->termino_pago.")";
-                $registro['production_unit']=$vendedor->production_unit;
-                if($key>0)
+                if($data[$com]->$order==$vendedor->$order)
                 {
-                    if($vendedores[$com]->$order==$vendedor->$order)
-                    {
-                        $registro['posicion']+=1;
-                    }
-                    else
-                    {
-                        $registro['posicion']=1;
-                        $registro['estilo']+=1;
-                    }
-                    if($vendedores[$com]->vendedor==$vendedor->vendedor)
-                    {
-                        $registro['vendedor']="";
-                        $registro['cargo']="";
-                    }
-                    if($vendedores[$com]->termino_pago==$vendedor->termino_pago)
-                    {
-                        $registro['termino_pago']="";
-                    }
-                    if($vendedores[$com]->monetizable==$vendedor->monetizable)
-                    {
-                        $registro['monetizable']="";
-                    }
-                    if($vendedores[$com]->company==$vendedor->company)
-                    {
-                        $registro['company']="";
-                    }
-                    if($vendedores[$com]->operador==$vendedor->operador)
-                    {
-                        $registro['operador']="";
-                    }
-                    if($vendedores[$com]->production_unit==$vendedor->production_unit)
-                    {
-                        $registro['production_unit']="";
-                    }
+                    $registro['posicion']+=1;
                 }
-                $cuerpo.="<tr>
-                            <td style='".self::color($registro['estilo'])."'>".$registro['cargo']."</td>
-                            <td style='".self::color($registro['estilo'])."'>".$registro['vendedor']."</td>
-                            <td style='".self::color($registro['estilo'])."'>".$registro['posicion']."</td>
-                            <td style='".self::color($registro['estilo'])."'>".$registro['operador']."</td>
-                            <td style='".self::color($registro['estilo'],$registro['company'])."'>".$registro['company']."</td>
-                            <td style='text-align: right;".self::color($registro['estilo'],$registro['termino_pago'])."'>".$registro['termino_pago']."</td>
-                            <td style='".self::color($registro['estilo'],$registro['monetizable'])."'>".$registro['monetizable']."</td>
-                            <td style='".self::color($registro['estilo'],$vendedor->dias_disputa)."'>".$vendedor->dias_disputa."</td>
-                            <td style='".self::color($registro['estilo'],$vendedor->limite_credito)."'>".$vendedor->limite_credito."</td>
-                            <td style='".self::color($registro['estilo'],$vendedor->limite_compra)."'>".$vendedor->limite_compra."</td>
-                            <td style='".self::color($registro['estilo'],$registro['production_unit'])."'>".$registro['production_unit']."</td>
-                        </tr>";
-            } 
+                else
+                {
+                    $registro['posicion']=1;
+                    $registro['estilo']+=1;
+                }
+                if($data[$com]->vendedor==$vendedor->vendedor)
+                {
+                    $registro['vendedor']="";
+                    $registro['cargo']="";
+                }
+                if($data[$com]->termino_pago==$vendedor->termino_pago)
+                {
+                    $registro['termino_pago']="";
+                }
+                if($data[$com]->monetizable==$vendedor->monetizable)
+                {
+                    $registro['monetizable']="";
+                }
+                if($data[$com]->company==$vendedor->company)
+                {
+                    $registro['company']="";
+                }
+                if($data[$com]->operador==$vendedor->operador)
+                {
+                    $registro['operador']="";
+                }
+                if($data[$com]->production_unit==$vendedor->production_unit)
+                {
+                    $registro['production_unit']="";
+                }
+            }*/
+            $row=$key+2;
+            $this->excel->getActiveSheet()->setCellValue("A".$row,$registro['cargo']);
+            //$this->excel->getActiveSheet()->getStyle("A".$row)->applyFromArray(self::color($registro['estilo']));                
+            $this->excel->getActiveSheet()->setCellValue("B".$row,$registro['vendedor']);
+            //$this->excel->getActiveSheet()->getStyle("B".$row)->applyFromArray(self::color($registro['estilo']));                
+            $this->excel->getActiveSheet()->setCellValue("C".$row,$registro['posicion']);
+            //$this->excel->getActiveSheet()->getStyle("C".$row)->applyFromArray(self::color($registro['estilo']));                
+            $this->excel->getActiveSheet()->setCellValue("D".$row,$registro['operador']);
+            //$this->excel->getActiveSheet()->getStyle("D".$row)->applyFromArray(self::color($registro['estilo']));                
+            $this->excel->getActiveSheet()->setCellValue("E".$row,$registro['company']);
+            $this->excel->getActiveSheet()->setCellValue("F".$row,$registro['termino_pago']);
+            $this->excel->getActiveSheet()->setCellValue("G".$row,$registro['monetizable']);
+            $this->excel->getActiveSheet()->setCellValue("H".$row,$vendedor->dias_disputa);
+            $this->excel->getActiveSheet()->setCellValue("I".$row,$vendedor->limite_credito);
+            $this->excel->getActiveSheet()->setCellValue("J".$row,$vendedor->limite_compra);
+            $this->excel->getActiveSheet()->setCellValue("K".$row,$registro['production_unit']);
+            //Aplico estilo
+            /*$this->excel->getActiveSheet()->getStyle('E'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['company']));         
+            $this->excel->getActiveSheet()->getStyle('F'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['termino_pago']));         
+            $this->excel->getActiveSheet()->getStyle('G'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['monetizable']));         
+            $this->excel->getActiveSheet()->getStyle('H'.$row)->applyFromArray($this->colorArray($registro['estilo'],$vendedor->dias_disputa));         
+            $this->excel->getActiveSheet()->getStyle('I'.$row)->applyFromArray($this->colorArray($registro['estilo'],$vendedor->limite_credito));         
+            $this->excel->getActiveSheet()->getStyle('J'.$row)->applyFromArray($this->colorArray($registro['estilo'],$vendedor->limite_compra));         
+            $this->excel->getActiveSheet()->getStyle('K'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['production_unit']));         */
         }
-        else
-        {
-            $cuerpo.="<tr>
-                  <td colspan='4'>No se encontraron resultados</td>
-                </tr>";
-        }
-        $cuerpo.="</tbody></table>";
-        return $cuerpo;
-	}
+        
+    }
+
+    /**
+     * Escribe el excel en la ruta asignada
+     * @access private
+     * @return void
+     */
+    private function writeFile($name)
+    {
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+        $writer=PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+        $writer->save($ruta.$name);
+    }
 
     /**
      * Metodo encargado de traer los datos
@@ -188,20 +259,21 @@ class DistribucionComercial extends Reportes
               FROM carrier c, managers m, carrier_managers cm
               WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
               $order;
-        return $managers=Managers::model()->findAllBySql($sql);
+        return Managers::model()->findAllBySql($sql);
     }
 
     /**
+     * Metodo encargado de devolver el arrya con el estilo indicado para cada columna
      * @access public
      * @static
      * @param $var
      * @param $alarmaStr
      * @param $alarmaInt
-     * @return string $color
+     * @return array $color
      */
     public static function color($var,$alarma=NULL)
     {
-        $color=null;
+        $colorFuente=$colorFondo=null;
         $j=0;
         for($i=1;$i<=$var;$i++)
         { 
@@ -216,70 +288,94 @@ class DistribucionComercial extends Reportes
         }
         if(isset($alarma) && substr_count($alarma, 'Sin Asignar') >= 1 || $alarma < 0)
         {
-            $color="color:white;";
+            $colorFuente="FFFFFFFF";
         }
         else
         {
-            $color="color:#584E4E;";
+            $colorFuente="FF584E4E;";
         }
         
         if($j==1)
         {
-            $color.="background-color:#fe6500; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFFE6500";
         }
         elseif($j==2)
         {
-            $color.="background-color:#4aabc5; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FF4AABC5";
         }
         elseif($j==3)
         {
-            $color.="background-color:#DDCBCB; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFDDCBCB";
         }
         elseif($j==4)
         {
-            $color.="background-color:#3BA7DA; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FF3BA7DA";
         }
         elseif($j==5)
         {
-            $color.="background-color:#ffcc99; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFFFCC99";
         }
         elseif($j==6)
         {
-            $color.="background-color:#cc99ff; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFCC99ff";
         }
         elseif($j==7)
         {
-            $color.="background-color:rgb(104, 173, 104); border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FF68AD68";
         }
         elseif($j==8)
         {
-            $color.="background-color:#ff8080; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFff8080";
         }
         elseif($j==9)
         {
-            $color.="background-color:#c0504d; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFC0504D";
         }
         elseif($j==10)
         {
-            $color.="background-color:#ff9900; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFff9900";
         }
         elseif($j==11)
         {
-            $color.="background-color:#c0c0c0; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FFC0C0C0";
         }
         elseif($j==12)
         {
-            $color.="background-color:#00b0f0; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FF00B0F0";
         }
         elseif($j==13)
         {
-            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FF7DDADA";
         }
         elseif($j==14)
         {
-            $color.="background-color:#7DDADA; border: 1px solid rgb(121, 115, 115)";
+            $colorFondo="FF7DDADA";
         }
-        return $color;
+
+        return array(
+            'font'=>array(
+                'color'=>array(
+                    'argb'=>$colorFuente
+                    ),
+                ),
+            'aligment'=>array(
+                'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                ),
+            'borders'=>array(
+                'allborders'=>array(
+                    'style'=>PHPExcel_Style_Border::BORDER_THICK,
+                    'color'=>array(
+                        'argb'=>'00000000',
+                        )
+                    )
+                ),
+            'fill'=>array(
+                'type'=>PHPExcel_Style_Fill::FILL_SOLID,
+                'startcolor'=>array(
+                    'argb'=>$colorFondo,
+                    ),
+                )
+            );
     }
 }
 ?>
