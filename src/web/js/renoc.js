@@ -59,7 +59,7 @@
  			};
  			
  		}*/
- 		/*var checkCarrier=document.getElementsByName('lista[Carrier]');
+ 		var checkCarrier=document.getElementsByName('lista[Carrier]');
  		if(checkCarrier!="undefined")
  		{
  			optionsMonth={
@@ -67,7 +67,7 @@
  				idInputStart:'carrier',
  				idInputEnd:'',
  				idCheck:'',
- 				nameClassPicker:'start carrier',
+ 				nameClassPicker:'middle_carrier carrier',
  				nameClassCheck:'middle carrier',
  				spot:'div.choice_parametros.carrier'
  			};
@@ -75,7 +75,7 @@
  			{
  				_changeClass($('.carrier label h4'),'stretchRight','offStretchRight',optionsMonth);
  			};
- 		}*/
+ 		}
  	}
 
  	/**
@@ -87,8 +87,12 @@
 	{
 		if(obj.attr('class')==activeClass)
 		{
+			var todos="";
 			obj.removeClass(activeClass).addClass(desactiveClass);
-			_hideElement('#'+options.idInputStart+', #'+options.idCheck+',#'+options.idInputEnd);
+			if (options.idInputStart!="") todos+='#'+options.idInputStart;
+			if (options.idCheck!="") todos+=',#'+options.idCheck;
+			if (options.idInputEnd!="") todos+=',#'+options.idInputEnd;
+			_hideElement(todos);
 		}
 		else
 		{
@@ -98,34 +102,10 @@
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker({dateFormat: 'yy-mm-dd'}),options.spot);
 				_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
 			}
-			/*else
+			else
 			{
-				/*var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Carrier')).autocomplete({source:$RENOC.DATA.nombresCarriers}),options.spot);
-			}*/
+			}
 		}
 		obj=null;
 	}
@@ -217,14 +197,10 @@ $RENOC.AJAX=(function()
 			$RENOC.DATA.carriers=JSON.parse(datos);
 			$RENOC.DATA.IDS=Array();
 			$RENOC.DATA.nombresCarriers=Array();
-			for (var i = 0, j=$RENOC.DATA.carriers.length-1; i >= j; i++)
+			for (var i = 0, j=$RENOC.DATA.carriers.length-1; i <= j; i++)
 			{
 				$RENOC.DATA.nombresCarriers[i]=$RENOC.DATA.carriers[i].name;
-				$RENOC.DATA.IDS[$RENOC.DATA.carriers[i].name]=$RENOC.DATA.carriers[i].id;
-				
 			};
-
-			
 		}
 		});
 	}
@@ -238,27 +214,6 @@ $RENOC.AJAX=(function()
 		_getNamesCarriers();
 	}
 
-	/**
-	 *
-	 */
-	/*function action()
-	{
-		$('#excelEspecificos,#listaEspecificos,#mailEspecificos').on('click',function()
-		{
-			$tipo=$(this).attr('id');
-			switch($tipo)
-			{
-			case 'mailEspecificos':
-			  execute code block 1
-			  break;
-			case 2:
-			  execute code block 2
-			  break;
-			default:
-			  code to be executed if n is different from case 1 and 2
-			}
-		});
-	}*/
 	return {init:init}
 })();
 

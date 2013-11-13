@@ -97,20 +97,27 @@ class ArbolDestino extends Reportes
         					Yii::app()->format->format_decimal($destino->marginmin).
         			   "</td>
         			</tr>";
-        	$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#AED7F3; color:#615E5E;',true);
-        	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',true);
-        	$cuerpo.=$this->cincoPrimeros($destino->id,'border:solid #615E5E 1px;background:#FFC8AE; color:#615E5E;',false);
-        	$cuerpo.=$this->totales($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',false);
+        	$cuerpo.=$this->firstSeven($destino->id,'border:solid #615E5E 1px;background:#AED7F3; color:#615E5E;',true);
+        	$cuerpo.=$this->total($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',true);
+        	$cuerpo.=$this->firstSeven($destino->id,'border:solid #615E5E 1px;background:#FFC8AE; color:#615E5E;',false);
+        	$cuerpo.=$this->total($destino->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;',false);
         	$cuerpo.="<tr><td colspan='13'></td></tr><tr><td colspan='13'></td></tr>";
         }
         $cuerpo.="</table>
         		</div>";
         return $cuerpo;
 	}
+
 	/**
-	*
-	*/
-	public function cincoPrimeros($idDestino,$estilo,$tipo=true)
+	 * Arma el html de los siete clientes que generaron trafico en esos destinos
+	 * @access public
+	 * @static
+	 * @param int $idDestino id del destino que se va a consultar
+	 * @param string $estilo el estilo que lleva la tabla que se forma
+	 * @param boolean $tipo true=clientes, false=proveedores
+	 * @return string $cuerpo
+	 */
+	public function firstSeven($idDestino,$estilo,$tipo=true)
 	{
 		$this->define($tipo);
 
@@ -133,7 +140,7 @@ class ArbolDestino extends Reportes
 			   		WHERE date_balance='{$this->fecha}' AND {$this->destino}={$idDestino} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino} IS NOT NULL
 			   		GROUP BY {$this->carrier}
 			   		ORDER BY minutes DESC
-			   		LIMIT 5)b, carrier c
+			   		LIMIT 7)b, carrier c
 			   WHERE c.id=b.id";
 		$varios=Balance::model()->findAllBySql($sql);
 		foreach ($varios as $key => $uno)
@@ -182,10 +189,17 @@ class ArbolDestino extends Reportes
 		}
 		return $cuerpo;
 	}
+
 	/**
-	*
-	*/
-	public function totales($idDestino,$estilo,$tipo=true)
+	 * Arma la fila de totales
+	 * @access public
+	 * @static
+	 * @param int $idDestino el id del destino a consultar
+	 * @param string $estilo el estilo que va a llevar la fila
+	 * @param boolean $tipo true=clientes, false=proveedores
+	 * @return string $cuerpo
+	 */
+	public function total($idDestino,$estilo,$tipo=true)
 	{
 		$this->define($tipo);
 		$sql="SELECT SUM(b.total_calls) AS total_calls, SUM(b.complete_calls) AS complete_calls, SUM(b.minutes) AS minutes, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin, CASE WHEN SUM(b.minutes)=0 THEN 0 WHEN SUM(b.cost)=0 THEN 0 ELSE (SUM(b.cost)/SUM(b.minutes))*100 END AS costmin, CASE WHEN SUM(b.minutes)=0 THEN 0 WHEN SUM(b.revenue)=0 THEN 0 ELSE (SUM(b.revenue)/SUM(b.minutes))*100 END AS ratemin, CASE WHEN SUM(b.minutes)=0 THEN 0 ELSE (CASE WHEN SUM(b.revenue)=0 THEN 0 ELSE (SUM(b.revenue)/SUM(b.minutes))*100 END)-(CASE WHEN SUM(b.cost)=0 THEN 0 ELSE (SUM(b.cost)/SUM(b.minutes))*100 END) END AS marginmin
@@ -194,7 +208,7 @@ class ArbolDestino extends Reportes
 		      	   WHERE date_balance='{$this->fecha}' AND {$this->destino}={$idDestino} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino} IS NOT NULL
 		      	   GROUP BY {$this->carrier}
 		      	   ORDER BY minutes DESC
-		      	   LIMIT 5)b";
+		      	   LIMIT 7)b";
 		$total=Balance::model()->findBySql($sql);
 		$cuerpo="<tr>
 						<td style='".$estilo."'>

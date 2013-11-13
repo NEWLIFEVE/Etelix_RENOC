@@ -262,33 +262,37 @@ ajax.prototype.genExcel=function()
     };
     if(lista['endingDate']==undefined)
     {
-        lista['endingDate']={name:'endingDate',value:null};
+        lista['endingDate']={name:'endingDate',value:''};
     }
     if(lista['lista[Fecha]']==undefined)
     {
         lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
     }
-    if(lista['lista[Hora]']==undefined)
+    for(var key in lista)
     {
-        lista['lista[Hora]']={name:'lista[Hora]',value:false};
-    }
-    if(lista['lista[Mes]']==undefined)
-    {
-        lista['lista[Mes]']={name:'lista[Mes]',value:false};
-    }
-    console.dir(lista);
-    if(lista['lista[Fecha]'].value || lista['lista[Hora]'].value || lista['lista[Mes]'].value)
-    {
-        for (var key in lista)
+        switch(key)
         {
-            if (lista[key].name!='startDate' && lista[key].name!='endingDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
-        }
-    }
-    else
-    {
-        for (var key in lista)
-        {
-            if (lista[key].name!='endingDate' && lista[key].name!='startDate' && lista[key].name!='lista[Fecha]' && lista[key].name!='lista[Hora]' && lista[key].name!='lista[Mes]' && lista[key].name!='lista[todos]') ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+            case "lista[compraventa]":
+            case "lista[perdidas]":
+            case "lista[AIR]":
+            case "lista[AI10]":
+            case "lista[AI10R]":
+            case "lista[AI10V]":
+            case "lista[PN]":
+            case "lista[PNV]":
+            case "lista[ADI]":
+            case "lista[ADE]":
+            case "lista[ACI]":
+            case "lista[ACE]":
+            case "lista[API]":
+            case "lista[APE]":
+            case "lista[DC]":
+            case "lista[Ev]":
+                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+                break;
+            case "lista[calidad]":
+                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
+                break;
         }
     }
 }

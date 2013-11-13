@@ -116,7 +116,7 @@ class PHPExcel
      * Create a new PHPExcel with one Worksheet
      */
     /*public function __construct()*/
-    public function init()
+    public function __construct()
     {
         if (!defined('PHPEXCEL_ROOT'))
         {

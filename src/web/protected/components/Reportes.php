@@ -2,8 +2,11 @@
 /**
  * @package components
  */
-class reportes extends CApplicationComponent
+class Reportes extends CApplicationComponent
 {
+    /**
+     * @access public
+     */
     public $tipo;
 
     /**
@@ -17,7 +20,7 @@ class reportes extends CApplicationComponent
      */
     public function init() 
     {
-        
+
     }
 
     /**
@@ -47,10 +50,9 @@ class reportes extends CApplicationComponent
      * @param $fecha date fecha para ser consuldada
      * @return $variable string cuerpo de reporte
      */
-    public function AltoImpacto($fecha)
+    public function AltoImpacto($starDate,$endingDate,$type)
     {
-        $variable=AltoImpacto::reporte($fecha);
-        return $variable;
+        return AltoImpacto::reporte($starDate,$endingDate,$type);
     }
 
     /**
@@ -89,65 +91,11 @@ class reportes extends CApplicationComponent
         return $variable;
     }
 
-    /**
-     * Metodo encargado de generar el reporte de distribucion comercial
-     * @access public
-     * @param $fecha date la fecha que se quiere consultar
-     * @return $variable string con el cuerpo del reporte
-     */
-    public function DistComercialVendedor($fecha)
+    public function DistribucionComercial($nombre)
     {
-        return DistribucionComercial::reporte("vendedor");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialTerminoPago($fecha)
-    {
-        return DistribucionComercial::reporte("pago");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialMonetizable($fecha)
-    {
-        return DistribucionComercial::reporte("monetizable");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialCompany($fecha)
-    {
-        return DistribucionComercial::reporte("company");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialCarrier($fecha)
-    {
-        return DistribucionComercial::reporte("carrier");
-    }
-
-    /**
-     * @access public
-     * @param date $fecha
-     * @return string $variable
-     */
-    public function DistComercialUnidadProduccion($fecha)
-    {
-        return DistribucionComercial::reporte("unidad");
+        $reporte=new DistribucionComercial();
+        $reporte->genExcel($nombre);
+        return "Revisar Archivo Adjunto";
     }
 
     /**
@@ -168,15 +116,9 @@ class reportes extends CApplicationComponent
     public function RankingCompraVenta($inicio,$fin=null)
     {
         $fechaInicio=$fechaFin=$variable=null;
-        if($fin==null)
-        {
-            $fechaFin=$fechaInicio=$inicio;
-        }
-        else
-        {
-            $fechaInicio=$inicio;
-            $fechaFin=$fin;
-        }
+        $array=self::valDates($inicio,$fin);
+        $fechaInicio=$array['startDate'];
+        $fechaFin=$array['endingDate'];
         if(self::howManyMonths($fechaInicio,$fechaFin)<=2 && self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
         {
             $variable="<table><thead>";
@@ -207,9 +149,9 @@ class reportes extends CApplicationComponent
                 $index+=1;
             }
             $ultimo=count($objetos)-1;
-            $ordenados['Vendedores']=self::ordenar($apellidos,$objetos[$ultimo]['Vendedores']);
-            $ordenados['Compradores']=self::ordenar($apellidos,$objetos[$ultimo]['Compradores']);
-            $ordenados['Consolidados']=self::ordenar($apellidos,$objetos[$ultimo]['Consolidados']);
+            $ordenados['Vendedores']=self::sortByList($apellidos,$objetos[$ultimo]['Vendedores'],'apellido');
+            $ordenados['Compradores']=self::sortByList($apellidos,$objetos[$ultimo]['Compradores'],'apellido');
+            $ordenados['Consolidados']=self::sortByList($apellidos,$objetos[$ultimo]['Consolidados'],'apellido');
             $variable="<table><tr>";
             foreach ($objetos as $key => $objeto)
             {
@@ -741,7 +683,7 @@ class reportes extends CApplicationComponent
         }
         else
         {
-            $color="<tr>";
+            $color="<tr style='border: 1px solid rgb(121, 115, 115)''>";
         }
         return $color;
     }
@@ -936,6 +878,10 @@ class reportes extends CApplicationComponent
         {
             return true;
         }
+        elseif ($uno==$dos)
+        {
+            return true;
+        }
         else
         {
             return false;
@@ -967,21 +913,28 @@ class reportes extends CApplicationComponent
      * metodo encargado de validar el titulo por tabla creada en reportes, si la fecha inicial y final son
      * la de inicio y fin del respectivo mes retorna el nombre del mes, de lo contrario regresa el texto
      * con las fechas.
-     * @access protected
+     * @access public
      * @static
      * @param date $inicio es la fecha de inicio del reporte consultado
      * @param date $fin es la fecha final del reporte consultado
      * @return string
      */
-    protected static function reportTitle($inicio,$fin)
+    public static function reportTitle($inicio,$fin)
     {
         $i=explode('-', $inicio);
         $f=explode('-', $fin);
         if($i[2]==1 && $f[2]==self::howManyDays($fin))
         {
-            return self::getNameMonth($inicio,true)." ".$f[0];
+            return " ".self::getNameMonth($inicio,true)." ".$f[0];
         }
-        return "Del ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
+        elseif($inicio==$fin)
+        {
+            return " al ".str_replace("-","",$inicio);
+        }
+        else
+        {
+            return " desde ".str_replace("-","",$inicio)." al ".str_replace("-","",$fin);
+        }
     }
 
     /**
@@ -1002,19 +955,20 @@ class reportes extends CApplicationComponent
     }
 
     /**
-     * Recibe un array y objeto CActiveRecord y ordena el array de acuerdo al objeto
+     * Recibe un array con una lista y objeto CActiveRecord y ordena el array de acuerdo al objeto
      * @access protected
      * @static
      * @param array $lista
      * @param CActiveRecord $objeto
+     * @param string $attribute
      * @return array
      */
-    protected static function ordenar($lista,$objeto)
+    protected static function sortByList($lista,$objeto,$attribute)
     {
         $ordenado=$temp=array();
         foreach ($objeto as $key => $value)
         {
-            $temp[$value->apellido]=$value->apellido;
+            $temp[$value->$attribute]=$value->$attribute;
         }
         if(count($temp) == count($lista))
         {
@@ -1035,6 +989,48 @@ class reportes extends CApplicationComponent
             }
         }
         return $ordenado;
+    }
+
+    /**
+     * Se encarga de verificar las fechas de recibidas por los reportes
+     * @access protected
+     * @static
+     * @param date $start fecha inincio
+     * @param date $end fecha fin
+     * @return array con los valores start y end validados
+     */
+    protected static function valDates($start,$end)
+    {
+        if($end==null)
+        {
+            $array['endingDate']=$array['startDate']=$start;
+        }
+        else
+        {
+            $array['startDate']=$start;
+            $array['endingDate']=$end;
+        }
+        return $array;
+    }
+
+    /**
+     * Recibe un objeto CActiveRecord y un string haciendo referencia a un atributo del objeto,
+     * retorna un array enlistando los atributos usando un key numerico
+     * @access protected
+     * @static
+     * @param CActiveRecord $objeto
+     * @param string $attribute
+     * @return array
+     */
+    protected static function sort($objeto,$attribute)
+    {
+        $lista=array();
+        foreach ($objeto as $key => $value)
+        {
+            $lista[$key]['attribute']=$value->$attribute;
+            $lista[$key]['id']=$value->id;
+        }
+        return $lista;
     }
 }
 ?>
