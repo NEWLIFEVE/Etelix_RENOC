@@ -4,14 +4,17 @@
 */
 class AltoImpacto extends Reportes
 {
+    public static $type;
 	/**
 	* Genera la tabla de Alto Impacto (+10$)
 	* @param date $start fecha inicio a consultar
     * @param date $ending fecha fin a consultar
+    * @param boolean $type true=completo, false=resumido
 	* @return string con la tabla armada
 	*/
-	public static function reporte($start,$end=null)
+	public static function reporte($start,$end=null,$type=true)
 	{
+        self::$type=$type;
         //verifico las fechas
         $array=self::valDates($start,$end);
         $startDateTemp=$startDate=$array['startDate'];
@@ -91,7 +94,7 @@ class AltoImpacto extends Reportes
         $sorted['internalDestinationsWithLessThanTenDollars']=self::sort($objetos[$last]['internalDestinationsWithLessThanTenDollars'],'destino');
 
         $cuerpo="<table>";
-        for($row=0; $row < 17; $row++)
+        for($row=0; $row < 8; $row++)
         { 
             $cuerpo.="<tr>";
             switch ($row)
@@ -240,7 +243,7 @@ class AltoImpacto extends Reportes
             $cuerpo.="</tr>";
         }
         $cuerpo.="</table><table>";
-        for($row=0; $row < 17; $row++)
+        for($row=0; $row < 8; $row++)
         { 
             $cuerpo.="<tr>";
             switch ($row)
@@ -404,9 +407,11 @@ class AltoImpacto extends Reportes
      */
     private static function getHtmlTableCarriers($list,$data,$attribute,$position,$head)
     {
+        $columns=array('Cost','Revenue','Margin');
+        if(self::$type) $columns=array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','PN');
         $body="<table>
                   <thead>";
-        $body.=self::cabecera(array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','PN'),$head['styleHead']);
+        $body.=self::cabecera($columns,$head['styleHead']);
         $body.="</thead>
                  <tbody>";
         if($data!=NULL)
@@ -434,10 +439,15 @@ class AltoImpacto extends Reportes
      */
     private static function getHtmlTableDestinations($list,$data,$attribute,$head)
     {
+        $columns="";
+        if(self::$type) $columns.="<td>TotalCalls</td><td>CompleteCalls</td><td>Minutes</td><td>ASR</td><td>ACD</td><td>PDD</td>";
+        $columns.="<td>Cost</td><td>Revenue</td><td>Margin</td>";
+        if(self::$type) $columns.="<td>Margin%</td><td>Cost/Min</td><td>Rate/Min</td><td>Margin/Min</td>";
+
         $body="<table>
                     <thead>
                         <tr style='".$head['styleHead']."'>
-                            <td>TotalCalls</td><td>CompleteCalls</td><td>Minutes</td><td>ASR</td><td>ACD</td><td>PDD</td><td>Cost</td><td>Revenue</td><td>Margin</td><td>Margin%</td><td>Cost/Min</td><td>Rate/Min</td><td>Margin/Min</td>
+                            ".$columns."
                         </tr>
                     </thead>
                  <tbody>";
@@ -470,27 +480,36 @@ class AltoImpacto extends Reportes
      */
     private static function getRow($attribute,$phrase,$object,$position)
     {
+        $body="<tr>";
         $style=self::colorEstilo($position);
         foreach ($object as $key => $value)
         {
             if($value->$attribute == $phrase)
             {
-                return "<tr>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->minutes)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->asr)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->acd)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->pdd)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->cost)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->margin)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->margin_percentage)."</td>
-                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->posicion_neta)."</td>
-                    </tr>";
+                if(self::$type) $body.="<td style='".$style."' >".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
+                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
+                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->minutes)."</td>
+                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->asr)."</td>
+                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->acd)."</td>
+                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $body.="<td style='".$style."' >".Yii::app()->format->format_decimal($value->cost)."</td>
+                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>
+                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if(self::$type) $body.="<td style='".$style."' >".Yii::app()->format->format_decimal($value->margin_percentage)."</td>
+                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+                $body.="</tr>";
+                return $body;
             }
         }
-        return "<tr><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td></tr>";
+        $colnum=3;
+        if(self::$type) $colnum=11;
+
+        for ($i=0; $i < $colnum; $i++)
+        { 
+            $body.="<td style='".$style."' >--</td>";
+        } 
+        $body.="</tr>";
+        return $body;
     }
 
     /**
@@ -505,29 +524,40 @@ class AltoImpacto extends Reportes
      */
     private static function getRowDestinations($attribute,$phrase,$object,$position)
     {
+        $body="";
         foreach ($object as $key => $value)
         {
             $style=self::colorDestino($value->$attribute);
+            $body=$style;
             if($value->$attribute == $phrase)
             {
-                return $style."
-                    <td>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->minutes)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->asr)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->acd)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->pdd)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->cost)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->revenue)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->margin)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->costmin)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->ratemin)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->marginmin)."</td>
-                    </tr>";
+                if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->minutes)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->asr)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->acd)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $body.="<td>".Yii::app()->format->format_decimal($value->cost)."</td>
+                        <td>".Yii::app()->format->format_decimal($value->revenue)."</td>
+                        <td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->costmin)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->ratemin)."</td>
+                                        <td>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+                $body.="</tr>";
+                return $body;
             }
         }
-        return "<tr><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td></tr>";
+        $colnum=3;
+        $body=$style;
+        if(self::$type) $colnum=13;
+
+        for ($i=0; $i < $colnum; $i++)
+        { 
+            $body.="<td>--</td>";
+        } 
+        $body.="</tr>";
+        return $body;
     }
 
     /**
@@ -540,48 +570,51 @@ class AltoImpacto extends Reportes
      */
     private static function getHtmlTotalCarriers($totalCondition,$total,$head)
     {
-        return "<table>
-                    <tr style='".$head['styleFooter']."'>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr style='".$head['styleFooterTotal']."'>
-                        <td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->asr)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->acd)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->pdd)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->cost)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->margin)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
-                        <td></td>
-                    </tr>"
-                    .self::cabecera(array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%',''),$head['styleHead'])."
-                    <tr style='".$head['styleFooterTotal']."'>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+        $columns=array('Cost','Revenue','Margin');
+        if(self::$type) $columns=array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','');
+        $body="<table>
+                    <tr style='".$head['styleFooter']."'>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>";
+        $body.="<td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
+                <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
+                <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>";
+        if(self::$type) $body.="<td></td>
+                                <td></td>";
+        $body.="</tr>
+                <tr style='".$head['styleFooterTotal']."'>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->asr)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->acd)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->pdd)."</td>";
+        $body.="<td>".Yii::app()->format->format_decimal($total->cost)."</td>
+                <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
+                <td>".Yii::app()->format->format_decimal($total->margin)."</td>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
+                                <td></td>";
+        $body.="</tr>"
+                .self::cabecera($columns,$head['styleHead'])."
+                <tr style='".$head['styleFooterTotal']."'>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
+                                <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
+                                <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>";
+        $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
+                <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
+                <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
+        if(self::$type) $body.="<td></td>
+                                <td></td>";
+        $body.="</tr>
                 </table>";
+        return $body;
     }
 
     /**
@@ -594,55 +627,57 @@ class AltoImpacto extends Reportes
      */
     private static function getHtmlTotalDestinations($totalCondition,$total,$head)
     {
-        return "<table>
-                    <tr style='".$head['styleFooter']."'>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>
-                        <td></td>
-                        <td></td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->costmin)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->ratemin)."</td>
-                        <td>".Yii::app()->format->format_decimal($totalCondition->marginmin)."</td>
-                    </tr>
-                    <tr style='".$head['styleFooterTotal']."'>
-                        <td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->asr)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->acd)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->pdd)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->cost)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->margin)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
-                        <td>".Yii::app()->format->format_decimal($total->costmin)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->ratemin)."</td>
-                        <td>".Yii::app()->format->format_decimal($total->marginmin)."</td>
-                    </tr>"
-                    .self::cabecera(array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min'),$head['styleHead'])."
-                    <tr style='".$head['styleFooterTotal']."'>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
-                        <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+        $columns=array('Cost','Revenue','Margin');
+        if(self::$type) $columns=array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min');
+        $body="<table>
+                    <tr style='".$head['styleFooter']."'>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>";
+        $body.="<td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
+                <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
+                <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>";
+        if(self::$type) $body.="<td></td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->costmin)."</td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->ratemin)."</td>
+                                <td>".Yii::app()->format->format_decimal($totalCondition->marginmin)."</td>";
+        $body.="</tr>
+                <tr style='".$head['styleFooterTotal']."'>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->asr)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->acd)."</td>
+                                <td>".Yii::app()->format->format_decimal($total->pdd)."</td>";
+        $body.="<td>".Yii::app()->format->format_decimal($total->cost)."</td>
+                <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
+                <td>".Yii::app()->format->format_decimal($total->margin)."</td>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>";
+        $body.="</tr>"
+                .self::cabecera($columns,$head['styleHead']).
+                "<tr style='".$head['styleFooterTotal']."'>";
+        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
+                                <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
+                                <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>";
+        $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
+                <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
+                <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
+        if(self::$type) $body.="<td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>";
+        $body.="</tr>
                 </table>";
+        return $body;
     }
 
     /**
@@ -668,6 +703,16 @@ class AltoImpacto extends Reportes
                 $style=self::colorEstilo($pos);
                 $body.="<tr style='".$style."'><td>".$pos."</td><td>".$value['attribute']."</td><td>".CarrierManagers::getManager($value['id'])."</td></tr>";
             }
+            $body.="<tr>
+                        <td></td>
+                        <td></td>
+                        <td style='".$head['styleFooter']."'>TOTAL</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td style='".$head['styleFooterTotal']."'>Total</td>
+                    </tr>";
         }
         else
         {
@@ -681,6 +726,16 @@ class AltoImpacto extends Reportes
                 $style=self::colorEstilo($pos);
                 $body.="<tr style='".$style."'><td>".CarrierManagers::getManager($value['id'])."</td><td>".$value['attribute']."</td><td>".$pos."</td></tr>";
             }
+            $body.="<tr>
+                        <td style='".$head['styleFooter']."'>TOTAL</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style='".$head['styleFooterTotal']."'>Total</td>
+                        <td></td>
+                        <td></td>
+                    </tr>";
         }
         $body.="</table>";
         return $body;
@@ -706,9 +761,17 @@ class AltoImpacto extends Reportes
                     $pos=$pos+1;
                 else
                     $pos=$key+1;
-                $style=self::colorDestino($value['id']);
+                $style=self::colorDestino($value['attribute']);
                 $body.=$style."<td>".$pos."</td><td>".$value['attribute']."</td></tr>";
             }
+            $body.="<tr>
+                        <td></td>
+                        <td style='".$head['styleFooter']."'>TOTAL</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style='".$head['styleFooterTotal']."'>Total</td>
+                    </tr>";
         }
         else
         {
@@ -719,9 +782,17 @@ class AltoImpacto extends Reportes
                     $pos=$pos+1;
                 else
                     $pos=$key+1;
-                $style=self::colorDestino($value['id']);
+                $style=self::colorDestino($value['attribute']);
                 $body.=$style."<td>".$value['attribute']."</td><td>".$pos."</td></tr>";
             }
+            $body.="<tr>
+                        <td style='".$head['styleFooter']."'>TOTAL</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style='".$head['styleFooterTotal']."'>Total</td>
+                        <td></td>
+                    </tr>";
         }
         $body.="</table>";
         return $body;
