@@ -19,9 +19,8 @@ class DistribucionComercial extends Reportes
         $this->excel=new PHPExcel();
         $this->excel->getProperties()->setCreator("RENOC")->setLastModifiedBy("RENOC")->setTitle("RENOC Distribucion Comercial")->setSubject("RENOC Distribucion Comercial")->setDescription("Reportes de Distribucion Comercial")->setKeywords("RENOC Reportes Distribucion Comercial")->setCategory("Distribucion Comercial Reportes");
         $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_wincache;
-$cacheSettings = array( 'cacheTime'        => 600
-                      );
-PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+        $cacheSettings = array( 'cacheTime'=>600);
+        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
     }
 
     public function genExcel($name)
@@ -37,9 +36,10 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             'H'=>'Dias de Disputa',
             'I'=>'Limite de Credito',
             'J'=>'Limite de Compra',
-            'K'=>'Unidad de Produccion'
+            'K'=>'Unidad de Produccion',
+            'L'=>'Estado'
             );
-        $hojas=array('carrier','company','monetizable','pago','unidad','vendedor');
+        $hojas=array('Operador','Compañia','Monetizable','Termino de Pago','Unidad de Producción','Vendedor','Estado');
         foreach ($hojas as $key => $value)
         {
             $this->setDataToSheet($value,self::getData($value),$titles,$key);
@@ -61,23 +61,26 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
     {
         switch($name)
         {
-            case 'carrier':
+            case 'Operador':
                 $order="operador";
                 break;
-            case 'company':
+            case 'Compañia':
                 $order="company";
                 break;
-            case 'monetizable':
+            case 'Monetizable':
                 $order="monetizable";
                 break;
-            case 'pago':
+            case 'Termino de Pago':
                 $order="termino_pago";
                 break;
-            case 'unidad':
+            case 'Unidad de Producción':
                 $order="production_unit";
                 break;
-            case 'vendedor':
+            case 'Vendedor':
                 $order="vendedor";
+                break;
+            case 'Estado':
+                $order="status";
                 break;
         }
         $hoja = new PHPExcel_Worksheet($this->excel,$name);
@@ -115,7 +118,7 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
                 )
             );
         //Asigno colores a la primra fila
-        $this->excel->getActiveSheet()->getStyle('A1:K1')->applyFromArray($estilosCabecera);
+        $this->excel->getActiveSheet()->getStyle('A1:L1')->applyFromArray($estilosCabecera);
         //Habilito un  auto tamaño en las columnas
         $this->excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $this->excel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
@@ -128,6 +131,7 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
         $this->excel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
         $this->excel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
         $this->excel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
         //cargo los datos en las celdas
         $registro=array();
         $registro['posicion']=1;
@@ -142,6 +146,7 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             $registro['monetizable']=$vendedor->monetizable;
             $registro['termino_pago']="(".$vendedor->termino_pago.")";
             $registro['production_unit']=$vendedor->production_unit;
+            $registro['status']=$vendedor->status;
             if($key>0)
             {
                 if($data[$com]->$order==$vendedor->$order)
@@ -153,31 +158,31 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
                     $registro['posicion']=1;
                     $registro['estilo']+=1;
                 }
-                if($data[$com]->vendedor==$vendedor->vendedor)
+                /*if($data[$com]->vendedor==$vendedor->vendedor)
                 {
                     $registro['vendedor']="";
                     $registro['cargo']="";
-                }
-                if($data[$com]->termino_pago==$vendedor->termino_pago)
+                }*/
+                /*if($data[$com]->termino_pago==$vendedor->termino_pago)
                 {
                     $registro['termino_pago']="";
-                }
-                if($data[$com]->monetizable==$vendedor->monetizable)
+                }*/
+                /*if($data[$com]->monetizable==$vendedor->monetizable)
                 {
                     $registro['monetizable']="";
-                }
-                if($data[$com]->company==$vendedor->company)
+                }*/
+                /*if($data[$com]->company==$vendedor->company)
                 {
                     $registro['company']="";
-                }
-                if($data[$com]->operador==$vendedor->operador)
+                }*/
+                /*if($data[$com]->operador==$vendedor->operador)
                 {
                     $registro['operador']="";
-                }
-                if($data[$com]->production_unit==$vendedor->production_unit)
+                }*/
+                /*if($data[$com]->production_unit==$vendedor->production_unit)
                 {
                     $registro['production_unit']="";
-                }
+                }*/
             }
             $row=$key+2;
             $this->excel->getActiveSheet()->setCellValue("A".$row,$registro['cargo']);
@@ -195,6 +200,7 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             $this->excel->getActiveSheet()->setCellValue("I".$row,$vendedor->limite_credito);
             $this->excel->getActiveSheet()->setCellValue("J".$row,$vendedor->limite_compra);
             $this->excel->getActiveSheet()->setCellValue("K".$row,$registro['production_unit']);
+            $this->excel->getActiveSheet()->setCellValue("L".$row,$registro['status']);
             //Aplico estilo
             /*$this->excel->getActiveSheet()->getStyle('E'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['company']));         
             $this->excel->getActiveSheet()->getStyle('F'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['termino_pago']));         
@@ -228,36 +234,38 @@ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
      * @param string $type es el tipo de orden que se le dará a los datos
      * @return array $managers es el arreglo con todos los objetos  
      */
-    private static function getData($type="carrier")
+    private static function getData($type="Operador")
     {
         switch($type)
         {
-            case 'carrier':
+            case 'Operador':
                 $order="ORDER BY operador ASC, vendedor ASC, id_tp ASC";
                 break;
-            case 'company':
+            case 'Compañia':
                 $order="ORDER BY company ASC,vendedor ASC, id_tp ASC";
                 break;
-            case 'monetizable':
+            case 'Monetizable':
                 $order="ORDER BY id_mon ASC,vendedor ASC, id_tp ASC";
                 break;
-            case 'pago':
+            case 'Termino de Pago':
                 $order="ORDER BY id_tp ASC,vendedor ASC, id_mon ASC";
                 break;
-            case 'unidad':
+            case 'Unidad de Producción':
                 $order="ORDER BY production_unit ASC,vendedor ASC, id_tp ASC";
                 break;
-            case 'vendedor':
+            case 'Vendedor':
                 $order="ORDER BY vendedor ASC, operador ASC";
                 break;
+            case 'Estado':
+                $order="ORDER BY status ASC, vendedor ASC, operador ASC";
+                break;
         }
-        $sql="SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, y.name AS company, z.name AS monetizable, tp.name AS termino_pago, d.days AS dias_disputa, cl.amount AS limite_credito, pl.amount AS limite_compra, z.id AS id_mon, tp.id AS id_tp, CASE WHEN x.up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit
+        $sql="SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, y.name AS company, z.name AS monetizable, tp.name AS termino_pago, d.days AS dias_disputa, cl.amount AS limite_credito, pl.amount AS limite_compra, z.id AS id_mon, tp.id AS id_tp, CASE WHEN x.up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit, CASE WHEN c.status=1 THEN 'Activo' WHEN c.status=0 THEN 'Inactivo' WHEN c.status IS NULL THEN 'Sin Asignar' END AS status
               FROM carrier c, managers m, carrier_managers cm, company y, contrato x, termino_pago tp, contrato_termino_pago ctp, monetizable z, contrato_monetizable cz, days_dispute_history d, credit_limit cl, purchase_limit pl 
               WHERE m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date AND x.id_carrier=c.id AND x.end_date IS NULL AND x.id_company=y.id AND x.id=ctp.id_contrato AND ctp.end_date IS NULL AND ctp.id_termino_pago=tp.id AND x.id=cz.id_contrato AND cz.end_date IS NULL AND cz.id_monetizable=z.id AND x.id=d.id_contrato AND d.end_date IS NULL AND x.id=cl.id_contrato AND cl.end_date IS NULL AND x.id=pl.id_contrato AND pl.end_date IS NULL
               UNION
-              SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position,'Sin Asignar' AS company, 'Sin Asignar' AS monetizable, 'Sin Asignar' AS termino_pago, -1 AS dias_disputa, -1 AS limite_credito, -1 AS limite_compra, 100 AS id_mon,100 AS id_tp, 'Sin Asignar' AS production_unit
-              FROM carrier c, managers m, carrier_managers cm
-              WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
+              SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, 'Sin Asignar' AS company, 'Sin Asignar' AS monetizable, 'Sin Asignar' AS termino_pago, -1 AS dias_disputa, -1 AS limite_credito, -1 AS limite_compra, 100 AS id_mon, 100 AS id_tp, 'Sin Asignar' AS production_unit, 'Sin Asignar' AS status
+              FROM carrier c, managers m, carrier_managers cm WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
               $order;
         return Managers::model()->findAllBySql($sql);
     }

@@ -597,7 +597,7 @@ class SiteController extends Controller
     {
         if(stripos($nombre,"Evolucion") || stripos($nombre,"Comercial"))
         {
-            header("Location: /adjuntos/{$nombre}");
+            header("Location: /adjuntos/{$nombre}.xlsx");
         }
         else
         {
