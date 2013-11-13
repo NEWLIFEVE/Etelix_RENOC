@@ -276,6 +276,7 @@ ajax.prototype.genExcel=function()
             case "lista[perdidas]":
             case "lista[AIR]":
             case "lista[AI10]":
+            case "lista[AI10R]":
             case "lista[AI10V]":
             case "lista[PN]":
             case "lista[PNV]":

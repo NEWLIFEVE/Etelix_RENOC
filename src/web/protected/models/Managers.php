@@ -25,6 +25,7 @@ class Managers extends CActiveRecord
 	public $limite_credito;
 	public $limite_compra;
 	public $production_unit;
+	public $status;
 
 	/**
 	 * Returns the static model of the specified AR class.

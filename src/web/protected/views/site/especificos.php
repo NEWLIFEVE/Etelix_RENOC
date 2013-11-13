@@ -67,6 +67,22 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </div>
                 <div class="choice">
+                    <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="lista[AI10]">
+                    <label for="AI10">
+                        <h4 id="td2">
+                            Alto Impacto(+10$)
+                        </h4>
+                    </label>
+                </div>
+                <div class="choice">
+                    <input type="checkbox" value="true" id="AI10R" class="custom-checkbox" name="lista[AI10R]">
+                    <label for="AI10R">
+                        <h4 id="td2">
+                            Alto Impacto Resumen(+10$)
+                        </h4>
+                    </label>
+                </div>
+                <div class="choice">
                     <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
                     <label for="calidad">
                         <h4 id="td1">
