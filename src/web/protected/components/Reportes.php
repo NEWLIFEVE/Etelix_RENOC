@@ -50,9 +50,9 @@ class Reportes extends CApplicationComponent
      * @param $fecha date fecha para ser consuldada
      * @return $variable string cuerpo de reporte
      */
-    public function AltoImpacto($starDate,$endingDate)
+    public function AltoImpacto($starDate,$endingDate,$type)
     {
-        return AltoImpacto::reporte($starDate,$endingDate);
+        return AltoImpacto::reporte($starDate,$endingDate,$type);
     }
 
     /**
@@ -683,7 +683,7 @@ class Reportes extends CApplicationComponent
         }
         else
         {
-            $color="<tr>";
+            $color="<tr style='border: 1px solid rgb(121, 115, 115)''>";
         }
         return $color;
     }
@@ -929,7 +929,7 @@ class Reportes extends CApplicationComponent
         }
         elseif($inicio==$fin)
         {
-            return " al ".$inicio;
+            return " al ".str_replace("-","",$inicio);
         }
         else
         {
