@@ -200,12 +200,19 @@ class SiteController extends Controller
                 $correos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
                 $correos['AIR']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AIR']['asunto'].".xls";
             }
-            //Alto Impacto +10$
+            //Alto Impacto +10$ Completo
             if(isset($_POST['lista']['AI10']))
             {
                 $correos['AI10']['asunto']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
-                $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate);
+                $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
                 $correos['AI10']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10']['asunto'].".xls";
+            }
+            //Alto Impacto +10$ Resumido
+            if(isset($_POST['lista']['AI10R']))
+            {
+                $correos['AI10R']['asunto']="RENOC".$this->letra." Alto Impacto Resumido (+10$)".self::reportTitle($startDate,$endingDate);
+                $correos['AI10R']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,false);
+                $correos['AI10R']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10R']['asunto'].".xls";
             }
             //Alto Impacto +10$ por Vendedor
             if(isset($_POST['lista']['AI10V']))
@@ -333,11 +340,18 @@ class SiteController extends Controller
                 $archivos['AIR']['nombre']="RENOC".$this->letra." Alto Impacto RETAIL (+1$)".self::reportTitle($startDate,$endingDate);
                 $archivos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
             }
+            //Alto Impacto Completo
             if(isset($_GET['lista']['AI10']))
             {
                 $archivos['AI10']['nombre']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
-                $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate);
-            } 
+                $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
+            }
+            //Alto Impacto Resumen
+            if(isset($_GET['lista']['AI10R']))
+            {
+                $archivos['AI10R']['nombre']="RENOC".$this->letra." Alto Impacto Resumido (+10$)".self::reportTitle($startDate,$endingDate);
+                $archivos['AI10R']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,false);
+            }
             if(isset($_GET['lista']['AI10V']))
             {
                 $archivos['AI10V']['nombre']="RENOC".$this->letra." Alto Impacto (+10$) por Vendedor".self::reportTitle($startDate,$endingDate);
@@ -450,12 +464,19 @@ class SiteController extends Controller
                 $correos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
                 $correos['AIR']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AIR']['asunto'].".xls";
             }
-            //Alto Impacto +10$
+            //Alto Impacto +10$ Completo
             if(isset($_POST['lista']['AI10']))
             {
                 $correos['AI10']['asunto']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
-                $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate);
+                $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
                 $correos['AI10']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10']['asunto'].".xls";
+            }
+            //Alto Impacto +10$ Resumen
+            if(isset($_POST['lista']['AI10R']))
+            {
+                $correos['AI10R']['asunto']="RENOC".$this->letra." Alto Impacto Resumido (+10$)".self::reportTitle($startDate,$endingDate);
+                $correos['AI10R']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,false);
+                $correos['AI10R']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10R']['asunto'].".xls";
             }
             //Alto Impacto +10$ por Vendedor
             if(isset($_POST['lista']['AI10V']))
