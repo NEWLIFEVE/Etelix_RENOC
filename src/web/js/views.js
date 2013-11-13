@@ -82,30 +82,7 @@ navegar.prototype.vuelta=function()
         self.objetoMain.toggle('slide');
     });
 }
-var errores=(function()
-{
-    var rerate=null;
-    (function()
-    {
-        $.ajax({
-            url:"Log/revisarRR",
-            success:function(data)
-            {
-                if(data==true)
-                {
-                    window.errores.rerate=true;
-                }
-                else
-                {
-                    window.errores.rerate=false;
-                }
-            }
-        });
-    })();
-    return{
-        rerate:rerate
-    }
-})();
+
 /**
 **
 */
@@ -130,13 +107,14 @@ ajax.prototype.run=function()
         var id=tipo=numero=valor=nombre=fecha=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
+        //Reviso cuantos check han sido seleccionados
         numero=$('input[type="checkbox"]').filter(function()
         {
             return $(this).is(':checked');
         });
         //asigno la ruta de reportes
         tipo=$(this).attr('id');
-        //compruebo que al menos un reporte este seleccionado
+        //Valido que al menos un reporte esté selecionado
         if(numero.length<=0)
         {
             mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
@@ -148,7 +126,30 @@ ajax.prototype.run=function()
             mensaje=null;
             self.setUno();
         }
+        //valido el rerate
         if(self.error==0)
+        {
+            if($RENOC.DATA.rerate=="true")
+            {
+                mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'>Cancelar</div><div id='confirma' class='confirma'>Confirmar</div>";
+                self.crearCapa(mensaje);
+                self.setUno();
+                $('#cancelar, #confirma').on('click',function()
+                {
+                    id=$(this).attr('id');
+                    if(id=="confirma")
+                    {
+                        self.setCero();
+                    }
+                    else
+                    {
+                        self.setUno();
+                    }
+                    self.destruirCapa();
+                });
+            }
+        }
+        /*if(self.error==0)
         {
             if(errores.rerate==true)
             {
@@ -246,53 +247,56 @@ ajax.prototype.run=function()
                     });
                 }
             }
-        }
+        }*/
         id=tipo=numero=valor=nombre=fecha=mensaje=null;
     });
 }
 ajax.prototype.genExcel=function()
 {
     var self=this,lista=Array();
-    for(var i=0, j=self.formulario.length-1;i<=j; i++)
+    if(self.error==0)
     {
-        if(self.formulario[i].name!='checkDate')
+        for(var i=0, j=self.formulario.length-1;i<=j; i++)
         {
-            lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
+            if(self.formulario[i].name!='checkDate')
+            {
+                lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
+            }
+        };
+        if(lista['endingDate']==undefined)
+        {
+            lista['endingDate']={name:'endingDate',value:''};
         }
-    };
-    if(lista['endingDate']==undefined)
-    {
-        lista['endingDate']={name:'endingDate',value:''};
-    }
-    if(lista['lista[Fecha]']==undefined)
-    {
-        lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
-    }
-    for(var key in lista)
-    {
-        switch(key)
+        if(lista['lista[Fecha]']==undefined)
         {
-            case "lista[compraventa]":
-            case "lista[perdidas]":
-            case "lista[AIR]":
-            case "lista[AI10]":
-            case "lista[AI10R]":
-            case "lista[AI10V]":
-            case "lista[PN]":
-            case "lista[PNV]":
-            case "lista[ADI]":
-            case "lista[ADE]":
-            case "lista[ACI]":
-            case "lista[ACE]":
-            case "lista[API]":
-            case "lista[APE]":
-            case "lista[DC]":
-            case "lista[Ev]":
-                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
-                break;
-            case "lista[calidad]":
-                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
-                break;
+            lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
+        }
+        for(var key in lista)
+        {
+            switch(key)
+            {
+                case "lista[compraventa]":
+                case "lista[perdidas]":
+                case "lista[AIR]":
+                case "lista[AI10]":
+                case "lista[AI10R]":
+                case "lista[AI10V]":
+                case "lista[PN]":
+                case "lista[PNV]":
+                case "lista[ADI]":
+                case "lista[ADE]":
+                case "lista[ACI]":
+                case "lista[ACE]":
+                case "lista[API]":
+                case "lista[APE]":
+                case "lista[DC]":
+                case "lista[Ev]":
+                    ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+                    break;
+                case "lista[calidad]":
+                    ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
+                    break;
+            }
         }
     }
 }
@@ -355,6 +359,47 @@ ajax.prototype.setCero=function()
 {
     this.error=0;
 }
+ajax.prototype.valRerate=function()
+{
+    mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div>";
+    self.crearCapa(mensaje);
+    self.setUno();
+    $('#cancelar, #confirma').on('click',function()
+    {
+        id=$(this).attr('id');
+        if(id=="confirma")
+        {
+            self.setCero();
+        }
+        else
+        {
+            self.setUno();
+        }
+        self.destruirCapa();
+    });
+}
+/*ajax.prototype.validarReporte=function(reporte,campo)
+{
+    self=this;
+    if($('#'+reporte+':checked').val())
+    {
+        if($('#'+campo).val()=="" && $('#'+campo).val()==undefined)
+        {
+            mensaje="<h3>Debe seleccionar un "+campo+" para generar el reporte de "+reporte+"</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+            self.crearCapa(mensaje);
+            setTimeout(function()
+            {
+                self.destruirCapa();
+            }, 2000);
+            mensaje=null;
+            self.setUno();
+        }
+        else
+        {
+            self.setCero();
+        }
+    }
+}*/
 /**
 **
 */
@@ -389,6 +434,7 @@ $(document).on('ready',function()
                 var espere=$(".cargandosori");
                 espere.prop("display",'block');
                 espere.slideDown('slow');
+                $RENOC.DATA.rerate="true";
             }        
         }
     });
