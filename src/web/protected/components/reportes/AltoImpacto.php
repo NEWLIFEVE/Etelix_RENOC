@@ -72,56 +72,26 @@ class AltoImpacto extends Reportes
             $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
             $index+=1;
         }
-        $body="<table><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".$objeto['title']."</td>";
-        }
-        $body.="</tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableCarriers($objeto['customersWithMoreThanTenDollars'],'Clientes (+10$)','cliente')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableCarriers($objeto['customersWithLessThanTenDollars'],'Clientes (Resto)','cliente')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableCarriers($objeto['providersWithMoreThanTenDollars'],'Proveedores (+10$)','proveedor')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableCarriers($objeto['providersWithLessThanTenDollars'],'Proveedores (Resto)','proveedor')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableDestinations($objeto['externalDestinationsMoreThanTenDollars'],'Destinos Externos (+10$)')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableDestinations($objeto['externalDestinationsLessThanTenDollars'],'Destinos Externos (Resto)')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableDestinations($objeto['internalDestinationsWithMoreThanTenDollars'],'Destinos Externos (Resto)')."</td><td></td>";
-        }
-        $body.="</tr><tr><td></td></tr><tr>";
-        foreach ($objetos as $key => $objeto)
-        {
-            $body.="<td>".self::getHtmlTableDestinations($objeto['internalDestinationsWithLessThanTenDollars'],'Destinos Externos (Resto)')."</td><td></td>";
-        }
-        $body.="</tr></table>";
+        //Cuento el numero de objetos en el array
+        $num=count($objetos);
+        $last=$num-1;
+        //Loscuento para saber que numero seguir en el resto
+        $numCustomer=count($objetos[$last]['customersWithMoreThanTenDollars']);
+        $numSupplier=count($objetos[$last]['providersWithMoreThanTenDollars']);
+        $numDestinationExt=count($objetos[$last]['externalDestinationsMoreThanTenDollars']);
+        $numDestinationInt=count($objetos[$last]['internalDestinationsWithMoreThanTenDollars']);
+        //Organizo los datos
+        $sorted['customersWithMoreThanTenDollars']=self::sort($objetos[$last]['customersWithMoreThanTenDollars'],'cliente');
+        $sorted['customersWithLessThanTenDollars']=self::sort($objetos[$last]['customersWithLessThanTenDollars'],'cliente');
+        $sorted['providersWithMoreThanTenDollars']=self::sort($objetos[$last]['providersWithMoreThanTenDollars'],'proveedor');
+        $sorted['providersWithLessThanTenDollars']=self::sort($objetos[$last]['providersWithLessThanTenDollars'],'proveedor');
+        $sorted['externalDestinationsMoreThanTenDollars']=self::sort($objetos[$last]['externalDestinationsMoreThanTenDollars'],'destino');
+        $sorted['externalDestinationsLessThanTenDollars']=self::sort($objetos[$last]['externalDestinationsLessThanTenDollars'],'destino');
+        $sorted['internalDestinationsWithMoreThanTenDollars']=self::sort($objetos[$last]['internalDestinationsWithMoreThanTenDollars'],'destino');
+        $sorted['internalDestinationsWithLessThanTenDollars']=self::sort($objetos[$last]['internalDestinationsWithLessThanTenDollars'],'destino');
 
-        
-
-        /*for ($row=0; $row < 17; $row++)
+        $cuerpo="<table>";
+        for($row=0; $row < 17; $row++)
         { 
             $cuerpo.="<tr>";
             switch ($row)
@@ -130,20 +100,19 @@ class AltoImpacto extends Reportes
                 case 2:
                 case 4:
                 case 6:
-                case 8:
-                case 10:
-                case 12:
-                case 14:
-                case 16:
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
                             $cuerpo.="<td></td>";
                         }
-                        elseif ($col>0 && $col<$num+1)
+                        elseif($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>".$objetos[$col-1]['title']."</td>";
+                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'>".$objetos[$col-1]['title']."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
                         }
                         else
                         {
@@ -151,199 +120,309 @@ class AltoImpacto extends Reportes
                         }
                     }
                     break;
+                    //Clientes con mas de 10$
                 case 1:
                     $head=array(
                         'title'=>'Clientes (+10)',
-                        'style'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;'
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
                         );
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],true)."</td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],0,true)."</td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['customersWithMoreThanTenDollars'],$objetos[$col-1]['customersWithMoreThanTenDollars'],'cliente')."</td>";
+                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['customersWithMoreThanTenDollars'],$objetos[$col-1]['customersWithMoreThanTenDollars'],'cliente',0,$head).
+                            self::getHtmlTotalCarriers($objetos[$col-1]['clientsTotalMoreThanTenDollars'],$objetos[$col-1]['totalCustomer'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
                         }
                         else
                         {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],false)."</td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],0,false)."</td>";
                         }
                     }
                     break;
-                /*case 3:
+                    //Clientes con menos de 10$
+                case 3:
+                    $head=array(
+                        'title'=>'Clientes (Resto)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithLessThanTenDollars'],$numCustomer,true)."</td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>Clientes Resto</td>";
+                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['customersWithLessThanTenDollars'],$objetos[$col-1]['customersWithLessThanTenDollars'],'cliente',$numCustomer,$head).
+                            self::getHtmlTotalCarriers($objetos[$col-1]['clientsTotalLessThanTenDollars'],$objetos[$col-1]['totalCustomer'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
                         }
                         else
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithLessThanTenDollars'],$numCustomer,false)."</td>";
                         }
                     }
                     break;
+                    //Proveedores con mas de 10$
                 case 5:
+                    $head=array(
+                        'title'=>'Proveedor (+10)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithMoreThanTenDollars'],0,true)."</td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>Proveedores (+10$)</td>";
+                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['providersWithMoreThanTenDollars'],$objetos[$col-1]['providersWithMoreThanTenDollars'],'proveedor',0,$head).
+                            self::getHtmlTotalCarriers($objetos[$col-1]['suppliersTotalMoreThanTenDollars'],$objetos[$col-1]['totalSuppliers'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
                         }
                         else
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithMoreThanTenDollars'],0,false)."</td>";
                         }
                     }
                     break;
+                    //Proveedores con menos de 10
                 case 7:
+                    $head=array(
+                        'title'=>'Proveedor (Resto)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
                     for ($col=0; $col < $num+2; $col++)
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithLessThanTenDollars'],$numSupplier,true)."</td>";
                         }
                         elseif ($col>0 && $col<$num+1)
                         {
-                            $cuerpo.="<td>Proveedores Resto</td>";
+                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['providersWithLessThanTenDollars'],$objetos[$col-1]['providersWithLessThanTenDollars'],'proveedor',$numSupplier,$head).
+                            self::getHtmlTotalCarriers($objetos[$col-1]['suppliersTotalLessThanTenDollars'],$objetos[$col-1]['totalSuppliers'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
                         }
                         else
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithLessThanTenDollars'],$numSupplier,false)."</td>";
                         }
                     }
                     break;
-                case 9:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>Destinos (+10)</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                    }
-                    break;
-                case 11:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>Destinos Resto</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                    }
-                    break;
-                case 13:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>Destinos Internal (+10$)</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                    }
-                    break;
-                case 15:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>Destinos Internal Resto</td>";
-                        }
-                        else
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                    }
-                    break;*/
-           /* }
+            }
             $cuerpo.="</tr>";
-        }*/
-        
-        return $body;
+        }
+        $cuerpo.="</table><table>";
+        for($row=0; $row < 17; $row++)
+        { 
+            $cuerpo.="<tr>";
+            switch ($row)
+            {
+                case 0:
+                case 2:
+                case 4:
+                case 6:
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                        elseif($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'>".$objetos[$col-1]['title']."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
+                        }
+                        else
+                        {
+                            $cuerpo.="<td></td>";
+                        }
+                    }
+                    break;
+                    //Destinos externos con mas de 10$
+                case 1:
+                    $head=array(
+                        'title'=>'Destinos Externos (+10$)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsMoreThanTenDollars'],0,true)."</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['externalDestinationsMoreThanTenDollars'],$objetos[$col-1]['externalDestinationsMoreThanTenDollars'],'destino',$head).
+                            self::getHtmlTotalDestinations($objetos[$col-1]['totalExternalDestinationsMoreThanTenDollars'],$objetos[$col-1]['totalExternalDestinations'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsMoreThanTenDollars'],0,false)."</td>";
+                        }
+                    }
+                    break;
+                    //Destinos externos con menos de 10$
+                case 3:
+                    $head=array(
+                        'title'=>'Destinos Externos (Resto)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsLessThanTenDollars'],$numDestinationExt,true)."</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['externalDestinationsLessThanTenDollars'],$objetos[$col-1]['externalDestinationsLessThanTenDollars'],'destino',$head).
+                            self::getHtmlTotalDestinations($objetos[$col-1]['totalExternalDestinationsLessThanTenDollars'],$objetos[$col-1]['totalExternalDestinations'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsLessThanTenDollars'],$numDestinationExt,false)."</td>";
+                        }
+                    }
+                    break;
+                //Destinos internos con mas de 10$
+                case 5:
+                    $head=array(
+                        'title'=>'Destinos Internos (+10$)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithMoreThanTenDollars'],0,true)."</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['internalDestinationsWithMoreThanTenDollars'],$objetos[$col-1]['internalDestinationsWithMoreThanTenDollars'],'destino',$head).
+                            self::getHtmlTotalDestinations($objetos[$col-1]['totalInternalDestinationsWithMoreThanTenDollars'],$objetos[$col-1]['totalInternalDestinations'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithMoreThanTenDollars'],0,false)."</td>";
+                        }
+                    }
+                    break;
+                //Destinos internos con menos de 10$
+                case 7:
+                    $head=array(
+                        'title'=>'Destinos Internos (Resto)',
+                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
+                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        );
+                    for ($col=0; $col < $num+2; $col++)
+                    { 
+                        if($col==0)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithLessThanTenDollars'],$numDestinationInt,true)."</td>";
+                        }
+                        elseif ($col>0 && $col<$num+1)
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['internalDestinationsWithLessThanTenDollars'],$objetos[$col-1]['internalDestinationsWithLessThanTenDollars'],'destino',$head).
+                            self::getHtmlTotalDestinations($objetos[$col-1]['totalInternalDestinationsWithLessThanTenDollars'],$objetos[$col-1]['totalInternalDestinations'],$head)."</td>";
+                            if($col!=$num)
+                            {
+                                $cuerpo.="<td style='width:5px;'></td>";
+                            }
+                        }
+                        else
+                        {
+                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithLessThanTenDollars'],$numDestinationInt,false)."</td>";
+                        }
+                    }
+                    break;
+            }
+            $cuerpo.="</tr>";
+        }
+        $cuerpo.="</table>";
+        return $cuerpo;
 	}
 
     /**
      * Obtiene el html de las tablas para los carriers
      * @access private
      * @static
-     * @param CActiveRecord $data el objeto a llevar a tabla
-     * @param string $name es el nombre que va a incluir las cabeceras de la tabla
+     * @param array $list la lista del orden que regira la tabla
+     * @param array $data Es el array con los objetos obtenidos de base de datos
      * @param string $attribute este parametro es para que la funcion funcione tanto con carrier customer como con supplier
+     * @param array $head trae las caracteristicas de la cabecera de la tabla
      * @return string $body es el html de la tabla formada
      */
-    private static function getHtmlTableCarriers($data,$name,$attribute)
+    private static function getHtmlTableCarriers($list,$data,$attribute,$position,$head)
     {
         $body="<table>
                   <thead>";
-        $body.=self::cabecera(array('Ranking',$name,'Vendedor','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','PN','Vendedor',$name,'Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
+        $body.=self::cabecera(array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','PN'),$head['styleHead']);
         $body.="</thead>
                  <tbody>";
         if($data!=NULL)
         {
-            foreach ($data as $key => $carrier)
+            foreach ($list as $key => $carrier)
             {
-                $pos=$key+1;
-                $style=self::colorEstilo($pos);
-                $body.="
-                            <td style='".$style."text-align: center;' class='position'>".$pos."</td>
-                            <td style='".$style."text-align: left;' class='carrier'>".$carrier->$attribute."</td>
-                            <td style='".$style."text-align: left;' class='Vendedor'>".CarrierManagers::getManager($carrier->id)."</td>
-                            <td style='".$style."text-align: left;' class='totalCalls'>".Yii::app()->format->format_decimal($carrier->total_calls,0)."</td>
-                            <td style='".$style."text-align: left;' class='completeCalls'>".Yii::app()->format->format_decimal($carrier->complete_calls,0)."</td>
-                            <td style='".$style."text-align: left;' class='minutes'>".Yii::app()->format->format_decimal($carrier->minutes)."</td>
-                            <td style='".$style."text-align: left;' class='asr'>".Yii::app()->format->format_decimal($carrier->asr)."</td>
-                            <td style='".$style."text-align: center;' class='acd'>".Yii::app()->format->format_decimal($carrier->acd)."</td>
-                            <td style='".$style."text-align: left;' class='pdd'>".Yii::app()->format->format_decimal($carrier->pdd)."</td>
-                            <td style='".$style."text-align: left;' class='cost'>".Yii::app()->format->format_decimal($carrier->cost)."</td>
-                            <td style='".$style."text-align: left;' class='revenue'>".Yii::app()->format->format_decimal($carrier->revenue)."</td>
-                            <td style='".$style."text-align: left;' class='margin'>".Yii::app()->format->format_decimal($carrier->margin)."</td>
-                            <td style='".$style."text-align: left;' class='margin_percentage'>".Yii::app()->format->format_decimal($carrier->margin_percentage)."%</td>
-                            <td style='".$style."text-align: left;' class='posicionNeta'>".Yii::app()->format->format_decimal($carrier->posicion_neta)."</td>
-                            <td style='".$style."text-align: left;' class='Vendedor'>".CarrierManagers::getManager($carrier->id)."</td>
-                            <td style='".$style."text-align: left;' class='carrier'>".$carrier->$attribute."</td>
-                            <td style='".$style."text-align: center;' class='position'>".$pos."</td>
-                        </tr>";
+                if($position!=null)
+                    $position=$position+1;
+                else
+                    $position=$key+1;
+                $body.=self::getRow($attribute,$carrier['attribute'],$data,$position);
             }
         }
         else
         {
-            $body.="<tr><td colspan='17'>No se encontraron resultados</td></tr>";
+            $body.="<tr><td colspan='11'>No se encontraron resultados</td></tr>";
         }
         $body.="</tbody>
                  </table>";
@@ -353,67 +432,87 @@ class AltoImpacto extends Reportes
     /**
      *
      */
-    private static function getHtmlTableDestinations($data,$name)
+    private static function getHtmlTableDestinations($list,$data,$attribute,$head)
     {
         $body="<table>
-                 <thead>";
-        $body.=self::cabecera(array('Ranking',$name,'','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min',$name,'Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
-        $body.="</thead>
+                    <thead>
+                        <tr style='".$head['styleHead']."'>
+                            <td>TotalCalls</td><td>CompleteCalls</td><td>Minutes</td><td>ASR</td><td>ACD</td><td>PDD</td><td>Cost</td><td>Revenue</td><td>Margin</td><td>Margin%</td><td>Cost/Min</td><td>Rate/Min</td><td>Margin/Min</td>
+                        </tr>
+                    </thead>
                  <tbody>";
-        if($data!=null)
+        if($data!=NULL)
         {
-            foreach($data as $key => $destino)
+            foreach ($list as $key => $carrier)
             {
-                $pos=$key+1;
-                $body.=self::colorDestino($destino->destino);
-                $body.="<td style='text-align: center;' class='diferencialBancario'>".$pos."</td>
-                        <td colspan='2' style='text-align: left;' class='destino'>".$destino->destino."</td>
-                        <td style='text-align: left;' class='totalcalls'>".Yii::app()->format->format_decimal($destino->total_calls,0)."</td>
-                        <td style='text-align: left;' class='completeCalls'>".Yii::app()->format->format_decimal($destino->complete_calls,0)."</td>
-                        <td style='text-align: left;' class='minutos'>".Yii::app()->format->format_decimal($destino->minutes)."</td>
-                        <td style='text-align: left;' class='asr'>".Yii::app()->format->format_decimal($destino->asr)."</td>
-                        <td style='text-align: left;' class='acd'>".Yii::app()->format->format_decimal($destino->acd)."</td>
-                        <td style='text-align: left;' class='pdd'>".Yii::app()->format->format_decimal($destino->pdd)."</td>
-                        <td style='text-align: left;' class='cost'>".Yii::app()->format->format_decimal($destino->cost)."</td>
-                        <td style='text-align: left;' class='revenue'>".Yii::app()->format->format_decimal($destino->revenue)."</td>
-                        <td style='text-align: left;' class='margin'>".Yii::app()->format->format_decimal($destino->margin)."</td>
-                        <td style='text-align: left;' class='margin_percentage'>".Yii::app()->format->format_decimal($destino->margin_percentage)."%</td>
-                        <td style='text-align: left;' class='destino'>".$destino->destino."</td>
-                        <td style='text-align: left;' class='costmin'>".Yii::app()->format->format_decimal($destino->costmin)."</td>
-                        <td style='text-align: left;' class='ratemin'>".Yii::app()->format->format_decimal($destino->ratemin)."</td>
-                        <td style='text-align: left;' class='marginmin'>".Yii::app()->format->format_decimal($destino->marginmin)."</td>
-                        <td style='text-align: center;' class='diferencialBancario'>".$pos."</td>
-                    </tr>";
+                $position=$key+1;
+                $body.=self::getRowDestinations($attribute,$carrier['attribute'],$data,$position);
             }
         }
         else
         {
-            $cuerpo.="<tr>
-                        <td colspan='15'>No se encontraron resultados</td>
-                     </tr>";
+            $body.="<tr><td colspan='13'>No se encontraron resultados</td></tr>";
         }
-        $body.="</tbody></table>";
+        $body.="</tbody>
+                 </table>";
         return $body;
     }
 
     /**
-     * Recibe un objeto de modelo y un apellido, retorna una fila <tr> con los datos del objeto
+     * Recibe un objeto de modelo y un atributo, retorna una fila <tr> con los datos del objeto
      * @access protected
      * @static
-     * @param string $apellido
-     * @param CActiveRecord $objeto
+     * @param string $attribute es el atributo del objeto con el que se hará la comparacion
+     * @param string $phrase es la frase con la que debe conincidir el atributo 
+     * @param array $objeto es el objeto traido de base de datos
+     * @param int $position es el numero para indicar el color de la fila en la tabla 
      * @return string
      */
-    private static function getRowManagers($attribute,$name,$object,$position)
+    private static function getRow($attribute,$phrase,$object,$position)
     {
         $style=self::colorEstilo($position);
         foreach ($object as $key => $value)
         {
-            if($value->$attribute == $name)
+            if($value->$attribute == $phrase)
             {
-                return "<tr style='".$style."'>
-                    <td>".Yii::app()->format->format_decimal($value->total_calls)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->complete_calls)."</td>
+                return "<tr>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->minutes)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->asr)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->acd)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->pdd)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->cost)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->margin)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->margin_percentage)."</td>
+                    <td style='".$style."' >".Yii::app()->format->format_decimal($value->posicion_neta)."</td>
+                    </tr>";
+            }
+        }
+        return "<tr><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td></tr>";
+    }
+
+    /**
+     * Recibe un objeto de modelo y un atributo, retorna una fila <tr> con los datos del objeto
+     * @access protected
+     * @static
+     * @param string $attribute es el atributo del objeto con el que se hará la comparacion
+     * @param string $phrase es la frase con la que debe conincidir el atributo 
+     * @param array $objeto es el objeto traido de base de datos
+     * @param int $position es el numero para indicar el color de la fila en la tabla 
+     * @return string
+     */
+    private static function getRowDestinations($attribute,$phrase,$object,$position)
+    {
+        foreach ($object as $key => $value)
+        {
+            $style=self::colorDestino($value->$attribute);
+            if($value->$attribute == $phrase)
+            {
+                return $style."
+                    <td>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
+                    <td>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
                     <td>".Yii::app()->format->format_decimal($value->minutes)."</td>
                     <td>".Yii::app()->format->format_decimal($value->asr)."</td>
                     <td>".Yii::app()->format->format_decimal($value->acd)."</td>
@@ -421,14 +520,130 @@ class AltoImpacto extends Reportes
                     <td>".Yii::app()->format->format_decimal($value->cost)."</td>
                     <td>".Yii::app()->format->format_decimal($value->revenue)."</td>
                     <td>".Yii::app()->format->format_decimal($value->margin)."</td>
-                    <td>".Yii::app()->format->format_decimal($value->margin_percentage)."</td>
                     <td>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>
+                    <td>".Yii::app()->format->format_decimal($value->costmin)."</td>
+                    <td>".Yii::app()->format->format_decimal($value->ratemin)."</td>
+                    <td>".Yii::app()->format->format_decimal($value->marginmin)."</td>
                     </tr>";
             }
         }
-        return "<tr style='".$style."'><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td><td>--</td></tr>";
+        return "<tr><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td><td style='".$style."' >--</td></tr>";
     }
 
+    /**
+     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * @access private
+     * @static
+     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
+     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @return string
+     */
+    private static function getHtmlTotalCarriers($totalCondition,$total,$head)
+    {
+        return "<table>
+                    <tr style='".$head['styleFooter']."'>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style='".$head['styleFooterTotal']."'>
+                        <td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->asr)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->acd)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->pdd)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->cost)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->margin)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
+                        <td></td>
+                    </tr>"
+                    .self::cabecera(array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%',''),$head['styleHead'])."
+                    <tr style='".$head['styleFooterTotal']."'>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>";
+    }
+
+    /**
+     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * @access private
+     * @static
+     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
+     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @return string
+     */
+    private static function getHtmlTotalDestinations($totalCondition,$total,$head)
+    {
+        return "<table>
+                    <tr style='".$head['styleFooter']."'>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>
+                        <td></td>
+                        <td></td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->costmin)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->ratemin)."</td>
+                        <td>".Yii::app()->format->format_decimal($totalCondition->marginmin)."</td>
+                    </tr>
+                    <tr style='".$head['styleFooterTotal']."'>
+                        <td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->asr)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->acd)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->pdd)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->cost)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->margin)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
+                        <td>".Yii::app()->format->format_decimal($total->costmin)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->ratemin)."</td>
+                        <td>".Yii::app()->format->format_decimal($total->marginmin)."</td>
+                    </tr>"
+                    .self::cabecera(array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min'),$head['styleHead'])."
+                    <tr style='".$head['styleFooterTotal']."'>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
+                        <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>";
+    }
 
     /**
      * Genera una tabla con la lista y ranking del dato pasado
@@ -438,25 +653,74 @@ class AltoImpacto extends Reportes
      * @param array $list lista de nombres incluidos para contruir la tabla
      * @param boolean $type si es true es para el principio, false al final
      */
-    private static function getHtmlTable($head,$lista,$type=true)
+    private static function getHtmlTable($head,$lista,$pos,$type=true)
     {
         $body="<table>";
         if($type)
         {
-            $body.=self::cabecera(array('Ranking',$head['title'],'Vendedor'),$head['style']);
+            $body.=self::cabecera(array('Ranking',$head['title'],'Vendedor'),$head['styleHead']);
             foreach ($lista as $key => $value)
             {
-                $pos=$key+1;
-                $body.="<tr><td>".$pos."</td><td>".$value['attribute']."</td><td>".CarrierManagers::getManager($value['id'])."</td></tr>";
+                if($pos!=null)
+                    $pos=$pos+1;
+                else
+                    $pos=$key+1;
+                $style=self::colorEstilo($pos);
+                $body.="<tr style='".$style."'><td>".$pos."</td><td>".$value['attribute']."</td><td>".CarrierManagers::getManager($value['id'])."</td></tr>";
             }
         }
         else
         {
-            $body.=self::cabecera(array('Vendedor',$head['title'],'Ranking'),$head['style']);
+            $body.=self::cabecera(array('Vendedor',$head['title'],'Ranking'),$head['styleHead']);
             foreach ($lista as $key => $value)
             {
-                $pos=$key+1;
-                $body.="<tr><td>".CarrierManagers::getManager($value['id'])."</td><td>".$value['attribute']."</td><td>".$pos."</td></tr>";
+                if($pos!=null)
+                    $pos=$pos+1;
+                else
+                    $pos=$key+1;
+                $style=self::colorEstilo($pos);
+                $body.="<tr style='".$style."'><td>".CarrierManagers::getManager($value['id'])."</td><td>".$value['attribute']."</td><td>".$pos."</td></tr>";
+            }
+        }
+        $body.="</table>";
+        return $body;
+    }
+
+    /**
+     * Genera una tabla con la lista y ranking del dato pasado
+     * @access private
+     * @static
+     * @param array $head titulo que lleva la cabezera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
+     * @param array $list lista de nombres incluidos para contruir la tabla
+     * @param boolean $type si es true es para el principio, false al final
+     */
+    private static function getHtmlTableDes($head,$lista,$pos,$type=true)
+    {
+        $body="<table>";
+        if($type)
+        {
+            $body.=self::cabecera(array('Ranking',$head['title']),$head['styleHead']);
+            foreach ($lista as $key => $value)
+            {
+                if($pos!=null)
+                    $pos=$pos+1;
+                else
+                    $pos=$key+1;
+                $style=self::colorDestino($value['id']);
+                $body.=$style."<td>".$pos."</td><td>".$value['attribute']."</td></tr>";
+            }
+        }
+        else
+        {
+            $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
+            foreach ($lista as $key => $value)
+            {
+                if($pos!=null)
+                    $pos=$pos+1;
+                else
+                    $pos=$key+1;
+                $style=self::colorDestino($value['id']);
+                $body.=$style."<td>".$value['attribute']."</td><td>".$pos."</td></tr>";
             }
         }
         $body.="</table>";
