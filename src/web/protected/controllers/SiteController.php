@@ -578,7 +578,8 @@ class SiteController extends Controller
             elseif (stripos($correo['asunto'], "Calidad"))
             {
                 $userDif="ceo@etelix.com";
-                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','txadmin@netuno.net','sig@etelix.com');
+                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','sig@etelix.com');
+                if(stripos($correo['asunto'], "BSG")) $lista=array_merge($lista,array('txadmin@netuno.net'));
                 Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
             }
             else
