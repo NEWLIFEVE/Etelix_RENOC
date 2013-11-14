@@ -13,7 +13,7 @@ selector.prototype.run=function()
         dateFormat: 'yy-mm-dd',
         onSelect: function(dateText, inst)
         {
-            $("#datepicker_value").val(dateText);
+            $("#startDate").val(dateText);
         }
     });
 }
@@ -104,7 +104,7 @@ ajax.prototype.run=function()
     $('#mail,#excel,#lista').on('click',function(e)
     {
 
-        var id=tipo=numero=valor=nombre=fecha=mensaje=null, ventana={};
+        var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
         //Reviso cuantos check han sido seleccionados
@@ -113,7 +113,7 @@ ajax.prototype.run=function()
             return $(this).is(':checked');
         });
         //asigno la ruta de reportes
-        tipo=$(this).attr('id');
+        self.tipo=$(this).attr('id');
         //Valido que al menos un reporte esté selecionado
         if(numero.length<=0)
         {
@@ -126,177 +126,58 @@ ajax.prototype.run=function()
             mensaje=null;
             self.setUno();
         }
-        //valido el rerate
-        if(self.error==0)
-        {
-            if($RENOC.DATA.rerate=="true")
-            {
-                mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'>Cancelar</div><div id='confirma' class='confirma'>Confirmar</div>";
-                self.crearCapa(mensaje);
-                self.setUno();
-                $('#cancelar, #confirma').on('click',function()
-                {
-                    id=$(this).attr('id');
-                    if(id=="confirma")
-                    {
-                        self.setCero();
-                    }
-                    else
-                    {
-                        self.setUno();
-                    }
-                    self.destruirCapa();
-                });
-            }
-        }
-        /*if(self.error==0)
-        {
-            if(errores.rerate==true)
-            {
-                mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div>";
-                self.crearCapa(mensaje);
-                $('#cancelar, #confirma').on('click',function()
-                {
-                    id=$(this).attr('id');
-                    if(id=="confirma")
-                    {
-                        self.setCero();
-                        mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
-                        self.crearCapa(mensaje);
-                        if(tipo=="excel")
-                        {
-                            self.ruta=self.excel;
-                            self.getFormPost();
-                            self.genExcel();
-                            self.destruirCapa();
-                        }
-                        else if(tipo=="mail")
-                        {
-                            self.ruta=self.mail;
-                            self.getFormPost();
-                            self.enviar();
-                        }
-                        else if(tipo=="lista")
-                        {
-                            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/></div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/>";
-                            self.crearCapa(mensaje);
-                            $('#cancelar, #confirma').on('click',function()
-                            {
-                                id=$(this).attr('id');
-                                if(id=='confirma')
-                                {
-                                    mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
-                                    self.crearCapa(mensaje);
-                                    self.ruta=self.mailLista;
-                                    self.getFormPost();
-                                    self.enviar();
-                                }
-                                else
-                                {
-                                    self.destruirCapa();
-                                }
-                            });
-                        }   
-                    }
-                    else if(id=="cancelar")
-                    {
-                        self.setUno();
-                        self.destruirCapa();
-                    }
-                });
-            }
-            else
-            {
-                self.setCero();
-                mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
-                self.crearCapa(mensaje);
-                if(tipo=="excel")
-                {
-                    self.ruta=self.excel;
-                    self.getFormPost();
-                    self.genExcel();
-                    self.destruirCapa();
-                }
-                else if(tipo=="mail")
-                {
-                    self.ruta=self.mail;
-                    self.getFormPost();
-                    self.enviar();
-                }
-                else if(tipo=="lista")
-                {
-                    mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
-                             class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
-                             <p><label><b>Aceptar</b></label></div></div>";
-                    self.crearCapa(mensaje);
-                    $('#cancelar, #confirma').on('click',function()
-                    {
-                        id=$(this).attr('id');
-                        if(id=='confirma')
-                        {
-                            mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
-                            self.crearCapa(mensaje);
-                            self.ruta=self.mailLista;
-                            self.getFormPost();
-                            self.enviar();
-                        }
-                        else
-                        {
-                            self.destruirCapa();
-                        }
-                    });
-                }
-            }
-        }*/
-        id=tipo=numero=valor=nombre=fecha=mensaje=null;
+        //valido rerate
+        self.validarRerate();
+        //Valido el reportes
+        self.validarReporte();
+        //mando a ejecutar las cosas
+        self.ejecutarAcciones();
+        id=tipo=numero=valor=nombre=mensaje=null;
     });
 }
 ajax.prototype.genExcel=function()
 {
     var self=this,lista=Array();
-    if(self.error==0)
+    for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
-        for(var i=0, j=self.formulario.length-1;i<=j; i++)
+        if(self.formulario[i].name!='checkDate')
         {
-            if(self.formulario[i].name!='checkDate')
-            {
-                lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
-            }
-        };
-        if(lista['endingDate']==undefined)
-        {
-            lista['endingDate']={name:'endingDate',value:''};
+            lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
         }
-        if(lista['lista[Fecha]']==undefined)
+    };
+    if(lista['endingDate']==undefined)
+    {
+        lista['endingDate']={name:'endingDate',value:''};
+    }
+    if(lista['lista[Fecha]']==undefined)
+    {
+        lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
+    }
+    for(var key in lista)
+    {
+        switch(key)
         {
-            lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
-        }
-        for(var key in lista)
-        {
-            switch(key)
-            {
-                case "lista[compraventa]":
-                case "lista[perdidas]":
-                case "lista[AIR]":
-                case "lista[AI10]":
-                case "lista[AI10R]":
-                case "lista[AI10V]":
-                case "lista[PN]":
-                case "lista[PNV]":
-                case "lista[ADI]":
-                case "lista[ADE]":
-                case "lista[ACI]":
-                case "lista[ACE]":
-                case "lista[API]":
-                case "lista[APE]":
-                case "lista[DC]":
-                case "lista[Ev]":
-                    ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
-                    break;
-                case "lista[calidad]":
-                    ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
-                    break;
-            }
+            case "lista[compraventa]":
+            case "lista[perdidas]":
+            case "lista[AIR]":
+            case "lista[AI10]":
+            case "lista[AI10R]":
+            case "lista[AI10V]":
+            case "lista[PN]":
+            case "lista[PNV]":
+            case "lista[ADI]":
+            case "lista[ADE]":
+            case "lista[ACI]":
+            case "lista[ACE]":
+            case "lista[API]":
+            case "lista[APE]":
+            case "lista[DC]":
+            case "lista[Ev]":
+                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
+                break;
+            case "lista[calidad]":
+                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
+                break;
         }
     }
 }
@@ -359,47 +240,126 @@ ajax.prototype.setCero=function()
 {
     this.error=0;
 }
-ajax.prototype.valRerate=function()
-{
-    mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar' class='cancelar'><img src='/images/cancelar.png'width='85px' height='45px'/>&nbsp;</div><div id='confirma' class='confirma'><img src='/images/aceptar.png'width='85px' height='45px'/></div>";
-    self.crearCapa(mensaje);
-    self.setUno();
-    $('#cancelar, #confirma').on('click',function()
-    {
-        id=$(this).attr('id');
-        if(id=="confirma")
-        {
-            self.setCero();
-        }
-        else
-        {
-            self.setUno();
-        }
-        self.destruirCapa();
-    });
-}
-/*ajax.prototype.validarReporte=function(reporte,campo)
+ajax.prototype.validarRerate=function()
 {
     self=this;
-    if($('#'+reporte+':checked').val())
+    if(self.error==0)
     {
-        if($('#'+campo).val()=="" && $('#'+campo).val()==undefined)
+        if($RENOC.DATA.rerate=="true")
         {
-            mensaje="<h3>Debe seleccionar un "+campo+" para generar el reporte de "+reporte+"</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+            mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div class='rerateBtn'><div id='cancelar' class='cancelar'>Cancelar</div><div id='confirma' class='confirma'>Confirmar</div></div>";
             self.crearCapa(mensaje);
-            setTimeout(function()
-            {
-                self.destruirCapa();
-            }, 2000);
-            mensaje=null;
             self.setUno();
-        }
-        else
-        {
-            self.setCero();
+            $('#cancelar, #confirma').on('click',function()
+            {
+                id=$(this).attr('id');
+                if(id=="confirma")
+                {
+                    self.setCero();
+                }
+                else
+                {
+                    self.setUno();
+                }
+                self.destruirCapa();
+                //self.validarReporte('calidad','carrier');
+            });
         }
     }
-}*/
+}
+ajax.prototype.validarReporte=function()
+{
+    self=this;
+    if(self.error==0)
+    {
+        //validad el reporte de calidad
+        if($('#calidad:checked').val()=="true")    
+        {
+            var carrier=$('#carrier').val();
+            var fecha=$('#startDate').val();
+            var frase="Debe ",mensaje=null;;
+            if((carrier==="" || carrier===undefined) || (fecha==="" || fecha===undefined))
+            {            
+                if(carrier=="" || carrier==undefined) frase=frase+" seleccionar carrier";
+                if((carrier=="" || carrier==undefined) && (fecha=="" || fecha==undefined)) frase=frase+" y";
+                if(fecha=="" || fecha==undefined) frase=frase+" seleccionar al menos una fecha";
+                frase=frase+" para generar el reporte";
+                mensaje="<h3>"+frase+"</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+        }
+        //valida los demas reportes
+        if($('#compraventa:checked').val()=="true" || $('#AI10:checked').val()=="true" || $('#AI10R:checked').val()=="true")
+        {
+            if($('#startDate').val()=="" || $('#startDate').val()==undefined)
+            {
+                mensaje="<h3>Debe seleccionar al menos una fecha para generar el reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+            else
+            {
+                self.setCero();
+            }
+        }
+    }
+}
+ajax.prototype.ejecutarAcciones=function()
+{
+    self=this;
+    if(self.error==0)
+    {
+        mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+        self.crearCapa(mensaje);
+        if(self.tipo=="excel")
+        {
+            self.ruta=self.excel;
+            self.getFormPost();
+            self.genExcel();
+            self.destruirCapa();
+        }
+        else if(self.tipo=="mail")
+        {
+            self.ruta=self.mail;
+            self.getFormPost();
+            self.enviar();
+        }
+        else if(self.tipo=="lista")
+        {
+            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+                     class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
+                     <p><label><b>Aceptar</b></label></div></div>";
+            self.crearCapa(mensaje);
+            $('#cancelar, #confirma').on('click',function()
+            {
+                id=$(this).attr('id');
+                if(id=='confirma')
+                {
+                    mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+                    self.crearCapa(mensaje);
+                    self.ruta=self.mailLista;
+                    self.getFormPost();
+                    self.enviar();
+                }
+                else
+                {
+                    self.destruirCapa();
+                }
+            });
+        }
+    }
+}
 /**
 **
 */

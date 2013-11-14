@@ -213,7 +213,6 @@ $RENOC.AJAX=(function()
 	function init()
 	{
 		_getNamesCarriers();
-		_getRerate();
 	}
 
 	return {init:init}
