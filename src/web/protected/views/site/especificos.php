@@ -25,14 +25,6 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>
-                <!--<div class="choice_parametros hora">
-                    <input type="checkbox" value="true" id="Hora" class="custom-checkbox" name="lista[Hora]">
-                    <label for="Hora">
-                        <h4 id="td1">
-                            Hora
-                        </h4>
-                    </label>
-                </div>-->
                 <div class="choice_parametros carrier">
                     <input type="checkbox" value="true" id="Carrier" class="custom-checkbox" name="lista[Carrier]">
                     <label for="Carrier">
@@ -77,7 +69,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                 <div class="choice">
                     <input type="checkbox" value="true" id="AI10R" class="custom-checkbox" name="lista[AI10R]">
                     <label for="AI10R">
-                        <h4 id="td2">
+                        <h4 id="td3">
                             Alto Impacto Resumen(+10$)
                         </h4>
                     </label>
@@ -85,7 +77,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                 <div class="choice">
                     <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
                     <label for="calidad">
-                        <h4 id="td1">
+                        <h4 id="td4">
                             Calidad
                         </h4>
                     </label>
