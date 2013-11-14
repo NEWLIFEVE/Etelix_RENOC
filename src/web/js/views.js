@@ -137,25 +137,10 @@ ajax.prototype.run=function()
 }
 ajax.prototype.genExcel=function()
 {
-    var self=this,lista=Array();
+    var self=this,reportes=Array(),fechas=Array(), opciones=Array();
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
-        if(self.formulario[i].name!='checkDate')
-        {
-            lista[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
-        }
-    };
-    if(lista['endingDate']==undefined)
-    {
-        lista['endingDate']={name:'endingDate',value:''};
-    }
-    if(lista['lista[Fecha]']==undefined)
-    {
-        lista['lista[Fecha]']={name:'lista[Fecha]',value:false};
-    }
-    for(var key in lista)
-    {
-        switch(key)
+        switch(self.formulario[i].name)
         {
             case "lista[compraventa]":
             case "lista[perdidas]":
@@ -173,11 +158,35 @@ ajax.prototype.genExcel=function()
             case "lista[APE]":
             case "lista[DC]":
             case "lista[Ev]":
-                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value,lista[key].name,'width=200px,height=100px');
-                break;
             case "lista[calidad]":
-                ventana[key]=window.open(self.ruta+"?"+lista['startDate'].name+"="+lista['startDate'].value+"&"+lista['endingDate'].name+"="+lista['endingDate'].value+"&"+lista[key].name+"="+lista[key].value+"&"+lista["carrier"].name+"="+lista["carrier"].value,lista[key].name,'width=200px,height=100px');
+                reportes[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
                 break;
+            case "startDate":
+            case "endingDate":
+                fechas[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
+                break;
+            case "carrier":
+            case "group":
+                opciones[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
+                break;
+        }
+    };
+
+    if(fechas['endingDate']==undefined) fechas['endingDate']={name:'endingDate',value:''};
+
+    for(var key in reportes)
+    {
+        console.log("Reporte: "+reportes[key].name+" Valor: "+reportes[key].value);
+        if(reportes[key].name=="lista[calidad]")
+        {
+            for(var key2 in opciones)
+            {
+                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=200px,height=100px');
+            }
+        }
+        else
+        {
+            ventana[key]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=200px,height=100px');
         }
     }
 }
@@ -275,12 +284,14 @@ ajax.prototype.validarReporte=function()
         //validad el reporte de calidad
         if($('#calidad:checked').val()=="true")    
         {
-            var carrier=$('#carrier').val();
-            var fecha=$('#startDate').val();
-            var frase="Debe ",mensaje=null;;
-            if((carrier==="" || carrier===undefined) || (fecha==="" || fecha===undefined))
+            var carrier=$('#carrier').val(),
+                group=$('#group').val(),
+                fecha=$('#startDate').val(), 
+                frase="Debe ",
+                mensaje=null;group
+            if(((carrier==="" || carrier===undefined) && (group==="" || group===undefined)) || (fecha==="" || fecha===undefined))
             {            
-                if(carrier=="" || carrier==undefined) frase=frase+" seleccionar carrier";
+                if((carrier=="" || carrier==undefined) || (group==="" || group===undefined)) frase=frase+" seleccionar carrier";
                 if((carrier=="" || carrier==undefined) && (fecha=="" || fecha==undefined)) frase=frase+" y";
                 if(fecha=="" || fecha==undefined) frase=frase+" seleccionar al menos una fecha";
                 frase=frase+" para generar el reporte";
@@ -290,7 +301,7 @@ ajax.prototype.validarReporte=function()
                 {
                     self.destruirCapa();
                 }, 2000);
-                mensaje=null;
+                carrier=group=fecha=frase=mensaje=null;
                 self.setUno();
             }
         }
