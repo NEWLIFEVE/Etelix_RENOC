@@ -14,6 +14,7 @@ class AltoImpacto extends Reportes
 	*/
 	public static function reporte($start,$end=null,$type=true)
 	{
+        ini_set('max_execution_time', 60);
         self::$type=$type;
         //verifico las fechas
         $array=self::valDates($start,$end);
