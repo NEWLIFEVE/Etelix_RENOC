@@ -587,49 +587,32 @@ input.favorite
 {
     color: #6E6E6E;
 }
-.cancelar
+.rerateBtn
 {
+    text-align: center;
+}
+.cancelar, .confirma
+{
+    display: inline-block;
     background-color:#E43434;
     color:white;
     font-size: 19px;
     height: 35px;
-    margin-left: 135px;
-    margin-top: 0px;
-    text-align: center;
     width: 90px;
+    padding: 11px 2px 0px 2px;
+    margin: 0 7px;
 }
 .cancelar:hover
 {
     background-color:#E76969;
-    color:white;
-    font-size: 19px;
-    height: 35px;
-    margin-left: 135px;
-    margin-top: 0px;
-    text-align: center;
-    width: 90px;
 }
 .confirma
 {
     background-color:rgb(56, 139, 56);
-    color:white;
-    font-size: 19px!important;
-    height: 35px;
-    margin-left: 230px;
-    margin-top: -55px;
-    text-align: center;
-    width: 90px;
 }
 .confirma:hover
 {
     background-color:rgb(104, 173, 104);
-    color:white;
-    font-size: 19px!important;
-    height: 35px;
-    margin-left: 230px;
-    margin-top: -55px;
-    text-align: center;
-    width: 90px;
 }
 .bordes
 {

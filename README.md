@@ -2,6 +2,11 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.0
+- Reporte Alto impacto (+10$) por rango de fechas, dos versiones una resumida y otra completa.
+- Reporte Distribucion Comercial, agregado el campo estado.
+- Validacion de campos de reportes especificos.
+
 Release 1.2.3
 - Aumento de Destinos/Clientes/Proveedor de cinco a siete en Reportes de Arbol de Trafico
 

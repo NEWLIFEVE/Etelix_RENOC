@@ -197,13 +197,14 @@ $RENOC.AJAX=(function()
 			$RENOC.DATA.carriers=JSON.parse(datos);
 			$RENOC.DATA.IDS=Array();
 			$RENOC.DATA.nombresCarriers=Array();
-			for (var i = 0, j=$RENOC.DATA.carriers.length-1; i <= j; i++)
+			for(var i=0, j=$RENOC.DATA.carriers.length-1; i<=j; i++)
 			{
 				$RENOC.DATA.nombresCarriers[i]=$RENOC.DATA.carriers[i].name;
 			};
 		}
 		});
 	}
+
 
 	/**
 	 * Inicializa las funciones del submodulo
