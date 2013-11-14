@@ -87,4 +87,12 @@ class CarrierGroups extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 *
+	 */
+	public static function getNames()
+	{
+		return self::model()->findAll();
+	}
 }
