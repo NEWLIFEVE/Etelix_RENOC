@@ -948,7 +948,10 @@ img.oculta
 }
 
 /*Especificos*/
-.start, .end, .middle_carrier
+.start,
+.end,
+.middle_carrier,
+.middle_group
 {
     position: relative;
     width: 90px;
@@ -964,7 +967,8 @@ img.oculta
     left: 16em;
     position: relative;
 }
-.middle_carrier
+.middle_carrier,
+.middle_group
 {
     left: 100%;
     width: 75%;
@@ -985,6 +989,10 @@ img.oculta
     top:-4em;
 }
 .carrier
+{
+    top:-4em;
+}
+.group
 {
     top:-4em;
 }
