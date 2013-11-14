@@ -146,6 +146,9 @@ class Evolucion extends Reportes
         foreach ($nombresColumnas as $key => $value)
         {
             $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A1', 'Fecha')->setCellValue('B1', 'Minutos')->setCellValue('C1', $value);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
             foreach ($resultados[$key] as $llave => $valores)
             {
                 $pos=$llave+2;
