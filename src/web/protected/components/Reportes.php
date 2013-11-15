@@ -101,9 +101,9 @@ class Reportes extends CApplicationComponent
     /**
      *
      */
-    public function Calidad($inicio,$fin,$carrier)
+    public function Calidad($inicio,$fin,$carrier,$type)
     {
-        return Calidad::getHtmlDestinations($inicio,$fin,$carrier);
+        return Calidad::getHtmlDestinations($inicio,$fin,$carrier,$type);
     }
 
     /**
