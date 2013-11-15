@@ -63,7 +63,36 @@
  				elemento:'input',
  				idInputStart:'group',
  				idInputEnd:'',
- 				idCheck:'',
+ 				checks:{
+ 					primero:{
+ 						id:'asr',
+ 						name:'alarma',
+ 						className:'',
+ 						type:'radio',
+ 						text:'ASR'
+ 					},
+ 					segundo:{
+ 						id:'pdd',
+ 						name:'alarma',
+ 						className:'',
+ 						type:'radio',
+ 						text:'PDD'
+ 					},
+ 					tercero:{
+ 						id:'uno',
+ 						name:'exece',
+ 						className:'',
+ 						type:'radio',
+ 						text:'+1%'
+ 					},
+ 					cuarto:{
+ 						id:'dos',
+ 						name:'excede',
+ 						className:'',
+ 						type:'radio',
+ 						text:'+5%'
+ 					}
+ 				},
  				nameClassPicker:'middle_group group',
  				nameClassCheck:'middle group',
  				spot:'div.choice_parametros.group'
@@ -101,6 +130,16 @@
 			else if(options.idInputStart=='group')
 			{
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
+				//radios
+				var radios=options.checks;
+				for(var key in radios)
+				{
+					console.dir(radios[key]);
+					//_showElement($("<dic"),options.spot);
+				}
+				/*_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);*/
 			}
 			else
 			{
