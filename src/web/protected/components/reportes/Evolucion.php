@@ -81,9 +81,6 @@ class Evolucion extends Reportes
     public function genExcel($nombre)
     {
         $estilos=array(
-            'font'=>array(
-                'bold' => true, 
-                ),
             'aligment'=>array(
                 'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                 ),
@@ -97,8 +94,8 @@ class Evolucion extends Reportes
                 ),
             'fill'=>array(
                 'type'=>PHPExcel_Style_Fill::FILL_SOLID,
-                'startColor'=>array(
-                    'argb'=>'198217241',
+                'startcolor'=>array(
+                    'argb'=>'FFC6D9F1',
                     ),
                 )
             );
@@ -149,6 +146,9 @@ class Evolucion extends Reportes
         foreach ($nombresColumnas as $key => $value)
         {
             $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A1', 'Fecha')->setCellValue('B1', 'Minutos')->setCellValue('C1', $value);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
             foreach ($resultados[$key] as $llave => $valores)
             {
                 $pos=$llave+2;

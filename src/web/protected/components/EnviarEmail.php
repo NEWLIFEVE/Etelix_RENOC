@@ -22,7 +22,7 @@ class EnviarEmail extends CApplicationComponent
      * @param string $ruta es la ruta donde esta el archivo adjunto
      * @param array $copia direcciones que seran copiadas al envio del correo
      */
-    public function enviar($html, $user, $asunto, $ruta,$copia=null)
+    public function enviar($html, $user, $asunto, $ruta, $copia=null)
     {
         if(isset($html) && isset($user))
         {
