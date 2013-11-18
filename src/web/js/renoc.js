@@ -80,14 +80,14 @@
  					},
  					tercero:{
  						id:'uno',
- 						name:'exece',
+ 						name:'porcentaje',
  						className:'',
  						type:'radio',
  						text:'+1%'
  					},
  					cuarto:{
  						id:'dos',
- 						name:'excede',
+ 						name:'porcentaje',
  						className:'',
  						type:'radio',
  						text:'+5%'
@@ -135,7 +135,7 @@
 				for(var key in radios)
 				{
 					console.dir(radios[key]);
-					//_showElement($("<dic"),options.spot);
+					_showElement($("<input class='"+radios[key].className+"' id='"+radios[key].id+"' type='"+radios[key].type+"' name='"+radios[key].name+"'>"+radios[key].text+"</input>"),options.spot);
 				}
 				/*_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);

@@ -300,6 +300,7 @@ class SiteController extends Controller
                 if(isset($_POST['group']))
                 {
                     $correos['group']['asunto']="RENOC Calidad ".$_POST['group'].self::reportTitle($startDate,$endingDate);
+                    if($_POST['group']=="CABINAS PERU");
                     $correos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
