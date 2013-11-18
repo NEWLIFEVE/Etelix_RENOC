@@ -115,88 +115,8 @@ class Reportes extends CApplicationComponent
      */
     public function RankingCompraVenta($inicio,$fin=null)
     {
-        $fechaInicio=$fechaFin=$variable=null;
-        $array=self::valDates($inicio,$fin);
-        $fechaInicio=$array['startDate'];
-        $fechaFin=$array['endingDate'];
-        if(self::howManyMonths($fechaInicio,$fechaFin)<=2 && self::howManyDaysBetween($fechaInicio,$fechaFin)<=5)
-        {
-            $variable="<table><thead>";
-            $variable.="<tr><td>".$fechaInicio." a ".$fechaFin."</td></tr></thead>";
-            $variable.=RankingCompraVenta::reporte($fechaInicio,$fechaFin);   
-        }
-        else
-        {
-            $fechaInicioTemp=$fechaInicio;
-            $fechaFinTemp=$fechaFin;
-            $arrayInicioTemp=null;
-            $apellidos=self::getManagers();
-            $objetos=array();
-            $index=0;
-            while (self::isLower($fechaInicioTemp,$fechaFin))
-            {
-                $arrayInicioTemp=explode('-',$fechaInicioTemp);
-                $fechaFinTemp=self::maxDate($arrayInicioTemp[0]."-".$arrayInicioTemp[1]."-".self::howManyDays($fechaInicioTemp),$fechaFin);
-                $objetos[$index]['Titulo']=self::reportTitle($fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['Vendedores']=RankingCompraVenta::getManagers(true,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalVendedores']=RankingCompraVenta::getTotalManagers(true,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['Compradores']=RankingCompraVenta::getManagers(false,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalCompradores']=RankingCompraVenta::getTotalManagers(false,$fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['Consolidados']=RankingCompraVenta::getConsolidados($fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalConsolidados']=RankingCompraVenta::getTotalConsolidado($fechaInicioTemp,$fechaFinTemp);
-                $objetos[$index]['TotalMargen']=RankingCompraVenta::getMargenTotal($fechaInicioTemp,$fechaFinTemp);
-                $fechaInicioTemp=$arrayInicioTemp[0]."-".($arrayInicioTemp[1]+1)."-01";
-                $index+=1;
-            }
-            $ultimo=count($objetos)-1;
-            $ordenados['Vendedores']=self::sortByList($apellidos,$objetos[$ultimo]['Vendedores'],'apellido');
-            $ordenados['Compradores']=self::sortByList($apellidos,$objetos[$ultimo]['Compradores'],'apellido');
-            $ordenados['Consolidados']=self::sortByList($apellidos,$objetos[$ultimo]['Consolidados'],'apellido');
-            $variable="<table><tr>";
-            foreach ($objetos as $key => $objeto)
-            {
-                $variable.="<td><div style='background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
-                //Vendedores
-                $variable.="<div><table>".RankingCompraVenta::getHeadManagers(true,$key,$ultimo);
-                $posicion=0;
-                foreach($ordenados['Vendedores'] as $keyV => $vendedor)
-                {
-                    $posicion+=1;
-                    $variable.=RankingCompraVenta::getRowManagers($vendedor,$objeto['Vendedores'],$posicion,$key,$ultimo,true);
-                }
-                $variable.=RankingCompraVenta::getHeadManagers(true,$key,$ultimo);
-                $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalVendedores'],$key,$ultimo)."</table></div><br>";
-                //Compradores
-                $variable.="<div style='background-color:#FFC8AE; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
-                $variable.="<div><table>".RankingCompraVenta::getHeadManagers(false,$key,$ultimo);
-                $posicion=0;
-                foreach($ordenados['Compradores'] as $keyC => $comprador)
-                {
-                    $posicion+=1;
-                    $variable.=RankingCompraVenta::getRowManagers($comprador,$objeto['Compradores'],$posicion,$key,$ultimo,false);
-                }
-                $variable.=RankingCompraVenta::getHeadManagers(false,$key,$ultimo);
-                $variable.=RankingCompraVenta::getRowTotalManagers($objeto['TotalCompradores'],$key,$ultimo)."</table></div></td><br>";
-            }
-            $variable.="</tr></table><br>";
-            $variable.="<p></p><table><tr>";
-            foreach ($objetos as $key => $objeto)
-            {
-                $variable.="<td><div style='background-color:#AFD699; color:#584E4E; border: 1px solid rgb(121, 115, 115);text-align:center;'>".$objeto['Titulo']."</div>";
-                $variable.="<div><table>".RankingCompraVenta::getHeadConsolidados($key,$ultimo);
-                $posicion=0;
-                foreach($ordenados['Consolidados'] as $keyC => $consolidado)
-                {
-                    $posicion+=1;
-                    $variable.=RankingCompraVenta::getRowConsolidado($consolidado,$objeto['Consolidados'],$posicion,$key,$ultimo);
-                }
-                $variable.=RankingCompraVenta::getHeadConsolidados($key,$ultimo);
-                $variable.=RankingCompraVenta::getRowTotalConsolidado($objeto['TotalMargen'],$key,$ultimo,true);
-                $variable.=RankingCompraVenta::getRowTotalConsolidado($objeto['TotalConsolidados'],$key,$ultimo,false)."</table></div></td>";
-            }
-            $variable.="</tr></table>";
-        }            
-        return $variable;
+        $reporte=new RankingCompraVenta();
+        return $reporte->reporte($starDate,$endingDate);
     }
 
     /**
@@ -943,7 +863,7 @@ class Reportes extends CApplicationComponent
      * @static
      * @return array $array
      */
-    protected static function getManagers()
+    protected function getLastNameManagers()
     {
         $array=array();
         $managers=Managers::getManagers();
