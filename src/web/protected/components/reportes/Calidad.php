@@ -17,11 +17,16 @@ class Calidad extends Reportes
 	 */
 	public static function getHtmlDestinations($startDate,$endingDate,$carrier,$type=true)
 	{
+		$nombre=Carrier::getName($carrier);
+		if($type==false)
+		{
+			$nombre=CarrierGroups::model()->find("id=:id",array(':id'=>$carrier))->name;
+		}
 		$model=self::getDestinations($startDate,$endingDate,$carrier,$type);
 		if($model!=null)
 		{
 			$cuerpo="<table>";
-			$cuerpo.="<tr><td colspan='13' style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>".Carrier::getName($carrier)."</td></tr>";
+			$cuerpo.="<tr><td colspan='13' style='background-color:#615E5E; color:#62C25E; width:10%; height:100%;'>".$nombre."</td></tr>";
         	$cuerpo.=self::cabecera(array('Ranking','Destino','Minutos','Intentos Totales','Intentos Completados','Intentos NC Inc. RI','Intentos NC Exc. RI','ASR Inc. RI','ASR Exc. RI','&Delta; ASR','ACD','PDD Inc. RI','PDD Exc. RI'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         	foreach ($model as $key => $destino)
         	{
@@ -85,7 +90,20 @@ class Calidad extends Reportes
 	private static function getDestinations($startDate,$endingDate,$carrier,$type)
 	{
 		$query="=".$carrier;
-		if($type==false) $query=" IN(SELECT id FROM carrier WHERE id_carrier_groups=".$carrier.")";
+		if($type==false)
+		{
+			$name=CarrierGroups::model()->find("id=:id",array(':id'=>$carrier))->name;
+			if($name=="CABINAS PERU")
+			{
+				$full=CarrierGroups::model()->find("name=:name",array(':name'=>"FULLREDPERU"))->id;
+				$etelix=CarrierGroups::model()->find("name=:name",array(':name'=>"R-ETELIX.COM PERU"))->id;
+				$query=" IN(SELECT id FROM carrier WHERE id_carrier_groups=".$full." OR id_carrier_groups=".$etelix.")";
+			}
+			else
+			{
+				$query=" IN(SELECT id FROM carrier WHERE id_carrier_groups=".$carrier.")";
+			}
+		}
 		$sql="SELECT d.name AS destino, b.minutes, b.total_calls, b.complete_calls_exc, b.incomplete_calls_inc, b.incomplete_calls_exc, b.asr_inc, b.asr_exc, b.asr_exc-b.asr_inc AS delta, b.acd, b.pdd_inc, b.pdd_exc
 			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, CASE WHEN SUM(b.complete_calls_inc)=0 THEN 0 ELSE (SUM(b.complete_calls_inc)*100/SUM(b.incomplete_calls_inc+b.complete_calls_inc)) END AS asr_inc, CASE WHEN SUM(b.complete_calls_exc)=0 THEN 0 ELSE (SUM(b.complete_calls_exc)*100/SUM(b.incomplete_calls_exc+b.complete_calls_exc)) END AS asr_exc, CASE WHEN SUM(b.minutes)=0 THEN 0 ELSE (SUM(b.minutes)/SUM(b.complete_calls_exc)) END AS acd, CASE WHEN SUM(pdd_inc)=0 THEN 0 ELSE (SUM(pdd_inc)/SUM(incomplete_calls_inc+complete_calls_inc)) END AS pdd_inc, CASE WHEN SUM(pdd_exc)=0 THEN 0 ELSE (SUM(pdd_exc)/SUM(incomplete_calls_exc+complete_calls_exc)) END AS pdd_exc
 			  	   FROM(SELECT id_destination, SUM(minutes) AS minutes, SUM(incomplete_calls) AS incomplete_calls_exc, CAST(0 AS double precision) AS incomplete_calls_inc, SUM(complete_calls) AS complete_calls_exc, CAST(0 AS double precision) AS complete_calls_inc, SUM(pdd) AS pdd_exc, CAST(0 AS double precision) AS pdd_inc
@@ -116,7 +134,20 @@ class Calidad extends Reportes
 	private static function getTotalDestinations($startDate,$endingDate,$carrier,$type)
 	{
 		$query="=".$carrier;
-		if($type==false) $query=" IN(SELECT id FROM carrier WHERE id_carrier_groups=".$carrier.")";
+		if($type==false)
+		{
+			$name=CarrierGroups::model()->find("id=:id",array(':id'=>$carrier))->name;
+			if($name=="CABINAS PERU")
+			{
+				$full=CarrierGroups::model()->find("name=:name",array(':name'=>"FULLREDPERU"))->id;
+				$etelix=CarrierGroups::model()->find("name=:name",array(':name'=>"R-ETELIX.COM PERU"))->id;
+				$query=" IN(SELECT id FROM carrier WHERE id_carrier_groups=".$full." OR id_carrier_groups=".$etelix.")";
+			}
+			else
+			{
+				$query=" IN(SELECT id FROM carrier WHERE id_carrier_groups=".$carrier.")";
+			}
+		}
 		$sql="SELECT SUM(b.minutes) AS minutes, SUM(b.total_calls_inc) AS total_calls, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.complete_calls_inc) AS complete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, (SUM(b.complete_calls_inc)*100)/SUM(b.total_calls_inc) AS asr_inc, (SUM(b.complete_calls_exc)*100)/SUM(b.total_calls_exc) AS asr_exc, SUM(b.minutes)/SUM(b.complete_calls_exc) AS acd, ((SUM(b.complete_calls_exc)*100)/SUM(b.total_calls_exc)-(SUM(b.complete_calls_inc)*100)/SUM(b.total_calls_inc)) AS delta, (SUM(b.pdd_inc)/SUM(b.incomplete_calls_inc+b.complete_calls_inc)) AS pdd_inc, (SUM(b.pdd_exc)/SUM(b.incomplete_calls_exc+b.complete_calls_exc)) AS pdd_exc
 			  FROM(SELECT b.id_destination, SUM(b.minutes) AS minutes, SUM(b.incomplete_calls_inc+b.complete_calls_inc) AS total_calls_inc, SUM(b.incomplete_calls_exc+b.complete_calls_exc) AS total_calls_exc, SUM(b.complete_calls_exc) AS complete_calls_exc, SUM(b.complete_calls_inc) AS complete_calls_inc, SUM(b.incomplete_calls_inc) AS incomplete_calls_inc, SUM(b.incomplete_calls_exc) AS incomplete_calls_exc, SUM(b.pdd_exc) AS pdd_exc, SUM(b.pdd_inc) AS pdd_inc
 			  	   FROM(SELECT id_destination, SUM(minutes) AS minutes, SUM(incomplete_calls) AS incomplete_calls_exc, CAST(0 AS double precision) AS incomplete_calls_inc, SUM(complete_calls) AS complete_calls_exc, CAST(0 AS double precision) AS complete_calls_inc, SUM(pdd) AS pdd_exc, CAST(0 AS double precision) AS pdd_inc
