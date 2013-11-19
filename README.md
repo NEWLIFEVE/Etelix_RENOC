@@ -2,6 +2,13 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.2
+- Reporte de Calidad validado para Grupo Cabinas Peru
+- Reporte de Ranking Compra/Venta, es modificado para que el nombre del rango sea ubicado en la mismo cuadro
+
+Release 1.3.1
+- Correccion de tiempo en generar reporte alto impacto
+
 Release 1.3.0
 - Reporte Alto impacto (+10$) por rango de fechas, dos versiones una resumida y otra completa.
 - Reporte Distribucion Comercial, agregado el campo estado.
