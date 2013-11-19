@@ -108,7 +108,7 @@ class AltoImpacto extends Reportes
                     { 
                         if($col==0)
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'></td>";
                         }
                         elseif($col>0 && $col<$num+1)
                         {
@@ -120,7 +120,7 @@ class AltoImpacto extends Reportes
                         }
                         else
                         {
-                            $cuerpo.="<td></td>";
+                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'></td>";
                         }
                     }
                     break;
