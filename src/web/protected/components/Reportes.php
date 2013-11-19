@@ -113,7 +113,7 @@ class Reportes extends CApplicationComponent
      * @param date $fin la fecha mayor a ser consultada, en caso de ser nula la fecha inicio sera la fecha final
      * @return $variable string con el cuerpo del reporte
      */
-    public function RankingCompraVenta($inicio,$fin=null)
+    public function RankingCompraVenta($starDate,$endingDate)
     {
         $reporte=new RankingCompraVenta();
         return $reporte->reporte($starDate,$endingDate);
@@ -875,7 +875,8 @@ class Reportes extends CApplicationComponent
     }
 
     /**
-     * Recibe un array con una lista y objeto CActiveRecord y ordena el array de acuerdo al objeto
+     * Recibe un array con una lista y objeto CActiveRecord, un string con el nombre del atributo por el que se ordena,
+     * devuelve un array con el atributo pasado como parametro del objeto, la lista es para agregar datos que el objeto no tenga.
      * @access protected
      * @static
      * @param array $lista
