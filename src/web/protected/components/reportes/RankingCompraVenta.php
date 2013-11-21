@@ -5,6 +5,12 @@
 */
 class RankingCompraVenta extends Reportes
 {
+    public $objetos;
+
+    function __construct()
+    {
+        $this->objetos=array();
+    }
     /**
      * Genera el reporte de compraventa
      * @access public
@@ -14,46 +20,16 @@ class RankingCompraVenta extends Reportes
      */
     public function reporte($start,$end)
     {
-        //verifico las fechas
-        $array=self::valDates($start,$end);
-        $startDateTemp=$startDate=$array['startDate'];
-        $endingDateTemp=$endingDate=$array['endingDate'];
-        $arrayStartTemp=null;
-        $objetos=array();
-        $index=0;
-        while (self::isLower($startDateTemp,$endingDate))
-        {
-            $arrayStartTemp=explode('-',$startDateTemp);
-            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
-            //El titulo que va a llevar la seccion
-            $objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
-            /*Guardo todos los vendedores*/
-            $objetos[$index]['sellers']=$this->getManagers($startDateTemp,$endingDateTemp,true);
-            /*Guardo los totales de los vendedores*/
-            $objetos[$index]['totalVendors']=$this->getTotalManagers($startDateTemp,$endingDateTemp,true);
-            /*Guardo los totales de los compradores*/
-            $objetos[$index]['buyers']=$this->getManagers($startDateTemp,$endingDateTemp,false);
-            /*Guardo los totales de todos los compradores*/
-            $objetos[$index]['totalBuyers']=$this->getTotalManagers($startDateTemp,$endingDateTemp,false);
-            /*guardo los totales de los compradores y vendedores consolidado*/
-            $objetos[$index]['consolidated']=$this->getConsolidados($startDateTemp,$endingDateTemp);
-            /*Guardo el total de los consolidados*/
-            $objetos[$index]['totalConsolidated']=$this->getTotalConsolidado($startDateTemp,$endingDateTemp);
-            /*Guardo el margen total de ese periodo*/
-            $objetos[$index]['totalMargen']=$this->getTotalMargen($startDateTemp,$endingDateTemp);
-
-            /*Itero la fecha*/
-            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
-            $index+=1;
-        }
+        $this->loopData($start,$end);
+        
         //Cuento el numero de objetos en el array
-        $num=count($objetos);
+        $num=count($this->objetos);
         $last=$num-1;
         $lastnames=self::getLastNameManagers();
         /*Arrays ordenados*/
-        $sorted['sellers']=self::sortByList($lastnames,$objetos[$last]['sellers'],'apellido');
-        $sorted['buyers']=self::sortByList($lastnames,$objetos[$last]['buyers'],'apellido');
-        $sorted['consolidated']=self::sortByList($lastnames,$objetos[$last]['consolidated'],'apellido');
+        $sorted['sellers']=self::sortByList($lastnames,$this->objetos[$last]['sellers'],'apellido');
+        $sorted['buyers']=self::sortByList($lastnames,$this->objetos[$last]['buyers'],'apellido');
+        $sorted['consolidated']=self::sortByList($lastnames,$this->objetos[$last]['consolidated'],'apellido');
         $body="<table>";
         for($row=0; $row<4; $row++)
         { 
@@ -70,7 +46,7 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$objetos[$col-1]['title']."</td>";
+                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-1]['title']."</td>";
                             if($col!=$num)
                             {
                                 $body.="<td style='width:5px;'></td>";
@@ -98,8 +74,8 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td>".$this->getHtmlTableData($sorted['sellers'],$objetos[$col-1]['sellers'],'apellido',$head,true).
-                                        $this->getHtmlTotal($objetos[$col-1]['totalVendors'],$head,true)."<br></td>";
+                            $body.="<td>".$this->getHtmlTableData($sorted['sellers'],$this->objetos[$col-1]['sellers'],'apellido',$head,true).
+                                        $this->getHtmlTotal($this->objetos[$col-1]['totalVendors'],$head,true)."<br></td>";
                             if($col!=$num)
                             {
                                 $body.="<td style='width:5px;'></td>";
@@ -127,8 +103,8 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td>".$this->getHtmlTableData($sorted['buyers'],$objetos[$col-1]['buyers'],'apellido',$head,true).
-                            $this->getHtmlTotal($objetos[$col-1]['totalBuyers'],$head,true)."<br></td>";
+                            $body.="<td>".$this->getHtmlTableData($sorted['buyers'],$this->objetos[$col-1]['buyers'],'apellido',$head,true).
+                            $this->getHtmlTotal($this->objetos[$col-1]['totalBuyers'],$head,true)."<br></td>";
                             if($col!=$num)
                             {
                                 $body.="<td style='width:5px;'></td>";
@@ -159,7 +135,7 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$objetos[$col-1]['title']."</td>";
+                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-1]['title']."</td>";
                             if($col!=$num)
                             {
                                 $body.="<td style='width:5px;'></td>";
@@ -188,9 +164,9 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td>".$this->getHtmlTableData($sorted['consolidated'],$objetos[$col-1]['consolidated'],'apellido',$head,false).
-                            $this->getHtmlTotal($objetos[$col-1]['totalConsolidated'],$head,false).
-                            $this->getHtmlTotalMargen($objetos[$col-1]['totalMargen'])."<br></td>";
+                            $body.="<td>".$this->getHtmlTableData($sorted['consolidated'],$this->objetos[$col-1]['consolidated'],'apellido',$head,false).
+                            $this->getHtmlTotal($this->objetos[$col-1]['totalConsolidated'],$head,false).
+                            $this->getHtmlTotalMargen($this->objetos[$col-1]['totalMargen'])."<br></td>";
                             if($col!=$num)
                             {
                                 $body.="<td style='width:5px;'></td>";
@@ -208,6 +184,50 @@ class RankingCompraVenta extends Reportes
         }
         $body.="</table>";
         return $body;
+    }
+
+    /**
+     * Encargado de hacer el loop de busqueda de base de datos retornando un array con el numero total de datos
+     * @access private
+     * @param date $star fecha de inicio
+     * @param date $end fecha fin
+     * @return void
+     */
+    private function loopData($start,$end)
+    {
+        //verifico las fechas
+        $array=self::valDates($start,$end);
+        $startDateTemp=$startDate=$array['startDate'];
+        $endingDateTemp=$endingDate=$array['endingDate'];
+        $equal=$array['equal'];
+        $arrayStartTemp=null;
+        $index=0;
+        while (self::isLower($startDateTemp,$endingDate))
+        {
+            $arrayStartTemp=explode('-',$startDateTemp);
+            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
+            //El titulo que va a llevar la seccion
+            $this->objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            /*Guardo todos los vendedores*/
+            $this->objetos[$index]['sellers']=$this->getManagers($startDateTemp,$endingDateTemp,true);
+            /*Guardo los totales de los vendedores*/
+            $this->objetos[$index]['totalVendors']=$this->getTotalManagers($startDateTemp,$endingDateTemp,true);
+            /*Guardo los valores de vendedores del dia anterior*/
+            $this->objetos[$index]['sellersYesterday']=
+            /*Guardo los totales de los compradores*/
+            $this->objetos[$index]['buyers']=$this->getManagers($startDateTemp,$endingDateTemp,false);
+            /*Guardo los totales de todos los compradores*/
+            $this->objetos[$index]['totalBuyers']=$this->getTotalManagers($startDateTemp,$endingDateTemp,false);
+            /*guardo los totales de los compradores y vendedores consolidado*/
+            $this->objetos[$index]['consolidated']=$this->getConsolidados($startDateTemp,$endingDateTemp);
+            /*Guardo el total de los consolidados*/
+            $this->objetos[$index]['totalConsolidated']=$this->getTotalConsolidado($startDateTemp,$endingDateTemp);
+            /*Guardo el margen total de ese periodo*/
+            $this->objetos[$index]['totalMargen']=$this->getTotalMargen($startDateTemp,$endingDateTemp);
+            /*Itero la fecha*/
+            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
+            $index+=1;
+        }
     }
 
     /**
