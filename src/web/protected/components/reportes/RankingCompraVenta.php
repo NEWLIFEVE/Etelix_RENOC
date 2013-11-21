@@ -198,6 +198,7 @@ class RankingCompraVenta extends Reportes
         //verifico las fechas
         $array=self::valDates($start,$end);
         $startDateTemp=$startDate=$array['startDate'];
+        $yesterday=Utility::calculateDate('-1',$startDateTemp);
         $endingDateTemp=$endingDate=$array['endingDate'];
         $equal=$array['equal'];
         $arrayStartTemp=null;
@@ -213,17 +214,29 @@ class RankingCompraVenta extends Reportes
             /*Guardo los totales de los vendedores*/
             $this->objetos[$index]['totalVendors']=$this->getTotalManagers($startDateTemp,$endingDateTemp,true);
             /*Guardo los valores de vendedores del dia anterior*/
-            if($equal==true) $this->objetos[$index]['sellersYesterday']=$this->getManagers(Utility::calculateDate('-1',$startDateTemp),Utility::calculateDate('-1',$startDateTemp));
+            if($equal==true) $this->objetos[$index]['sellersYesterday']=$this->getManagers($yesterday,$yesterday,true);
+            /*Guardo los totales de los vendedores del dia de ayer*/
+            if($equal==true) $this->objetos[$index]['totalVendorsYesterday']=$this->getTotalManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los compradores*/
             $this->objetos[$index]['buyers']=$this->getManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los totales de todos los compradores*/
             $this->objetos[$index]['totalBuyers']=$this->getTotalManagers($startDateTemp,$endingDateTemp,false);
+            /*Guardo los valores de compradores del dia anterior*/
+            if($equal==true) $this->objetos[$index]['buyersYesterday']=$this->getManagers($yesterday,$yesterday,false);
+            /*Guardo los totales de los compradores del dia de ayer*/
+            if($equal==true) $this->objetos[$index]['totalBuyersYesterday']=$this->getTotalManagers($yesterday,$yesterday,false);
             /*guardo los totales de los compradores y vendedores consolidado*/
             $this->objetos[$index]['consolidated']=$this->getConsolidados($startDateTemp,$endingDateTemp);
             /*Guardo el total de los consolidados*/
             $this->objetos[$index]['totalConsolidated']=$this->getTotalConsolidado($startDateTemp,$endingDateTemp);
             /*Guardo el margen total de ese periodo*/
             $this->objetos[$index]['totalMargen']=$this->getTotalMargen($startDateTemp,$endingDateTemp);
+            /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
+            if($equal==true) $this->objetos[$index]['consolidatedYesterday']=$this->getConsolidados($yesterday,$yesterday);
+            /*Guardo el total de los consolidados del dia de ayer*/
+            if($equal==true) $this->objetos[$index]['totalConsolidatedYesterday']=$this->getTotalConsolidado($yesterday,$yesterday);
+            /*Guardo el margen total de ese periodo del dia de ayer*/
+            if($equal==true) $this->objetos[$index]['totalMargenYesterday']=$this->getTotalMargen($yesterday,$yesterday);
             /*Itero la fecha*/
             $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
             $index+=1;
