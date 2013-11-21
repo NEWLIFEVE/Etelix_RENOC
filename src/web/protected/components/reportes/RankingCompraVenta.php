@@ -213,7 +213,7 @@ class RankingCompraVenta extends Reportes
             /*Guardo los totales de los vendedores*/
             $this->objetos[$index]['totalVendors']=$this->getTotalManagers($startDateTemp,$endingDateTemp,true);
             /*Guardo los valores de vendedores del dia anterior*/
-            $this->objetos[$index]['sellersYesterday']=
+            if($equal==true) $this->objetos[$index]['sellersYesterday']=$this->getManagers(Utility::calculateDate('-1',$startDateTemp),Utility::calculateDate('-1',$startDateTemp));
             /*Guardo los totales de los compradores*/
             $this->objetos[$index]['buyers']=$this->getManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los totales de todos los compradores*/
