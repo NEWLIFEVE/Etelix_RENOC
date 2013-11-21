@@ -17,7 +17,7 @@ class Utility
 	public static function calculateDate($days,$date)
 	{
 		$newDate=strtotime($days.' day',strtotime($date));
-		return date('Y-m-d',$nuevafecha);
+		return date('Y-m-d',$newDate);
 	}
 }
 ?>
