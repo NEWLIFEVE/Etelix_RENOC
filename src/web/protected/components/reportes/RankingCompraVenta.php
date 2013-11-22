@@ -5,11 +5,19 @@
 */
 class RankingCompraVenta extends Reportes
 {
+    /**
+     * @var array
+     */
     public $objetos;
+    /**
+     * @var boolean
+     */
+    public $equal;
 
     function __construct()
     {
         $this->objetos=array();
+        $this->equal=false;
     }
     /**
      * Genera el reporte de compraventa
@@ -74,7 +82,7 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td>".$this->getHtmlTableData($sorted['sellers'],$this->objetos[$col-1]['sellers'],'apellido',$head,true).
+                            $body.="<td>".$this->getHtmlTableData($sorted['sellers'],$col-1,'sellers','apellido',$head,true).
                                         $this->getHtmlTotal($this->objetos[$col-1]['totalVendors'],$head,true)."<br></td>";
                             if($col!=$num)
                             {
@@ -103,7 +111,7 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td>".$this->getHtmlTableData($sorted['buyers'],$this->objetos[$col-1]['buyers'],'apellido',$head,true).
+                            $body.="<td>".$this->getHtmlTableData($sorted['buyers'],$col-1,'buyers','apellido',$head,true).
                             $this->getHtmlTotal($this->objetos[$col-1]['totalBuyers'],$head,true)."<br></td>";
                             if($col!=$num)
                             {
@@ -164,7 +172,7 @@ class RankingCompraVenta extends Reportes
                         }
                         elseif($col>0 && $col<$num+1)
                         {
-                            $body.="<td>".$this->getHtmlTableData($sorted['consolidated'],$this->objetos[$col-1]['consolidated'],'apellido',$head,false).
+                            $body.="<td>".$this->getHtmlTableData($sorted['consolidated'],$col-1,'consolidated','apellido',$head,false).
                             $this->getHtmlTotal($this->objetos[$col-1]['totalConsolidated'],$head,false).
                             $this->getHtmlTotalMargen($this->objetos[$col-1]['totalMargen'])."<br></td>";
                             if($col!=$num)
@@ -200,7 +208,7 @@ class RankingCompraVenta extends Reportes
         $startDateTemp=$startDate=$array['startDate'];
         $yesterday=Utility::calculateDate('-1',$startDateTemp);
         $endingDateTemp=$endingDate=$array['endingDate'];
-        $equal=$array['equal'];
+        $this->equal=$array['equal'];
         $arrayStartTemp=null;
         $index=0;
         while (self::isLower($startDateTemp,$endingDate))
@@ -214,17 +222,17 @@ class RankingCompraVenta extends Reportes
             /*Guardo los totales de los vendedores*/
             $this->objetos[$index]['totalVendors']=$this->getTotalManagers($startDateTemp,$endingDateTemp,true);
             /*Guardo los valores de vendedores del dia anterior*/
-            if($equal==true) $this->objetos[$index]['sellersYesterday']=$this->getManagers($yesterday,$yesterday,true);
+            if($this->equal) $this->objetos[$index]['sellersYesterday']=$this->getManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los vendedores del dia de ayer*/
-            if($equal==true) $this->objetos[$index]['totalVendorsYesterday']=$this->getTotalManagers($yesterday,$yesterday,true);
+            if($this->equal) $this->objetos[$index]['totalVendorsYesterday']=$this->getTotalManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los compradores*/
             $this->objetos[$index]['buyers']=$this->getManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los totales de todos los compradores*/
             $this->objetos[$index]['totalBuyers']=$this->getTotalManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los valores de compradores del dia anterior*/
-            if($equal==true) $this->objetos[$index]['buyersYesterday']=$this->getManagers($yesterday,$yesterday,false);
+            if($this->equal) $this->objetos[$index]['buyersYesterday']=$this->getManagers($yesterday,$yesterday,false);
             /*Guardo los totales de los compradores del dia de ayer*/
-            if($equal==true) $this->objetos[$index]['totalBuyersYesterday']=$this->getTotalManagers($yesterday,$yesterday,false);
+            if($this->equal) $this->objetos[$index]['totalBuyersYesterday']=$this->getTotalManagers($yesterday,$yesterday,false);
             /*guardo los totales de los compradores y vendedores consolidado*/
             $this->objetos[$index]['consolidated']=$this->getConsolidados($startDateTemp,$endingDateTemp);
             /*Guardo el total de los consolidados*/
@@ -232,11 +240,11 @@ class RankingCompraVenta extends Reportes
             /*Guardo el margen total de ese periodo*/
             $this->objetos[$index]['totalMargen']=$this->getTotalMargen($startDateTemp,$endingDateTemp);
             /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
-            if($equal==true) $this->objetos[$index]['consolidatedYesterday']=$this->getConsolidados($yesterday,$yesterday);
+            if($this->equal) $this->objetos[$index]['consolidatedYesterday']=$this->getConsolidados($yesterday,$yesterday);
             /*Guardo el total de los consolidados del dia de ayer*/
-            if($equal==true) $this->objetos[$index]['totalConsolidatedYesterday']=$this->getTotalConsolidado($yesterday,$yesterday);
+            if($this->equal) $this->objetos[$index]['totalConsolidatedYesterday']=$this->getTotalConsolidado($yesterday,$yesterday);
             /*Guardo el margen total de ese periodo del dia de ayer*/
-            if($equal==true) $this->objetos[$index]['totalMargenYesterday']=$this->getTotalMargen($yesterday,$yesterday);
+            if($this->equal) $this->objetos[$index]['totalMargenYesterday']=$this->getTotalMargen($yesterday,$yesterday);
             /*Itero la fecha*/
             $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
             $index+=1;
@@ -393,22 +401,36 @@ class RankingCompraVenta extends Reportes
      * @param $type true=minutes,revenue,margin false=margin
      * @return string
      */
-    private function getRow($attribute,$phrase,$object,$position,$head,$type=true)
+    private function getRow($attribute,$phrase,$index,$index2,$position,$head,$type=true)
     {
-        $body="";
-        foreach ($object as $key => $value)
+        $primera=$segunda=$tercera=$cuarta=null;
+        foreach ($this->objetos[$index][$index2] as $key => $value)
         {
             if($value->$attribute == $phrase)
-            {
-                $body.="<tr style='".$head['styleBody']."'>";
-                            if($type==true) $body.="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                            if($type==true) $body.="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                            $body.="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
-                          $body.="</tr>";
-                return $body;
+            {               
+                if($type==true) $primera="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $segunda="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $tercera="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";         
             }
         }
-        $body.="<tr style='".$head['styleBody']."'><td>--</td><td>--</td><td>--</td></tr>";
+        if($this->equal)
+        {
+            foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
+            {
+                if($value->$attribute == $phrase) $cuarta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        if($type==true)
+        {
+            if($primera==null) $primera="<td>--<td>";
+            if($segunda==null) $segunda="<td>--</td>";
+        }
+        if($tercera==null) $tercera="<td>--</td>";
+        if($this->equal)
+        {
+            if($cuarta==null) $cuarta="<td>--</td>";
+        } 
+        $body="<tr style='".$head['styleBody']."'>".$primera.$segunda.$tercera.$cuarta."</tr>";
         return $body;
     }
 
@@ -418,23 +440,24 @@ class RankingCompraVenta extends Reportes
      * @param array $list es la lista de apellidos ordenados para sacarlos en la fila
      * @param 
      */
-    private function getHtmlTableData($list,$data,$attribute,$head,$type=true)
+    private function getHtmlTableData($list,$index,$index2,$attribute,$head,$type=true)
     {
         $columns=array('Margin');
-        if($type==true) $columns=array('Minutes','Revenue','Margin');
+        if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
+        if($this->equal) $columns=array_merge($columns,array('Ayer','Promedio','Acumulado','Cierre Mes'));
 
         $body="<table>
                     <thead>";
                         $body.=self::cabecera($columns,$head['styleHead']);
                     $body.="</thead>
                  <tbody>";
-        if($data!=NULL)
+        if($this->objetos[$index][$index2]!=NULL)
         {
             $pos=0;
             foreach ($list as $key => $manager)
             {
                 $pos=$pos+1;
-                $body.=$this->getRow($attribute,$manager,$data,$pos,$head,$type);
+                $body.=$this->getRow($attribute,$manager,$index,$index2,$pos,$head,$type);
             }
         }
         else
@@ -455,7 +478,9 @@ class RankingCompraVenta extends Reportes
     private function getHtmlTotal($total,$head,$type=true)
     {
         $columns=array('Margin');
-        if($type==true) $columns=array('Minutes','Revenue','Margin');
+        if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
+        if($this->equal) $columns=array_merge($columns,array('Ayer','Promedio','Acumulado','Cierre Mes'));
+
         $body="<table>";
         $body.=self::cabecera($columns,$head['styleHead']);
                     $body.="<tr style='".$head['styleFooter']."'>";
