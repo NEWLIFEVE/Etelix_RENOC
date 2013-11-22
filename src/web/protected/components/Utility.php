@@ -19,5 +19,18 @@ class Utility
 		$newDate=strtotime($days.' day',strtotime($date));
 		return date('Y-m-d',$newDate);
 	}
+
+	/**
+	 * Metodo que lleva a dia uno cualquier fecha psada como parametro
+	 * @access public
+	 * @static
+	 * @param date $date es la fecha en formato yyyy-mm-dd
+	 * @return date yyyy-mm-dd
+	 */
+	public static function getDayOne($date)
+	{
+		$arrayDate=explode("-",$date);
+		return $arrayDate[0]."-".$arrayDate[1]."-01";
+	}
 }
 ?>
