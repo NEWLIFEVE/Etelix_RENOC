@@ -925,11 +925,13 @@ class Reportes extends CApplicationComponent
         if($end==null)
         {
             $array['endingDate']=$array['startDate']=$start;
+            $array['equal']=true;
         }
         else
         {
             $array['startDate']=$start;
             $array['endingDate']=$end;
+            $array['equal']=false;
         }
         return $array;
     }

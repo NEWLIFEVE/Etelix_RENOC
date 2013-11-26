@@ -2,6 +2,9 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.3
+- Reporte Ranking Compra/Venta, es modificado para que incluya el margen del dia de ayer, el acumulado hasta el dia consultado, el promedio de los ultimos 7 dias, y el pronostico de cierre.
+
 Release 1.3.2
 - Reporte de Calidad validado para Grupo Cabinas Peru
 - Reporte de Ranking Compra/Venta, es modificado para que el nombre del rango sea ubicado en la mismo cuadro
