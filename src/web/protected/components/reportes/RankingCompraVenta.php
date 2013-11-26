@@ -840,6 +840,7 @@ class RankingCompraVenta extends Reportes
      */
     private function leastOneMonth($date)
     {
+        
         $firstday=Utility::getDayOne($date);
     }       
 }
