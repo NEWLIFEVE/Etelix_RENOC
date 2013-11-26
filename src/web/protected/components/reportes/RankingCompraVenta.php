@@ -288,10 +288,14 @@ class RankingCompraVenta extends Reportes
             if($this->equal) $this->objetos[$index]['consolidatedAverage']=$this->_getAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
             /*Guardo el proomedio total de los margenes consolidados*/
             if($this->equal) $this->objetos[$index]['totalConsolidatedAverage']=$this->_getTotalAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
+            /*Guardo el promedio del margen total*/
+            if($this->equal) $this->objetos[$index]['totalMargenAverage']=$this->_getAvgTotalMargin($sevenDaysAgo,$yesterday);
             /*guardo los totales de los compradores y vendedores consolidado*/
             if($this->equal) $this->objetos[$index]['consolidatedAccumulated']=$this->_getConsolidados($firstDay,$startDate);
             /*guardo el total de los acumulados hasta la fecha consultada*/
             if($this->equal) $this->objetos[$index]['totalConsolidatedAccumulated']=$this->_getTotalConsolidado($firstDay,$startDate);
+            /*Guardo el total de los margenes acumulados hasta esa fecha*/
+            if($this->equal) $this->objetos[$index]['totalMargenAccumulated']=$this->_getTotalMargen($firstDay,$startDate);
             /*Guardo los pronosticos de los vendedores*/
             if($this->equal) $this->objetos[$index]['consolidatedForecast']=$this->_closeOfTheMonth($lastnames,$index,'consolidatedAverage','consolidatedAccumulated');
             /*guardo los totales de cierre de mes*/
@@ -526,6 +530,39 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
+     * Metodo que retorna el total de margen de un periodo especifico
+     * @access private
+     * @param date $startDate
+     * @param date $edingDate
+     * @return CActiveRecord
+     */
+    private function _getTotalMargen($startDate,$edingDate)
+    {
+        $sql="SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM balance
+              WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
+
+        return Balance::model()->findBySql($sql);
+    }
+
+    /**
+     * Encargado de obtener el promedio total de los margenes totales de unn rango de fechas
+     * @access private
+     * @param date $startDate fecha de inicio de la consulta
+     * @param date $edingDate fecha fin de la consulta
+     * @return CActiveRecord
+     */
+    private function _getAvgTotalMargin($startDate,$endingDate)
+    {
+        $sql="SELECT AVG(b.margin) AS margin
+              FROM (SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, date_balance
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                    GROUP BY date_balance) b";
+        return Balance::model()->findBySql($sql);
+    }
+
+    /**
      * Genera una tabla con la lista y ranking del dato pasado
      * @access private
      * @static
@@ -698,22 +735,6 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
-     * Metodo que retorna el total de margen de un periodo especifico
-     * @access private
-     * @param date $startDate
-     * @param date $edingDate
-     * @return CActiveRecord
-     */
-    private function _getTotalMargen($startDate,$edingDate)
-    {
-        $sql="SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-              FROM balance
-              WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
-
-        return Balance::model()->findBySql($sql);
-    }
-
-    /**
      * Retorna el html del total del margen
      * @access private
      * @param CActiveRecord $data el objeto que se va a imprimir
@@ -723,13 +744,15 @@ class RankingCompraVenta extends Reportes
     {
         $data=$this->objetos[$index][$index2];
         if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
+        if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
+        if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
         $body="<table>
                     <tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
                         <td>".Yii::app()->format->format_decimal($data->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
-        if($this->equal) $body.="<td> -- </td>";
-        if($this->equal) $body.="<td> -- </td>";
-        if($this->equal) $body.="<td> -- </td>";
+        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
+        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
         $body.="</tr>
                 </table>";
         return $body;
