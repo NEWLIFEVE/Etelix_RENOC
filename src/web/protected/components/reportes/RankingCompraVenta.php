@@ -455,7 +455,7 @@ class RankingCompraVenta extends Reportes
         {
             $manager="id_carrier_supplier";
         }
-        $sql="SELECT AVG(t.margin) AS margin
+        $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
                           FROM (SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
