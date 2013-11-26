@@ -131,7 +131,7 @@
 			{
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
 				//radios
-				var radios=options.checks;
+				/*var radios=options.checks;
 				for(var key in radios)
 				{
 					console.dir(radios[key]);
