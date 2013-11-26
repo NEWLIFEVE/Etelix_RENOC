@@ -506,7 +506,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _getTotalAvgConsolidatedManagers($startDate,$endingDate)
     {
-        $sql="SELECT AVG(t.margin) AS margin
+        $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, cs.date_balance, SUM(cs.margin) AS margin
                           FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
