@@ -614,7 +614,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _getRow($attribute,$phrase,$index,$index2,$position,$head,$type=true)
     {
-        $primera=$segunda=$tercera=$cuarta=$quinta=$sexta=$septima=null;
+        $primera=$segunda=$tercera=$cuarta=$quinta=$sexta=$septima=$previus=null;
         if($this->equal)
         {
             foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
