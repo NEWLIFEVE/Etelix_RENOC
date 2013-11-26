@@ -578,20 +578,15 @@ class RankingCompraVenta extends Reportes
     private function _getRow($attribute,$phrase,$index,$index2,$position,$head,$type=true)
     {
         $primera=$segunda=$tercera=$cuarta=$quinta=$sexta=$septima=null;
-        foreach ($this->objetos[$index][$index2] as $key => $value)
-        {
-            if($value->$attribute == $phrase)
-            {               
-                if($type==true) $primera="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($type==true) $segunda="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $tercera="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";         
-            }
-        }
         if($this->equal)
         {
             foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
             {
-                if($value->$attribute == $phrase) $cuarta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($value->$attribute == $phrase)
+                {
+                    $cuarta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $previus=$value->margin;
+                }
             }
             foreach ($this->objetos[$index][$index2.'Average'] as $key => $value)
             {
@@ -608,6 +603,15 @@ class RankingCompraVenta extends Reportes
                 }
             }
             $septima="<td>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+        }
+        foreach ($this->objetos[$index][$index2] as $key => $value)
+        {
+            if($value->$attribute == $phrase)
+            {               
+                if($type==true) $primera="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $segunda="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $tercera="<td>".$this->_upOrDown($previus,$value->margin).Yii::app()->format->format_decimal($value->margin)."</td>";         
+            }
         }
         if($type==true)
         {
@@ -754,6 +758,7 @@ class RankingCompraVenta extends Reportes
 
     /**
      * calcula el pronostico de cierre
+     * @access private
      */
     private function _closeOfTheMonth($phrase,$index,$average,$accumulated)
     {
@@ -776,6 +781,32 @@ class RankingCompraVenta extends Reportes
             }
         }
         return $array;
-    }                
+    }
+
+    /**
+     * Metodo encargado de colocar un simbolo de subida o bajada en el html
+     * @access private
+     * @param int $previous es el valor anterior
+     * @param int $actual es el valor actual a revisar
+     * @return string
+     */
+    private function _upOrDown($previus,$actual)
+    {
+        if($previus!=null || $previus!="")
+        {
+            if($actual>=$previus)
+            {
+                return "<font style='color:green;'>&#9650;</font>";
+            }
+            else
+            {
+                return "<font style='color:red;'>&#9660;</font>";
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }              
 }
 ?>
