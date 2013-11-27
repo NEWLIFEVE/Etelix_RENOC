@@ -831,17 +831,5 @@ class RankingCompraVenta extends Reportes
             return false;
         }
     }
-
-    /**
-     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos
-     * @access private
-     * @param date $date
-     * @return array
-     */
-    private function leastOneMonth($date)
-    {
-        
-        $firstday=Utility::getDayOne($date);
-    }       
 }
 ?>
