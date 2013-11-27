@@ -232,6 +232,10 @@ class RankingCompraVenta extends Reportes
             $this->objetos[$index]['sellers']=$this->_getManagers($startDateTemp,$endingDateTemp,true);
             /*Guardo los totales de los vendedores*/
             $this->objetos[$index]['totalVendors']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,true);
+            /*El total del margen por vendedor mes anterior*/
+            if($this->equal) $this->objetos[$index]['sellersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            /*Guardo los totales de los vendedores*/
+            if($this->equal) $this->objetos[$index]['totalVendorsPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
             /*Guardo los valores de vendedores del dia anterior*/
             if($this->equal) $this->objetos[$index]['sellersYesterday']=$this->_getManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los vendedores del dia de ayer*/
@@ -254,6 +258,10 @@ class RankingCompraVenta extends Reportes
             $this->objetos[$index]['buyers']=$this->_getManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los totales de todos los compradores*/
             $this->objetos[$index]['totalBuyers']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,false);
+            /*El total del margen por compradores mes anterior*/
+            if($this->equal) $this->objetos[$index]['buyersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            /*Guardo los totales de los compradores*/
+            if($this->equal) $this->objetos[$index]['totalBuyersPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
             /*Guardo los valores de compradores del dia anterior*/
             if($this->equal) $this->objetos[$index]['buyersYesterday']=$this->_getManagers($yesterday,$yesterday,false);
             /*Guardo los totales de los compradores del dia de ayer*/
@@ -278,6 +286,12 @@ class RankingCompraVenta extends Reportes
             $this->objetos[$index]['totalConsolidated']=$this->_getTotalConsolidado($startDateTemp,$endingDateTemp);
             /*Guardo el margen total de ese periodo*/
             $this->objetos[$index]['totalMargen']=$this->_getTotalMargen($startDateTemp,$endingDateTemp);
+            /*guardo los totales de los compradores y vendedores consolidado*/
+            $this->objetos[$index]['consolidatedPreviousMonth']=$this->_getConsolidados($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            /*Guardo el total de los consolidados*/
+            $this->objetos[$index]['totalConsolidatedPreviousMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            /*Guardo el margen total de ese periodo*/
+            $this->objetos[$index]['totalMargenPreviousMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
             /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
             if($this->equal) $this->objetos[$index]['consolidatedYesterday']=$this->_getConsolidados($yesterday,$yesterday);
             /*Guardo el total de los consolidados del dia de ayer*/
@@ -614,56 +628,75 @@ class RankingCompraVenta extends Reportes
      */
     private function _getRow($attribute,$phrase,$index,$index2,$position,$head,$type=true)
     {
-        $primera=$segunda=$tercera=$cuarta=$quinta=$sexta=$septima=$previus=null;
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $margin=$previous=$average=$previousMonth=null;
+        foreach ($this->objetos[$index][$index2] as $key => $value)
+        {
+            if($value->$attribute == $phrase)
+            {               
+                if($type==true) $uno="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $dos="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $tres="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                $margin=$value->margin;
+            }
+        }
         if($this->equal)
         {
             foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
             {
                 if($value->$attribute == $phrase)
                 {
-                    $cuarta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
-                    $previus=$value->margin;
+                    $cinco="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $previous=$value->margin;
                 }
             }
+            $cuatro="<td>".$this->_upOrDown($previous,$margin)."</td>";
             foreach ($this->objetos[$index][$index2.'Average'] as $key => $value)
             {
                 if($value->$attribute == $phrase)
                 {
-                    $quinta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $siete="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $average=$value->margin;
                 }
             }
+            $seis="<td>".$this->_upOrDown($average,$margin)."</td>";
             foreach ($this->objetos[$index][$index2.'Accumulated'] as $key => $value)
             {
                 if($value->$attribute == $phrase)
                 {
-                    $sexta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $ocho="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 }
             }
-            $septima="<td>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
-        }
-        foreach ($this->objetos[$index][$index2] as $key => $value)
-        {
-            if($value->$attribute == $phrase)
-            {               
-                if($type==true) $primera="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($type==true) $segunda="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $tercera="<td>".$this->_upOrDown($previus,$value->margin).Yii::app()->format->format_decimal($value->margin)."</td>";         
+            $nueve="<td>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            foreach ($this->objetos[$index][$index2.'PreviousMonth'] as $key => $value)
+            {
+                if($value->$attribute == $phrase)
+                {
+                    $once="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $previousMonth=$value->margin;
+                }
             }
+            $diez="<td>".$this->_upOrDown($previousMonth,$this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
         }
+        
         if($type==true)
         {
-            if($primera==null) $primera="<td>--<td>";
-            if($segunda==null) $segunda="<td>--</td>";
+            if($uno==null) $uno="<td>--<td>";
+            if($dos==null) $dos="<td>--</td>";
         }
-        if($tercera==null) $tercera="<td>--</td>";
+        if($tres==null) $tres="<td>--</td>";
         if($this->equal)
         {
-            if($cuarta==null) $cuarta="<td>--</td>";
-            if($quinta==null) $quinta="<td>--</td>";
-            if($sexta==null) $sexta="<td>--</td>";
-            if($septima==null) $septima="<td>--</td>";
+            if($cuatro==null) $cuatro="<td></td>";
+            if($cinco==null) $cinco="<td>--</td>";
+            if($seis==null) $seis="<td></td>";
+            if($siete==null) $siete="<td>--</td>";
+            if($ocho==null) $ocho="<td>--</td>";
+            if($nueve==null) $nueve="<td>--</td>";
+            if($diez==null) $siete="<td></td>";
+            if($once==null) $siete="<td>--</td>";
         } 
-        $body="<tr style='".$head['styleBody']."'>".$primera.$segunda.$tercera.$cuarta.$quinta.$sexta.$septima."</tr>";
+        $body="<tr style='".$head['styleBody']."'>".$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once."</tr>";
         return $body;
     }
 
@@ -677,7 +710,7 @@ class RankingCompraVenta extends Reportes
     {
         $columns=array('Margin');
         if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
-        if($this->equal) $columns=array_merge($columns,array('Ayer','Promedio','Acumulado','Cierre Mes'));
+        if($this->equal) $columns=array_merge($columns,array('','Dia Anterior','','Promedio 7D','Acumulado Mes','Proyeccion Mes','','Mes Anterior'));
 
         $body="<table>
                     <thead>";
@@ -716,8 +749,9 @@ class RankingCompraVenta extends Reportes
         if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
         if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
         if($this->equal) $close=$this->objetos[$index][$index2.'Close'];
+        if($this->equal) $previousMonth=$this->objetos[$index][$index2.'PreviousMonth'];
         if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
-        if($this->equal) $columns=array_merge($columns,array('Ayer','Promedio','Acumulado','Cierre Mes'));
+        if($this->equal) $columns=array_merge($columns,array('','Dia Anterior','','Promedio 7D','Acumulado Mes','Proyeccion Mes','','Mes Anterior'));
 
         $body="<table>";
         $body.=self::cabecera($columns,$head['styleHead']);
@@ -725,10 +759,14 @@ class RankingCompraVenta extends Reportes
         if($type==true) $body.="<td>".Yii::app()->format->format_decimal($total->minutes)."</td>";
         if($type==true) $body.="<td>".Yii::app()->format->format_decimal($total->revenue)."</td>";
         $body.="<td>".Yii::app()->format->format_decimal($total->margin)."</td>";
+        if($this->equal) $body.="<td>".$this->_upOrDown($yesterday->margin,$total->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal) $body.="<td>".$this->_upOrDown($average->margin,$total->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($close)."</td>";
+        if($this->equal) $body.="<td>".$this->_upOrDown($previousMonth->margin,$close)."</td>";
+        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         $body.="</tr>
                 </table>";
         return $body;
@@ -746,13 +784,18 @@ class RankingCompraVenta extends Reportes
         if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
         if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
         if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
+        if($this->equal) $previousMonth=$this->objetos[$index][$index2.'PreviousMonth'];
         $body="<table>
                     <tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
                         <td>".Yii::app()->format->format_decimal($data->margin)."</td>";
+        if($this->equal) $body.="<td>".$this->_upOrDown($yesterday->margin,$data->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal) $body.="<td>".$this->_upOrDown($average->margin,$data->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
         if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $body.="<td>".$this->_upOrDown($previousMonth->margin,$accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         $body.="</tr>
                 </table>";
         return $body;
@@ -813,11 +856,11 @@ class RankingCompraVenta extends Reportes
      * @param int $actual es el valor actual a revisar
      * @return string
      */
-    private function _upOrDown($previus,$actual)
+    private function _upOrDown($previous,$actual)
     {
-        if($previus!=null || $previus!="")
+        if($previous!=null || $previous!="")
         {
-            if($actual>=$previus)
+            if($actual>=$previous)
             {
                 return "<font style='color:green;'>&#9650;</font>";
             }
