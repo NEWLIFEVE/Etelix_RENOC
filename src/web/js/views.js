@@ -176,7 +176,6 @@ ajax.prototype.genExcel=function()
 
     for(var key in reportes)
     {
-        console.log("Reporte: "+reportes[key].name+" Valor: "+reportes[key].value);
         if(reportes[key].name=="lista[calidad]")
         {
             for(var key2 in opciones)
