@@ -2,6 +2,19 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.4
+- Reporte Ranking Compra Venta, Agregada la columna de cierre del mes anterior, ademas de columnas indicadoras del margen con respecto al dia anterior y el promedio. columna indicadora con respecto a la proyeccion de cierre de mes y monto cierre de mes anterior.
+
+Release 1.3.3
+- Reporte Ranking Compra/Venta, es modificado para que incluya el margen del dia de ayer, el acumulado hasta el dia consultado, el promedio de los ultimos 7 dias, y el pronostico de cierre.
+
+Release 1.3.2
+- Reporte de Calidad validado para Grupo Cabinas Peru
+- Reporte de Ranking Compra/Venta, es modificado para que el nombre del rango sea ubicado en la mismo cuadro
+
+Release 1.3.1
+- Correccion de tiempo en generar reporte alto impacto
+
 Release 1.3.0
 - Reporte Alto impacto (+10$) por rango de fechas, dos versiones una resumida y otra completa.
 - Reporte Distribucion Comercial, agregado el campo estado.

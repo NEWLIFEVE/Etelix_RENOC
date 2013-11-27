@@ -33,6 +33,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>
+                <div class="choice_parametros group">
+                    <input type="checkbox" value="true" id="Group" class="custom-checkbox" name="lista[Group]">
+                    <label for="Group">
+                        <h4 id="td1">
+                            Grupo
+                        </h4>
+                    </label>
+                </div>
                 <footer id="footer_especificos">
                     <div id="excel" class="botones">
                         <img src="/images/excel.png" class='ver'>

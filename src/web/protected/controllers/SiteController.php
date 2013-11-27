@@ -178,7 +178,6 @@ class SiteController extends Controller
         {
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
-            if(isset($_POST['carrier'])) $carrier=$_POST['carrier'];
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
@@ -292,9 +291,18 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['calidad']))
             {
-                $correos['calidad']['asunto']="RENOC Calidad ".$carrier.self::reportTitle($startDate,$endingDate);
-                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$carrier))->id);
-                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['calidad']['asunto'].".xls";
+                if(isset($_POST['carrier']))
+                {
+                    $correos['carrier']['asunto']="RENOC Calidad ".$_POST['carrier'].self::reportTitle($startDate,$endingDate);
+                    $correos['carrier']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$_POST['carrier']))->id,true);
+                    $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                }
+                if(isset($_POST['group']))
+                {
+                    $correos['group']['asunto']="RENOC Calidad ".$_POST['group'].self::reportTitle($startDate,$endingDate);
+                    $correos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
+                    $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                }
             }
         }
         $tiempo=30*count($correos);
@@ -416,8 +424,16 @@ class SiteController extends Controller
             }
             if(isset($_GET['lista']['calidad']))
             {
-                $archivos['calidad']['nombre']="RENOC Calidad ".$carrier.self::reportTitle($startDate,$endingDate);
-                $archivos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$carrier))->id);
+                if(isset($_GET['carrier']))
+                {
+                    $archivos['carrier']['nombre']="RENOC Calidad ".$_GET['carrier'].self::reportTitle($startDate,$endingDate);
+                    $archivos['carrier']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$_GET['carrier']))->id,true);
+                }
+                if(isset($_GET['group']))
+                {
+                    $archivos['group']['nombre']="RENOC Calidad ".$_GET['group'].self::reportTitle($startDate,$endingDate);
+                    $archivos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_GET['group']))->id,false);
+                }
             }
         }
         foreach($archivos as $key => $archivo)
@@ -442,7 +458,6 @@ class SiteController extends Controller
         {
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
-            if(isset($_POST['carrier'])) $carrier=$_POST['carrier'];
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
@@ -556,9 +571,18 @@ class SiteController extends Controller
             }
             if(isset($_POST['lista']['calidad']))
             {
-                $correos['calidad']['asunto']="RENOC Calidad ".$carrier.self::reportTitle($startDate,$endingDate);
-                $correos['calidad']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$carrier))->id);
-                $correos['calidad']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['calidad']['asunto'].".xls";
+                if(isset($_POST['carrier']))
+                {
+                    $correos['carrier']['asunto']="RENOC Calidad ".$_POST['carrier'].self::reportTitle($startDate,$endingDate);
+                    $correos['carrier']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$_POST['carrier']))->id,true);
+                    $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                }
+                if(isset($_POST['group']))
+                {
+                    $correos['group']['asunto']="RENOC Calidad ".$_POST['group'].self::reportTitle($startDate,$endingDate);
+                    $correos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
+                    $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                }
             }
         }
         $tiempo=30*count($correos);
