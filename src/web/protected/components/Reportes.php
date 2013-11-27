@@ -955,5 +955,20 @@ class Reportes extends CApplicationComponent
         }
         return $lista;
     }
+
+    /**
+     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos
+     * @access public
+     * @param date $date
+     * @return array
+     */
+    public function leastOneMonth($date)
+    {
+        if($date==null) $date=date('Y-m-d');
+        $arrayDate['firstday']=date('Y-m-d',strtotime('-1 month',strtotime(Utility::getDayOne($date))));
+        $array=explode('-',$arrayDate['firstday']);
+        $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
+        return $arrayDate;
+    }
 }
 ?>
