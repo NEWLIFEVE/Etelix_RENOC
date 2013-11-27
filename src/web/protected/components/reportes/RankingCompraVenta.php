@@ -76,10 +76,10 @@ class RankingCompraVenta extends Reportes
                 case 1:
                     $head=array(
                         'title'=>'Vendedor',
-                        'styleHead'=>'background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
+                        'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
                         'styleBody'=>self::colorRankingCV(1),
                         'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
+                        'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
                         );
                     for($col=0; $col < $num+2; $col++)
                     { 
@@ -174,8 +174,8 @@ class RankingCompraVenta extends Reportes
                     { 
                         if($col==0)
                         {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['consolidated'],$type=true)."
-                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td></td><td>Total Margen</td></tr></table><br></td>";
+                            $body.="<td>".$this->_getHtmlTableConsolidated($head,$sorted['consolidated'],$type=true)."
+                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td></td><td colspan='3'>Total Margen</td></tr></table><br></td>";
                         }
                         elseif($col>0 && $col<$num+1)
                         {
@@ -189,8 +189,8 @@ class RankingCompraVenta extends Reportes
                         }
                         else
                         {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['consolidated'],$type=false)."
-                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td>Total Margen</td><td></td></tr></table><br></td>";
+                            $body.="<td>".$this->_getHtmlTableConsolidated($head,$sorted['consolidated'],$type=false)."
+                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td colspan='3'>Total Margen</td><td></td></tr></table><br></td>";
                         }
                     }
                     break;
@@ -611,6 +611,46 @@ class RankingCompraVenta extends Reportes
             }
             $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
             $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td>Total</td><td></td></tr>";
+        }
+        $body.="</table>";
+        return $body;
+    }
+
+    /**
+     * Genera una tabla con la lista y ranking del dato pasado
+     * @access private
+     * @static
+     * @param array $head titulo que lleva la cabecera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
+     * @param array $list lista de nombres incluidos para contruir la tabla
+     * @param string $name es la frase que va acompañada en la cabecera
+     * @param boolean $type si es true es para el principio, false al final
+     * @param boolean 
+     */
+    private function _getHtmlTableConsolidated($head,$lista,$type=true)
+    {
+        $body="<table>";
+        $pos=0;
+        if($type)
+        {   
+            $body.="<tr style='".$head['styleHead']."'><td>Ranking</td><td colspan='3'>".$head['title']."</td></tr>";
+            foreach ($lista as $key => $value)
+            {
+                $pos=$pos+1;
+                $body.="<tr style='".$head['styleBody']."'><td>".$pos."</td><td colspan='3'>".$value."</td></tr>";
+            }
+            $body.="<tr style='".$head['styleHead']."'><td>Ranking</td><td colspan='3'>".$head['title']."</td></tr>";
+            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td></td><td colspan='3'>Total</td></tr>";
+        }
+        else
+        {
+            $body.="<tr style='".$head['styleHead']."'><td colspan='3'>".$head['title']."</td><td>Ranking</td></tr>";
+            foreach ($lista as $key => $value)
+            {
+                $pos=$pos+1;
+                $body.="<tr style='".$head['styleBody']."'><td colspan='3'>".$value."</td><td>".$pos."</td></tr>";
+            }
+            $body.="<tr style='".$head['styleHead']."'><td colspan='3'>".$head['title']."</td><td>Ranking</td></tr>";
+            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td colspan='3'>Total</td><td></td></tr>";
         }
         $body.="</table>";
         return $body;
