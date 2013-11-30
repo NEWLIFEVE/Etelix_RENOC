@@ -587,49 +587,32 @@ input.favorite
 {
     color: #6E6E6E;
 }
-.cancelar
+.rerateBtn
 {
+    text-align: center;
+}
+.cancelar, .confirma
+{
+    display: inline-block;
     background-color:#E43434;
     color:white;
     font-size: 19px;
     height: 35px;
-    margin-left: 135px;
-    margin-top: 0px;
-    text-align: center;
     width: 90px;
+    padding: 11px 2px 0px 2px;
+    margin: 0 7px;
 }
 .cancelar:hover
 {
     background-color:#E76969;
-    color:white;
-    font-size: 19px;
-    height: 35px;
-    margin-left: 135px;
-    margin-top: 0px;
-    text-align: center;
-    width: 90px;
 }
 .confirma
 {
     background-color:rgb(56, 139, 56);
-    color:white;
-    font-size: 19px!important;
-    height: 35px;
-    margin-left: 230px;
-    margin-top: -55px;
-    text-align: center;
-    width: 90px;
 }
 .confirma:hover
 {
     background-color:rgb(104, 173, 104);
-    color:white;
-    font-size: 19px!important;
-    height: 35px;
-    margin-left: 230px;
-    margin-top: -55px;
-    text-align: center;
-    width: 90px;
 }
 .bordes
 {
@@ -965,7 +948,10 @@ img.oculta
 }
 
 /*Especificos*/
-.start, .end
+.start,
+.end,
+.middle_carrier,
+.middle_group
 {
     position: relative;
     width: 90px;
@@ -980,6 +966,12 @@ img.oculta
 {
     left: 16em;
     position: relative;
+}
+.middle_carrier,
+.middle_group
+{
+    left: 100%;
+    width: 75%;
 }
 .end
 {
@@ -1000,10 +992,43 @@ img.oculta
 {
     top:-4em;
 }
+.group
+{
+    top:-4em;
+}
 #footer_especificos
 {
-    margin-top: 14em;
+    margin-top: 8em;
 }
+/*Estilos del autocompletar*/
+#ui-datepicker-div table.ui-datepicker-calendar
+{
+    background: #F5F5F5 !important;
+}
+#ui-datepicker-div div.ui-datepicker-title,
+#ui-datepicker-div table.ui-datepicker-calendar thead
+{
+    color:white;
+}
+.ui-state-default
+{
+    border-color: #F5F5F5 !important;
+}
+ul.ui-widget-content
+{
+    background: #F5F5F5 !important;
+}
+li.ui-menu-item a
+{
+    color:#848484;
+}
+.ui-state-focus
+{
+    background: rgb(104, 173, 104) !important;
+    color:white !important;
+}
+
+/***Especificos**/
 /*position: relative;
 top: -57px;
 */
@@ -1094,6 +1119,8 @@ height: 61px;
     height: 30px;
 }
 
+
+
 @media screen and (max-width: 980px) {
     /*Vista del login*/
     .bodylogin
@@ -1170,4 +1197,5 @@ height: 61px;
         margin-left: 0px !important;
     }
 }
+
 

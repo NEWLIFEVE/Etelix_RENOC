@@ -2,9 +2,41 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.3
+- Reporte Ranking Compra/Venta, es modificado para que incluya el margen del dia de ayer, el acumulado hasta el dia consultado, el promedio de los ultimos 7 dias, y el pronostico de cierre.
+
+Release 1.3.2
+- Reporte de Calidad validado para Grupo Cabinas Peru
+- Reporte de Ranking Compra/Venta, es modificado para que el nombre del rango sea ubicado en la mismo cuadro
+
+Release 1.3.1
+- Correccion de tiempo en generar reporte alto impacto
+
+Release 1.3.0
+- Reporte Alto impacto (+10$) por rango de fechas, dos versiones una resumida y otra completa.
+- Reporte Distribucion Comercial, agregado el campo estado.
+- Validacion de campos de reportes especificos.
+
+Release 1.2.3
+- Aumento de Destinos/Clientes/Proveedor de cinco a siete en Reportes de Arbol de Trafico
+
+Release 1.2.2
+- Se quitan el no repetir nombres en Distribucion Comercial
+- Totales de ASR, PDD, etc en Reporte Calidad
+Release 1.2.1
+- Reporte Distribucion Comercial en un solo archivo excel
+
+Release 1.2.0
+- Agregado modulo de reportes especificos con los siguientes reportes
+	. RENOC Ranking Compra Venta
+	. RENOC Calidad(BSG)
+- Agregado unidad de produccion en los reportes de Distribucion Comercial
+- Agregado destinos internos e alto impacto
+
 Release 1.1.7
 - Modificado: Arbol de Trafico, ahora Clientes y Proveedor con destinos external e internal.
 - Modificado: Reporte CompraVenta generado por mes
+
 Release 1.1.6
 - Modificacion en nombre de Arbol de Trafico Internal y External a Arbol Destino Internal y External.
 - Agregados reportes de Arbol de Trafico por Clientes y Proveedores.

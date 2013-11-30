@@ -149,50 +149,10 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </label>
                     </div>
                     <div class="choice">
-                        <input type="checkbox" value="true" id="DCV" class="custom-checkbox" name="lista[DCV]">
-                        <label for="DCV">
+                        <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]">
+                        <label for="DC">
                             <h4 id="td4">
-                                DC Vendedor
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice">
-                        <input type="checkbox" value="true" id="DCTP" class="custom-checkbox" name="lista[DCTP]">
-                        <label for="DCTP">
-                            <h4 id="td4">
-                                DC Termino Pago
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice">
-                        <input type="checkbox" value="true" id="DCM" class="custom-checkbox" name="lista[DCM]">
-                        <label for="DCM">
-                            <h4 id="td4">
-                                DC Monetizable
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice">
-                        <input type="checkbox" value="true" id="DCCom" class="custom-checkbox" name="lista[DCCom]">
-                        <label for="DCCom">
-                            <h4 id="td4">
-                                DC Compania
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice">
-                        <input type="checkbox" value="true" id="DCCarrier" class="custom-checkbox" name="lista[DCCarrier]">
-                        <label for="DCCarrier">
-                            <h4 id="td5">
-                                DC Carrier
-                            </h4>
-                        </label>
-                    </div>
-                    <div class="choice">
-                        <input type="checkbox" value="true" id="DCUP" class="custom-checkbox" name="lista[DCUP]">
-                        <label for="DCUP">
-                            <h4 id="td5">
-                                DC Unidad Produccion
+                                Distribucion Comercial
                             </h4>
                         </label>
                     </div>
@@ -204,7 +164,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
-                    <input name="startDate" type="hidden"  id="datepicker_value" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
+                    <input name="startDate" type="hidden"  id="startDate" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
         echo $nuevafecha=date('Y-m-d',$nuevafecha);?>"/>
             </form>
         </article>

@@ -25,22 +25,22 @@ $this->layout=$this->getLayoutFile('menuContent');
                         </h4>
                     </label>
                 </div>
-                <!--<div class="choice_parametros hora">
-                    <input type="checkbox" value="true" id="Hora" class="custom-checkbox" name="lista[Hora]">
-                    <label for="Hora">
-                        <h4 id="td1">
-                            Hora
-                        </h4>
-                    </label>
-                </div>-->
-                <!--<div class="choice_parametros carrier">
+                <div class="choice_parametros carrier">
                     <input type="checkbox" value="true" id="Carrier" class="custom-checkbox" name="lista[Carrier]">
                     <label for="Carrier">
                         <h4 id="td1">
                             Carrier
                         </h4>
                     </label>
-                </div>-->
+                </div>
+                <div class="choice_parametros group">
+                    <input type="checkbox" value="true" id="Group" class="custom-checkbox" name="lista[Group]">
+                    <label for="Group">
+                        <h4 id="td1">
+                            Grupo
+                        </h4>
+                    </label>
+                </div>
                 <footer id="footer_especificos">
                     <div id="excel" class="botones">
                         <img src="/images/excel.png" class='ver'>
@@ -67,10 +67,26 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </div>
                 <div class="choice">
+                    <input type="checkbox" value="true" id="AI10" class="custom-checkbox" name="lista[AI10]">
+                    <label for="AI10">
+                        <h4 id="td2">
+                            Alto Impacto(+10$)
+                        </h4>
+                    </label>
+                </div>
+                <div class="choice">
+                    <input type="checkbox" value="true" id="AI10R" class="custom-checkbox" name="lista[AI10R]">
+                    <label for="AI10R">
+                        <h4 id="td3">
+                            Alto Impacto Resumen(+10$)
+                        </h4>
+                    </label>
+                </div>
+                <div class="choice">
                     <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
                     <label for="calidad">
-                        <h4 id="td1">
-                            Calidad BSG
+                        <h4 id="td4">
+                            Calidad
                         </h4>
                     </label>
                 </div>

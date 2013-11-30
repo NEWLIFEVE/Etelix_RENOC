@@ -80,7 +80,26 @@ class Evolucion extends Reportes
      */
     public function genExcel($nombre)
     {
-        $objPHPExcel = Yii::app()->PHPExcel;
+        $estilos=array(
+            'aligment'=>array(
+                'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                ),
+            'borders'=>array(
+                'allborders'=>array(
+                    'style'=>PHPExcel_Style_Border::BORDER_THICK,
+                    'color'=>array(
+                        'argb'=>'00000000',
+                        )
+                    )
+                ),
+            'fill'=>array(
+                'type'=>PHPExcel_Style_Fill::FILL_SOLID,
+                'startcolor'=>array(
+                    'argb'=>'FFC6D9F1',
+                    ),
+                )
+            );
+        $objPHPExcel = new PHPExcel();
         $objPHPExcel->getProperties()->setCreator("RENOC")
                              ->setLastModifiedBy("RENOC")
                              ->setTitle("RENOC Evolucion")
@@ -127,12 +146,16 @@ class Evolucion extends Reportes
         foreach ($nombresColumnas as $key => $value)
         {
             $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A1', 'Fecha')->setCellValue('B1', 'Minutos')->setCellValue('C1', $value);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
             foreach ($resultados[$key] as $llave => $valores)
             {
                 $pos=$llave+2;
                 $seg=strtotime($valores->date_balance);
                 $fecha=date("m/d/Y",$seg);
                 $objPHPExcel->setActiveSheetIndex($key)->setCellValue('A'.$pos, $fecha)->setCellValue('B'.$pos, $valores->minutes)->setCellValue('C'.$pos, $valores->$nombresDatos[$key]);
+                $objPHPExcel->getActiveSheet()->getStyle('A1:C1')->applyFromArray($estilos);
             }
         }
 

@@ -41,149 +41,149 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'phpmailer'.DIRECTORY_SEPARAT
  */
 class EMailer
 {
-   //***************************************************************************
-   // Configuration
-   //***************************************************************************
+    /**
+     * Configuration
+     */
 
-   /**
-    * The path to the directory where the view for getView is stored. Must not
-    * have ending dot.
-    *
-    * @var string
-    */
-   protected $pathViews = null;
+    /**
+     * The path to the directory where the view for getView is stored. Must not
+     * have ending dot.
+     *
+     * @var string
+     */
+    protected $pathViews=null;
 
-   /**
-    * The path to the directory where the layout for getView is stored. Must
-    * not have ending dot.
-    *
-    * @var string
-    */
-   protected $pathLayouts = null;
+    /**
+     * The path to the directory where the layout for getView is stored. Must
+     * not have ending dot.
+     *
+     * @var string
+     */
+    protected $pathLayouts=null;
 
-   //***************************************************************************
-   // Private properties
-   //***************************************************************************
+    /**
+     * Private properties
+     */
 
-   /**
-    * The internal PHPMailer object.
-    *
-    * @var object PHPMailer
-    */
-   private $_myMailer;
+    /**
+     * The internal PHPMailer object.
+     *
+     * @var object PHPMailer
+     */
+    private $_myMailer;
 
-   //***************************************************************************
-   // Initialization
-   //***************************************************************************
+    /**
+     * Initialization
+     */
 
-   /**
-    * Init method for the application component mode.
-    */
-   public function init() {}
+    /**
+     * Init method for the application component mode.
+     */
+    public function init() {}
 
-   /**
-    * Constructor. Here the instance of PHPMailer is created.
-    */
-	public function __construct()
-	{
-		$this->_myMailer = new PHPMailer();
+    /**
+     * Constructor. Here the instance of PHPMailer is created.
+     */
+    public function __construct()
+    {
+        $this->_myMailer=new PHPMailer();
 	}
 
-   //***************************************************************************
-   // Setters and getters
-   //***************************************************************************
+    /**
+     * Setters and getters
+     */
 
-   /**
-    * Setter
-    *
-    * @param string $value pathLayouts
-    */
-   public function setPathLayouts($value)
-   {
-      if (!is_string($value) && !preg_match("/[a-z0-9\.]/i"))
-         throw new CException(Yii::t('EMailer', 'pathLayouts must be a Yii alias path'));
-      $this->pathLayouts = $value;
-   }
+    /**
+     * Setter
+     *
+     * @param string $value pathLayouts
+     */
+    public function setPathLayouts($value)
+    {
+        if(!is_string($value) && !preg_match("/[a-z0-9\.]/i"))
+            throw new CException(Yii::t('EMailer', 'pathLayouts must be a Yii alias path'));
+        $this->pathLayouts=$value;
+    }
 
-   /**
-    * Getter
-    *
-    * @return string pathLayouts
-    */
-   public function getPathLayouts()
-   {
-      return $this->pathLayouts;
-   }
+    /**
+     * Getter
+     *
+     * @return string pathLayouts
+     */
+    public function getPathLayouts()
+    {
+        return $this->pathLayouts;
+    }
 
-   /**
-    * Setter
-    *
-    * @param string $value pathViews
-    */
-   public function setPathViews($value)
-   {
-      if (!is_string($value) && !preg_match("/[a-z0-9\.]/i"))
-         throw new CException(Yii::t('EMailer', 'pathViews must be a Yii alias path'));
-      $this->pathViews = $value;
-   }
+    /**
+     * Setter
+     *
+     * @param string $value pathViews
+     */
+    public function setPathViews($value)
+    {
+        if(!is_string($value) && !preg_match("/[a-z0-9\.]/i"))
+            throw new CException(Yii::t('EMailer', 'pathViews must be a Yii alias path'));
+        $this->pathViews=$value;
+    }
 
-   /**
-    * Getter
-    *
-    * @return string pathViews
-    */
-   public function getPathViews()
-   {
-      return $this->pathViews;
-   }
+    /**
+     * Getter
+     *
+     * @return string pathViews
+     */
+    public function getPathViews()
+    {
+        return $this->pathViews;
+    }
 
-   //***************************************************************************
-   // Magic
-   //***************************************************************************
+    /**
+     * Magic
+     */
 
-   /**
-    * Call a PHPMailer function
-    *
-    * @param string $method the method to call
-    * @param array $params the parameters
-    * @return mixed
-    */
-	public function __call($method, $params)
-	{
-		if (is_object($this->_myMailer) && get_class($this->_myMailer)==='PHPMailer') return call_user_func_array(array($this->_myMailer, $method), $params);
-		else throw new CException(Yii::t('EMailer', 'Can not call a method of a non existent object'));
-	}
+    /**
+     * Call a PHPMailer function
+     *
+     * @param string $method the method to call
+     * @param array $params the parameters
+     * @return mixed
+     */
+    public function __call($method, $params)
+    {
+        if(is_object($this->_myMailer) && get_class($this->_myMailer)==='PHPMailer') return call_user_func_array(array($this->_myMailer,$method),$params);
+        else throw new CException(Yii::t('EMailer','Can not call a method of a non existent object'));
+    }
 
-   /**
-    * Setter
-    *
-    * @param string $name the property name
-    * @param string $value the property value
-    */
-	public function __set($name, $value)
-	{
-	   if (is_object($this->_myMailer) && get_class($this->_myMailer)==='PHPMailer') $this->_myMailer->$name = $value;
-	   else throw new CException(Yii::t('EMailer', 'Can not set a property of a non existent object'));
-	}
+    /**
+     * Setter
+     *
+     * @param string $name the property name
+     * @param string $value the property value
+     */
+    public function __set($name, $value)
+    {
+        if(is_object($this->_myMailer) && get_class($this->_myMailer)==='PHPMailer') $this->_myMailer->$name = $value;
+        else throw new CException(Yii::t('EMailer','Can not set a property of a non existent object'));
+    }
 
-   /**
-    * Getter
-    *
-    * @param string $name
-    * @return mixed
-    */
-	public function __get($name)
-	{
-	   if (is_object($this->_myMailer) && get_class($this->_myMailer)==='PHPMailer') return $this->_myMailer->$name;
-	   else throw new CException(Yii::t('EMailer', 'Can not access a property of a non existent object'));
-	}
+    /**
+     * Getter
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if(is_object($this->_myMailer) && get_class($this->_myMailer)==='PHPMailer') return $this->_myMailer->$name;
+        else throw new CException(Yii::t('EMailer','Can not access a property of a non existent object'));
+    }
 
-	/**
-	 * Cleanup work before serializing.
-	 * This is a PHP defined magic method.
+    /**
+     * Cleanup work before serializing.
+     * This is a PHP defined magic method.
 	 * @return array the names of instance-variables to serialize.
 	 */
-	public function __sleep()
+    public function __sleep()
 	{
 	}
 
@@ -195,34 +195,34 @@ class EMailer
 	{
 	}
 
-   //***************************************************************************
-   // Utilities
-   //***************************************************************************
+    /**
+     * Utilities
+     */
 
-   /**
-    * Displays an e-mail in preview mode. 
-    *
-    * @param string $view the class
-    * @param array $vars
-    * @param string $layout
-    */
-   public function getView($view, $vars = array(), $layout = null)
-   {
-      
-      $viewFile=$view;
-      if (!is_null($this->pathViews))
-      {
-        $viewFile=$this->pathViews.'.'.$view;
-      }
- 
-      $body=Yii::app()->controller->renderPartial($viewFile, array_merge($vars, array('content'=>$this->_myMailer)), true);
-      
-      //$body = Yii::app()->controller->renderPartial($view, array_merge($vars, array('content'=>$this->_myMailer)), true);
-      if ($layout === null) {
-         $this->_myMailer->Body = $body;
-      }
-      else {
-         $this->_myMailer->Body = Yii::app()->controller->renderPartial($this->pathLayouts.'.'.$layout, array('content'=>$body), true);
-      }
-   }
+    /**
+     * Displays an e-mail in preview mode.
+     *
+     * @param string $view the class
+     * @param array $vars
+     * @param string $layout
+     */
+    public function getView($view,$vars=array(),$layout=null)
+    {
+        $viewFile=$view;
+        if(!is_null($this->pathViews))
+        {
+            $viewFile=$this->pathViews.'.'.$view;
+        }
+
+        $body=Yii::app()->controller->renderPartial($viewFile,array_merge($vars,array('content'=>$this->_myMailer)),true);
+        //$body = Yii::app()->controller->renderPartial($view, array_merge($vars, array('content'=>$this->_myMailer)), true);
+        if($layout===null)
+        {
+            $this->_myMailer->Body=$body;
+        }
+        else
+        {
+            $this->_myMailer->Body=Yii::app()->controller->renderPartial($this->pathLayouts.'.'.$layout,array('content'=>$body),true);
+        }
+    }
 }

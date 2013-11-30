@@ -14,6 +14,7 @@
  	 */
  	function init()
  	{
+ 		//Crea los inputs usados para la fecha en especificos
  		var checkFecha=document.getElementsByName('lista[Fecha]');
  		if(checkFecha!="undefined")
  		{
@@ -36,46 +37,71 @@
  				}
  			};
  		}
- 		/*var checkTime=document.getElementsByName('lista[Hora]');
- 		if(checkTime!="undefined")
- 		{
- 			optionsTime={
- 				elemento:'input',
- 				idInputStart:'startTime',
- 				idInputEnd:'endingTime',
- 				idCheck:'checkTime',
- 				nameClassPicker:'start time',
- 				nameClassCheck:'middle time',
- 				spot:'div.choice_parametros.hora'
- 			};
- 			checkTime[0].onclick=function()
- 			{
- 				_changeClass($('.hora label h4'),'stretchRight','offStretchRight',optionsTime);
- 				document.getElementById(optionsTime.idCheck).onclick=function()
- 				{
-	 				if (this.checked) _showElement($(_createElement(optionsTime.elemento,optionsTime.idInputEnd,optionsTime.idInputEnd,'end time',undefined,'Fin')).datepicker({dateFormat: 'yy-mm-dd'}),optionsTime.spot);
-	 				else _hideElement('#'+optionsTime.idInputEnd);
- 				};
- 			};
- 			
- 		}*/
- 		/*var checkCarrier=document.getElementsByName('lista[Carrier]');
+ 		//crea el input usado para carrier en la interfaz especificos
+ 		var checkCarrier=document.getElementsByName('lista[Carrier]');
  		if(checkCarrier!="undefined")
  		{
- 			optionsMonth={
+ 			optionsCarrier={
  				elemento:'input',
  				idInputStart:'carrier',
  				idInputEnd:'',
  				idCheck:'',
- 				nameClassPicker:'start carrier',
+ 				nameClassPicker:'middle_carrier carrier',
  				nameClassCheck:'middle carrier',
  				spot:'div.choice_parametros.carrier'
  			};
  			checkCarrier[0].onclick=function()
  			{
- 				_changeClass($('.carrier label h4'),'stretchRight','offStretchRight',optionsMonth);
+ 				_changeClass($('.carrier label h4'),'stretchRight','offStretchRight',optionsCarrier);
  			};
- 		}*/
+ 		}
+ 		//crea el input usado para grupos en la interfaz especificos
+ 		var checkGroup=document.getElementsByName('lista[Group]');
+ 		if(checkGroup!="undefined")
+ 		{
+ 			optionsGroup={
+ 				elemento:'input',
+ 				idInputStart:'group',
+ 				idInputEnd:'',
+ 				checks:{
+ 					primero:{
+ 						id:'asr',
+ 						name:'alarma',
+ 						className:'',
+ 						type:'radio',
+ 						text:'ASR'
+ 					},
+ 					segundo:{
+ 						id:'pdd',
+ 						name:'alarma',
+ 						className:'',
+ 						type:'radio',
+ 						text:'PDD'
+ 					},
+ 					tercero:{
+ 						id:'uno',
+ 						name:'porcentaje',
+ 						className:'',
+ 						type:'radio',
+ 						text:'+1%'
+ 					},
+ 					cuarto:{
+ 						id:'dos',
+ 						name:'porcentaje',
+ 						className:'',
+ 						type:'radio',
+ 						text:'+5%'
+ 					}
+ 				},
+ 				nameClassPicker:'middle_group group',
+ 				nameClassCheck:'middle group',
+ 				spot:'div.choice_parametros.group'
+ 			};
+ 			checkGroup[0].onclick=function()
+ 			{
+ 				_changeClass($('.group label h4'),'stretchRight','offStretchRight',optionsGroup);
+ 			};
+ 		}
  	}
 
  	/**
@@ -87,45 +113,39 @@
 	{
 		if(obj.attr('class')==activeClass)
 		{
+			var todos="";
 			obj.removeClass(activeClass).addClass(desactiveClass);
-			_hideElement('#'+options.idInputStart+', #'+options.idCheck+',#'+options.idInputEnd);
+			if (options.idInputStart!="") todos+='#'+options.idInputStart;
+			if (options.idCheck!="") todos+=',#'+options.idCheck;
+			if (options.idInputEnd!="") todos+=',#'+options.idInputEnd;
+			_hideElement(todos);
 		}
 		else
 		{
 			obj.removeClass(desactiveClass).addClass(activeClass);
-			if(options.idInputStart!='carrier')
+			if(options.idInputStart=='carrier')
+			{
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Carrier')).autocomplete({source:$RENOC.DATA.nombresCarriers}),options.spot);
+			}
+			else if(options.idInputStart=='group')
+			{
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
+				//radios
+				/*var radios=options.checks;
+				for(var key in radios)
+				{
+					console.dir(radios[key]);
+					_showElement($("<input class='"+radios[key].className+"' id='"+radios[key].id+"' type='"+radios[key].type+"' name='"+radios[key].name+"'>"+radios[key].text+"</input>"),options.spot);
+				}
+				/*_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);
+				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Grupo')).autocomplete({source:$RENOC.DATA.nombresGroups}),options.spot);*/
+			}
+			else
 			{
 				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Inicio')).datepicker({dateFormat: 'yy-mm-dd'}),options.spot);
 				_showElement(_createElement(options.elemento,options.idCheck,options.idCheck,options.nameClassCheck,'checkbox'),options.spot);
 			}
-			/*else
-			{
-				/*var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-				_showElement($(_createElement(options.elemento,options.idInputStart,options.idInputStart,options.nameClassPicker,undefined,'Carrier')).autocomplete({source:$RENOC.DATA.nombresCarriers}),options.spot);
-			}*/
 		}
 		obj=null;
 	}
@@ -207,7 +227,7 @@ $RENOC.AJAX=(function()
 	}
 
 	/**
-	 * Crea un array con los nombres y id de los carriers
+	 * Crea un array con los nombres de carrier y los grupos de carriers
 	 * @access private
 	 */
 	function _getNamesCarriers()
@@ -215,19 +235,25 @@ $RENOC.AJAX=(function()
 		$.ajax({url:"carrier/nombres",success:function(datos)
 		{
 			$RENOC.DATA.carriers=JSON.parse(datos);
-			$RENOC.DATA.IDS=Array();
 			$RENOC.DATA.nombresCarriers=Array();
-			for (var i = 0, j=$RENOC.DATA.carriers.length-1; i >= j; i++)
+			for(var i=0, j=$RENOC.DATA.carriers.length-1; i<=j; i++)
 			{
 				$RENOC.DATA.nombresCarriers[i]=$RENOC.DATA.carriers[i].name;
-				$RENOC.DATA.IDS[$RENOC.DATA.carriers[i].name]=$RENOC.DATA.carriers[i].id;
-				
 			};
-
-			
+		}
+		});
+		$.ajax({url:"grupos/nombres",success:function(datos)
+		{
+			$RENOC.DATA.groups=JSON.parse(datos);
+			$RENOC.DATA.nombresGroups=Array();
+			for(var i=0, j=$RENOC.DATA.groups.length-1; i<=j; i++)
+			{
+				$RENOC.DATA.nombresGroups[i]=$RENOC.DATA.groups[i].name;
+			};
 		}
 		});
 	}
+
 
 	/**
 	 * Inicializa las funciones del submodulo
@@ -238,27 +264,6 @@ $RENOC.AJAX=(function()
 		_getNamesCarriers();
 	}
 
-	/**
-	 *
-	 */
-	/*function action()
-	{
-		$('#excelEspecificos,#listaEspecificos,#mailEspecificos').on('click',function()
-		{
-			$tipo=$(this).attr('id');
-			switch($tipo)
-			{
-			case 'mailEspecificos':
-			  execute code block 1
-			  break;
-			case 2:
-			  execute code block 2
-			  break;
-			default:
-			  code to be executed if n is different from case 1 and 2
-			}
-		});
-	}*/
 	return {init:init}
 })();
 
