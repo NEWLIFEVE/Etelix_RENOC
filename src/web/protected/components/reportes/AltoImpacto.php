@@ -73,7 +73,7 @@ class AltoImpacto extends Reportes
             $objetos[$index]['internalDestinationsWithLessThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,false,false);
             //Guardo los datos de los totales de los destinos internos con menos de 10 dolares de ganancia
             $objetos[$index]['totalInternalDestinationsWithLessThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,false,false);
-            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
+            $startDateTemp=self::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
         //Cuento el numero de objetos en el array

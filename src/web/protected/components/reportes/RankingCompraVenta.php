@@ -316,7 +316,7 @@ class RankingCompraVenta extends Reportes
             if($this->equal) $this->objetos[$index]['totalConsolidatedClose']=array_sum($this->objetos[$index]['consolidatedForecast']);
 
             /*Itero la fecha*/
-            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
+            $startDateTemp=self::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
     }
