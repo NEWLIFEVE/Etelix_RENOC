@@ -973,10 +973,12 @@ class Reportes extends CApplicationComponent
 
     /**
      * Retorna el primer dia del siguiente mes a la fecha pasada como parametro
+     * @access public
+     * @static
      * @param date $date
      * @return date yyyy-mm-dd
      */
-    public function firstDayNextMonth($date)
+    public static function firstDayNextMonth($date)
     {
         $newDate=strtotime('+1 month',strtotime($date));
         $newDate=date('Y-m-d',$newDate);
