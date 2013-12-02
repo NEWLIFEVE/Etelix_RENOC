@@ -970,5 +970,18 @@ class Reportes extends CApplicationComponent
         $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
         return $arrayDate;
     }
+
+    /**
+     * Retorna el primer dia del siguiente mes a la fecha pasada como parametro
+     * @param date $date
+     * @return date yyyy-mm-dd
+     */
+    public function firstDayNextMonth($date)
+    {
+        $newDate=strtotime('+1 month',strtotime($date));
+        $newDate=date('Y-m-d',$newDate);
+        $array=explode('-',$newDate);
+        return $array[0]."-".$array[1]."-01";
+    }
 }
 ?>
