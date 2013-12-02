@@ -201,7 +201,7 @@ ajax.prototype.enviar=function()
     {
         url:self.ruta,
         data:self.formulario,
-        type:'GET'
+        type:'POST'
     };
     this.envio=$.ajax(opciones).done(function(datos)
     {
