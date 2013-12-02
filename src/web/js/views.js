@@ -196,7 +196,6 @@ ajax.prototype.getFormPost=function()
 ajax.prototype.enviar=function()
 {
     var self=this, mensaje=null;
-    console.log(self.formulario);
     var opciones=
     {
         url:self.ruta,
