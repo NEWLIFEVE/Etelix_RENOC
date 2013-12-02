@@ -51,6 +51,7 @@ class Balance extends CActiveRecord
 	public $costmin;
 	public $ratemin;
 	public $marginmin;
+	public $id_vendedor;
 
 	//para posicion neta
 	public $operador;
@@ -63,6 +64,20 @@ class Balance extends CActiveRecord
 	public $cmargin;
 	public $posicion_neta;
 	public $margen_total;
+
+	//RankingCompraVenta
+	public $nombre;
+	public $apellido;
+
+	public $complete_calls_exc;
+	public $incomplete_calls_inc;
+	public $incomplete_calls_exc;
+	public $asr_inc;
+	public $asr_exc;
+	public $delta;
+	public $pdd_inc;
+	public $pdd_exc;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -107,11 +122,11 @@ class Balance extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'idDestination' => array(self::BELONGS_TO, 'Destination', 'id_destination'),
-			'idDestinationInt' => array(self::BELONGS_TO, 'DestinationInt', 'id_destination_int'),
-			'idCarrierSupplier' => array(self::BELONGS_TO, 'Carrier', 'id_carrier_supplier'),
-			'idCarrierCustomer' => array(self::BELONGS_TO, 'Carrier', 'id_carrier_customer'),
-			'rrhistories' => array(self::HAS_MANY, 'Rrhistory', 'id_balance'),
+			'idDestination'=>array(self::BELONGS_TO,'Destination','id_destination'),
+			'idDestinationInt'=>array(self::BELONGS_TO,'DestinationInt','id_destination_int'),
+			'idCarrierSupplier'=>array(self::BELONGS_TO,'Carrier','id_carrier_supplier'),
+			'idCarrierCustomer'=>array(self::BELONGS_TO,'Carrier','id_carrier_customer'),
+			'rrhistories'=>array(self::HAS_MANY,'Rrhistory','id_balance'),
 		);
 	}
 
@@ -121,35 +136,35 @@ class Balance extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'date_balance' => 'Date Balance',
-			'minutes' => 'Minutes',
-			'acd' => 'Acd',
-			'asr' => 'Asr',
-			'margin_percentage' => 'Margin Percentage',
-			'margin_per_minute' => 'Margin Per Minute',
-			'cost_per_minute' => 'Cost Per Minute',
-			'revenue_per_minute' => 'Revenue Per Minute',
-			'pdd' => 'Pdd',
-			'incomplete_calls' => 'Incomplete Calls',
-			'incomplete_calls_ner' => 'Incomplete Calls Ner',
-			'complete_calls' => 'Complete Calls',
-			'complete_calls_ner' => 'Complete Calls Ner',
-			'calls_attempts' => 'Calls Attempts',
-			'duration_real' => 'Duration Real',
-			'duration_cost' => 'Duration Cost',
-			'ner02_efficient' => 'Ner02 Efficient',
-			'ner02_seizure' => 'Ner02 Seizure',
-			'pdd_calls' => 'Pdd Calls',
-			'revenue' => 'Revenue',
-			'cost' => 'Cost',
-			'margin' => 'Margin',
-			'date_change' => 'Date Change',
-			'id_carrier_supplier' => 'Id Carrier Supplier',
-			'id_destination' => 'Id Destination',
-			'id_destination_int' => 'Id Destination Int',
-			'status' => 'Status',
-			'id_carrier_customer' => 'Id Carrier Customer',
+			'id'=>'ID',
+			'date_balance'=>'Date Balance',
+			'minutes'=>'Minutes',
+			'acd'=>'Acd',
+			'asr'=>'Asr',
+			'margin_percentage'=>'Margin Percentage',
+			'margin_per_minute'=>'Margin Per Minute',
+			'cost_per_minute'=>'Cost Per Minute',
+			'revenue_per_minute'=>'Revenue Per Minute',
+			'pdd'=>'Pdd',
+			'incomplete_calls'=>'Incomplete Calls',
+			'incomplete_calls_ner'=>'Incomplete Calls Ner',
+			'complete_calls'=>'Complete Calls',
+			'complete_calls_ner'=>'Complete Calls Ner',
+			'calls_attempts'=>'Calls Attempts',
+			'duration_real'=>'Duration Real',
+			'duration_cost'=>'Duration Cost',
+			'ner02_efficient'=>'Ner02 Efficient',
+			'ner02_seizure'=>'Ner02 Seizure',
+			'pdd_calls'=>'Pdd Calls',
+			'revenue'=>'Revenue',
+			'cost'=>'Cost',
+			'margin'=>'Margin',
+			'date_change'=>'Date Change',
+			'id_carrier_supplier'=>'Id Carrier Supplier',
+			'id_destination'=>'Id Destination',
+			'id_destination_int'=>'Id Destination Int',
+			'status'=>'Status',
+			'id_carrier_customer'=>'Id Carrier Customer',
 		);
 	}
 
