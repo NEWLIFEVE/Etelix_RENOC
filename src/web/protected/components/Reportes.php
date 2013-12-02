@@ -970,5 +970,37 @@ class Reportes extends CApplicationComponent
         $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
         return $arrayDate;
     }
+
+    /**
+     * funcion encargada de verificar que el numero de una columna es el apropiado para ejecutar algo
+     * @access protected
+     * @static
+     * @param int $col en la que esta parado el for
+     * @param int $max la cantidad maxima que deberia tener
+     * @param int $mul es el factor por el cual se multiplica
+     * @return mixed $col si cumple la condicion de lo contrario devuelve false
+     */
+    public static function validColumn($col,$max,$mul)
+    {
+        if($max<2)
+        {
+            if($col==3)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            for($i=0; $i < $max; $i++)
+            {
+                $fac=$i+$mul;
+                if($fac==$col)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 ?>

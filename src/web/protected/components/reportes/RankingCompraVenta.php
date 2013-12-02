@@ -40,13 +40,43 @@ class RankingCompraVenta extends Reportes
         //Cuento el numero de objetos en el array
         $num=count($this->objetos);
         $last=$num-1;
+        if($num==1)
+        {
+            $span=11;
+            $jump=14;
+        }
+        else
+        {
+            $span=3;
+            $jump=8;
+        }
         $lastnames=self::getLastNameManagers();
         /*Arrays ordenados*/
         $sorted['sellers']=self::sortByList($lastnames,$this->objetos[$last]['sellers'],'apellido');
         $sorted['buyers']=self::sortByList($lastnames,$this->objetos[$last]['buyers'],'apellido');
         $sorted['consolidated']=self::sortByList($lastnames,$this->objetos[$last]['consolidated'],'apellido');
         $body="<table>";
-        for($row=0; $row<4; $row++)
+        for($row=1; $row < 2; $row++)
+        { 
+            $body.="<tr>";   
+            for($col=1; $col < $num+$jump; $col++)
+            { 
+                if($row==1 && $col==1)
+                {
+                    $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                if($row==1 && self::validColumn($col,$num,$span))
+                {
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-3]['title']."</td>";
+                }
+                if($row==1 && $col==$num+$span)
+                {
+                    $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+            }           
+            $body.="</tr>";            
+        }
+        /*for($row=0; $row<4; $row++)
         { 
             $body.="<tr>";
             switch($row)
@@ -133,9 +163,9 @@ class RankingCompraVenta extends Reportes
                     break;
             }
             $body.="</tr>";
-        }
+        }*/
         $body.="</table>";
-        $body.="<table>";
+        /*$body.="<table>";
         for($row=0; $row<2; $row++)
         { 
             $body.="<tr>";
@@ -197,7 +227,7 @@ class RankingCompraVenta extends Reportes
             }
             $body.="</tr>";
         }
-        $body.="</table>";
+        $body.="</table>";*/
         return $body;
     }
 
@@ -886,6 +916,13 @@ class RankingCompraVenta extends Reportes
 
             }
         }
+        foreach ($phrase as $key => $value)
+        {
+            if(!isset($array[$value]))
+            {
+                $array[$value]=0;
+            }
+        }
         return $array;
     }
 
@@ -900,19 +937,20 @@ class RankingCompraVenta extends Reportes
     {
         if($previous!=null || $previous!="")
         {
-            if($actual>=$previous)
+            if($actual>$previous)
             {
                 return "<font style='color:green;'>&#9650;</font>";
             }
-            else
+            elseif($actual<$previous)
             {
                 return "<font style='color:red;'>&#9660;</font>";
             }
+            else
+            {
+                return "<font>=</font>";
+            }
         }
-        else
-        {
-            return false;
-        }
+        return "--";
     }
 }
 ?>
