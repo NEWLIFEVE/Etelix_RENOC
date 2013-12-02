@@ -346,7 +346,7 @@ class RankingCompraVenta extends Reportes
             if($this->equal) $this->objetos[$index]['totalConsolidatedClose']=array_sum($this->objetos[$index]['consolidatedForecast']);
 
             /*Itero la fecha*/
-            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
+            $startDateTemp=self::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
     }
@@ -373,7 +373,7 @@ class RankingCompraVenta extends Reportes
                    GROUP BY {$manager})b,
                    managers m,
                    carrier_managers cm
-              WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+              WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
               GROUP BY m.name, m.lastname
               ORDER BY margin DESC";
         return Balance::model()->findAllBySql($sql);
@@ -400,7 +400,7 @@ class RankingCompraVenta extends Reportes
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY {$manager})b, managers m, carrier_managers cm
-                    WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+                    WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
                     GROUP BY m.name, m.lastname
                     ORDER BY margin DESC) d";
         return Balance::model()->findBySql($sql);
@@ -427,7 +427,7 @@ class RankingCompraVenta extends Reportes
                    GROUP BY id_carrier_supplier)cs,
                    managers m,
                    carrier_managers cm
-              WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+              WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
               GROUP BY m.name, m.lastname
               ORDER BY margin DESC";
         return Balance::model()->findAllBySql($sql);
@@ -453,7 +453,7 @@ class RankingCompraVenta extends Reportes
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_supplier)cs, managers m, carrier_managers cm
-                     WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+                     WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
                      GROUP BY m.name, m.lastname
                      ORDER BY margin DESC) d";
         return Balance::model()->findBySql($sql);
@@ -481,7 +481,7 @@ class RankingCompraVenta extends Reportes
                         WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                         GROUP BY {$manager}, date_balance
                         ORDER BY date_balance)b, managers m, carrier_managers cm
-                   WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+                   WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
                    GROUP BY m.name, m.lastname, b.date_balance
                    ORDER BY margin DESC, date_balance) d
               GROUP BY d.nombre, d.apellido";
@@ -511,7 +511,7 @@ class RankingCompraVenta extends Reportes
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY {$manager}, date_balance
                                 ORDER BY date_balance)b, managers m, carrier_managers cm
-                          WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+                          WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
                           GROUP BY m.name, m.lastname, b.date_balance
                           ORDER BY margin DESC, date_balance) d
                     GROUP BY d.nombre, d.apellido)t";
@@ -538,7 +538,7 @@ class RankingCompraVenta extends Reportes
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY id_carrier_supplier, date_balance)cs, managers m, carrier_managers cm
-                    WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+                    WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
                     GROUP BY m.name, m.lastname, cs.date_balance
                     ORDER BY margin DESC) d
               GROUP BY d.nombre, d.apellido";
@@ -566,7 +566,7 @@ class RankingCompraVenta extends Reportes
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY id_carrier_supplier, date_balance)cs, managers m, carrier_managers cm
-                          WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+                          WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
                           GROUP BY m.name, m.lastname, cs.date_balance
                           ORDER BY margin DESC) d
                     GROUP BY d.nombre, d.apellido) t";

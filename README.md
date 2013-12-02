@@ -2,6 +2,13 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.6
+- Correccion de errores de procesamiento de fechas en Ranking Compra Venta y Alto Impacto
+Release 1.3.5
+- Correcion de totales de Reporte Ranking Compra Venta
+Release 1.3.4
+- Reporte Ranking Compra Venta, Agregada la columna de cierre del mes anterior, ademas de columnas indicadoras del margen con respecto al dia anterior y el promedio. columna indicadora con respecto a la proyeccion de cierre de mes y monto cierre de mes anterior.
+
 Release 1.3.3
 - Reporte Ranking Compra/Venta, es modificado para que incluya el margen del dia de ayer, el acumulado hasta el dia consultado, el promedio de los ultimos 7 dias, y el pronostico de cierre.
 
