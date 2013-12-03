@@ -6,7 +6,7 @@ src/web/assets/*
 *.sublime-workspace
 
 # netbeans
-nbproject/private/
+nbproject/*
 build/
 nbbuild/
 dist/
@@ -27,5 +27,5 @@ src/web/uploads/*.xls
 src/web/assets/
 protected/runtime/
 themes/classic/views/
-/nbproject/private/
+
 
