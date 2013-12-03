@@ -891,22 +891,15 @@ class Reportes extends CApplicationComponent
         {
             $temp[$value->$attribute]=$value->$attribute;
         }
-        if(count($temp) == count($lista))
+        foreach($temp as $key => $value)
         {
-            return $temp;
+            $ordenado[]=$lista[$value];
         }
-        elseif(count($temp)<count($lista))
+        foreach ($lista as $key => $value)
         {
-            foreach($temp as $key => $value)
+            if(!isset($temp[$value]))
             {
-                $ordenado[]=$lista[$value];
-            }
-            foreach ($lista as $key => $value)
-            {
-                if(!isset($temp[$value]))
-                {
-                    $ordenado[]=$value;
-                }
+                $ordenado[]=$value;
             }
         }
         return $ordenado;
@@ -1001,6 +994,28 @@ class Reportes extends CApplicationComponent
             }
         }
         return false;
+    }
+
+    /**
+     *
+     */
+    public static function validIndex($col,$mul)
+    {
+        $j=1;
+        $index=0;
+        for($i=1; $i<$col; $i++)
+        {
+            if($j!=$mul)
+            {
+                $j=$j+1;
+            }
+            else
+            {
+                $j=1;
+                $index=$index+1;
+            }
+        }
+        return $index;
     }
     
     /**

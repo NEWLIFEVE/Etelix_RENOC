@@ -18,10 +18,23 @@ class RankingCompraVenta extends Reportes
      */
     public $days;
 
+    /**
+     * @var array
+     */
+    private $_head;
+
     function __construct()
     {
         $this->objetos=array();
         $this->equal=false;
+        $this->_head=array(
+            'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
+            'styleBodySellers'=>self::colorRankingCV(1),
+            'styleBodyBuyers'=>self::colorRankingCV(2),
+            'styleBodyConsolidated'=>self::colorRankingCV(3),
+            'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
+            'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
+            );
     }
     /**
      * Genera el reporte de compraventa
@@ -55,179 +68,199 @@ class RankingCompraVenta extends Reportes
         $sorted['sellers']=self::sortByList($lastnames,$this->objetos[$last]['sellers'],'apellido');
         $sorted['buyers']=self::sortByList($lastnames,$this->objetos[$last]['buyers'],'apellido');
         $sorted['consolidated']=self::sortByList($lastnames,$this->objetos[$last]['consolidated'],'apellido');
+        
         $body="<table>";
-        for($row=1; $row < 2; $row++)
+        for($row=1; $row < 55; $row++)
         { 
             $body.="<tr>";   
             for($col=1; $col < $num+$jump; $col++)
             { 
-                if($row==1 && $col==1)
+                //Celda vacia superior izquierda
+                if(($row==1 || $row==19) && $col==1)
                 {
                     $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
-                if($row==1 && self::validColumn($col,$num,$span))
+                if($row==37 && $col==1)
+                {
+                    $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                //Celda vacia superior derecha
+                if(($row==1 || $row==19) && $col==$num+$span)
+                {
+                    $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                if($row==37 && $col==$num+$span)
+                {
+                    $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+
+                //Cabecera izquiera superior e inferior de las tablas
+                if(($row==2 || $row==16) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
+                }
+                if(($row==20 || $row==34) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Comprador</td>";
+                }
+                if(($row==38 || $row==52) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Consolidado (Ventas + Compras)</td>";
+                }
+                //Cabecera derecha superior e inferior de las tablas
+                if(($row==2 || $row==16) && $col==$num+$span)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                if(($row==20 || $row==34) && $col==$num+$span)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Comprador</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                if(($row==38 || $row==52) && $col==$num+$span)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Consolidado (Ventas + Compras)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera Izquiera de totales
+                if(($row==17 || $row==35) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."'>Total</td>";
+                }
+                if($row==53 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."' colspan='3'>Total</td>";
+                }
+                //Cabecera Derecha de totales
+                if(($row==17 || $row==35) && $col==$num+$span)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'>Total</td><td style='".$this->_head['styleFooter']."'></td>";
+                }
+                if($row==53 && $col==$num+$span)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."' colspan='3'>Total</td><td style='".$this->_head['styleFooter']."'></td>";
+                }
+
+                //Cabecera de los totales al final de consolidados
+                if($row==54 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooterTotal']."'></td><td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td>";
+                }
+                if($row==54 && $col==$num+$span)
+                {
+                    $body.="<td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td><td style='".$this->_head['styleFooterTotal']."'></td>";
+                }
+
+                //Nombres de los managers vendedores izquierda
+                if($row>2 && $row<16 && $col==1)
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getNames($pos,$sorted['sellers'][$row-3],'styleBodySellers');
+                }
+                //Nombres de los managers vendedores derecha
+                if(($row>2 && $row<16) && $col==$num+$span)
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getNames($pos,$sorted['sellers'][$row-3],'styleBodySellers',false);
+                }
+
+                //Nombres de los managers compradores izquierda
+                if($row>20 && $row<34 && $col==1)
+                {
+                    $pos=$row-20;
+                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-21],'styleBodyBuyers');
+                }
+                //Nombres de los managers compradores derecha
+                if(($row>20 && $row<34) && $col==$num+$span)
+                {
+                    $pos=$row-20;
+                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-21],'styleBodyBuyers',false);
+                }
+
+                //Nombres de los managers compradores/vendedores izquierda
+                if(($row>38 && $row<52) && $col==1)
+                {
+                    $pos=$row-38;
+                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-39],'styleBodyConsolidated');
+                }
+                //Nombres de los managers compradores/vendedores derecha
+                if(($row>38 && $row<52) && $col==$num+$span)
+                {
+                    $pos=$row-38;
+                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-39],'styleBodyConsolidated',false);
+                }
+                
+                //Titulo de cada mes para diferenciar la data compradores/vendedores
+                if(($row==1 || $row==19) && self::validColumn($col,$num,$span))
                 {
                     $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-3]['title']."</td>";
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
                 }
-                if($row==1 && $col==$num+$span)
+                //Titulo de cada mes para diferenciar la data Consolidado
+                if($row==37 && self::validColumn($col,$num,$span))
                 {
-                    $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                    $nuevospan=$span-2;
+                    $body.="<td colspan='".$nuevospan."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-3]['title']."</td>";
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                //Escribe los headers de las columnas de las tablas
+                if(($row==2 || $row==16 || $row==20 || $row==34) && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getHeaderManages(true);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                //Escribe los headers de las columnas de la tabla consolidada
+                if(($row==38 || $row==52) && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getHeaderManages(false);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+
+                //Data de vendedores
+                if(($row>2 && $row<16) && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex($col,$span),'sellers',$sorted['sellers'][$row-3],'styleBodySellers',true);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                if($row==17 && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotal(self::validIndex($col,$span),'totalVendors','styleFooter',true);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                
+                //Data de compradores
+                if(($row>20 && $row<34) && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex($col,$span),'buyers',$sorted['buyers'][$row-21],'styleBodyBuyers',true);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                if($row==35 && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotal(self::validIndex($col,$span),'totalBuyers','styleFooter',true);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+
+                //Data de consolidada
+                if(($row>38 && $row<52) && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex($col,$span),'consolidated',$sorted['consolidated'][$row-39],'styleBodyConsolidated',false);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                //Data total consolidada
+                if($row==53 && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotal(self::validIndex($col,$span),'totalConsolidated','styleFooter',false);
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
+                }
+                //Data total de total ;)
+                if($row==54 && self::validColumn($col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotalMargen(self::validIndex($col,$span),'totalMargen','styleFooterTotal');
+                    if(!$this->equal && (int)$last!=(int)self::validIndex($col,$span)) $body.="<td></td>";
                 }
             }           
             $body.="</tr>";            
         }
-        /*for($row=0; $row<4; $row++)
-        { 
-            $body.="<tr>";
-            switch($row)
-            {
-                case 0:
-                case 2:
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-1]['title']."</td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                    }
-                    break;
-                case 1:
-                    $head=array(
-                        'title'=>'Vendedor',
-                        'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
-                        'styleBody'=>self::colorRankingCV(1),
-                        'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['sellers'],$type=true)."<br></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td>".$this->_getHtmlTableData($sorted['sellers'],$col-1,'sellers','apellido',$head,true).
-                                        $this->_getHtmlTotal($col-1,'totalVendors',$head,true)."<br></td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['sellers'],$type=false)."<br></td>";
-                        }
-                    }
-                    break;
-                case 3:
-                    $head=array(
-                        'title'=>'Comprador',
-                        'styleHead'=>'background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
-                        'styleBody'=>self::colorRankingCV(2),
-                        'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['buyers'],$type=true)."<br></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td>".$this->_getHtmlTableData($sorted['buyers'],$col-1,'buyers','apellido',$head,true).
-                            $this->_getHtmlTotal($col-1,'totalBuyers',$head,true)."<br></td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['buyers'],$type=false)."<br></td>";
-                        }
-                    }
-                    break;
-            }
-            $body.="</tr>";
-        }*/
         $body.="</table>";
-        /*$body.="<table>";
-        for($row=0; $row<2; $row++)
-        { 
-            $body.="<tr>";
-            switch($row)
-            {
-                case 0:
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-1]['title']."</td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                    }
-                    break;
-                case 1:
-                    $head=array(
-                        'title'=>'Consolidado (Ventas + Compras)',
-                        'styleHead'=>'background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
-                        'styleBody'=>self::colorRankingCV(3),
-                        'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td>".$this->_getHtmlTableConsolidated($head,$sorted['consolidated'],$type=true)."
-                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td></td><td colspan='3'>Total Margen</td></tr></table><br></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td>".$this->_getHtmlTableData($sorted['consolidated'],$col-1,'consolidated','apellido',$head,false).
-                            $this->_getHtmlTotal($col-1,'totalConsolidated',$head,false).
-                            $this->_getHtmlTotalMargen($col-1,'totalMargen')."<br></td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td>".$this->_getHtmlTableConsolidated($head,$sorted['consolidated'],$type=false)."
-                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td colspan='3'>Total Margen</td><td></td></tr></table><br></td>";
-                        }
-                    }
-                    break;
-            }
-            $body.="</tr>";
-        }
-        $body.="</table>";*/
         return $body;
     }
 
@@ -607,106 +640,26 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
-     * Genera una tabla con la lista y ranking del dato pasado
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
      * @access private
-     * @static
-     * @param array $head titulo que lleva la cabecera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
-     * @param array $list lista de nombres incluidos para contruir la tabla
-     * @param string $name es la frase que va acompañada en la cabecera
-     * @param boolean $type si es true es para el principio, false al final
-     * @param boolean 
-     */
-    private function _getHtmlTable($head,$lista,$type=true)
-    {
-        $body="<table>";
-        $pos=0;
-        if($type)
-        {   
-            $body.=self::cabecera(array('Ranking',$head['title']),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                $pos=$pos+1;
-                $body.="<tr style='".$head['styleBody']."'><td>".$pos."</td><td>".$value."</td></tr>";
-            }
-            $body.=self::cabecera(array('Ranking',$head['title']),$head['styleHead']);
-            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td></td><td>Total</td></tr>";
-        }
-        else
-        {
-            $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                $pos=$pos+1;
-                $body.="<tr style='".$head['styleBody']."'><td>".$value."</td><td>".$pos."</td></tr>";
-            }
-            $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
-            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td>Total</td><td></td></tr>";
-        }
-        $body.="</table>";
-        return $body;
-    }
-
-    /**
-     * Genera una tabla con la lista y ranking del dato pasado
-     * @access private
-     * @static
-     * @param array $head titulo que lleva la cabecera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
-     * @param array $list lista de nombres incluidos para contruir la tabla
-     * @param string $name es la frase que va acompañada en la cabecera
-     * @param boolean $type si es true es para el principio, false al final
-     * @param boolean 
-     */
-    private function _getHtmlTableConsolidated($head,$lista,$type=true)
-    {
-        $body="<table>";
-        $pos=0;
-        if($type)
-        {   
-            $body.="<tr style='".$head['styleHead']."'><td>Ranking</td><td colspan='3'>".$head['title']."</td></tr>";
-            foreach ($lista as $key => $value)
-            {
-                $pos=$pos+1;
-                $body.="<tr style='".$head['styleBody']."'><td>".$pos."</td><td colspan='3'>".$value."</td></tr>";
-            }
-            $body.="<tr style='".$head['styleHead']."'><td>Ranking</td><td colspan='3'>".$head['title']."</td></tr>";
-            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td></td><td colspan='3'>Total</td></tr>";
-        }
-        else
-        {
-            $body.="<tr style='".$head['styleHead']."'><td colspan='3'>".$head['title']."</td><td>Ranking</td></tr>";
-            foreach ($lista as $key => $value)
-            {
-                $pos=$pos+1;
-                $body.="<tr style='".$head['styleBody']."'><td colspan='3'>".$value."</td><td>".$pos."</td></tr>";
-            }
-            $body.="<tr style='".$head['styleHead']."'><td colspan='3'>".$head['title']."</td><td>Ranking</td></tr>";
-            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td colspan='3'>Total</td><td></td></tr>";
-        }
-        $body.="</table>";
-        return $body;
-    }
-
-    /**
-     * Recibe un objeto de modelo y un atributo, retorna una fila <tr> con los datos del objeto
-     * @access private
-     * @param string $attribute es el atributo del objeto con el que se hará la comparacion
-     * @param string $phrase es la frase con la que debe conincidir el atributo 
-     * @param array $objeto es el objeto traido de base de datos
-     * @param int $position es el numero para indicar el color de la fila en la tabla 
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
      * @param $type true=minutes,revenue,margin false=margin
      * @return string
      */
-    private function _getRow($attribute,$phrase,$index,$index2,$position,$head,$type=true)
+    private function _getRow($index,$index2,$phrase,$style,$type=true)
     {
         $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
         $margin=$previous=$average=$previousMonth=null;
         foreach ($this->objetos[$index][$index2] as $key => $value)
         {
-            if($value->$attribute == $phrase)
+            if($value->apellido == $phrase)
             {               
-                if($type==true) $uno="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($type==true) $dos="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $tres="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($type==true) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
             }
         }
@@ -714,94 +667,59 @@ class RankingCompraVenta extends Reportes
         {
             foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $cinco="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $previous=$value->margin;
                 }
             }
-            $cuatro="<td>".$this->_upOrDown($previous,$margin)."</td>";
+            $cuatro="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
             foreach ($this->objetos[$index][$index2.'Average'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $siete="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $average=$value->margin;
                 }
             }
-            $seis="<td>".$this->_upOrDown($average,$margin)."</td>";
+            $seis="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
             foreach ($this->objetos[$index][$index2.'Accumulated'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $ocho="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $ocho="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 }
             }
-            $nueve="<td>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
             foreach ($this->objetos[$index][$index2.'PreviousMonth'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $once="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $previousMonth=$value->margin;
                 }
             }
-            $diez="<td>".$this->_upOrDown($previousMonth,$this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
         }
         
         if($type==true)
         {
-            if($uno==null) $uno="<td>--<td>";
-            if($dos==null) $dos="<td>--</td>";
+            if($uno==null) $uno="<td style='".$this->_head[$style]."'>--<td>";
+            if($dos==null) $dos="<td style='".$this->_head[$style]."'>--</td>";
         }
-        if($tres==null) $tres="<td>--</td>";
+        if($tres==null) $tres="<td style='".$this->_head[$style]."'>--</td>";
         if($this->equal)
         {
-            if($cuatro==null) $cuatro="<td></td>";
-            if($cinco==null) $cinco="<td>--</td>";
-            if($seis==null) $seis="<td></td>";
-            if($siete==null) $siete="<td>--</td>";
-            if($ocho==null) $ocho="<td>--</td>";
-            if($nueve==null) $nueve="<td>--</td>";
-            if($diez==null) $siete="<td></td>";
-            if($once==null) $siete="<td>--</td>";
+            if($cuatro==null) $cuatro="<td style='".$this->_head[$style]."'></td>";
+            if($cinco==null) $cinco="<td style='".$this->_head[$style]."'>--</td>";
+            if($seis==null) $seis="<td style='".$this->_head[$style]."'></td>";
+            if($siete==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
+            if($ocho==null) $ocho="<td style='".$this->_head[$style]."'>--</td>";
+            if($nueve==null) $nueve="<td style='".$this->_head[$style]."'>--</td>";
+            if($diez==null) $siete="<td style='".$this->_head[$style]."'></td>";
+            if($once==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
         } 
-        $body="<tr style='".$head['styleBody']."'>".$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once."</tr>";
-        return $body;
-    }
-
-    /**
-     * Genera el cuerpo de la tabla con la data de los managers
-     * @access private
-     * @param array $list es la lista de apellidos ordenados para sacarlos en la fila
-     * @param 
-     */
-    private function _getHtmlTableData($list,$index,$index2,$attribute,$head,$type=true)
-    {
-        $columns=array('Margin');
-        if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
-        if($this->equal) $columns=array_merge($columns,array('','Dia Anterior','','Promedio 7D','Acumulado Mes','Proyeccion Mes','','Mes Anterior'));
-
-        $body="<table>
-                    <thead>";
-                        $body.=self::cabecera($columns,$head['styleHead']);
-                    $body.="</thead>
-                 <tbody>";
-        if($this->objetos[$index][$index2]!=NULL)
-        {
-            $pos=0;
-            foreach ($list as $key => $manager)
-            {
-                $pos=$pos+1;
-                $body.=$this->_getRow($attribute,$manager,$index,$index2,$pos,$head,$type);
-            }
-        }
-        else
-        {
-            $body.="<tr><td colspan='3'>No se encontraron resultados</td></tr>";
-        }
-        $body.="</tbody>
-                 </table>";
+        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
         return $body;
     }
 
@@ -811,68 +729,63 @@ class RankingCompraVenta extends Reportes
      * @param CActiveRecord $total es el objeto que totaliza los que cumplen la condicion
      * @return string
      */
-    private function _getHtmlTotal($index,$index2,$head,$type=true)
+    private function _getHtmlTotal($index,$index2,$style,$type=true)
     {
-        $columns=array('Margin');
         $total=$this->objetos[$index][$index2];
         if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
         if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
         if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
         if($this->equal) $close=$this->objetos[$index][$index2.'Close'];
         if($this->equal) $previousMonth=$this->objetos[$index][$index2.'PreviousMonth'];
-        if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
-        if($this->equal) $columns=array_merge($columns,array('','Dia Anterior','','Promedio 7D','Acumulado Mes','Proyeccion Mes','','Mes Anterior'));
 
-        $body="<table>";
-        $body.=self::cabecera($columns,$head['styleHead']);
-                    $body.="<tr style='".$head['styleFooter']."'>";
-        if($type==true) $body.="<td>".Yii::app()->format->format_decimal($total->minutes)."</td>";
-        if($type==true) $body.="<td>".Yii::app()->format->format_decimal($total->revenue)."</td>";
-        $body.="<td>".Yii::app()->format->format_decimal($total->margin)."</td>";
-        if($this->equal) $body.="<td>".$this->_upOrDown($yesterday->margin,$total->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
-        if($this->equal) $body.="<td>".$this->_upOrDown($average->margin,$total->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($close)."</td>";
-        if($this->equal) $body.="<td>".$this->_upOrDown($previousMonth->margin,$close)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
-        $body.="</tr>
-                </table>";
+        $body="";
+        if($type==true) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->minutes)."</td>";
+        if($type==true) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->revenue)."</td>";
+        $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$total->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average->margin,$total->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($close)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth->margin,$close)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         return $body;
     }
 
     /**
      * Retorna el html del total del margen
      * @access private
-     * @param CActiveRecord $data el objeto que se va a imprimir
+     * @param string $index
+     * @param string $index2
+     * @param string $style
      * @return string
      */
-    private function _getHtmlTotalMargen($index,$index2)
+    private function _getHtmlTotalMargen($index,$index2,$style)
     {
         $data=$this->objetos[$index][$index2];
         if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
         if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
         if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
         if($this->equal) $previousMonth=$this->objetos[$index][$index2.'PreviousMonth'];
-        $body="<table>
-                    <tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
-                        <td>".Yii::app()->format->format_decimal($data->margin)."</td>";
-        if($this->equal) $body.="<td>".$this->_upOrDown($yesterday->margin,$data->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
-        if($this->equal) $body.="<td>".$this->_upOrDown($average->margin,$data->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
-        if($this->equal) $body.="<td>".$this->_upOrDown($previousMonth->margin,$accumulated->margin+$this->_forecast($average->margin))."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
-        $body.="</tr>
-                </table>";
+        $body="";
+        $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($data->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$data->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average->margin,$data->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth->margin,$accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         return $body;
     }
 
     /**
      * Determina el numero de dias que hay desde la fecha pasada hasta el fin del mes
+     * @access private
+     * @param date $date
+     * @return void
      */
     private function _getDays($date)
     {
@@ -895,6 +808,11 @@ class RankingCompraVenta extends Reportes
     /**
      * calcula el pronostico de cierre
      * @access private
+     * @param array $phrase lista de elementos para iterar
+     * @param string $index es la ubicacion dentro del array $this->objetos
+     * @param string $average es la ubicacion del promedio dentro del array $this->objetos[$index]
+     * @param string $accumulated es la ubicacion del acumulado dentro del array $this->objetos[$index]
+     * @return array un array con los datos calculados
      */
     private function _closeOfTheMonth($phrase,$index,$average,$accumulated)
     {
@@ -951,6 +869,56 @@ class RankingCompraVenta extends Reportes
             }
         }
         return "--";
+    }
+
+    /**
+     * Retorna la cabecera de la data de managers
+     * @access private
+     * @param boolean $type true = compradores/vendedores, false = consolidados
+     * @return string celdas construidas
+     */
+    private function _getHeaderManages($type=true)
+    {
+        $body="";
+        if($type==true) $body.="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        if($type==true) $body.="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $body.="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td><td style='".$this->_head['styleHead']."'>Dia Anterior</td><td style='".$this->_head['styleHead']."'></td><td style='".$this->_head['styleHead']."'>Promedio 7D</td><td style='".$this->_head['styleHead']."'>Acumulado Mes</td><td style='".$this->_head['styleHead']."'>Proyeccion Mes</td><td style='".$this->_head['styleHead']."'></td><td style='".$this->_head['styleHead']."'>Mes Anterior</td>";
+        return $body;
+    }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access private
+     * @param int $pos posicion del manager
+     * @param string $phrase es el nombre del manager
+     * @param string $style es el estilo asignado al tipo de manager
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    private function _getNames($pos,$phrase,$style,$type=true)
+    {
+        if($type) 
+            return "<td style='".$this->_head[$style]."'>{$pos}</td><td style='".$this->_head[$style]."'>{$phrase}</td>";
+        else
+            return "<td style='".$this->_head[$style]."'>{$phrase}</td><td style='".$this->_head[$style]."'>{$pos}</td>";
+    }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access private
+     * @param int $pos posicion del manager
+     * @param string $phrase es el nombre del manager
+     * @param string $style es el estilo asignado al tipo de manager
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    private function _getNamesConsolidated($pos,$phrase,$style,$type=true)
+    {
+        if($type) 
+            return "<td style='".$this->_head[$style]."'>{$pos}</td><td style='".$this->_head[$style]."' colspan='3'>{$phrase}</td>";
+        else
+            return "<td style='".$this->_head[$style]."' colspan='3'>{$phrase}</td><td style='".$this->_head[$style]."'>{$pos}</td>";
     }
 }
 ?>
