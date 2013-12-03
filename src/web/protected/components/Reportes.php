@@ -891,22 +891,15 @@ class Reportes extends CApplicationComponent
         {
             $temp[$value->$attribute]=$value->$attribute;
         }
-        if(count($temp) == count($lista))
+        foreach($temp as $key => $value)
         {
-            return $temp;
+            $ordenado[]=$lista[$value];
         }
-        elseif(count($temp)<count($lista))
+        foreach ($lista as $key => $value)
         {
-            foreach($temp as $key => $value)
+            if(!isset($temp[$value]))
             {
-                $ordenado[]=$lista[$value];
-            }
-            foreach ($lista as $key => $value)
-            {
-                if(!isset($temp[$value]))
-                {
-                    $ordenado[]=$value;
-                }
+                $ordenado[]=$value;
             }
         }
         return $ordenado;
@@ -971,6 +964,60 @@ class Reportes extends CApplicationComponent
         return $arrayDate;
     }
 
+    /**
+     * funcion encargada de verificar que el numero de una columna es el apropiado para ejecutar algo
+     * @access protected
+     * @static
+     * @param int $col en la que esta parado el for
+     * @param int $max la cantidad maxima que deberia tener
+     * @param int $mul es el factor por el cual se multiplica
+     * @return mixed $col si cumple la condicion de lo contrario devuelve false
+     */
+    public static function validColumn($col,$max,$mul)
+    {
+        if($max<2)
+        {
+            if($col==3)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            for($i=0; $i < $max; $i++)
+            {
+                $fac=$i+$mul;
+                if($fac==$col)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     */
+    public static function validIndex($col,$mul)
+    {
+        $j=1;
+        $index=0;
+        for($i=1; $i<$col; $i++)
+        {
+            if($j!=$mul)
+            {
+                $j=$j+1;
+            }
+            else
+            {
+                $j=1;
+                $index=$index+1;
+            }
+        }
+        return $index;
+    }
+    
     /**
      * Retorna el primer dia del siguiente mes a la fecha pasada como parametro
      * @access public

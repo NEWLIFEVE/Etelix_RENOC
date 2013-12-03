@@ -585,7 +585,7 @@ class SiteController extends Controller
                 }
             }
         }
-        $tiempo=30*count($correos);
+        /*$tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         {
@@ -611,7 +611,7 @@ class SiteController extends Controller
                 $lista=array('sig@etelix.com');
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
-        }
+        }*/
         echo "Mensaje Enviado";
     }
 
