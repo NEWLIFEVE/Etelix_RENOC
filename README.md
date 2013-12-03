@@ -2,6 +2,8 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.7
+- Correcion de formato correo electronico en Raning Compra Venta
 Release 1.3.6
 - Correccion de errores de procesamiento de fechas en Ranking Compra Venta y Alto Impacto
 Release 1.3.5
