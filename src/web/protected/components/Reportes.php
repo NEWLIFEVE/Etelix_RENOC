@@ -52,7 +52,8 @@ class Reportes extends CApplicationComponent
      */
     public function AltoImpacto($starDate,$endingDate,$type)
     {
-        return AltoImpacto::reporte($starDate,$endingDate,$type);
+        $reporte=new AltoImpacto();
+        return $reporte->reporte($starDate,$endingDate,$type);
     }
 
     /**

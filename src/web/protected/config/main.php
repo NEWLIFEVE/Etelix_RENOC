@@ -62,7 +62,7 @@ return array(
 			),
 		),
         'db'=>array(
-            'connectionString'=>'pgsql:host=localhost;port=5432;dbname=dev_sori',
+            'connectionString'=>'pgsql:host=67.215.160.89;port=5432;dbname=dev_sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
             'password'=>'Nsusfd8263',
