@@ -1,815 +1,688 @@
 <?php
 /**
+* @version 7.0
 * @package reportes
 */
 class AltoImpacto extends Reportes
 {
-    public static $type;
+    /**
+     * Atributo encargado de almacenar la data traida de base de datos
+     * @var array
+     */
+    private $_objetos;
+
+    function __construct()
+    {
+        $this->_objetos=array();
+        $this->_head=array(
+            'styleHead'=>'text-align:center;background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
+            'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
+            'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
+            );
+    }
 	/**
 	* Genera la tabla de Alto Impacto (+10$)
+    * @access public
 	* @param date $start fecha inicio a consultar
     * @param date $ending fecha fin a consultar
     * @param boolean $type true=completo, false=resumido
 	* @return string con la tabla armada
 	*/
-	public static function reporte($start,$end=null,$type=true)
+	public function reporte($start,$end,$type=true)
 	{
-        ini_set('max_execution_time', 60);
-        self::$type=$type;
+        $this->type=$type;
+        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '300M');
+        //Consigo la data respactiva
+        $this->_loopData($start,$end);
+        
+        //Cuento el numero de objetos en el array
+        $num=count($this->_objetos);
+        $last=$num-1;
+        
+        //Loscuento para saber que numero seguir en el resto
+        $numCustomer=count($this->_objetos[$last]['customersWithMoreThanTenDollars']);
+        $numCustomerLess=count($this->_objetos[$last]['customersWithLessThanTenDollars']);
+        $numSupplier=count($this->_objetos[$last]['providersWithMoreThanTenDollars']);
+        $numSupplierLess=count($this->_objetos[$last]['providersWithLessThanTenDollars']);
+        $numDestinationExt=count($this->_objetos[$last]['externalDestinationsMoreThanTenDollars']);
+        $numDestinationExtLess=count($this->_objetos[$last]['externalDestinationsLessThanTenDollars']);
+        $numDestinationInt=count($this->_objetos[$last]['internalDestinationsWithMoreThanTenDollars']);
+        $numDestinationIntLess=count($this->_objetos[$last]['internalDestinationsWithLessThanTenDollars']);
+
+        //Organizo los datos
+        $sorted['customersWithMoreThanTenDollars']=self::sort($this->_objetos[$last]['customersWithMoreThanTenDollars'],'cliente');
+        $sorted['customersWithLessThanTenDollars']=self::sort($this->_objetos[$last]['customersWithLessThanTenDollars'],'cliente');
+        $sorted['providersWithMoreThanTenDollars']=self::sort($this->_objetos[$last]['providersWithMoreThanTenDollars'],'proveedor');
+        $sorted['providersWithLessThanTenDollars']=self::sort($this->_objetos[$last]['providersWithLessThanTenDollars'],'proveedor');
+        $sorted['externalDestinationsMoreThanTenDollars']=self::sort($this->_objetos[$last]['externalDestinationsMoreThanTenDollars'],'destino');
+        $sorted['externalDestinationsLessThanTenDollars']=self::sort($this->_objetos[$last]['externalDestinationsLessThanTenDollars'],'destino');
+        $sorted['internalDestinationsWithMoreThanTenDollars']=self::sort($this->_objetos[$last]['internalDestinationsWithMoreThanTenDollars'],'destino');
+        $sorted['internalDestinationsWithLessThanTenDollars']=self::sort($this->_objetos[$last]['internalDestinationsWithLessThanTenDollars'],'destino');
+        
+        /*
+        //Loscuento para saber que numero seguir en el resto
+        
+        //Organizo los datos
+        
+        */
+        //Les sumo la cantidad de filas que tienen delante
+        $numCustomer+=2;
+        $numCustomerLess+=6;
+        $numSupplier+=6;
+        $numSupplierLess+=6;
+        $numDestinationExt+=6;
+        $numDestinationExtLess+=6;
+        $numDestinationInt+=6;
+        $numDestinationIntLess+=4;
+
+        $span=11;
+        $spanDes=$span+2;
+        if(!$this->type)
+        {
+            $span=3;
+            $spanDes=3;
+        }
+        $body="<table>";
+        $total=$numCustomer
+              +$numCustomerLess
+              +$numSupplier
+              +$numSupplierLess
+              +$numDestinationExt
+              +$numDestinationExtLess
+              +$numDestinationInt
+              +$numDestinationIntLess+42;
+        for($row=1;$row<$total;$row++)
+        {
+            $body.="<tr>";
+            for ($col=1; $col <= 3+($num*$span); $col++)
+            { 
+                //Celda vacia superior izquierda
+                if(($row==1 
+                 || $row==$numCustomer+5 
+                 || $row==$numCustomer+$numCustomerLess+5 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+5) && ($col==1 || $col==3+($num*$span)))
+                {
+                    $body.="<td colspan='3' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                //Celda vacia superior izquierda
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+5) && ($col==1 || $col==3+($num*$span)))
+                {
+                    $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+
+                //Cabecera superior izquierda de clientes con mas de 10$
+                if($row==2 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Clientes (+10)</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
+                }
+                if($row==2 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Clientes (+10)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de clientes con menos de 10$
+                if($row==$numCustomer+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Clientes (Resto)</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
+                }
+                if($row==$numCustomer+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Clientes (Resto)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de proveedores con mas de 10$
+                if($row==$numCustomer+$numCustomerLess+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Proveedores (+10)</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Proveedores (+10)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de proveedores con menos de 10$
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Proveedores (Resto)</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Proveedores (Resto)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de destinos external con mas de 10$
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Destinos Externos (+10)</td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Destinos Externos (+10)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de destinos external con menos de 10$
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Destinos Externos (Resto)</td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Destinos Externos (Resto)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de destinos internal con mas de 10$
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Destinos Internos (+10)</td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Destinos Internos (+10)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera superior izquierda de destinos internal con menos de 10$
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Destinos Internos (Resto)</td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Destinos Internos (Resto)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Nombres de los managers vendedores izquierda con mas de 10$
+                if($row>2 && $row<=$numCustomer && $col==1)
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-2;
+                    //le resto las dos filas delante y uno mas para que empiece en cero
+                    $body.=$this->_getNames($pos,$sorted['customersWithMoreThanTenDollars'][$row-3],true);
+                }
+                if($row>2 && $row<=$numCustomer && $col==3+($num*$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-2;
+                    //le resto las dos filas delante y uno mas para que empiece en cero
+                    $body.=$this->_getNames($pos,$sorted['customersWithMoreThanTenDollars'][$row-3],false);
+                }
+
+                //Nombres de los managers vendedores izquierda con menos de 10$
+                if($row>$numCustomer+6  && $row<=$numCustomer+$numCustomerLess && $col==1)
+                {
+                    //le resto las 8 filas que tiene delante para que continue la cuenta anterior
+                    $pos=$row-8;
+                    //le resto el total de clientes - 7 filas
+                    $body.=$this->_getNames($pos,$sorted['customersWithLessThanTenDollars'][$row-$numCustomer-7],true);
+                }
+                if($row>$numCustomer+6  && $row<=$numCustomer+$numCustomerLess && $col==3+($num*$span))
+                {
+                    //le resto las 8 filas que tiene delante para que continue la cuenta anterior
+                    $pos=$row-8;
+                    //le resto el total de clientes - 7 filas
+                    $body.=$this->_getNames($pos,$sorted['customersWithLessThanTenDollars'][$row-$numCustomer-7],false);
+                }
+
+                //Nombres de los managers proveedores izquierda con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier && $col==1)
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-6;
+                    $body.=$this->_getNames($pos,$sorted['providersWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-7],true);
+                }
+                if($row>$numCustomer+$numCustomerLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier && $col==3+($num*$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-6;
+                    $body.=$this->_getNames($pos,$sorted['providersWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-7],false);
+                }
+
+                //Nombres de los managers proveedores izquierda con menos de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess && $col==1)
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-12;
+                    $body.=$this->_getNames($pos,$sorted['providersWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-7],true);
+                }
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess && $col==3+($num*$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-12;
+                    $body.=$this->_getNames($pos,$sorted['providersWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-7],false);
+                }
+
+                //Nombres de los destinos external con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt && $col==1)
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-6;
+                    $body.=$this->_getNamesDestination($pos,$sorted['externalDestinationsMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-7],true);
+                }
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt && $col==3+($num*$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-6;
+                    $body.=$this->_getNamesDestination($pos,$sorted['externalDestinationsMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-7],false);
+                }
+
+                //Nombres de los destinos external con menos de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess && $col==1)
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-12;
+                    $body.=$this->_getNamesDestination($pos,$sorted['externalDestinationsLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-7],true);
+                }
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess && $col==3+($num*$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-12;
+                    $body.=$this->_getNamesDestination($pos,$sorted['externalDestinationsLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-7],false);
+                }
+
+                //Nombres de los destinos external con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt && $col==1)
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-6;
+                    $body.=$this->_getNamesDestination($pos,$sorted['internalDestinationsWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-7],true);
+                }
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt && $col==3+($num*$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-6;
+                    $body.=$this->_getNamesDestination($pos,$sorted['internalDestinationsWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-7],false);
+                }
+
+                //Nombres de los destinos external con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess && $col==1)
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-12;
+                    $body.=$this->_getNamesDestination($pos,$sorted['internalDestinationsWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-$numDestinationInt-7],true);
+                }
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess && $col==3+($num*$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-12;
+                    $body.=$this->_getNamesDestination($pos,$sorted['internalDestinationsWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-$numDestinationInt-7],false);
+                }
+
+
+                //Cabecera Izquiera de totales gris
+                if(($row==$numCustomer+1 
+                    || $row==$numCustomer+$numCustomerLess+1 
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+1
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+1) && $col==1)
+                {
+                    $body.="<td></td><td></td><td style='".$this->_head['styleFooter']."'>Total</td>";
+                }
+                if(($row==$numCustomer+1 
+                    || $row==$numCustomer+$numCustomerLess+1 
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+1
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+1) && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'>Total</td><td></td><td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+1) && $col==1)
+                {
+                    $body.="<td></td><td style='".$this->_head['styleFooter']."' colspan='3'>Total</td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+1) && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."' colspan='3'>Total</td><td></td>";
+                }
+                //Cabecera Izquiera de totales oscuro
+                //mas uno por encima
+                if(($row==$numCustomer+2 
+                    || $row==$numCustomer+$numCustomerLess+2 
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+2
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+2) && $col==1)
+                {
+                    $body.="<td></td><td></td><td style='".$this->_head['styleFooterTotal']."'>Total</td>";
+                }
+                if(($row==$numCustomer+2 
+                    || $row==$numCustomer+$numCustomerLess+2 
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+2
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+2) && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooterTotal']."'>Total</td><td></td><td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+2
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+2
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+2
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+2) && $col==1)
+                {
+                    $body.="<td></td><td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+2
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+2
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+2
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+2) && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td><td></td>";
+                }
+                //Celdas vacias para totales en procentaje
+                if(($row==$numCustomer+3 || $row==$numCustomer+4
+                    || $row==$numCustomer+$numCustomerLess+3 || $row==$numCustomer+$numCustomerLess+4 
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+3 || $row==$numCustomer+$numCustomerLess+$numSupplier+4
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+3 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+4) && ($col==1 || $col==3+($num*$span)))
+                {
+                    $body.="<td></td><td></td><td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+3 
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+4
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+3
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+4
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+3
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+4
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+3
+                    || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+4) && ($col==1 || $col==3+($num*$span)))
+                {
+                    $body.="<td></td><td></td><td></td><td></td>";
+                }
+                //Titulo de cada mes para diferenciar la data compradores/vendedores
+                if(($row==1
+                 || $row==$numCustomer+5
+                 || $row==$numCustomer+$numCustomerLess+5 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+5) && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(3,$col,$span)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+5) && self::validColumn(3,$col,$num,$spanDes))
+                {
+                    $body.="<td colspan='".$spanDes."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(3,$col,$spanDes)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$spanDes))) $body.="<td></td>";
+                }
+                //headers de las tablas
+                if(($row==2
+                 || $row==$numCustomer+6
+                 || $row==$numCustomer+$numCustomerLess+6 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+6
+                 || $row==$numCustomer+3 
+                 || $row==$numCustomer+$numCustomerLess+3 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+3 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+3) && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getHeaderCarriers();
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6
+                 ||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+3
+                 ||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+3
+                 ||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+3
+                 ||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+3) && self::validColumn(3,$col,$num,$spanDes))
+                {
+                    $body.=$this->_getHeaderDestination();
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$spanDes))) $body.="<td></td>";
+                }
+
+                //Nombres de los managers vendedores izquierda con mas de 10$
+                if($row>2 && $row<=$numCustomer && self::validColumn(3,$col,$num,$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-2;
+                    //le resto las dos filas delante y uno mas para que empiece en cero
+                    $body.=$this->_getRow(self::validIndex(3,$col,$span),'customersWithMoreThanTenDollars','cliente',$sorted['customersWithMoreThanTenDollars'][$row-3],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //Nombres de los managers vendedores izquierda con menos de 10$
+                if($row>$numCustomer+6  && $row<=$numCustomer+$numCustomerLess && self::validColumn(3,$col,$num,$span))
+                {
+                    //le resto las 8 filas que tiene delante para que continue la cuenta anterior
+                    $pos=$row-8;
+                    //le resto el total de clientes - 7 filas
+                    $body.=$this->_getRow(self::validIndex(3,$col,$span),'customersWithLessThanTenDollars','cliente',$sorted['customersWithLessThanTenDollars'][$row-$numCustomer-7],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //Nombres de los managers proveedores izquierda con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier && self::validColumn(3,$col,$num,$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-6;
+                    $body.=$this->_getRow(self::validIndex(3,$col,$span),'providersWithMoreThanTenDollars','proveedor',$sorted['providersWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-7],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //Nombres de los managers proveedores izquierda con menos de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess && self::validColumn(3,$col,$num,$span))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-12;
+                    $body.=$this->_getRow(self::validIndex(3,$col,$span),'providersWithLessThanTenDollars','proveedor',$sorted['providersWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-7],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+
+                //Nombres de los destinos external con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt && self::validColumn(3,$col,$num,$spanDes))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-6;
+                    $body.=$this->_getRowDestination(self::validIndex(3,$col,$spanDes),'externalDestinationsMoreThanTenDollars','destino',$sorted['externalDestinationsMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-7]);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$spanDes))) $body.="<td></td>";
+                }
+                //Nombres de los destinos external con menos de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess && self::validColumn(3,$col,$num,$spanDes))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-12;
+                    $body.=$this->_getRowDestination(self::validIndex(3,$col,$spanDes),'externalDestinationsLessThanTenDollars','destino',$sorted['externalDestinationsLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-7]);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$spanDes))) $body.="<td></td>";
+                }
+
+                //Nombres de los destinos external con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt && self::validColumn(3,$col,$num,$spanDes))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-6;
+                    $body.=$this->_getRowDestination(self::validIndex(3,$col,$spanDes),'internalDestinationsWithMoreThanTenDollars','destino',$sorted['internalDestinationsWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-7]);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$spanDes))) $body.="<td></td>";
+                }
+                //Nombres de los destinos external con mas de 10$
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess && self::validColumn(3,$col,$num,$spanDes))
+                {
+                    $pos=$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-12;
+                    $body.=$this->_getRowDestination(self::validIndex(3,$col,$spanDes),'internalDestinationsWithLessThanTenDollars','destino',$sorted['internalDestinationsWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-$numSupplierLess-$numDestinationExt-$numDestinationExtLess-$numDestinationInt-7]);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$spanDes))) $body.="<td></td>";
+                }
+
+                //Totales de las tablas 
+                if($row==$numCustomer+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'clientsTotalMoreThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'clientsTotalLessThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'suppliersTotalMoreThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'suppliersTotalLessThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+
+                //total generales
+                if(($row==$numCustomer+2||$row==$numCustomer+$numCustomerLess+2) && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'totalCustomer','styleFooterTotal',false);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+2||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+2) && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'totalSuppliers','styleFooterTotal',false);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+
+                //Totales en porcentajes
+                if($row==$numCustomer+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrierPercentage(self::validIndex(3,$col,$span),'clientsTotalMoreThanTenDollars','totalCustomer','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrierPercentage(self::validIndex(3,$col,$span),'clientsTotalLessThanTenDollars','totalCustomer','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrierPercentage(self::validIndex(3,$col,$span),'suppliersTotalMoreThanTenDollars','totalSuppliers','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalCarrierPercentage(self::validIndex(3,$col,$span),'suppliersTotalLessThanTenDollars','totalSuppliers','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+
+                //Totales de destinos _getRowTotalDestination($index,$index2,$style,$type=true)
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalExternalDestinationsMoreThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalExternalDestinationsLessThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalInternalDestinationsWithMoreThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalInternalDestinationsWithLessThanTenDollars','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+
+                //Totales completos
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+2
+                  ||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+2) && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalExternalDestinations','styleFooterTotal',false);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+2
+                  ||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+2) && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalInternalDestinations','styleFooterTotal',false);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+
+                //Totales en porcentajes destinos
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalExternalDestinationsMoreThanTenDollars','totalExternalDestinations','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalExternalDestinationsLessThanTenDollars','totalExternalDestinations','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithMoreThanTenDollars','totalInternalDestinations','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithLessThanTenDollars','totalInternalDestinations','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+            }
+            $body.="</tr>";
+        }
+        $body.="</table>";
+        return $body;
+	}
+
+    /**
+     *
+     */
+    private function _loopData($start,$end)
+    {
         //verifico las fechas
         $array=self::valDates($start,$end);
         $startDateTemp=$startDate=$array['startDate'];
         $endingDateTemp=$endingDate=$array['endingDate'];
+        $this->equal=$array['equal'];
         $arrayStartTemp=null;
-        $objetos=array();
         $index=0;
         while (self::isLower($startDateTemp,$endingDate))
         {
             $arrayStartTemp=explode('-',$startDateTemp);
             $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
+
             //El titulo que va a llevar la seccion
-            $objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /***/
             //Guardo los datos de los clientes con mas de 10 dolares de ganancia
-            $objetos[$index]['customersWithMoreThanTenDollars']=self::getCarriers($startDateTemp,$endingDateTemp,true,true);
+            $this->_objetos[$index]['customersWithMoreThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
-            $objetos[$index]['clientsTotalMoreThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
+            $this->_objetos[$index]['clientsTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de todos los clientes
-            $objetos[$index]['totalCustomer']=self::getTotalCompleteCarriers($startDateTemp,$endingDateTemp,true);
+            $this->_objetos[$index]['totalCustomer']=$this->_getTotalCompleteCarriers($startDateTemp,$endingDateTemp,true);
             //Guardo los datos de los clientes con menos de 10 dolares de ganancia 
-            $objetos[$index]['customersWithLessThanTenDollars']=self::getCarriers($startDate,$endingDate,true,false);
+            $this->_objetos[$index]['customersWithLessThanTenDollars']=$this->_getCarriers($startDate,$endingDate,true,false);
             //Guardo los datos de los totales de los clientes con menis de 10 dolares de ganancia
-            $objetos[$index]['clientsTotalLessThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,true,false);
+            $this->_objetos[$index]['clientsTotalLessThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,false);
             /***/
             //Guardo los datos de los proveedores con mas de 10 dolares de ganancia
-            $objetos[$index]['providersWithMoreThanTenDollars']=self::getCarriers($startDateTemp,$endingDateTemp,false,true);
+            $this->_objetos[$index]['providersWithMoreThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
-            $objetos[$index]['suppliersTotalMoreThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
+            $this->_objetos[$index]['suppliersTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de todos los proveedores
-            $objetos[$index]['totalSuppliers']=self::getTotalCompleteCarriers($startDateTemp,$endingDateTemp,false);
+            $this->_objetos[$index]['totalSuppliers']=$this->_getTotalCompleteCarriers($startDateTemp,$endingDateTemp,false);
             //Guardo los datos de los proveedores con menos de 10 dolares de ganancia
-            $objetos[$index]['providersWithLessThanTenDollars']=self::getCarriers($startDateTemp,$endingDateTemp,false,false);
+            $this->_objetos[$index]['providersWithLessThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,false,false);
             //Gurado los datos de los totales de los proveedores con menos de 10 dolares de ganancia
-            $objetos[$index]['suppliersTotalLessThanTenDollars']=self::getTotalCarriers($startDateTemp,$endingDateTemp,false,false);
+            $this->_objetos[$index]['suppliersTotalLessThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,false);
             /***/
             //Guardo los datos de los destinos externos con mas de 10 dolares de ganancia
-            $objetos[$index]['externalDestinationsMoreThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,true,true);
+            $this->_objetos[$index]['externalDestinationsMoreThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
-            $objetos[$index]['totalExternalDestinationsMoreThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,true,true);
+            $this->_objetos[$index]['totalExternalDestinationsMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de los destinos externos
-            $objetos[$index]['totalExternalDestinations']=self::getTotalCompleteDestination($startDateTemp,$endingDateTemp,true);
+            $this->_objetos[$index]['totalExternalDestinations']=$this->_getTotalCompleteDestination($startDateTemp,$endingDateTemp,true);
             //Guardo los datos de los destinos externos con menos de 10 dolares de ganancia
-            $objetos[$index]['externalDestinationsLessThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,true,false);
+            $this->_objetos[$index]['externalDestinationsLessThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,true,false);
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
-            $objetos[$index]['totalExternalDestinationsLessThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,true,false);
+            $this->_objetos[$index]['totalExternalDestinationsLessThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,true,false);
             /***/
             //Guardo los datos de los destinos internos con mas de 10 dolares de ganancia
-            $objetos[$index]['internalDestinationsWithMoreThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,false,true);
+            $this->_objetos[$index]['internalDestinationsWithMoreThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia
-            $objetos[$index]['totalInternalDestinationsWithMoreThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,false,true);
+            $this->_objetos[$index]['totalInternalDestinationsWithMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los destinos internos
-            $objetos[$index]['totalInternalDestinations']=self::getTotalCompleteDestination($startDateTemp,$endingDateTemp,false);
+            $this->_objetos[$index]['totalInternalDestinations']=$this->_getTotalCompleteDestination($startDateTemp,$endingDateTemp,false);
             //Guardo los datos de los destinos internos con menos de 10 dolares de ganancia
-            $objetos[$index]['internalDestinationsWithLessThanTenDollars']=self::getDestination($startDateTemp,$endingDateTemp,false,false);
+            $this->_objetos[$index]['internalDestinationsWithLessThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,false,false);
             //Guardo los datos de los totales de los destinos internos con menos de 10 dolares de ganancia
-            $objetos[$index]['totalInternalDestinationsWithLessThanTenDollars']=self::getTotalDestination($startDateTemp,$endingDateTemp,false,false);
+            $this->_objetos[$index]['totalInternalDestinationsWithLessThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,false,false);
+
+            /*Itero la fecha*/
             $startDateTemp=self::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
-        //Cuento el numero de objetos en el array
-        $num=count($objetos);
-        $last=$num-1;
-        //Loscuento para saber que numero seguir en el resto
-        $numCustomer=count($objetos[$last]['customersWithMoreThanTenDollars']);
-        $numSupplier=count($objetos[$last]['providersWithMoreThanTenDollars']);
-        $numDestinationExt=count($objetos[$last]['externalDestinationsMoreThanTenDollars']);
-        $numDestinationInt=count($objetos[$last]['internalDestinationsWithMoreThanTenDollars']);
-        //Organizo los datos
-        $sorted['customersWithMoreThanTenDollars']=self::sort($objetos[$last]['customersWithMoreThanTenDollars'],'cliente');
-        $sorted['customersWithLessThanTenDollars']=self::sort($objetos[$last]['customersWithLessThanTenDollars'],'cliente');
-        $sorted['providersWithMoreThanTenDollars']=self::sort($objetos[$last]['providersWithMoreThanTenDollars'],'proveedor');
-        $sorted['providersWithLessThanTenDollars']=self::sort($objetos[$last]['providersWithLessThanTenDollars'],'proveedor');
-        $sorted['externalDestinationsMoreThanTenDollars']=self::sort($objetos[$last]['externalDestinationsMoreThanTenDollars'],'destino');
-        $sorted['externalDestinationsLessThanTenDollars']=self::sort($objetos[$last]['externalDestinationsLessThanTenDollars'],'destino');
-        $sorted['internalDestinationsWithMoreThanTenDollars']=self::sort($objetos[$last]['internalDestinationsWithMoreThanTenDollars'],'destino');
-        $sorted['internalDestinationsWithLessThanTenDollars']=self::sort($objetos[$last]['internalDestinationsWithLessThanTenDollars'],'destino');
-
-        $cuerpo="<table>";
-        for($row=0; $row < 8; $row++)
-        { 
-            $cuerpo.="<tr>";
-            switch ($row)
-            {
-                case 0:
-                case 2:
-                case 4:
-                case 6:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'>".$objetos[$col-1]['title']."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'></td>";
-                        }
-                    }
-                    break;
-                    //Clientes con mas de 10$
-                case 1:
-                    $head=array(
-                        'title'=>'Clientes (+10)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],0,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['customersWithMoreThanTenDollars'],$objetos[$col-1]['customersWithMoreThanTenDollars'],'cliente',0,$head).
-                            self::getHtmlTotalCarriers($objetos[$col-1]['clientsTotalMoreThanTenDollars'],$objetos[$col-1]['totalCustomer'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithMoreThanTenDollars'],0,false)."</td>";
-                        }
-                    }
-                    break;
-                    //Clientes con menos de 10$
-                case 3:
-                    $head=array(
-                        'title'=>'Clientes (Resto)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithLessThanTenDollars'],$numCustomer,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['customersWithLessThanTenDollars'],$objetos[$col-1]['customersWithLessThanTenDollars'],'cliente',$numCustomer,$head).
-                            self::getHtmlTotalCarriers($objetos[$col-1]['clientsTotalLessThanTenDollars'],$objetos[$col-1]['totalCustomer'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['customersWithLessThanTenDollars'],$numCustomer,false)."</td>";
-                        }
-                    }
-                    break;
-                    //Proveedores con mas de 10$
-                case 5:
-                    $head=array(
-                        'title'=>'Proveedor (+10)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithMoreThanTenDollars'],0,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['providersWithMoreThanTenDollars'],$objetos[$col-1]['providersWithMoreThanTenDollars'],'proveedor',0,$head).
-                            self::getHtmlTotalCarriers($objetos[$col-1]['suppliersTotalMoreThanTenDollars'],$objetos[$col-1]['totalSuppliers'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithMoreThanTenDollars'],0,false)."</td>";
-                        }
-                    }
-                    break;
-                    //Proveedores con menos de 10
-                case 7:
-                    $head=array(
-                        'title'=>'Proveedor (Resto)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithLessThanTenDollars'],$numSupplier,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableCarriers($sorted['providersWithLessThanTenDollars'],$objetos[$col-1]['providersWithLessThanTenDollars'],'proveedor',$numSupplier,$head).
-                            self::getHtmlTotalCarriers($objetos[$col-1]['suppliersTotalLessThanTenDollars'],$objetos[$col-1]['totalSuppliers'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTable($head,$sorted['providersWithLessThanTenDollars'],$numSupplier,false)."</td>";
-                        }
-                    }
-                    break;
-            }
-            $cuerpo.="</tr>";
-        }
-        $cuerpo.="</table><table>";
-        for($row=0; $row < 8; $row++)
-        { 
-            $cuerpo.="<tr>";
-            switch ($row)
-            {
-                case 0:
-                case 2:
-                case 4:
-                case 6:
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td style='text-align:center;background-color:#999999; color:#FFFFFF;'>".$objetos[$col-1]['title']."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td></td>";
-                        }
-                    }
-                    break;
-                    //Destinos externos con mas de 10$
-                case 1:
-                    $head=array(
-                        'title'=>'Destinos Externos (+10$)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsMoreThanTenDollars'],0,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['externalDestinationsMoreThanTenDollars'],$objetos[$col-1]['externalDestinationsMoreThanTenDollars'],'destino',$head).
-                            self::getHtmlTotalDestinations($objetos[$col-1]['totalExternalDestinationsMoreThanTenDollars'],$objetos[$col-1]['totalExternalDestinations'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsMoreThanTenDollars'],0,false)."</td>";
-                        }
-                    }
-                    break;
-                    //Destinos externos con menos de 10$
-                case 3:
-                    $head=array(
-                        'title'=>'Destinos Externos (Resto)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsLessThanTenDollars'],$numDestinationExt,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['externalDestinationsLessThanTenDollars'],$objetos[$col-1]['externalDestinationsLessThanTenDollars'],'destino',$head).
-                            self::getHtmlTotalDestinations($objetos[$col-1]['totalExternalDestinationsLessThanTenDollars'],$objetos[$col-1]['totalExternalDestinations'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['externalDestinationsLessThanTenDollars'],$numDestinationExt,false)."</td>";
-                        }
-                    }
-                    break;
-                //Destinos internos con mas de 10$
-                case 5:
-                    $head=array(
-                        'title'=>'Destinos Internos (+10$)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithMoreThanTenDollars'],0,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['internalDestinationsWithMoreThanTenDollars'],$objetos[$col-1]['internalDestinationsWithMoreThanTenDollars'],'destino',$head).
-                            self::getHtmlTotalDestinations($objetos[$col-1]['totalInternalDestinationsWithMoreThanTenDollars'],$objetos[$col-1]['totalInternalDestinations'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithMoreThanTenDollars'],0,false)."</td>";
-                        }
-                    }
-                    break;
-                //Destinos internos con menos de 10$
-                case 7:
-                    $head=array(
-                        'title'=>'Destinos Internos (Resto)',
-                        'styleHead'=>'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                        'styleFooter'=>'background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for ($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithLessThanTenDollars'],$numDestinationInt,true)."</td>";
-                        }
-                        elseif ($col>0 && $col<$num+1)
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDestinations($sorted['internalDestinationsWithLessThanTenDollars'],$objetos[$col-1]['internalDestinationsWithLessThanTenDollars'],'destino',$head).
-                            self::getHtmlTotalDestinations($objetos[$col-1]['totalInternalDestinationsWithLessThanTenDollars'],$objetos[$col-1]['totalInternalDestinations'],$head)."</td>";
-                            if($col!=$num)
-                            {
-                                $cuerpo.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $cuerpo.="<td>".self::getHtmlTableDes($head,$sorted['internalDestinationsWithLessThanTenDollars'],$numDestinationInt,false)."</td>";
-                        }
-                    }
-                    break;
-            }
-            $cuerpo.="</tr>";
-        }
-        $cuerpo.="</table>";
-        return $cuerpo;
-	}
-
-    /**
-     * Obtiene el html de las tablas para los carriers
-     * @access private
-     * @static
-     * @param array $list la lista del orden que regira la tabla
-     * @param array $data Es el array con los objetos obtenidos de base de datos
-     * @param string $attribute este parametro es para que la funcion funcione tanto con carrier customer como con supplier
-     * @param array $head trae las caracteristicas de la cabecera de la tabla
-     * @return string $body es el html de la tabla formada
-     */
-    private static function getHtmlTableCarriers($list,$data,$attribute,$position,$head)
-    {
-        $columns=array('Cost','Revenue','Margin');
-        if(self::$type) $columns=array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','PN');
-        $body="<table>
-                  <thead>";
-        $body.=self::cabecera($columns,$head['styleHead']);
-        $body.="</thead>
-                 <tbody>";
-        if($data!=NULL)
-        {
-            foreach ($list as $key => $carrier)
-            {
-                if($position!=null)
-                    $position=$position+1;
-                else
-                    $position=$key+1;
-                $body.=self::getRow($attribute,$carrier['attribute'],$data,$position);
-            }
-        }
-        else
-        {
-            $body.="<tr><td colspan='11'>No se encontraron resultados</td></tr>";
-        }
-        $body.="</tbody>
-                 </table>";
-        return $body;
-    }
-
-    /**
-     *
-     */
-    private static function getHtmlTableDestinations($list,$data,$attribute,$head)
-    {
-        $columns="";
-        if(self::$type) $columns.="<td>TotalCalls</td><td>CompleteCalls</td><td>Minutes</td><td>ASR</td><td>ACD</td><td>PDD</td>";
-        $columns.="<td>Cost</td><td>Revenue</td><td>Margin</td>";
-        if(self::$type) $columns.="<td>Margin%</td><td>Cost/Min</td><td>Rate/Min</td><td>Margin/Min</td>";
-
-        $body="<table>
-                    <thead>
-                        <tr style='".$head['styleHead']."'>
-                            ".$columns."
-                        </tr>
-                    </thead>
-                 <tbody>";
-        if($data!=NULL)
-        {
-            foreach ($list as $key => $carrier)
-            {
-                $position=$key+1;
-                $body.=self::getRowDestinations($attribute,$carrier['attribute'],$data,$position);
-            }
-        }
-        else
-        {
-            $body.="<tr><td colspan='13'>No se encontraron resultados</td></tr>";
-        }
-        $body.="</tbody>
-                 </table>";
-        return $body;
-    }
-
-    /**
-     * Recibe un objeto de modelo y un atributo, retorna una fila <tr> con los datos del objeto
-     * @access protected
-     * @static
-     * @param string $attribute es el atributo del objeto con el que se hará la comparacion
-     * @param string $phrase es la frase con la que debe conincidir el atributo 
-     * @param array $objeto es el objeto traido de base de datos
-     * @param int $position es el numero para indicar el color de la fila en la tabla 
-     * @return string
-     */
-    private static function getRow($attribute,$phrase,$object,$position)
-    {
-        $body="<tr>";
-        $style=self::colorEstilo($position);
-        foreach ($object as $key => $value)
-        {
-            if($value->$attribute == $phrase)
-            {
-                if(self::$type) $body.="<td style='".$style."' >".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
-                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
-                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->minutes)."</td>
-                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->asr)."</td>
-                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->acd)."</td>
-                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->pdd)."</td>";
-                $body.="<td style='".$style."' >".Yii::app()->format->format_decimal($value->cost)."</td>
-                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>
-                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->margin)."</td>";
-                if(self::$type) $body.="<td style='".$style."' >".Yii::app()->format->format_decimal($value->margin_percentage)."</td>
-                                        <td style='".$style."' >".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
-                $body.="</tr>";
-                return $body;
-            }
-        }
-        $colnum=3;
-        if(self::$type) $colnum=11;
-
-        for ($i=0; $i < $colnum; $i++)
-        { 
-            $body.="<td style='".$style."' >--</td>";
-        } 
-        $body.="</tr>";
-        return $body;
-    }
-
-    /**
-     * Recibe un objeto de modelo y un atributo, retorna una fila <tr> con los datos del objeto
-     * @access protected
-     * @static
-     * @param string $attribute es el atributo del objeto con el que se hará la comparacion
-     * @param string $phrase es la frase con la que debe conincidir el atributo 
-     * @param array $objeto es el objeto traido de base de datos
-     * @param int $position es el numero para indicar el color de la fila en la tabla 
-     * @return string
-     */
-    private static function getRowDestinations($attribute,$phrase,$object,$position)
-    {
-        $body="";
-        foreach ($object as $key => $value)
-        {
-            $style=self::colorDestino($value->$attribute);
-            $body=$style;
-            if($value->$attribute == $phrase)
-            {
-                if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->minutes)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->asr)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->acd)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-                $body.="<td>".Yii::app()->format->format_decimal($value->cost)."</td>
-                        <td>".Yii::app()->format->format_decimal($value->revenue)."</td>
-                        <td>".Yii::app()->format->format_decimal($value->margin)."</td>";
-                if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->costmin)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->ratemin)."</td>
-                                        <td>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
-                $body.="</tr>";
-                return $body;
-            }
-        }
-        $colnum=3;
-        $body=$style;
-        if(self::$type) $colnum=13;
-
-        for ($i=0; $i < $colnum; $i++)
-        { 
-            $body.="<td>--</td>";
-        } 
-        $body.="</tr>";
-        return $body;
-    }
-
-    /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
-     * @access private
-     * @static
-     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
-     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
-     * @return string
-     */
-    private static function getHtmlTotalCarriers($totalCondition,$total,$head)
-    {
-        $columns=array('Cost','Revenue','Margin');
-        if(self::$type) $columns=array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','');
-        $body="<table>
-                    <tr style='".$head['styleFooter']."'>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>";
-        $body.="<td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
-                <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
-                <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>";
-        if(self::$type) $body.="<td></td>
-                                <td></td>";
-        $body.="</tr>
-                <tr style='".$head['styleFooterTotal']."'>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->asr)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->acd)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->pdd)."</td>";
-        $body.="<td>".Yii::app()->format->format_decimal($total->cost)."</td>
-                <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
-                <td>".Yii::app()->format->format_decimal($total->margin)."</td>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
-                                <td></td>";
-        $body.="</tr>"
-                .self::cabecera($columns,$head['styleHead'])."
-                <tr style='".$head['styleFooterTotal']."'>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
-                                <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
-                                <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>";
-        $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
-                <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
-                <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
-        if(self::$type) $body.="<td></td>
-                                <td></td>";
-        $body.="</tr>
-                </table>";
-        return $body;
-    }
-
-    /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
-     * @access private
-     * @static
-     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
-     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
-     * @return string
-     */
-    private static function getHtmlTotalDestinations($totalCondition,$total,$head)
-    {
-        $columns=array('Cost','Revenue','Margin');
-        if(self::$type) $columns=array('TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cost/Min','Rate/Min','Margin/Min');
-        $body="<table>
-                    <tr style='".$head['styleFooter']."'>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($totalCondition->total_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->complete_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->minutes)."</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>";
-        $body.="<td>".Yii::app()->format->format_decimal($totalCondition->cost)."</td>
-                <td>".Yii::app()->format->format_decimal($totalCondition->revenue)."</td>
-                <td>".Yii::app()->format->format_decimal($totalCondition->margin)."</td>";
-        if(self::$type) $body.="<td></td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->costmin)."</td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->ratemin)."</td>
-                                <td>".Yii::app()->format->format_decimal($totalCondition->marginmin)."</td>";
-        $body.="</tr>
-                <tr style='".$head['styleFooterTotal']."'>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->total_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->complete_calls,0)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->minutes)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->asr)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->acd)."</td>
-                                <td>".Yii::app()->format->format_decimal($total->pdd)."</td>";
-        $body.="<td>".Yii::app()->format->format_decimal($total->cost)."</td>
-                <td>".Yii::app()->format->format_decimal($total->revenue)."</td>
-                <td>".Yii::app()->format->format_decimal($total->margin)."</td>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal($total->margin_percentage)."%</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>";
-        $body.="</tr>"
-                .self::cabecera($columns,$head['styleHead']).
-                "<tr style='".$head['styleFooterTotal']."'>";
-        if(self::$type) $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>
-                                <td>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>
-                                <td>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>";
-        $body.="<td>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>
-                <td>".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>
-                <td>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
-        if(self::$type) $body.="<td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>";
-        $body.="</tr>
-                </table>";
-        return $body;
-    }
-
-    /**
-     * Genera una tabla con la lista y ranking del dato pasado
-     * @access private
-     * @static
-     * @param array $head titulo que lleva la cabezera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
-     * @param array $list lista de nombres incluidos para contruir la tabla
-     * @param boolean $type si es true es para el principio, false al final
-     */
-    private static function getHtmlTable($head,$lista,$pos,$type=true)
-    {
-        $body="<table>";
-        if($type)
-        {
-            $body.=self::cabecera(array('Ranking',$head['title'],'Vendedor'),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                if($pos!=null)
-                    $pos=$pos+1;
-                else
-                    $pos=$key+1;
-                $style=self::colorEstilo($pos);
-                $body.="<tr style='".$style."'><td>".$pos."</td><td>".$value['attribute']."</td><td>".CarrierManagers::getManager($value['id'])."</td></tr>";
-            }
-            $body.="<tr>
-                        <td></td>
-                        <td></td>
-                        <td style='".$head['styleFooter']."'>TOTAL</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td style='".$head['styleFooterTotal']."'>Total</td>
-                    </tr>";
-        }
-        else
-        {
-            $body.=self::cabecera(array('Vendedor',$head['title'],'Ranking'),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                if($pos!=null)
-                    $pos=$pos+1;
-                else
-                    $pos=$key+1;
-                $style=self::colorEstilo($pos);
-                $body.="<tr style='".$style."'><td>".CarrierManagers::getManager($value['id'])."</td><td>".$value['attribute']."</td><td>".$pos."</td></tr>";
-            }
-            $body.="<tr>
-                        <td style='".$head['styleFooter']."'>TOTAL</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style='".$head['styleFooterTotal']."'>Total</td>
-                        <td></td>
-                        <td></td>
-                    </tr>";
-        }
-        $body.="</table>";
-        return $body;
-    }
-
-    /**
-     * Genera una tabla con la lista y ranking del dato pasado
-     * @access private
-     * @static
-     * @param array $head titulo que lleva la cabezera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
-     * @param array $list lista de nombres incluidos para contruir la tabla
-     * @param boolean $type si es true es para el principio, false al final
-     */
-    private static function getHtmlTableDes($head,$lista,$pos,$type=true)
-    {
-        $body="<table>";
-        if($type)
-        {
-            $body.=self::cabecera(array('Ranking',$head['title']),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                if($pos!=null)
-                    $pos=$pos+1;
-                else
-                    $pos=$key+1;
-                $style=self::colorDestino($value['attribute']);
-                $body.=$style."<td>".$pos."</td><td>".$value['attribute']."</td></tr>";
-            }
-            $body.="<tr>
-                        <td></td>
-                        <td style='".$head['styleFooter']."'>TOTAL</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td style='".$head['styleFooterTotal']."'>Total</td>
-                    </tr>";
-        }
-        else
-        {
-            $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                if($pos!=null)
-                    $pos=$pos+1;
-                else
-                    $pos=$key+1;
-                $style=self::colorDestino($value['attribute']);
-                $body.=$style."<td>".$value['attribute']."</td><td>".$pos."</td></tr>";
-            }
-            $body.="<tr>
-                        <td style='".$head['styleFooter']."'>TOTAL</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style='".$head['styleFooterTotal']."'>Total</td>
-                        <td></td>
-                    </tr>";
-        }
-        $body.="</table>";
-        return $body;
     }
 
     /**
      * Encargado de traer los datos de los carriers
      * @access private
-     * @static
      * @param date $startDate fecha de inicio de la consulta
      * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeCarrier true=clientes, false=proveedores
      * @param boolean $type true=+10$, false=-10$
      * @return array $models
      */
-    private static function getCarriers($startDate,$endingDate,$typeCarrier=true,$type=true)
+    private function _getCarriers($startDate,$endingDate,$typeCarrier=true,$type=true)
     {
         if($type)
             $condicion="x.margin>10";
@@ -855,14 +728,13 @@ class AltoImpacto extends Reportes
     /**
      * trae el total de todos los carriers
      * @access private
-     * @static
      * @param date $startDate fecha inicio de la consulta
      * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeCarrier true=clientes, false=proveedores
      * @param boolean $type true=margen mayor a 10$, false=margen menor a 10$
      * @return object $model
      */
-    private static function getTotalCarriers($startDate,$endingDate,$typeCarrier=true,$type=true)
+    private function _getTotalCarriers($startDate,$endingDate,$typeCarrier=true,$type=true)
     {
         if($type)
             $condicion="margin>10";
@@ -887,13 +759,12 @@ class AltoImpacto extends Reportes
     /**
      * Retorna el total de todos los clientes en la fecha especificada
      * @access private
-     * @static
      * @param date $startDate
      * @param date $endingDate
      * @param boolean $typeCarrier true=clientes, false=proveedores
      * @return array $models
      */
-    private static function getTotalCompleteCarriers($startDate,$endingDate,$typeCarrier=true)
+    private function _getTotalCompleteCarriers($startDate,$endingDate,$typeCarrier=true)
     {
         if($typeCarrier)
             $select="id_carrier_customer";
@@ -912,14 +783,13 @@ class AltoImpacto extends Reportes
     /**
      * Retorna la data de los destinos
      * @access private
-     * @static
      * @param date $startDate fecha inicio de la consulta
      * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeDestination true=external, false=internal
      * @param boolean $type true=+10$, false=-10$
      * @return array $models
      */
-    private static function getDestination($startDate,$endingDate,$typeDestination=true,$type=true)
+    private function _getDestination($startDate,$endingDate,$typeDestination=true,$type=true)
     {
         if($type)
             $condicion="x.margin>10";
@@ -951,14 +821,13 @@ class AltoImpacto extends Reportes
     /**
      * Retorna el total de la data de los destinos
      * @access private
-     * @static
      * @param date $startDate fecha inicio de la consulta
      * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeDestination true=external, false=internal
      * @param boolean $type true=+10$, false=-10$
      * @return object $model
      */
-    private static function getTotalDestination($startDate,$endingDate,$typeDestination=true,$type=true)
+    private function _getTotalDestination($startDate,$endingDate,$typeDestination=true,$type=true)
     {
         if($type)
             $condicion="margin>10";
@@ -989,13 +858,12 @@ class AltoImpacto extends Reportes
     /**
      * Retorna el total de la data de todos los destinos
      * @access private
-     * @static
      * @param date $startDate fecha inicio de la consulta
      * @param date $endingDate fecha fin de la consulta
      * @param boolean $typeDestination true=external, false=internal
      * @return object $model
      */
-    private static function getTotalCompleteDestination($startDate,$endingDate,$typeDestination=true)
+    private function _getTotalCompleteDestination($startDate,$endingDate,$typeDestination=true)
     {
         if($typeDestination)
         {
@@ -1015,5 +883,320 @@ class AltoImpacto extends Reportes
                    ORDER BY margin DESC) balance";
         return Balance::model()->findBySql($sql);
     }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access protected
+     * @param int $pos posicion del manager
+     * @param array $value datos del carrier
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    protected function _getNames($pos,$value,$type=true)
+    {
+        $style=self::colorEstilo($pos);
+        if($type) 
+            return "<td style='".$style."'>{$pos}</td><td style='".$style."'>{$value['attribute']}</td><td style='".$style."'>".CarrierManagers::getManager($value['id'])."</td>";
+        else
+            return "<td style='".$style."'>".CarrierManagers::getManager($value['id'])."</td><td style='".$style."'>{$value['attribute']}</td><td style='".$style."'>{$pos}</td>";
+    }
+
+    /**
+     * Retorna la fila con el nombre del destino y la posicion indicada
+     * @access protected
+     * @param int $pos posicion del destino
+     * @param string $value datos del carrier
+     * @param int $id id del carrier
+     * @param string $style es el estilo asignado al tipo de manager
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    protected function _getNamesDestination($pos,$value,$type=true)
+    {
+        $style=self::colorDestino($value['attribute']);
+        if($type) 
+            return "<td style='".$style."'>{$pos}</td><td style='".$style."' colspan='3'>{$value['attribute']}</td>";
+        else
+            return "<td style='".$style."' colspan='3'>{$value['attribute']}</td><td style='".$style."'>{$pos}</td>";
+    }
+
+    /**
+     * Retorna la cabecera de la data de managers
+     * @access private
+     * @return string celdas construidas
+     */
+    private function _getHeaderCarriers()
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        if($this->type) $uno="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
+        if($this->type) $dos="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
+        if($this->type) $tres="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        if($this->type) $cuatro="<td style='".$this->_head['styleHead']."'>ASR</td>";
+        if($this->type) $cinco="<td style='".$this->_head['styleHead']."'>ACD</td>";
+        if($this->type) $seis="<td style='".$this->_head['styleHead']."'>PDD</td>";
+        $siete="<td style='".$this->_head['styleHead']."'>Cost</td>";
+        $ocho="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $nueve="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        if($this->type) $diez="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $once="<td style='".$this->_head['styleHead']."'>PN</td>";
+        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
+        return $body;
+    }
+
+    /**
+     * Retorna la cabecera de la data de managers
+     * @access private
+     * @return string celdas construidas
+     */
+    private function _getHeaderDestination()
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        if($this->type) $uno="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
+        if($this->type) $dos="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
+        if($this->type) $tres="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        if($this->type) $cuatro="<td style='".$this->_head['styleHead']."'>ASR</td>";
+        if($this->type) $cinco="<td style='".$this->_head['styleHead']."'>ACD</td>";
+        if($this->type) $seis="<td style='".$this->_head['styleHead']."'>PDD</td>";
+        $siete="<td style='".$this->_head['styleHead']."'>Cost</td>";
+        $ocho="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $nueve="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        if($this->type) $diez="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $once="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
+        if($this->type) $doce="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
+        if($this->type) $trece="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
+        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+        return $body;
+    }
+    
+    /**
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
+     * @access private
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
+     * @param $type true=minutes,revenue,margin false=margin
+     * @return string
+     */
+    private function _getRow($index,$index2,$attribute,$phrase,$style)
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        foreach ($this->_objetos[$index][$index2] as $key => $value)
+        {
+            if($value->$attribute == $phrase['attribute'])
+            {               
+                if($this->type) $uno="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+                if($this->type) $dos="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+                if($this->type) $tres="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($this->type) $cuatro="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+                if($this->type) $cinco="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+                if($this->type) $seis="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $siete="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+                $ocho="<td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $nueve="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($this->type) $diez="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."</td>";
+                if($this->type) $once="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+            }
+        }
+        if($siete==null) $siete="<td style='".$style."'>--</td>";
+        if($ocho==null) $ocho="<td style='".$style."'>--</td>";
+        if($nueve==null) $nueve="<td style='".$style."'>--</td>";
+        if($this->type)
+        {
+            if($uno==null) $uno="<td style='".$style."'>--</td>";
+            if($dos==null) $dos="<td style='".$style."'>--</td>";
+            if($tres==null) $tres="<td style='".$style."'>--</td>";
+            if($cuatro==null) $cuatro="<td style='".$style."'>--</td>";
+            if($cinco==null) $cinco="<td style='".$style."'>--</td>";
+            if($seis==null) $seis="<td style='".$style."'>--</td>";
+            if($diez==null) $diez="<td style='".$style."'>--</td>";
+            if($once==null) $once="<td style='".$style."'>--</td>";
+        }
+        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
+        return $body;
+    }
+
+    /**
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
+     * @access private
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
+     * @param $type true=minutes,revenue,margin false=margin
+     * @return string
+     */
+    private function _getRowDestination($index,$index2,$attribute,$phrase)
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $margin=$previous=$average=$previousMonth=null;
+        $style=self::colorDestino($phrase['attribute']);
+        foreach ($this->_objetos[$index][$index2] as $key => $value)
+        {
+            if($value->$attribute == $phrase['attribute'])
+            {               
+                if($this->type) $uno="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+                if($this->type) $dos="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+                if($this->type) $tres="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($this->type) $cuatro="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+                if($this->type) $cinco="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+                if($this->type) $seis="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $siete="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+                $ocho="<td style='".$style."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $nueve="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($this->type) $diez="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+                if($this->type) $once="<td style='".$style."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
+                if($this->type) $doce="<td style='".$style."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
+                if($this->type) $trece="<td style='".$style."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+            }
+        }
+        if($siete==null) $siete="<td style='".$style."'>--</td>";
+        if($ocho==null) $ocho="<td style='".$style."'>--</td>";
+        if($nueve==null) $nueve="<td style='".$style."'>--</td>";
+        if($this->type)
+        {
+            if($uno==null) $uno="<td style='".$style."'>--</td>";
+            if($dos==null) $dos="<td style='".$style."'>--</td>";
+            if($tres==null) $tres="<td style='".$style."'>--</td>";
+            if($cuatro==null) $cuatro="<td style='".$style."'>--</td>";
+            if($cinco==null) $cinco="<td style='".$style."'>--</td>";
+            if($seis==null) $seis="<td style='".$style."'>--</td>";
+            if($diez==null) $diez="<td style='".$style."'>--</td>";
+            if($once==null) $once="<td style='".$style."'>--</td>";
+            if($doce==null) $doce="<td style='".$style."'>--</td>";
+            if($trece==null) $trece="<td style='".$style."'>--</td>";
+        }
+        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+        return $body;
+    }
+
+    /**
+     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * @access private
+     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
+     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @return string
+     */
+    private function _getRowTotalCarrier($index,$index2,$style,$type=true)
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $value=$this->_objetos[$index][$index2];
+        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+        if(!$type)
+        {
+            if($this->type) $cuatro="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+            if($this->type) $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+            if($this->type) $seis="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+            if($this->type) $diez="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+        }
+        else
+        {
+            if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $diez="<td style='".$this->_head[$style]."'></td>"; 
+        }
+        if($this->type) $once="<td style='".$this->_head[$style]."'></td>"; 
+        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
+    }
+
+    /**
+     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * @access private
+     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
+     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @return string
+     */
+    private function _getRowTotalDestination($index,$index2,$style,$type=true)
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $value=$this->_objetos[$index][$index2];
+        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+        if(!$type)
+        {
+            if($this->type) $cuatro="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+            if($this->type) $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+            if($this->type) $seis="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+            if($this->type) $diez="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            if($this->type) $once="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $doce="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $trece="<td style='".$this->_head[$style]."'></td>";
+        }
+        else
+        {
+            if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $diez="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
+            if($this->type) $doce="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
+            if($this->type) $trece="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+        }
+        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+    }
+
+    /**
+     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * @access private
+     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
+     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @return string
+     */
+    private function _getRowTotalCarrierPercentage($index,$index2,$index3,$style)
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $totalCondition=$this->_objetos[$index][$index2];
+        $total=$this->_objetos[$index][$index3];
+        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>";
+        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>";
+        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>";
+        if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
+        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>";
+        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>";
+        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
+        if($this->type) $diez="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $once="<td style='".$this->_head[$style]."'></td>"; 
+        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
+    } 
+
+    /**
+     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * @access private
+     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
+     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @return string
+     */
+    private function _getRowTotalDestiantionsPercentage($index,$index2,$index3,$style)
+    {
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $totalCondition=$this->_objetos[$index][$index2];
+        $total=$this->_objetos[$index][$index3];
+        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>";
+        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>";
+        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>";
+        if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
+        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>";
+        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>";
+        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
+        if($this->type) $diez="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $once="<td style='".$this->_head[$style]."'></td>"; 
+        if($this->type) $doce="<td style='".$this->_head[$style]."'></td>"; 
+        if($this->type) $trece="<td style='".$this->_head[$style]."'></td>"; 
+        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+    } 
 }
 ?>

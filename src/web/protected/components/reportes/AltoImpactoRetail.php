@@ -280,7 +280,7 @@ class AltoImpactoRetail extends Reportes
             foreach($destinos as $key => $destino)
             {
                 $pos=$key+1;
-                $cuerpo.=self::colorDestino($destino->destino);
+                $cuerpo.="<tr style='".self::colorDestino($destino->destino)."'>";
                 $cuerpo.="<td style='text-align: center;' class='position'>".
                             $pos.
                         "</td>
@@ -787,7 +787,7 @@ class AltoImpactoRetail extends Reportes
                 foreach($destinosRpro as $key => $destinoRpro)
                 {
                     $pos=$key+1;
-                    $cuerpo.=self::colorDestino($destinoRpro->destino);
+                    $cuerpo.="<tr style='".self::colorDestino($destinoRpro->destino)."'>";
                     $cuerpo.="<td style='text-align: center;' class='position'>".
                                 $pos.
                             "</td>

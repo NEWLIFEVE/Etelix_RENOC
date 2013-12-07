@@ -962,7 +962,7 @@ class AltoImpactoVendedor extends Reportes
             foreach($destinos as $key => $destino)
             {
                 $pos=self::ranking($key+1,$max);
-                $cuerpo.=self::colorDestino($destino->destino);
+                $cuerpo.="<tr style='".self::colorDestino($destino->destino)."'>";
                 $cuerpo.="<td style='text-align: center;' class='diferencialBancario'>".
                             $pos.
                         "</td>
