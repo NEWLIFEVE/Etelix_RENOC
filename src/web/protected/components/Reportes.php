@@ -8,12 +8,27 @@ class Reportes extends CApplicationComponent
      * @access public
      */
     public $tipo;
+    /**
+     * @access protected
+     * @var boolean
+     */
+    protected $type;
+    /**
+     * Un array conn data sobre los estilos para el reporte generado
+     * @var array
+     */
+    protected $_head;
 
     /**
      * @access protected
      * @var date
      */
     protected $fecha;
+    /**
+     * @access public
+     * @var boolean
+     */
+    public $equal;
 
     /**
      * Init method for the application component mode.
@@ -52,7 +67,8 @@ class Reportes extends CApplicationComponent
      */
     public function AltoImpacto($starDate,$endingDate,$type)
     {
-        return AltoImpacto::reporte($starDate,$endingDate,$type);
+        $reporte=new AltoImpacto();
+        return $reporte->reporte($starDate,$endingDate,$type);
     }
 
     /**
@@ -536,7 +552,7 @@ class Reportes extends CApplicationComponent
     {
         if(substr_count($var, 'USA') >= 1 || substr_count($var, 'CANADA') >= 1)
         {
-            $color="<tr style='background-color:#F3F3F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#F3F3F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'SPAIN') >= 1 ||
                 substr_count($var, 'ROMANIA') >= 1 ||
@@ -566,7 +582,7 @@ class Reportes extends CApplicationComponent
                 substr_count($var, 'ISRAEL ') >= 1 ||
                 substr_count($var, 'AUSTRALIA') >= 1)
         {
-            $color="<tr style='background-color:#8BA0AC; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#8BA0AC; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'PERU') >= 1 ||
                 substr_count($var, 'CHILE') >= 1 ||
@@ -577,15 +593,15 @@ class Reportes extends CApplicationComponent
                 substr_count($var, 'ARGENTINA') >= 1 ||
                 substr_count($var, 'URUGUAY') >= 1)
         {
-            $color="<tr style='background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'COLOMBIA') >= 1)
         {
-            $color="<tr style='background-color:#BEE2C1; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#BEE2C1; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'VENEZUELA') >= 1)
         {
-            $color="<tr style='background-color:#F0D0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#F0D0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'MEXICO') >= 1 ||
                 substr_count($var, 'PANAMA') >= 1 ||
@@ -599,11 +615,11 @@ class Reportes extends CApplicationComponent
                 substr_count($var, 'HAITI') >= 1 ||
                 substr_count($var, 'SALVADOR') >= 1)
         {
-            $color="<tr style='background-color:#EDF0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#EDF0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         else
         {
-            $color="<tr style='border: 1px solid rgb(121, 115, 115)''>";
+            $color="border:1px solid rgb(121, 115, 115)";
         }
         return $color;
     }
@@ -973,23 +989,31 @@ class Reportes extends CApplicationComponent
      * @param int $mul es el factor por el cual se multiplica
      * @return mixed $col si cumple la condicion de lo contrario devuelve false
      */
-    public static function validColumn($col,$max,$mul)
+    public static function validColumn($del,$col,$max,$mul)
     {
         if($max<2)
         {
-            if($col==3)
+            if($col==$del+1)
             {
                 return true;
             }
         }
         else
         {
-            for($i=0; $i < $max; $i++)
+            $j=$mul;
+            for($i=$del+1; $i<=$col; $i++)
             {
-                $fac=$i+$mul;
-                if($fac==$col)
+                if($j<$mul)
                 {
-                    return true;
+                    $j+=1;
+                }
+                else
+                {
+                    $j=1;
+                    if($i==$col)
+                    {
+                        return true;
+                    }
                 }
             }
         }
@@ -999,20 +1023,20 @@ class Reportes extends CApplicationComponent
     /**
      *
      */
-    public static function validIndex($col,$mul)
+    public static function validIndex($del,$col,$mul)
     {
-        $j=1;
+        $j=$mul;
         $index=0;
-        for($i=1; $i<$col; $i++)
+        for($i=$del; $i<=$col; $i++)
         {
-            if($j!=$mul)
+            if($j<$mul)
             {
-                $j=$j+1;
+                $j+=1;
             }
             else
             {
                 $j=1;
-                $index=$index+1;
+                if($i>$del) $index=$index+1;
             }
         }
         return $index;
@@ -1031,6 +1055,23 @@ class Reportes extends CApplicationComponent
         $newDate=date('Y-m-d',$newDate);
         $array=explode('-',$newDate);
         return $array[0]."-".$array[1]."-01";
+    }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access protected
+     * @param int $pos posicion del manager
+     * @param string $phrase es el nombre del manager
+     * @param string $style es el estilo asignado al tipo de manager
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    protected function _getNames($pos,$phrase,$style,$type=true)
+    {
+        if($type) 
+            return "<td style='".$this->_head[$style]."'>{$pos}</td><td style='".$this->_head[$style]."'>{$phrase}</td>";
+        else
+            return "<td style='".$this->_head[$style]."'>{$phrase}</td><td style='".$this->_head[$style]."'>{$pos}</td>";
     }
 }
 ?>
