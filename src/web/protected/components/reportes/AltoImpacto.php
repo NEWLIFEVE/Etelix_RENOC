@@ -578,22 +578,22 @@ class AltoImpacto extends Reportes
                 //Totales en porcentajes destinos
                 if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+4 && self::validColumn(3,$col,$num,$span))
                 {
-                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalExternalDestinationsMoreThanTenDollars','totalExternalDestinations','styleFooterTotal');
+                    $body.=$this->_getRowTotalDestinationsPercentage(self::validIndex(3,$col,$span),'totalExternalDestinationsMoreThanTenDollars','totalExternalDestinations','styleFooterTotal');
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
                 if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+4 && self::validColumn(3,$col,$num,$span))
                 {
-                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalExternalDestinationsLessThanTenDollars','totalExternalDestinations','styleFooterTotal');
+                    $body.=$this->_getRowTotalDestinationsPercentage(self::validIndex(3,$col,$span),'totalExternalDestinationsLessThanTenDollars','totalExternalDestinations','styleFooterTotal');
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
                 if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+4 && self::validColumn(3,$col,$num,$span))
                 {
-                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithMoreThanTenDollars','totalInternalDestinations','styleFooterTotal');
+                    $body.=$this->_getRowTotalDestinationsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithMoreThanTenDollars','totalInternalDestinations','styleFooterTotal');
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
                 if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+4 && self::validColumn(3,$col,$num,$span))
                 {
-                    $body.=$this->_getRowTotalDestiantionsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithLessThanTenDollars','totalInternalDestinations','styleFooterTotal');
+                    $body.=$this->_getRowTotalDestinationsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithLessThanTenDollars','totalInternalDestinations','styleFooterTotal');
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
             }
@@ -905,9 +905,6 @@ class AltoImpacto extends Reportes
      * Retorna la fila con el nombre del destino y la posicion indicada
      * @access protected
      * @param int $pos posicion del destino
-     * @param string $value datos del carrier
-     * @param int $id id del carrier
-     * @param string $style es el estilo asignado al tipo de manager
      * @param boolean $type, true es izquierda, false es derecha
      * @return string la celda construida
      */
@@ -927,7 +924,7 @@ class AltoImpacto extends Reportes
      */
     private function _getHeaderCarriers()
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
         if($this->type) $uno="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
         if($this->type) $dos="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
         if($this->type) $tres="<td style='".$this->_head['styleHead']."'>Minutes</td>";
@@ -937,10 +934,11 @@ class AltoImpacto extends Reportes
         $siete="<td style='".$this->_head['styleHead']."'>Cost</td>";
         $ocho="<td style='".$this->_head['styleHead']."'>Revenue</td>";
         $nueve="<td style='".$this->_head['styleHead']."'>Margin</td>";
-        if($this->type) $diez="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        if($this->type) $once="<td style='".$this->_head['styleHead']."'>PN</td>";
-        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
-        return $body;
+        if($this->type) $diez="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type) $once="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
+        if($this->type) $doce="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $trece="<td style='".$this->_head['styleHead']."'>PN</td>";
+        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
     }
 
     /**
@@ -973,9 +971,8 @@ class AltoImpacto extends Reportes
      * @access private
      * @param string $index es el index superior donde se encutra la data
      * @param string $index2 es el index inferior donde se encuentra la data
-     * @param string $phrase es el apallido que debe coincidir la data
-     * @param string $style el nombre del estilo asignado 
-     * @param $type true=minutes,revenue,margin false=margin
+     * @param string $attribute es el apallido que debe coincidir la data
+     * @param string $phrase el nombre del estilo asignado 
      * @return string
      */
     private function _getRow($index,$index2,$attribute,$phrase,$style)
@@ -1021,9 +1018,8 @@ class AltoImpacto extends Reportes
      * @access private
      * @param string $index es el index superior donde se encutra la data
      * @param string $index2 es el index inferior donde se encuentra la data
-     * @param string $phrase es el apallido que debe coincidir la data
-     * @param string $style el nombre del estilo asignado 
-     * @param $type true=minutes,revenue,margin false=margin
+     * @param string $attribute es el apallido que debe coincidir la data
+     * @param string $phrase el nombre del estilo asignado 
      * @return string
      */
     private function _getRowDestination($index,$index2,$attribute,$phrase)
@@ -1071,10 +1067,12 @@ class AltoImpacto extends Reportes
     }
 
     /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * Retorna la columna de totales de carriers
      * @access private
-     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
-     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @param string $index index superior de los objetos
+     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones
+     * @param string $style es el estilo que se el asigna a las columnas en ese instante
+     * @param boolean $type true=totales con condicion, false=totales completos
      * @return string
      */
     private function _getRowTotalCarrier($index,$index2,$style,$type=true)
@@ -1106,10 +1104,12 @@ class AltoImpacto extends Reportes
     }
 
     /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * Retorna la columna de totales de destinos
      * @access private
-     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
-     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @param string $index index superior de los objetos
+     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones
+     * @param string $style es el estilo que se el asigna a las columnas en ese instante
+     * @param boolean $type true=totales con condicion, false=totales completos
      * @return string
      */
     private function _getRowTotalDestination($index,$index2,$style,$type=true)
@@ -1146,10 +1146,12 @@ class AltoImpacto extends Reportes
     }
 
     /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * Retorna las columnas de los index indicados, en este caso el calculo de porcentajes de los carriers seleccionado y el total de los carriers.
      * @access private
-     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
-     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @param string $index index superior de los objetos
+     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones
+     * @param string $index3 index secundario del objeto traido de base de datos sin condiciones, es decir el total
+     * @param string $style es el estilo que se el asigna a las columnas en ese instante
      * @return string
      */
     private function _getRowTotalCarrierPercentage($index,$index2,$index3,$style)
@@ -1172,13 +1174,15 @@ class AltoImpacto extends Reportes
     } 
 
     /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * Retorna las columnas de los index indicados, en este caso el calculo de porcentajes del destino seleccionado y el total de los destinos.
      * @access private
-     * @param CActiveRecord $totalCondition es el objeto que totaliza los que cumplen la condicion
-     * @param CACtiveRecord $total es el objeto que totaliza con o sin condicion
+     * @param string $index index superior de los objetos
+     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones
+     * @param string $index3 index secundario del objeto traido de base de datos sin condiciones, es decir el total
+     * @param string $style es el estilo que se el asigna a las columnas en ese instante
      * @return string
      */
-    private function _getRowTotalDestiantionsPercentage($index,$index2,$index3,$style)
+    private function _getRowTotalDestinationsPercentage($index,$index2,$index3,$style)
     {
         $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
         $totalCondition=$this->_objetos[$index][$index2];
