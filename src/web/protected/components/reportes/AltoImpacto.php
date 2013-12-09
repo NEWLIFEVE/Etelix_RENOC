@@ -948,7 +948,7 @@ class AltoImpacto extends Reportes
      */
     private function _getHeaderDestination()
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=$catorce=$quince=null;
         if($this->type) $uno="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
         if($this->type) $dos="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
         if($this->type) $tres="<td style='".$this->_head['styleHead']."'>Minutes</td>";
@@ -958,12 +958,13 @@ class AltoImpacto extends Reportes
         $siete="<td style='".$this->_head['styleHead']."'>Cost</td>";
         $ocho="<td style='".$this->_head['styleHead']."'>Revenue</td>";
         $nueve="<td style='".$this->_head['styleHead']."'>Margin</td>";
-        if($this->type) $diez="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        if($this->type) $once="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
-        if($this->type) $doce="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
-        if($this->type) $trece="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
-        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
-        return $body;
+        if($this->type) $diez="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type) $once="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
+        if($this->type) $doce="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $trece="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
+        if($this->type) $catorce="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
+        if($this->type) $quince="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
+        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece.$catorce.$quince;
     }
     
     /**
