@@ -1073,5 +1073,32 @@ class Reportes extends CApplicationComponent
         else
             return "<td style='".$this->_head[$style]."'>{$phrase}</td><td style='".$this->_head[$style]."'>{$pos}</td>";
     }
+
+    /**
+     * Metodo encargado de colocar un simbolo de subida o bajada en el html
+     * @access protected
+     * @param int $previous es el valor anterior
+     * @param int $actual es el valor actual a revisar
+     * @return string
+     */
+    protected function _upOrDown($previous,$actual)
+    {
+        if($previous!=null || $previous!="")
+        {
+            if($actual>$previous)
+            {
+                return "<font style='color:green;'>&#9650;</font>";
+            }
+            elseif($actual<$previous)
+            {
+                return "<font style='color:red;'>&#9660;</font>";
+            }
+            else
+            {
+                return "<font>=</font>";
+            }
+        }
+        return "--";
+    }
 }
 ?>

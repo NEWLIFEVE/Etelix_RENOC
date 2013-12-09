@@ -836,33 +836,6 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
-     * Metodo encargado de colocar un simbolo de subida o bajada en el html
-     * @access private
-     * @param int $previous es el valor anterior
-     * @param int $actual es el valor actual a revisar
-     * @return string
-     */
-    private function _upOrDown($previous,$actual)
-    {
-        if($previous!=null || $previous!="")
-        {
-            if($actual>$previous)
-            {
-                return "<font style='color:green;'>&#9650;</font>";
-            }
-            elseif($actual<$previous)
-            {
-                return "<font style='color:red;'>&#9660;</font>";
-            }
-            else
-            {
-                return "<font>=</font>";
-            }
-        }
-        return "--";
-    }
-
-    /**
      * Retorna la cabecera de la data de managers
      * @access private
      * @param boolean $type true = compradores/vendedores, false = consolidados
