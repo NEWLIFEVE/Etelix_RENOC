@@ -613,6 +613,7 @@ class AltoImpacto extends Reportes
         $startDateTemp=$startDate=$array['startDate'];
         $endingDateTemp=$endingDate=$array['endingDate'];
         $yesterday=Utility::calculateDate('-1',$startDateTemp);
+        $sevenDaysAgo=Utility::calculateDate('-7',$yesterday);
         $this->equal=$array['equal'];
         $arrayStartTemp=null;
         $index=0;
@@ -627,6 +628,8 @@ class AltoImpacto extends Reportes
             $this->_objetos[$index]['customersWithMoreThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,true,true);
             //Guardo el margen del dia anterior de clientes de mas de 10 dolares
             if($this->type && $this->equal) $this->_objetos[$index]['customersWithMoreThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,true,true,'margin');
+            //Guardo el promedio del margen de los ultimos 7 dias de clientes con mas de 10$
+            if($this->type && $this->equal) $this->_objetos[$index]['customersWithMoreThanTenDollarsAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,true,true);
             //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
             // Guardo los datos de los totales de ayer de los clientes con mas de 10 dolares de ganancia
@@ -639,6 +642,8 @@ class AltoImpacto extends Reportes
             $this->_objetos[$index]['customersWithLessThanTenDollars']=$this->_getCarriers($startDate,$endingDate,true,false);
             //Guardo los datos de los clientes con menos de 10 dolares de ganancia del dia de ayer
             if($this->type && $this->equal) $this->_objetos[$index]['customersWithLessThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,true,false,'margin');
+            //Guardo los promedios de los clientes con menos de 10 dolares de ganancia
+            if($this->type && $this->equal) $this->_objetos[$index]['customersWithLessThanTenDollarsAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,true,false);
             //Guardo los datos de los totales de los clientes con menis de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalLessThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,false);
             //guardo los datos de los totales de los clientes con menos de 10 dolares de gananacia del dia anterior
@@ -649,6 +654,8 @@ class AltoImpacto extends Reportes
             $this->_objetos[$index]['providersWithMoreThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los proveedores con mas de 10 dolares de ganacia del dia anterior
             if($this->type && $this->equal) $this->_objetos[$index]['providersWithMoreThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,false,true,'margin');
+            //Guardo los proomedios de los proveedores con mas de 10 dolares de ganancia
+            if($this->type && )
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
             $this->_objetos[$index]['suppliersTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia del dia anterior
@@ -906,22 +913,19 @@ class AltoImpacto extends Reportes
      * @param boolean $type true=+10$, false=-10$
      * @return array 
      */
-    private function _getAvgCarriers($startDate,$endingDate,$typeCarrier=true,$type=true)
+    private function _getAvgCarriers($startDate,$endingDate,$typeCarrier=true)
     {
         $titulo="proveedor";
         $carrier="id_carrier_supplier";
-        $condicion="x.margin<10";
         if($typeCarrier) $titulo="cliente";
         if($typeCarrier) $carrier="id_carrier_customer";
-        if($type) $condicion="x.margin>=10";
-
         $sql="SELECT c.name AS {$titulo}, x.{$carrier}, AVG(x.margin)
               FROM(SELECT date_balance, {$carrier}, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY {$carrier}, date_balance
                    ORDER BY margin DESC) x, carrier c
-              WHERE {$condicion} AND x.{$carrier}=c.id
+              WHERE x.{$carrier}=c.id
               GROUP BY x.{$carrier}, c.name";
         return Balance::model()->findAllBySql($sql);
     }
@@ -935,10 +939,8 @@ class AltoImpacto extends Reportes
      * @param boolean $type true=+10$, false=-10$
      * @return string 
      */
-    private function _getAvgDestination($startDate,$endingDate,$typeDestination=true,$type=true)
+    private function _getAvgDestination($startDate,$endingDate,$typeDestination=true)
     {
-        $condicion="b.margin<10";
-        if($type) $condicion="b.margin>=10";
         $destination="id_destination_int";
         if($typeDestination) $destination="id_destination";
         $table="destination_int";
@@ -950,7 +952,7 @@ class AltoImpacto extends Reportes
                    WHERE date_balance>='2013-12-02' AND date_balance<='2013-12-08' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$destination}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$destination} IS NOT NULL
                    GROUP BY {$destination}, date_balance
                    ORDER BY margin DESC) b, {$table} d
-              WHERE {$condicion} AND b.{$destination}=d.id
+              WHERE b.{$destination}=d.id
               GROUP BY d.name";
         return Balance::model()->findAllBySql($sql);   
     }
@@ -1039,12 +1041,12 @@ class AltoImpacto extends Reportes
     }
     
     /**
-     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
+     * Retorna las celdas con la data que coincida dentro del index consultado y el apellido pasado como parametro
      * @access private
      * @param string $index es el index superior donde se encutra la data
      * @param string $index2 es el index inferior donde se encuentra la data
-     * @param string $attribute es el apallido que debe coincidir la data
-     * @param string $phrase el nombre del estilo asignado 
+     * @param string $attribute es el atributo con el que el siguiente parametro deberá coincidir
+     * @param string $phrase el dato que debe coincidir
      * @return string
      */
     private function _getRow($index,$index2,$attribute,$phrase,$style)
