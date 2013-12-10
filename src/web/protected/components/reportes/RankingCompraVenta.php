@@ -386,10 +386,7 @@ class RankingCompraVenta extends Reportes
     private function _getManagers($startDate,$endingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
               FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance 
@@ -414,10 +411,7 @@ class RankingCompraVenta extends Reportes
     private function _getTotalManagers($startDate,$endingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT SUM(d.minutes) AS minutes, SUM(d.revenue) AS revenue, SUM(d.margin) AS margin
               FROM (SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
                     FROM (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
@@ -494,10 +488,7 @@ class RankingCompraVenta extends Reportes
     private function _getAvgMarginManagers($startDate,$endingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
               FROM(SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
                    FROM(SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
@@ -523,10 +514,7 @@ class RankingCompraVenta extends Reportes
     private function _getTotalAvgMarginManagers($startDate,$edingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
