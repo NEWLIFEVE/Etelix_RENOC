@@ -614,6 +614,7 @@ class AltoImpacto extends Reportes
         $endingDateTemp=$endingDate=$array['endingDate'];
         $yesterday=Utility::calculateDate('-1',$startDateTemp);
         $sevenDaysAgo=Utility::calculateDate('-7',$yesterday);
+        $firstDay=Utility::getDayOne($start);
         $this->equal=$array['equal'];
         $arrayStartTemp=null;
         $index=0;
@@ -627,9 +628,11 @@ class AltoImpacto extends Reportes
             //Guardo los datos de los clientes con mas de 10 dolares de ganancia
             $this->_objetos[$index]['customersWithMoreThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,true,true);
             //Guardo el margen del dia anterior de clientes de mas de 10 dolares
-            if($this->type && $this->equal) $this->_objetos[$index]['customersWithMoreThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,true,true,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersYesterday']=$this->_getCarriers($yesterday,$yesterday,true,null,'margin');
             //Guardo el promedio del margen de los ultimos 7 dias de clientes con mas de 10$
-            if($this->type && $this->equal) $this->_objetos[$index]['customersWithMoreThanTenDollarsAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,true,true);
+            if($this->type && $this->equal) $this->_objetos[$index]['customersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,true);
+            //Guardo el margen acumulado por los clientes en lo que va de mes
+            //if($this->type && $this->equal) $this->_objetos[$index]['customersAccumulated']=$this->_getCarriers();
             //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
             // Guardo los datos de los totales de ayer de los clientes con mas de 10 dolares de ganancia
@@ -640,10 +643,6 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['totalCustomerYesterday']=$this->_getTotalCompleteCarriers($yesterday,$yesterday,true,'margin');
             //Guardo los datos de los clientes con menos de 10 dolares de ganancia 
             $this->_objetos[$index]['customersWithLessThanTenDollars']=$this->_getCarriers($startDate,$endingDate,true,false);
-            //Guardo los datos de los clientes con menos de 10 dolares de ganancia del dia de ayer
-            if($this->type && $this->equal) $this->_objetos[$index]['customersWithLessThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,true,false,'margin');
-            //Guardo los promedios de los clientes con menos de 10 dolares de ganancia
-            if($this->type && $this->equal) $this->_objetos[$index]['customersWithLessThanTenDollarsAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,true,false);
             //Guardo los datos de los totales de los clientes con menis de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalLessThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,false);
             //guardo los datos de los totales de los clientes con menos de 10 dolares de gananacia del dia anterior
@@ -653,9 +652,9 @@ class AltoImpacto extends Reportes
             //Guardo los datos de los proveedores con mas de 10 dolares de ganancia
             $this->_objetos[$index]['providersWithMoreThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los proveedores con mas de 10 dolares de ganacia del dia anterior
-            if($this->type && $this->equal) $this->_objetos[$index]['providersWithMoreThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,false,true,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersYesterday']=$this->_getCarriers($yesterday,$yesterday,false,null,'margin');
             //Guardo los proomedios de los proveedores con mas de 10 dolares de ganancia
-            if($this->type && )
+            if($this->type && $this->equal) $this->_objetos[$index]['providersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,false);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
             $this->_objetos[$index]['suppliersTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia del dia anterior
@@ -666,8 +665,6 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['totalSuppliersYesterday']=$this->_getTotalCompleteCarriers($yesterday,$yesterday,false,'margin');
             //Guardo los datos de los proveedores con menos de 10 dolares de ganancia
             $this->_objetos[$index]['providersWithLessThanTenDollars']=$this->_getCarriers($startDateTemp,$endingDateTemp,false,false);
-            //Guardo los datos de los totales con mesno de 10 dolares de ganancia
-            if($this->type && $this->equal) $this->_objetos[$index]['providersWithLessThanTenDollarsYesterday']=$this->_getCarriers($yesterday,$yesterday,false,false,'margin');
             //Gurado los datos de los totales de los proveedores con menos de 10 dolares de ganancia
             $this->_objetos[$index]['suppliersTotalLessThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,false);
             //Guardo los datos de los totales de los proveedores con menos de 10 dolares de ganancia
@@ -676,7 +673,9 @@ class AltoImpacto extends Reportes
             //Guardo los datos de los destinos externos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['externalDestinationsMoreThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales externos con mas de 10 dolares de ganancia del dia de ayer
-            if($this->type && $this->equal) $this->_objetos[$index]['externalDestinationsMoreThanTenDollarsYesterday']=$this->_getDestination($yesterday,$yesterday,true,true,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['externalYesterday']=$this->_getDestination($yesterday,$yesterday,true,null,'margin');
+            //Guardo los promedios de los destinos externos
+            if($this->type && $this->equal) $this->_objetos[$index]['externalAverage']=$this->_getAvgDestination($sevenDaysAgo,$yesterday,true);
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalExternalDestinationsMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia del dia de ayer
@@ -687,8 +686,6 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['totalExternalDestinationsYesterday']=$this->_getTotalCompleteDestination($yesterday,$yesterday,true,'margin');
             //Guardo los datos de los destinos externos con menos de 10 dolares de ganancia
             $this->_objetos[$index]['externalDestinationsLessThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,true,false);
-            //Guardo los datos de los destinos externos con menos de 10 dolares de ganancia del dia de ayer
-            if($this->type && $this->equal) $this->_objetos[$index]['externalDestinationsLessThanTenDollarsYesterday']=$this->_getDestination($yesterday,$yesterday,true,false,'margin');
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalExternalDestinationsLessThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,true,false);
             //Guardo los datos de los totales de los destinos externos con menos de 10 dolares de ganancia
@@ -697,7 +694,9 @@ class AltoImpacto extends Reportes
             //Guardo los datos de los destinos internos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['internalDestinationsWithMoreThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los destinos internos con mas de 10 dolares de ganancia del dia de ayer
-            if($this->type && $this->equal) $this->_objetos[$index]['internalDestinationsWithMoreThanTenDollarsYesterday']=$this->_getDestination($yesterday,$yesterday,false,true,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['internalYesterday']=$this->_getDestination($yesterday,$yesterday,false,null,'margin');
+            //Guardo el promedio de los destinos internos
+            if($this->type && $this->equal) $this->_objetos[$index]['internalAverage']=$this->_getAvgDestination($sevenDaysAgo,$yesterday,false);
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalInternalDestinationsWithMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia del dia de ayer
@@ -708,8 +707,6 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['totalInternalDestinationsYesterday']=$this->_getTotalCompleteDestination($yesterday,$yesterday,false,'margin');
             //Guardo los datos de los destinos internos con menos de 10 dolares de ganancia
             $this->_objetos[$index]['internalDestinationsWithLessThanTenDollars']=$this->_getDestination($startDateTemp,$endingDateTemp,false,false);
-            //Guardo los datos de los destinos internos con menos de 10 dolares de ganancia del dia de ayer
-            if($this->type && $this->equal) $this->_objetos[$index]['internalDestinationsWithLessThanTenDollarsYesterday']=$this->_getDestination($yesterday,$yesterday,false,false,'margin');
             //Guardo los datos de los totales de los destinos internos con menos de 10 dolares de ganancia
             $this->_objetos[$index]['totalInternalDestinationsWithLessThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,false,false);
             //Guardo los datos de los totales de los destinos internos con menos de 10 dolares de ganancia del dia de ayer
@@ -741,6 +738,8 @@ class AltoImpacto extends Reportes
         if($typeCarrier) $titulo="cliente";
         $data="c.name AS {$titulo}, x.{$select} AS id, x.{$attribute} ";
         if($attribute==null) $data="c.name AS {$titulo}, x.{$select} AS id, x.total_calls, x.complete_calls, x.minutes, x.asr,x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, cs.posicion_neta AS posicion_neta ";
+        $completa="WHERE {$condicion} AND x.{$select}=c.id AND x.{$select}=cs.id";
+        if($type==null) $completa="WHERE x.{$select}=c.id AND x.{$select}=cs.id";
         $sql="SELECT {$data}
               FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
@@ -761,7 +760,7 @@ class AltoImpacto extends Reportes
                    GROUP BY id
                    ORDER BY posicion_neta DESC)cs,
                    carrier c
-              WHERE {$condicion} AND x.{$select}=c.id AND x.{$select}=cs.id
+              {$completa}
               ORDER BY x.margin DESC";
         return Balance::model()->findAllBySql($sql);
     }
@@ -776,7 +775,7 @@ class AltoImpacto extends Reportes
      * @param string $attribute default null, es usado para traer solo uno de los atributos del modelo, ejemplo ='margin'
      * @return object $model
      */
-    private function _getTotalCarriers($startDate,$endingDate,$typeCarrier=true,$type=true,$attribute=null)
+    private function _getTotalCarriers($startDate,$endingDate,$typeCarrier=true,$type=null,$attribute=null)
     {
         $condicion="margin<10";
         if($type) $condicion="margin>=10";
@@ -828,7 +827,7 @@ class AltoImpacto extends Reportes
      * @param string $attribute default null, es usado para traer solo uno de los atributos del modelo, ejemplo ='margin'
      * @return array $models
      */
-    private function _getDestination($startDate,$endingDate,$typeDestination=true,$type=true,$attribute=null)
+    private function _getDestination($startDate,$endingDate,$typeDestination=true,$type=null,$attribute=null)
     {
         $condicion="x.margin<10";
         if($type) $condicion="x.margin>=10";
@@ -838,13 +837,15 @@ class AltoImpacto extends Reportes
         if($typeDestination) $select="id_destination";
         $data="d.name AS destino, x.{$attribute}";
         if($attribute==null) $data="d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, CASE WHEN x.minutes=0 THEN 0 ELSE(x.cost/x.minutes)*100 END AS costmin, CASE WHEN x.minutes=0 THEN 0 ELSE(x.revenue/x.minutes)*100 END AS ratemin, CASE WHEN x.minutes=0 THEN 0 ELSE((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin";
+        $completa="WHERE {$condicion} AND x.{$select}=d.id";
+        if($type==null) $completa="WHERE x.{$select}=d.id";
         $sql="SELECT {$data}
                       FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
                            GROUP BY {$select}
                            ORDER BY margin DESC) x, {$table} d
-                      WHERE {$condicion} AND x.{$select}=d.id
+                      {$completa}
                       ORDER BY x.margin DESC";
         return Balance::model()->findAllBySql($sql);
     }
@@ -919,10 +920,10 @@ class AltoImpacto extends Reportes
         $carrier="id_carrier_supplier";
         if($typeCarrier) $titulo="cliente";
         if($typeCarrier) $carrier="id_carrier_customer";
-        $sql="SELECT c.name AS {$titulo}, x.{$carrier}, AVG(x.margin)
+        $sql="SELECT c.name AS {$titulo}, x.{$carrier}, AVG(x.margin) AS margin
               FROM(SELECT date_balance, {$carrier}, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
-                   WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                   WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY {$carrier}, date_balance
                    ORDER BY margin DESC) x, carrier c
               WHERE x.{$carrier}=c.id
@@ -949,7 +950,7 @@ class AltoImpacto extends Reportes
         $sql="SELECT d.name AS destino, AVG(b.margin) AS margin
               FROM(SELECT date_balance, {$destination}, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
-                   WHERE date_balance>='2013-12-02' AND date_balance<='2013-12-08' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$destination}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$destination} IS NOT NULL
+                   WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$destination}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$destination} IS NOT NULL
                    GROUP BY {$destination}, date_balance
                    ORDER BY margin DESC) b, {$table} d
               WHERE b.{$destination}=d.id
@@ -997,21 +998,23 @@ class AltoImpacto extends Reportes
      */
     private function _getHeaderCarriers()
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
-        if($this->type) $uno="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
-        if($this->type) $dos="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
-        if($this->type) $tres="<td style='".$this->_head['styleHead']."'>Minutes</td>";
-        if($this->type) $cuatro="<td style='".$this->_head['styleHead']."'>ASR</td>";
-        if($this->type) $cinco="<td style='".$this->_head['styleHead']."'>ACD</td>";
-        if($this->type) $seis="<td style='".$this->_head['styleHead']."'>PDD</td>";
-        $siete="<td style='".$this->_head['styleHead']."'>Cost</td>";
-        $ocho="<td style='".$this->_head['styleHead']."'>Revenue</td>";
-        $nueve="<td style='".$this->_head['styleHead']."'>Margin</td>";
-        if($this->type && $this->equal) $diez="<td style='".$this->_head['styleHead']."'></td>";
-        if($this->type && $this->equal) $once="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
-        if($this->type) $doce="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        if($this->type) $trece="<td style='".$this->_head['styleHead']."'>PN</td>";
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=null;
+        if($this->type) $c1="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
+        if($this->type) $c2="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
+        if($this->type) $c3="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        if($this->type) $c4="<td style='".$this->_head['styleHead']."'>ASR</td>";
+        if($this->type) $c5="<td style='".$this->_head['styleHead']."'>ACD</td>";
+        if($this->type) $c6="<td style='".$this->_head['styleHead']."'>PDD</td>";
+        $c7="<td style='".$this->_head['styleHead']."'>Cost</td>";
+        $c8="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $c9="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        if($this->type && $this->equal) $c10="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type && $this->equal) $c11="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
+        if($this->type && $this->equal) $c12="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type && $this->equal) $c13="<td style='".$this->_head['styleHead']."'>Promedio 7D</td>";
+        if($this->type) $c14="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $c15="<td style='".$this->_head['styleHead']."'>PN</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15;
     }
 
     /**
@@ -1021,23 +1024,25 @@ class AltoImpacto extends Reportes
      */
     private function _getHeaderDestination()
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=$catorce=$quince=null;
-        if($this->type) $uno="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
-        if($this->type) $dos="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
-        if($this->type) $tres="<td style='".$this->_head['styleHead']."'>Minutes</td>";
-        if($this->type) $cuatro="<td style='".$this->_head['styleHead']."'>ASR</td>";
-        if($this->type) $cinco="<td style='".$this->_head['styleHead']."'>ACD</td>";
-        if($this->type) $seis="<td style='".$this->_head['styleHead']."'>PDD</td>";
-        $siete="<td style='".$this->_head['styleHead']."'>Cost</td>";
-        $ocho="<td style='".$this->_head['styleHead']."'>Revenue</td>";
-        $nueve="<td style='".$this->_head['styleHead']."'>Margin</td>";
-        if($this->type && $this->equal) $diez="<td style='".$this->_head['styleHead']."'></td>";
-        if($this->type && $this->equal) $once="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
-        if($this->type) $doce="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        if($this->type) $trece="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
-        if($this->type) $catorce="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
-        if($this->type) $quince="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece.$catorce.$quince;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=null;
+        if($this->type) $c1="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
+        if($this->type) $c2="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
+        if($this->type) $c3="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        if($this->type) $c4="<td style='".$this->_head['styleHead']."'>ASR</td>";
+        if($this->type) $c5="<td style='".$this->_head['styleHead']."'>ACD</td>";
+        if($this->type) $c6="<td style='".$this->_head['styleHead']."'>PDD</td>";
+        $c7="<td style='".$this->_head['styleHead']."'>Cost</td>";
+        $c8="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $c9="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        if($this->type && $this->equal) $c10="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type && $this->equal) $c11="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
+        if($this->type && $this->equal) $c12="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type && $this->equal) $c13="<td style='".$this->_head['styleHead']."'>Promedio 7D</td>";
+        if($this->type) $c14="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $c15="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
+        if($this->type) $c16="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
+        if($this->type) $c17="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17;
     }
     
     /**
@@ -1051,57 +1056,69 @@ class AltoImpacto extends Reportes
      */
     private function _getRow($index,$index2,$attribute,$phrase,$style)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=null;
         $margin=null;
+        $otro="providers";
         foreach ($this->_objetos[$index][$index2] as $key => $value)
         {
             if($value->$attribute == $phrase['attribute'])
             {               
-                if($this->type) $uno="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
-                if($this->type) $dos="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
-                if($this->type) $tres="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($this->type) $cuatro="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
-                if($this->type) $cinco="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
-                if($this->type) $seis="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-                $siete="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
-                $ocho="<td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $nueve="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($this->type) $c1="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+                if($this->type) $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+                if($this->type) $c3="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($this->type) $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+                if($this->type) $c5="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+                if($this->type) $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $c7="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+                $c8="<td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $c9="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
-                if($this->type) $doce="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."</td>";
-                if($this->type) $trece="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+                if($this->type) $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."</td>";
+                if($this->type) $c15="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
             }
         }
         if($this->equal)
         {
-            foreach ($this->_objetos[$index][$index2."Yesterday"] as $key => $value)
+            if(strstr($index2, 'customers')!=false) $otro="customers";
+            foreach ($this->_objetos[$index][$otro."Yesterday"] as $key => $yesterday)
             {
-                if($value->$attribute==$phrase['attribute'])
+                if($yesterday->$attribute==$phrase['attribute'])
                 {
-                    $diez="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
-                    $once="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c10="<td style='".$style."'>".$this->_upOrDown($yesterday->margin,$margin)."</td>";
+                    $c11="<td style='".$style."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+                }
+            }
+            foreach ($this->_objetos[$index][$otro.'Average'] as $key => $average)
+            {
+                if($average->$attribute==$phrase['attribute'])
+                {
+                    $c12="<td style='".$style."'>".$this->_upOrDown($average->margin,$margin)."</td>";
+                    $c13="<td style='".$style."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
                 }
             }
         }
-        if($siete==null) $siete="<td style='".$style."'>--</td>";
-        if($ocho==null) $ocho="<td style='".$style."'>--</td>";
-        if($nueve==null) $nueve="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."'>--</td>";
         if($this->type)
         {
-            if($uno==null) $uno="<td style='".$style."'>--</td>";
-            if($dos==null) $dos="<td style='".$style."'>--</td>";
-            if($tres==null) $tres="<td style='".$style."'>--</td>";
-            if($cuatro==null) $cuatro="<td style='".$style."'>--</td>";
-            if($cinco==null) $cinco="<td style='".$style."'>--</td>";
-            if($seis==null) $seis="<td style='".$style."'>--</td>";
-            if($doce==null) $doce="<td style='".$style."'>--</td>";
-            if($trece==null) $trece="<td style='".$style."'>--</td>";
+            if($c1==null) $c1="<td style='".$style."'>--</td>";
+            if($c2==null) $c2="<td style='".$style."'>--</td>";
+            if($c3==null) $c3="<td style='".$style."'>--</td>";
+            if($c4==null) $c4="<td style='".$style."'>--</td>";
+            if($c5==null) $c5="<td style='".$style."'>--</td>";
+            if($c6==null) $c6="<td style='".$style."'>--</td>";
+            if($c12==null) $c14="<td style='".$style."'>--</td>";
+            if($c13==null) $c15="<td style='".$style."'>--</td>";
         }
         if($this->type && $this->equal)
         {
-            if($diez==null) $diez="<td style='".$style."'>--</td>";
-            if($once==null) $once="<td style='".$style."'>--</td>";
+            if($c10==null) $c10="<td style='".$style."'>--</td>";
+            if($c11==null) $c11="<td style='".$style."'>--</td>";
+            if($c12==null) $c12="<td style='".$style."'>--</td>";
+            if($c13==null) $c13="<td style='".$style."'>--</td>";
         }
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15;
     }
 
     /**
@@ -1115,62 +1132,74 @@ class AltoImpacto extends Reportes
      */
     private function _getRowDestination($index,$index2,$attribute,$phrase)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=$catorce=$quince=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=null;
         $margin=$previous=$average=$previousMonth=null;
+        $otro="internal";
         $style=self::colorDestino($phrase['attribute']);
         foreach ($this->_objetos[$index][$index2] as $key => $value)
         {
             if($value->$attribute == $phrase['attribute'])
             {               
-                if($this->type) $uno="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
-                if($this->type) $dos="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
-                if($this->type) $tres="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($this->type) $cuatro="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
-                if($this->type) $cinco="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
-                if($this->type) $seis="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-                $siete="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
-                $ocho="<td style='".$style."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $nueve="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($this->type) $c1="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+                if($this->type) $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+                if($this->type) $c3="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($this->type) $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+                if($this->type) $c5="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+                if($this->type) $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $c7="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+                $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $c9="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
-                if($this->type) $doce="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
-                if($this->type) $trece="<td style='".$style."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
-                if($this->type) $catorce="<td style='".$style."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
-                if($this->type) $quince="<td style='".$style."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+                if($this->type) $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+                if($this->type) $c15="<td style='".$style."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
+                if($this->type) $c16="<td style='".$style."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
+                if($this->type) $c17="<td style='".$style."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
             }
         }
         if($this->equal)
         {
-            foreach ($this->_objetos[$index][$index2."Yesterday"] as $key => $value)
+            if(strstr($index2, 'external')!=false) $otro="external";
+            foreach ($this->_objetos[$index][$otro."Yesterday"] as $key => $yesterday)
             {
-                if($value->$attribute==$phrase['attribute'])
+                if($yesterday->$attribute==$phrase['attribute'])
                 {
-                    $diez="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
-                    $once="<td style='".$style."'>".$value->margin."</td>";
+                    $c10="<td style='".$style."'>".$this->_upOrDown($yesterday->margin,$margin)."</td>";
+                    $c11="<td style='".$style."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+                }
+            }
+            foreach ($this->_objetos[$index][$otro."Average"] as $key => $average)
+            {
+                if($average->$attribute==$phrase['attribute'])
+                {
+                    $c12="<td style='".$style."'>".$this->_upOrDown($average->margin,$margin)."</td>";
+                    $c13="<td style='".$style."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
                 }
             }
         }
-        if($siete==null) $siete="<td style='".$style."'>--</td>";
-        if($ocho==null) $ocho="<td style='".$style."'>--</td>";
-        if($nueve==null) $nueve="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."'>--</td>";
         if($this->type)
         {
-            if($uno==null) $uno="<td style='".$style."'>--</td>";
-            if($dos==null) $dos="<td style='".$style."'>--</td>";
-            if($tres==null) $tres="<td style='".$style."'>--</td>";
-            if($cuatro==null) $cuatro="<td style='".$style."'>--</td>";
-            if($cinco==null) $cinco="<td style='".$style."'>--</td>";
-            if($seis==null) $seis="<td style='".$style."'>--</td>";
-            if($doce==null) $doce="<td style='".$style."'>--</td>";
-            if($trece==null) $trece="<td style='".$style."'>--</td>";
-            if($catorce==null) $catorce="<td style='".$style."'>--</td>";
-            if($quince==null) $quince="<td style='".$style."'>--</td>";
+            if($c1==null) $c1="<td style='".$style."'>--</td>";
+            if($c2==null) $c2="<td style='".$style."'>--</td>";
+            if($c3==null) $c3="<td style='".$style."'>--</td>";
+            if($c4==null) $c4="<td style='".$style."'>--</td>";
+            if($c5==null) $c5="<td style='".$style."'>--</td>";
+            if($c6==null) $c6="<td style='".$style."'>--</td>";
+            if($c14==null) $c14="<td style='".$style."'>--</td>";
+            if($c15==null) $c15="<td style='".$style."'>--</td>";
+            if($c16==null) $c16="<td style='".$style."'>--</td>";
+            if($c17==null) $c17="<td style='".$style."'>--</td>";
         }
         if($this->type && $this->equal)
         {
-            if($diez==null) $diez="<td style='".$style."'>--</td>";
-            if($once==null) $once="<td style='".$style."'>--</td>";
+            if($c10==null) $c10="<td style='".$style."'>--</td>";
+            if($c11==null) $c11="<td style='".$style."'>--</td>";
+            if($c12==null) $c12="<td style='".$style."'>--</td>";
+            if($c13==null) $c13="<td style='".$style."'>--</td>";
         }
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece.$catorce.$quince;
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17;
     }
 
     /**
@@ -1184,34 +1213,34 @@ class AltoImpacto extends Reportes
      */
     private function _getRowTotalCarrier($index,$index2,$style,$type=true)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=null;
         $margin=null;
         $value=$this->_objetos[$index][$index2];
         if($this->type && $this->equal) $yesterday=$this->_objetos[$index][$index2."Yesterday"];
-        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
-        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
-        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
-        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
-        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
-        if($this->equal && $this->type) $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
-        if($this->equal && $this->type) $once="<td style0'".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+        if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+        if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+        $c8="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+        $c9="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+        if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
+        if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
         if(!$type)
         {
-            if($this->type) $cuatro="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
-            if($this->type) $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
-            if($this->type) $seis="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-            if($this->type) $doce="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            if($this->type) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+            if($this->type) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+            if($this->type) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+            if($this->type) $c12="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
         }
         else
         {
-            if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $doce="<td style='".$this->_head[$style]."'></td>"; 
+            if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c12="<td style='".$this->_head[$style]."'></td>"; 
         }
-        if($this->type) $trece="<td style='".$this->_head[$style]."'></td>"; 
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+        if($this->type) $c13="<td style='".$this->_head[$style]."'></td>"; 
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13;
     }
 
     /**
@@ -1225,38 +1254,38 @@ class AltoImpacto extends Reportes
      */
     private function _getRowTotalDestination($index,$index2,$style,$type=true)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=$catorce=$quince=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c9=$c10=$c10=$c11=$c12=$c13=$c14=$c15=null;
         $value=$this->_objetos[$index][$index2];
         if($this->type && $this->equal) $yesterday=$this->_objetos[$index][$index2."Yesterday"];
-        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
-        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
-        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
-        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
-        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
-        if($this->equal && $this->type) $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
-        if($this->equal && $this->type) $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+        if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+        if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+        $c9="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+        $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+        if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
+        if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
         if(!$type)
         {
-            if($this->type) $cuatro="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
-            if($this->type) $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
-            if($this->type) $seis="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-            if($this->type) $doce="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
-            if($this->type) $trece="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $catorce="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $quince="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+            if($this->type) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+            if($this->type) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+            if($this->type) $c12="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            if($this->type) $c13="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c14="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c15="<td style='".$this->_head[$style]."'></td>";
         }
         else
         {
-            if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $doce="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $trece="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
-            if($this->type) $catorce="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
-            if($this->type) $quince="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+            if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c12="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
+            if($this->type) $c14="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
+            if($this->type) $c15="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
         }
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece.$catorce.$quince;
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c9.$c10.$c10.$c11.$c12.$c13.$c14.$c15;
     }
 
     /**
