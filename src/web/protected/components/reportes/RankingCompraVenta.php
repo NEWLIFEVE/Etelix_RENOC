@@ -1,24 +1,13 @@
 <?php
 /**
 * Creada para generar reporte de compra venta
-* @version 3.0
+* @version 3.1.0
 * @package reportes
 */
 class RankingCompraVenta extends Reportes
 {
-    /**
-     * @var array
-     */
-    public $objetos;
-
-    /**
-     * @var int
-     */
-    public $days;
-
     function __construct()
     {
-        $this->objetos=array();
         $this->equal=false;
         $this->_head=array(
             'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
@@ -44,7 +33,7 @@ class RankingCompraVenta extends Reportes
         $this->_loopData($start,$end);
         
         //Cuento el numero de objetos en el array
-        $num=count($this->objetos);
+        $num=count($this->_objetos);
         $last=$num-1;
         if($num==1)
         {
@@ -56,9 +45,9 @@ class RankingCompraVenta extends Reportes
         }
         $lastnames=self::getLastNameManagers();
         /*Arrays ordenados*/
-        $sorted['sellers']=self::sortByList($lastnames,$this->objetos[$last]['sellers'],'apellido');
-        $sorted['buyers']=self::sortByList($lastnames,$this->objetos[$last]['buyers'],'apellido');
-        $sorted['consolidated']=self::sortByList($lastnames,$this->objetos[$last]['consolidated'],'apellido');
+        $sorted['sellers']=self::sortByList($lastnames,$this->_objetos[$last]['sellers'],'apellido');
+        $sorted['buyers']=self::sortByList($lastnames,$this->_objetos[$last]['buyers'],'apellido');
+        $sorted['consolidated']=self::sortByList($lastnames,$this->_objetos[$last]['consolidated'],'apellido');
         
         $body="<table>";
         for($row=1; $row < 55; $row++)
@@ -183,14 +172,14 @@ class RankingCompraVenta extends Reportes
                 //Titulo de cada mes para diferenciar la data compradores/vendedores
                 if(($row==1 || $row==19) && self::validColumn(2,$col,$num,$span))
                 {
-                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[self::validIndex(2,$col,$span)]['title']."</td>";
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(2,$col,$span)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Titulo de cada mes para diferenciar la data Consolidado
                 if($row==37 && self::validColumn(2,$col,$num,$span))
                 {
                     $nuevospan=$span-2;
-                    $body.="<td colspan='".$nuevospan."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[self::validIndex(2,$col,$span)]['title']."</td>";
+                    $body.="<td colspan='".$nuevospan."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(2,$col,$span)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Escribe los headers de las columnas de las tablas
@@ -281,93 +270,93 @@ class RankingCompraVenta extends Reportes
             $arrayStartTemp=explode('-',$startDateTemp);
             $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
-            $this->objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /*Guardo todos los vendedores*/
-            $this->objetos[$index]['sellers']=$this->_getManagers($startDateTemp,$endingDateTemp,true);
+            $this->_objetos[$index]['sellers']=$this->_getManagers($startDateTemp,$endingDateTemp,true);
             /*Guardo los totales de los vendedores*/
-            $this->objetos[$index]['totalVendors']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,true);
+            $this->_objetos[$index]['totalVendors']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,true);
             /*El total del margen por vendedor mes anterior*/
-            if($this->equal) $this->objetos[$index]['sellersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
             /*Guardo los totales de los vendedores*/
-            if($this->equal) $this->objetos[$index]['totalVendorsPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
             /*Guardo los valores de vendedores del dia anterior*/
-            if($this->equal) $this->objetos[$index]['sellersYesterday']=$this->_getManagers($yesterday,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['sellersYesterday']=$this->_getManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los vendedores del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalVendorsYesterday']=$this->_getTotalManagers($yesterday,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsYesterday']=$this->_getTotalManagers($yesterday,$yesterday,true);
             /*Guardo el promedio por vendedores de 7 dias atras*/
-            if($this->equal) $this->objetos[$index]['sellersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['sellersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,true);
             /*Guardo el promedio total*/
-            if($this->equal) $this->objetos[$index]['totalVendorsAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,true);
             /*Guardo el acumulado que lleva hasta el dia en consulta*/
-            if($this->equal) $this->objetos[$index]['sellersAccumulated']=$this->_getManagers($firstDay,$startDate,true);
+            if($this->equal) $this->_objetos[$index]['sellersAccumulated']=$this->_getManagers($firstDay,$startDate,true);
             /*Guardo el total de los acumulados hasta el dia de la consulta*/
-            if($this->equal) $this->objetos[$index]['totalVendorsAccumulated']=$this->_getTotalManagers($firstDay,$startDate,true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsAccumulated']=$this->_getTotalManagers($firstDay,$startDate,true);
             /*Guardo los pronosticos de los vendedores*/
-            if($this->equal) $this->objetos[$index]['sellersForecast']=$this->_closeOfTheMonth($lastnames,$index,'sellersAverage','sellersAccumulated');
+            if($this->equal) $this->_objetos[$index]['sellersForecast']=$this->_closeOfTheMonth($lastnames,$index,'sellersAverage','sellersAccumulated');
             /*guardo los totales de cierre de mes*/
-            if($this->equal) $this->objetos[$index]['totalVendorsClose']=array_sum($this->objetos[$index]['sellersForecast']);
+            if($this->equal) $this->_objetos[$index]['totalVendorsClose']=array_sum($this->_objetos[$index]['sellersForecast']);
 
 
             /*Guardo los totales de los compradores*/
-            $this->objetos[$index]['buyers']=$this->_getManagers($startDateTemp,$endingDateTemp,false);
+            $this->_objetos[$index]['buyers']=$this->_getManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los totales de todos los compradores*/
-            $this->objetos[$index]['totalBuyers']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,false);
+            $this->_objetos[$index]['totalBuyers']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,false);
             /*El total del margen por compradores mes anterior*/
-            if($this->equal) $this->objetos[$index]['buyersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
             /*Guardo los totales de los compradores*/
-            if($this->equal) $this->objetos[$index]['totalBuyersPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
             /*Guardo los valores de compradores del dia anterior*/
-            if($this->equal) $this->objetos[$index]['buyersYesterday']=$this->_getManagers($yesterday,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['buyersYesterday']=$this->_getManagers($yesterday,$yesterday,false);
             /*Guardo los totales de los compradores del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalBuyersYesterday']=$this->_getTotalManagers($yesterday,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersYesterday']=$this->_getTotalManagers($yesterday,$yesterday,false);
             /*Guardo el promedio por compradores de 7 dias atras*/
-            if($this->equal) $this->objetos[$index]['buyersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['buyersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,false);
             /*Guardo el promedio total*/
-            if($this->equal) $this->objetos[$index]['totalBuyersAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,false);
             /*Guardo el acumulado que lleva hasta el dia en consulta*/
-            if($this->equal) $this->objetos[$index]['buyersAccumulated']=$this->_getManagers($firstDay,$startDate,false);
+            if($this->equal) $this->_objetos[$index]['buyersAccumulated']=$this->_getManagers($firstDay,$startDate,false);
             /*Guardo el total de los acumulados hasta el dia de la consulta*/
-            if($this->equal) $this->objetos[$index]['totalBuyersAccumulated']=$this->_getTotalManagers($firstDay,$startDate,false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersAccumulated']=$this->_getTotalManagers($firstDay,$startDate,false);
             /*Guardo los pronosticos de los vendedores*/
-            if($this->equal) $this->objetos[$index]['buyersForecast']=$this->_closeOfTheMonth($lastnames,$index,'buyersAverage','buyersAccumulated');
+            if($this->equal) $this->_objetos[$index]['buyersForecast']=$this->_closeOfTheMonth($lastnames,$index,'buyersAverage','buyersAccumulated');
             /*guardo los totales de cierre de mes*/
-            if($this->equal) $this->objetos[$index]['totalBuyersClose']=array_sum($this->objetos[$index]['buyersForecast']);
+            if($this->equal) $this->_objetos[$index]['totalBuyersClose']=array_sum($this->_objetos[$index]['buyersForecast']);
 
 
             /*guardo los totales de los compradores y vendedores consolidado*/
-            $this->objetos[$index]['consolidated']=$this->_getConsolidados($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['consolidated']=$this->_getConsolidados($startDateTemp,$endingDateTemp);
             /*Guardo el total de los consolidados*/
-            $this->objetos[$index]['totalConsolidated']=$this->_getTotalConsolidado($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['totalConsolidated']=$this->_getTotalConsolidado($startDateTemp,$endingDateTemp);
             /*Guardo el margen total de ese periodo*/
-            $this->objetos[$index]['totalMargen']=$this->_getTotalMargen($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['totalMargen']=$this->_getTotalMargen($startDateTemp,$endingDateTemp);
             /*guardo los totales de los compradores y vendedores consolidado*/
-            $this->objetos[$index]['consolidatedPreviousMonth']=$this->_getConsolidados($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            $this->_objetos[$index]['consolidatedPreviousMonth']=$this->_getConsolidados($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
             /*Guardo el total de los consolidados*/
-            $this->objetos[$index]['totalConsolidatedPreviousMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            $this->_objetos[$index]['totalConsolidatedPreviousMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
             /*Guardo el margen total de ese periodo*/
-            $this->objetos[$index]['totalMargenPreviousMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            $this->_objetos[$index]['totalMargenPreviousMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
             /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['consolidatedYesterday']=$this->_getConsolidados($yesterday,$yesterday);
+            if($this->equal) $this->_objetos[$index]['consolidatedYesterday']=$this->_getConsolidados($yesterday,$yesterday);
             /*Guardo el total de los consolidados del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedYesterday']=$this->_getTotalConsolidado($yesterday,$yesterday);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedYesterday']=$this->_getTotalConsolidado($yesterday,$yesterday);
             /*Guardo el margen total de ese periodo del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalMargenYesterday']=$this->_getTotalMargen($yesterday,$yesterday);
+            if($this->equal) $this->_objetos[$index]['totalMargenYesterday']=$this->_getTotalMargen($yesterday,$yesterday);
             /*Guardo el promedio de los margenes consolidados*/
-            if($this->equal) $this->objetos[$index]['consolidatedAverage']=$this->_getAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
+            if($this->equal) $this->_objetos[$index]['consolidatedAverage']=$this->_getAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
             /*Guardo el proomedio total de los margenes consolidados*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedAverage']=$this->_getTotalAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedAverage']=$this->_getTotalAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
             /*Guardo el promedio del margen total*/
-            if($this->equal) $this->objetos[$index]['totalMargenAverage']=$this->_getAvgTotalMargin($sevenDaysAgo,$yesterday);
+            if($this->equal) $this->_objetos[$index]['totalMargenAverage']=$this->_getAvgTotalMargin($sevenDaysAgo,$yesterday);
             /*guardo los totales de los compradores y vendedores consolidado*/
-            if($this->equal) $this->objetos[$index]['consolidatedAccumulated']=$this->_getConsolidados($firstDay,$startDate);
+            if($this->equal) $this->_objetos[$index]['consolidatedAccumulated']=$this->_getConsolidados($firstDay,$startDate);
             /*guardo el total de los acumulados hasta la fecha consultada*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedAccumulated']=$this->_getTotalConsolidado($firstDay,$startDate);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedAccumulated']=$this->_getTotalConsolidado($firstDay,$startDate);
             /*Guardo el total de los margenes acumulados hasta esa fecha*/
-            if($this->equal) $this->objetos[$index]['totalMargenAccumulated']=$this->_getTotalMargen($firstDay,$startDate);
+            if($this->equal) $this->_objetos[$index]['totalMargenAccumulated']=$this->_getTotalMargen($firstDay,$startDate);
             /*Guardo los pronosticos de los vendedores*/
-            if($this->equal) $this->objetos[$index]['consolidatedForecast']=$this->_closeOfTheMonth($lastnames,$index,'consolidatedAverage','consolidatedAccumulated');
+            if($this->equal) $this->_objetos[$index]['consolidatedForecast']=$this->_closeOfTheMonth($lastnames,$index,'consolidatedAverage','consolidatedAccumulated');
             /*guardo los totales de cierre de mes*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedClose']=array_sum($this->objetos[$index]['consolidatedForecast']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedClose']=array_sum($this->_objetos[$index]['consolidatedForecast']);
 
             /*Itero la fecha*/
             $startDateTemp=self::firstDayNextMonth($startDateTemp);
@@ -632,7 +621,7 @@ class RankingCompraVenta extends Reportes
     {
         $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
         $margin=$previous=$average=$previousMonth=null;
-        foreach ($this->objetos[$index][$index2] as $key => $value)
+        foreach ($this->_objetos[$index][$index2] as $key => $value)
         {
             if($value->apellido == $phrase)
             {               
@@ -644,7 +633,7 @@ class RankingCompraVenta extends Reportes
         }
         if($this->equal)
         {
-            foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
+            foreach ($this->_objetos[$index][$index2.'Yesterday'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
@@ -653,7 +642,7 @@ class RankingCompraVenta extends Reportes
                 }
             }
             $cuatro="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
-            foreach ($this->objetos[$index][$index2.'Average'] as $key => $value)
+            foreach ($this->_objetos[$index][$index2.'Average'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
@@ -662,15 +651,15 @@ class RankingCompraVenta extends Reportes
                 }
             }
             $seis="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
-            foreach ($this->objetos[$index][$index2.'Accumulated'] as $key => $value)
+            foreach ($this->_objetos[$index][$index2.'Accumulated'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
                     $ocho="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 }
             }
-            $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
-            foreach ($this->objetos[$index][$index2.'PreviousMonth'] as $key => $value)
+            $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            foreach ($this->_objetos[$index][$index2.'PreviousMonth'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
@@ -678,7 +667,7 @@ class RankingCompraVenta extends Reportes
                     $previousMonth=$value->margin;
                 }
             }
-            $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
         }
         
         if($type==true)
@@ -703,19 +692,19 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * Retorna una tabla con los totales de los _objetos pasados como parametros
      * @access private
      * @param CActiveRecord $total es el objeto que totaliza los que cumplen la condicion
      * @return string
      */
     private function _getHtmlTotal($index,$index2,$style,$type=true)
     {
-        $total=$this->objetos[$index][$index2];
-        if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
-        if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
-        if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
-        if($this->equal) $close=$this->objetos[$index][$index2.'Close'];
-        if($this->equal) $previousMonth=$this->objetos[$index][$index2.'PreviousMonth'];
+        $total=$this->_objetos[$index][$index2];
+        if($this->equal) $yesterday=$this->_objetos[$index][$index2.'Yesterday'];
+        if($this->equal) $average=$this->_objetos[$index][$index2.'Average'];
+        if($this->equal) $accumulated=$this->_objetos[$index][$index2.'Accumulated'];
+        if($this->equal) $close=$this->_objetos[$index][$index2.'Close'];
+        if($this->equal) $previousMonth=$this->_objetos[$index][$index2.'PreviousMonth'];
 
         $body="";
         if($type==true) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->minutes)."</td>";
@@ -742,11 +731,11 @@ class RankingCompraVenta extends Reportes
      */
     private function _getHtmlTotalMargen($index,$index2,$style)
     {
-        $data=$this->objetos[$index][$index2];
-        if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
-        if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
-        if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
-        if($this->equal) $previousMonth=$this->objetos[$index][$index2.'PreviousMonth'];
+        $data=$this->_objetos[$index][$index2];
+        if($this->equal) $yesterday=$this->_objetos[$index][$index2.'Yesterday'];
+        if($this->equal) $average=$this->_objetos[$index][$index2.'Average'];
+        if($this->equal) $accumulated=$this->_objetos[$index][$index2.'Accumulated'];
+        if($this->equal) $previousMonth=$this->_objetos[$index][$index2.'PreviousMonth'];
         $body="";
         $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($data->margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$data->margin)."</td>";
@@ -758,69 +747,6 @@ class RankingCompraVenta extends Reportes
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth->margin,$accumulated->margin+$this->_forecast($average->margin))."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         return $body;
-    }
-
-    /**
-     * Determina el numero de dias que hay desde la fecha pasada hasta el fin del mes
-     * @access private
-     * @param date $date
-     * @return void
-     */
-    private function _getDays($date)
-    {
-        $arrayDate=explode('-',$date);
-        $newDate=$arrayDate[0]."-".$arrayDate[1]."-".self::howManyDays($date);
-        $this->days=self::howManyDaysBetween($date,$newDate);
-    }
-
-    /**
-     * Retorna el valor pasado como parametro multiplicado por la variable days
-     * @access private
-     * @param float $data
-     * @return float
-     */
-    private function _forecast($data)
-    {
-        return ($data*$this->days);
-    }
-
-    /**
-     * calcula el pronostico de cierre
-     * @access private
-     * @param array $phrase lista de elementos para iterar
-     * @param string $index es la ubicacion dentro del array $this->objetos
-     * @param string $average es la ubicacion del promedio dentro del array $this->objetos[$index]
-     * @param string $accumulated es la ubicacion del acumulado dentro del array $this->objetos[$index]
-     * @return array un array con los datos calculados
-     */
-    private function _closeOfTheMonth($phrase,$index,$average,$accumulated)
-    {
-        $array=array();
-        foreach ($phrase as $key => $lastname)
-        {
-            foreach ($this->objetos[$index][$average] as $key => $avg)
-            {
-                if($avg->apellido==$lastname)
-                {
-                    foreach ($this->objetos[$index][$accumulated] as $key => $acum)
-                    {
-                        if($acum->apellido==$avg->apellido)
-                        {
-                            $array[$acum->apellido]=$acum->margin+$this->_forecast($avg->margin);
-                        }
-                    }
-                }
-
-            }
-        }
-        foreach ($phrase as $key => $value)
-        {
-            if(!isset($array[$value]))
-            {
-                $array[$value]=0;
-            }
-        }
-        return $array;
     }
 
     /**

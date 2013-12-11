@@ -1,6 +1,7 @@
 <?php
 /**
  * @package components
+ * @version 11.1.0
  */
 class Reportes extends CApplicationComponent
 {
@@ -29,6 +30,21 @@ class Reportes extends CApplicationComponent
      * @var boolean
      */
     public $equal;
+    /**
+     * array que almacena datos ordenados
+     * @access protected
+     * @var array
+     */
+    protected $sorted=array();
+    /**
+     * @var int
+     */
+    protected $days;
+    /**
+     * Atributo encargado de almacenar la data traida de base de datos
+     * @var array
+     */
+    protected $_objetos=array();
 
     /**
      * Init method for the application component mode.
@@ -1099,6 +1115,90 @@ class Reportes extends CApplicationComponent
             }
         }
         return "--";
+    }
+
+    /**
+     * Determina el numero de dias que hay desde la fecha pasada hasta el fin del mes
+     * @access protected
+     * @param date $date
+     * @return void
+     */
+    protected function _getDays($date)
+    {
+        $arrayDate=explode('-',$date);
+        $newDate=$arrayDate[0]."-".$arrayDate[1]."-".self::howManyDays($date);
+        $this->days=self::howManyDaysBetween($date,$newDate);
+    }
+
+    /**
+     * Retorna el valor pasado como parametro multiplicado por la variable days
+     * @access protected
+     * @param float $data
+     * @return float
+     */
+    protected function _forecast($data)
+    {
+        return ($data*$this->days);
+    }
+
+    /**
+     * calcula el pronostico de cierre
+     * @access protected
+     * @param array $phrase lista de elementos para iterar, dejar null si se quiere hacer un macth entre ambos elementos
+     * @param string $index es la ubicacion dentro del array $this->objetos
+     * @param string $average es la ubicacion del promedio dentro del array $this->objetos[$index]
+     * @param string $accumulated es la ubicacion del acumulado dentro del array $this->objetos[$index]
+     * @return array un array con los datos calculados
+     */
+    protected function _closeOfTheMonth($phrase=null,$index,$average,$accumulated,$attribute=null)
+    {
+        $array=array();
+        if($attribute===null) $attribute="apellido";
+        if($phrase!=null)
+        {
+            foreach ($phrase as $key => $lastname)
+            {
+                foreach ($this->_objetos[$index][$average] as $key => $avg)
+                {
+                    if($avg->$attribute==$lastname)
+                    {
+                        foreach ($this->_objetos[$index][$accumulated] as $key => $acum)
+                        {
+                            if($acum->$attribute==$avg->$attribute)
+                            {
+                                $array[$acum->$attribute]=$acum->margin+$this->_forecast($avg->margin);
+                            }
+                        }
+                    }
+
+                }
+            }
+            foreach ($phrase as $key => $value)
+            {
+                if(!isset($array[$value]))
+                {
+                    $array[$value]=0;
+                }
+            }
+            return $array;
+        }
+        else
+        {
+            foreach ($this->_objetos[$index][$average] as $key => $avg)
+            {
+                foreach ($this->_objetos[$index][$accumulated] as $key => $acum)
+                {
+                    if($acum->$attribute==$avg->$attribute)
+                    {
+                        $array[$acum->$attribute]=$acum->margin+$this->_forecast($avg->margin);
+                    }
+                    else
+                    {
+                        $array[$acum->$attribute]=$acum->margin;
+                    }
+                }
+            }
+        }
     }
 }
 ?>
