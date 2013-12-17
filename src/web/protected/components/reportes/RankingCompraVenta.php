@@ -1,7 +1,7 @@
 <?php
 /**
 * Creada para generar reporte de compra venta
-* @version 3.0
+* @version 3.1
 * @package reportes
 */
 class RankingCompraVenta extends Reportes
@@ -391,7 +391,7 @@ class RankingCompraVenta extends Reportes
             $manager="id_carrier_supplier";
         }
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-              FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance 
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY {$manager})b,
@@ -420,7 +420,7 @@ class RankingCompraVenta extends Reportes
         }
         $sql="SELECT SUM(d.minutes) AS minutes, SUM(d.revenue) AS revenue, SUM(d.margin) AS margin
               FROM (SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-                    FROM (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY {$manager})b, managers m, carrier_managers cm
@@ -440,12 +440,12 @@ class RankingCompraVenta extends Reportes
     private function _getConsolidados($startDate,$edingDate)
     {
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
-              FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY id_carrier_customer
                    UNION
-                   SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance 
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY id_carrier_supplier)cs,
@@ -468,12 +468,12 @@ class RankingCompraVenta extends Reportes
     {
          $sql="SELECT SUM(d.margin) AS margin
                FROM (SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
-                     FROM (SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                     FROM (SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_customer
                            UNION
-                           SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                           SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_supplier)cs, managers m, carrier_managers cm
@@ -500,7 +500,7 @@ class RankingCompraVenta extends Reportes
         }
         $sql="SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
               FROM(SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
-                   FROM(SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   FROM(SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                         FROM balance
                         WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                         GROUP BY {$manager}, date_balance
@@ -530,7 +530,7 @@ class RankingCompraVenta extends Reportes
         $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
-                          FROM (SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                          FROM (SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY {$manager}, date_balance
@@ -553,12 +553,12 @@ class RankingCompraVenta extends Reportes
     {
         $sql="SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
               FROM (SELECT m.name AS nombre, m.lastname AS apellido, cs.date_balance, SUM(cs.margin) AS margin
-                    FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY id_carrier_customer, date_balance
                           UNION
-                          SELECT id_carrier_supplier AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                          SELECT id_carrier_supplier AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY id_carrier_supplier, date_balance)cs, managers m, carrier_managers cm
@@ -581,12 +581,12 @@ class RankingCompraVenta extends Reportes
         $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, cs.date_balance, SUM(cs.margin) AS margin
-                          FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                          FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY id_carrier_customer, date_balance
                                 UNION
-                                SELECT id_carrier_supplier AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                SELECT id_carrier_supplier AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY id_carrier_supplier, date_balance)cs, managers m, carrier_managers cm
@@ -606,7 +606,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _getTotalMargen($startDate,$edingDate)
     {
-        $sql="SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+        $sql="SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
               FROM balance
               WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
 
@@ -623,7 +623,7 @@ class RankingCompraVenta extends Reportes
     private function _getAvgTotalMargin($startDate,$endingDate)
     {
         $sql="SELECT AVG(b.margin) AS margin
-              FROM (SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, date_balance
+              FROM (SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) AND SUM(revenue-cost)>0 THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, date_balance
                     FROM balance
                     WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                     GROUP BY date_balance) b";
