@@ -170,12 +170,12 @@ class SiteController extends Controller
     public function actionMail()
     {
         $this->vaciarAdjuntos();
-        $this->letra=Log::preliminar($_POST['startDate']);
         $startDate=$endingDate=$carrier=null;
         $correos=null;
         $user=UserIdentity::getEmail();
         if(isset($_POST['startDate']))
         {
+            $this->letra=Log::preliminar($_POST['startDate']);
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
             //Ranking Compra Venta
@@ -585,7 +585,7 @@ class SiteController extends Controller
                 }
             }
         }
-        /*$tiempo=30*count($correos);
+        $tiempo=30*count($correos);
         ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         {
@@ -611,7 +611,7 @@ class SiteController extends Controller
                 $lista=array('sig@etelix.com');
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
-        }*/
+        }
         echo "Mensaje Enviado";
     }
 
