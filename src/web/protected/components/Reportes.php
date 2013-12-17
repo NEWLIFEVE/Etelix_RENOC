@@ -1114,7 +1114,18 @@ class Reportes extends CApplicationComponent
                 return "<font>=</font>";
             }
         }
-        return "--";
+        else
+        {
+            if($actual!=null || $actual!="" && $actual>0)
+            {
+                return "<font style='color:green;'>&#9650;</font>";
+            }
+            else
+            {
+                return "<font style='color:red;'>&#9660;</font>";
+            }
+        }
+        
     }
 
     /**
@@ -1138,7 +1149,7 @@ class Reportes extends CApplicationComponent
      */
     protected function _forecast($data)
     {
-        return ($data*$this->days);
+        return (float)$data*$this->days;
     }
 
     /**
@@ -1154,7 +1165,7 @@ class Reportes extends CApplicationComponent
     {
         $array=array();
         if($attribute===null) $attribute="apellido";
-        if($phrase!=null)
+        if($phrase!==null)
         {
             foreach ($phrase as $key => $lastname)
             {
@@ -1180,7 +1191,6 @@ class Reportes extends CApplicationComponent
                     $array[$value]=0;
                 }
             }
-            return $array;
         }
         else
         {
@@ -1190,15 +1200,19 @@ class Reportes extends CApplicationComponent
                 {
                     if($acum->$attribute==$avg->$attribute)
                     {
-                        $array[$acum->$attribute]=$acum->margin+$this->_forecast($avg->margin);
-                    }
-                    else
-                    {
-                        $array[$acum->$attribute]=$acum->margin;
+                        $array[$acum->$attribute]=(float)$acum->margin+(float)$this->_forecast($avg->margin);
                     }
                 }
             }
+            foreach ($this->_objetos[$index][$accumulated] as $key => $acum)
+            {
+                if(!isset($array[$acum->$attribute]))
+                {
+                    $array[$acum->$attribute]=$acum->margin;
+                }
+            }
         }
+        return $array;
     }
 }
 ?>
