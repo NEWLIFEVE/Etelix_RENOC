@@ -1,6 +1,7 @@
 <?php
 /**
 * @package reportes
+* @version 1.0
 */
 class PosicionNeta extends Reportes
 {
