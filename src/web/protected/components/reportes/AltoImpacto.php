@@ -1,15 +1,46 @@
 <?php
 /**
-* @version 7.1.0
+* @version 7.1.5
 * @package reportes
 */
 class AltoImpacto extends Reportes
 {
-    /**
-     * Atributo encargado de almacenar la data traida de base de datos
-     * @var array
-     */
-    private $_objetos;
+    //Promedios
+    public $totalAverageCustomerMore;
+    public $totalAverageCustomerLess;
+    public $totalAverageSupplierMore;
+    public $totalAverageSupplierLess;
+    public $totalAverageExternalDesMore;
+    public $totalAverageExternalDesLess;
+    public $totalAverageInternalDesMore;
+    public $totalAverageInternalDesLess;
+     //Acumulados
+    public $totalAccumCustomerMore;
+    public $totalAccumCustomerLess;
+    public $totalAccumSupplierMore;
+    public $totalAccumSupplierLess;
+    public $totalAccumExternalDesMore;
+    public $totalAccumExternalDesLess;
+    public $totalAccumInternalDesMore;
+    public $totalAccumInternalDesLess;
+     //Proyeccion del mes
+    public $totalForecastCustomerMore;
+    public $totalForecastCustomerLess;
+    public $totalForecastSupplierMore;
+    public $totalForecastSupplierLess;
+    public $totalForecastExternalDesMore;
+    public $totalForecastExternalDesLess;
+    public $totalForecastInternalDesMore;
+    public $totalForecastInternalDesLess;
+     //Mes anterior
+    public $totalPreviousCustomerMore;
+    public $totalPreviousCustomerLess;
+    public $totalPreviousSupplierMore;
+    public $totalPreviousSupplierLess;
+    public $totalPreviousExternalDesMore;
+    public $totalPreviousExternalDesLess;
+    public $totalPreviousInternalDesMore;
+    public $totalPreviousInternalDesLess;
 
     function __construct()
     {
@@ -30,6 +61,7 @@ class AltoImpacto extends Reportes
 	*/
 	public function reporte($start,$end,$type=true)
 	{
+        $this->_getDays($start);
         $this->type=$type;
         ini_set('max_execution_time', 300);
         ini_set('memory_limit', '300M');
@@ -76,12 +108,17 @@ class AltoImpacto extends Reportes
         $numDestinationInt+=6;
         $numDestinationIntLess+=4;
 
-        $span=11;
+        $span=21;
         $spanDes=$span+2;
-        if(!$this->type)
+        if(!$this->type && !$this->equal)
         {
             $span=3;
-            $spanDes=3;
+            $spanDes=4;
+        }
+        if($this->type && !$this->equal)
+        {
+            $span=12;
+            $spanDes=$span+2;
         }
         $body="<table>";
         $total=$numCustomer
@@ -631,8 +668,20 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['customersYesterday']=$this->_getCarriers($yesterday,$yesterday,true,null,'margin');
             //Guardo el promedio del margen de los ultimos 7 dias de clientes con mas de 10$
             if($this->type && $this->equal) $this->_objetos[$index]['customersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,true);
+            //
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday,true);
             //Guardo el margen acumulado por los clientes en lo que va de mes
-            //if($this->type && $this->equal) $this->_objetos[$index]['customersAccumulated']=$this->_getCarriers();
+            if($this->type && $this->equal) $this->_objetos[$index]['customersAccumulated']=$this->_getCarriers($firstDay,$startDate,true,null,'margin');
+            //total acumulado completo
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalAccumulated']=$this->_getTotalCompleteCarriers($firstDay,$startDate,true);
+            //Guardo las proyecciones para el final del mes
+            if($this->type && $this->equal) $this->_objetos[$index]['customersForecast']=$this->_closeOfTheMonth(null,$index,'customersAverage','customersAccumulated','cliente');
+            //Total de la proyeccion de clientes
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalForecast']=array_sum($this->_objetos[$index]['customersForecast']);
+            //Guardo los totales del mes anterior de los clientes
+            if($this->type && $this->equal) $this->_objetos[$index]['customersPreviousMonth']=$this->_getCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true,null,'margin');
+            //Total de mes acumulado anterior
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalPreviousMonth']=$this->_getTotalCompleteCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
             //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
             // Guardo los datos de los totales de ayer de los clientes con mas de 10 dolares de ganancia
@@ -655,6 +704,20 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['providersYesterday']=$this->_getCarriers($yesterday,$yesterday,false,null,'margin');
             //Guardo los proomedios de los proveedores con mas de 10 dolares de ganancia
             if($this->type && $this->equal) $this->_objetos[$index]['providersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday,false);
+            //
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday,false);
+            //Guardo el margen acumulado por los proveedores en lo que va de mes
+            if($this->type && $this->equal) $this->_objetos[$index]['providersAccumulated']=$this->_getCarriers($firstDay,$startDate,false,null,'margin');
+            //Totales completos acumulados
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalAccumulated']=$this->_getTotalCompleteCarriers($firstDay,$startDate,false);
+            //Guardo las proyecciones para el final del mes
+            if($this->type && $this->equal) $this->_objetos[$index]['providersForecast']=$this->_closeOfTheMonth(null,$index,'providersAverage','providersAccumulated','proveedor');
+            //Totales de proyeccion
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalForecast']=array_sum($this->_objetos[$index]['providersForecast']);
+            //Guardo los totales del mes anterior de los providers
+            if($this->type && $this->equal) $this->_objetos[$index]['providersPreviousMonth']=$this->_getCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false,null,'margin');
+            //Total de mes acumulado anterior
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalPreviousMonth']=$this->_getTotalCompleteCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
             $this->_objetos[$index]['suppliersTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia del dia anterior
@@ -676,6 +739,20 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['externalYesterday']=$this->_getDestination($yesterday,$yesterday,true,null,'margin');
             //Guardo los promedios de los destinos externos
             if($this->type && $this->equal) $this->_objetos[$index]['externalAverage']=$this->_getAvgDestination($sevenDaysAgo,$yesterday,true);
+            //
+            if($this->type && $this->equal) $this->_objetos[$index]['externalTotalAverage']=$this->_getTotalAvgDestination($sevenDaysAgo,$yesterday,true);
+            //guardo el acumulado de los destinos internos esterno en lo que va de mes
+            if($this->type && $this->equal) $this->_objetos[$index]['externalAccumulated']=$this->_getDestination($firstDay,$startDate,true,null,'margin');
+            //Totales completos acumulados
+            if($this->type && $this->equal) $this->_objetos[$index]['externalTotalAccumulated']=$this-> _getTotalDestination($firstDay,$startDate,true,null,'margin');
+            //Guardo las proyecciones para el final del mes
+            if($this->type && $this->equal) $this->_objetos[$index]['externalForecast']=$this->_closeOfTheMonth(null,$index,'externalAverage','externalAccumulated','destino');
+            //Totales de proyeccion
+            if($this->type && $this->equal) $this->_objetos[$index]['externalTotalForecast']=array_sum($this->_objetos[$index]['externalForecast']);
+            //Guardo los totales del mes anterior de los providers
+            if($this->type && $this->equal) $this->_objetos[$index]['externalPreviousMonth']=$this->_getDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true,null,'margin');
+            //Totales completos del mes anterior
+            if($this->type && $this->equal) $this->_objetos[$index]['externalTotalPreviousMonth']=$this-> _getTotalDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true,null,'margin');
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalExternalDestinationsMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia del dia de ayer
@@ -697,6 +774,20 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['internalYesterday']=$this->_getDestination($yesterday,$yesterday,false,null,'margin');
             //Guardo el promedio de los destinos internos
             if($this->type && $this->equal) $this->_objetos[$index]['internalAverage']=$this->_getAvgDestination($sevenDaysAgo,$yesterday,false);
+            //
+            if($this->type && $this->equal) $this->_objetos[$index]['internalTotalAverage']=$this->_getTotalAvgDestination($sevenDaysAgo,$yesterday,false);
+            //Guardo el acumulado de destinos internos en lo que va de mes
+            if($this->type && $this->equal) $this->_objetos[$index]['internalAccumulated']=$this->_getDestination($firstDay,$startDate,false,null,'margin');
+            //Totales completos acumulados
+            if($this->type && $this->equal) $this->_objetos[$index]['internalTotalAccumulated']=$this-> _getTotalDestination($firstDay,$startDate,false,null,'margin');
+            //Guardo las proyecciones para el final del mes
+            if($this->type && $this->equal) $this->_objetos[$index]['internalForecast']=$this->_closeOfTheMonth(null,$index,'internalAverage','internalAccumulated','destino');
+            //Totales de proyeccion
+            if($this->type && $this->equal) $this->_objetos[$index]['internalTotalForecast']=array_sum($this->_objetos[$index]['externalForecast']);
+            //Guardo los totales del mes anterior de los providers
+            if($this->type && $this->equal) $this->_objetos[$index]['internalPreviousMonth']=$this->_getDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false,null,'margin');
+            //Totales completos del mes anterior
+            if($this->type && $this->equal) $this->_objetos[$index]['internalTotalPreviousMonth']=$this-> _getTotalDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false,null,'margin');
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalInternalDestinationsWithMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia del dia de ayer
@@ -728,23 +819,28 @@ class AltoImpacto extends Reportes
      * @param string $attribute default null, es usado para traer solo uno de los atributos del modelo, ejemplo ='margin'
      * @return array $models
      */
-    private function _getCarriers($startDate,$endingDate,$typeCarrier=true,$type=true,$attribute=null)
+    private function _getCarriers($startDate,$endingDate,$typeCarrier=true,$type=null,$attribute=null)
     {
-        $condicion="x.margin<10";
-        if($type) $condicion="x.margin>=10";
-        $select="id_carrier_supplier";
-        if($typeCarrier) $select="id_carrier_customer";
-        $titulo="proveedor";
-        if($typeCarrier) $titulo="cliente";
-        $data="c.name AS {$titulo}, x.{$select} AS id, x.{$attribute} ";
-        if($attribute==null) $data="c.name AS {$titulo}, x.{$select} AS id, x.total_calls, x.complete_calls, x.minutes, x.asr,x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, cs.posicion_neta AS posicion_neta ";
-        $completa="WHERE {$condicion} AND x.{$select}=c.id AND x.{$select}=cs.id";
-        if($type==null) $completa="WHERE x.{$select}=c.id AND x.{$select}=cs.id";
+        $condition="x.margin<10";
+        if($type!=false) $condition="x.margin>=10";
+
+        $carrier="id_carrier_supplier";
+        if($typeCarrier) $carrier="id_carrier_customer";
+
+        $title="proveedor";
+        if($typeCarrier) $title="cliente";
+
+        $data="c.name AS ".$title.", x.".$carrier." AS id, x.".$attribute." ";
+        if($attribute==null) $data="c.name AS ".$title.", x.".$carrier." AS id, x.total_calls, x.complete_calls, x.minutes, x.asr,x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, cs.posicion_neta AS posicion_neta ";
+        
+        $where="WHERE ".$condition." AND x.".$carrier."=c.id AND x.".$carrier."=cs.id";
+        if($type===null) $where="WHERE x.".$carrier."=c.id AND x.".$carrier."=cs.id";
+        
         $sql="SELECT {$data}
-              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$carrier}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                   GROUP BY {$select}
+                   GROUP BY {$carrier}
                    ORDER BY margin DESC) x,
                   (SELECT id,SUM(vrevenue-ccost) AS posicion_neta
                    FROM(SELECT id_carrier_customer AS id,SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
@@ -760,7 +856,7 @@ class AltoImpacto extends Reportes
                    GROUP BY id
                    ORDER BY posicion_neta DESC)cs,
                    carrier c
-              {$completa}
+              {$where}
               ORDER BY x.margin DESC";
         return Balance::model()->findAllBySql($sql);
     }
@@ -784,7 +880,7 @@ class AltoImpacto extends Reportes
         $data="SUM({$attribute}) AS {$attribute}";
         if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin ";
         $sql="SELECT {$data}
-              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                    GROUP BY {$select}
@@ -809,7 +905,7 @@ class AltoImpacto extends Reportes
         $data="SUM({$attribute}) AS {$attribute}";
         if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage";
         $sql="SELECT {$data}
-              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                    GROUP BY {$select}
@@ -830,7 +926,7 @@ class AltoImpacto extends Reportes
     private function _getDestination($startDate,$endingDate,$typeDestination=true,$type=null,$attribute=null)
     {
         $condicion="x.margin<10";
-        if($type) $condicion="x.margin>=10";
+        if($type!=false) $condicion="x.margin>=10";
         $table="destination_int";
         if($typeDestination) $table="destination";
         $select="id_destination_int";
@@ -838,9 +934,9 @@ class AltoImpacto extends Reportes
         $data="d.name AS destino, x.{$attribute}";
         if($attribute==null) $data="d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, CASE WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, CASE WHEN x.minutes=0 THEN 0 ELSE(x.cost/x.minutes)*100 END AS costmin, CASE WHEN x.minutes=0 THEN 0 ELSE(x.revenue/x.minutes)*100 END AS ratemin, CASE WHEN x.minutes=0 THEN 0 ELSE((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin";
         $completa="WHERE {$condicion} AND x.{$select}=d.id";
-        if($type==null) $completa="WHERE x.{$select}=d.id";
+        if($type===null) $completa="WHERE x.{$select}=d.id";
         $sql="SELECT {$data}
-                      FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                      FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
                            GROUP BY {$select}
@@ -862,8 +958,9 @@ class AltoImpacto extends Reportes
      */
     private function _getTotalDestination($startDate,$endingDate,$typeDestination=true,$type=true,$attribute=null)
     {
-        $condicion="margin<10";
-        if($type) $condicion="margin>=10";
+        $condicion="WHERE margin<10";
+        if($type) $condicion="WHERE margin>=10";
+        if($type===null) $condicion="";
         $select="id_destination_int";
         if($typeDestination) $select="id_destination";
         $table="destination_int";
@@ -871,12 +968,12 @@ class AltoImpacto extends Reportes
         $data="SUM({$attribute}) AS {$attribute}";
         if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin";
         $sql="SELECT {$data}
-              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
                    GROUP BY {$select}
                    ORDER BY margin DESC) balance
-              WHERE {$condicion}";
+              {$condicion}";
         return Balance::model()->findBySql($sql);
     }
 
@@ -897,7 +994,7 @@ class AltoImpacto extends Reportes
         $data="SUM({$attribute}) AS {$attribute}";
         if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage";
         $sql="SELECT {$data}
-              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
                    GROUP BY {$select}
@@ -921,7 +1018,7 @@ class AltoImpacto extends Reportes
         if($typeCarrier) $titulo="cliente";
         if($typeCarrier) $carrier="id_carrier_customer";
         $sql="SELECT c.name AS {$titulo}, x.{$carrier}, AVG(x.margin) AS margin
-              FROM(SELECT date_balance, {$carrier}, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT date_balance, {$carrier}, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY {$carrier}, date_balance
@@ -929,6 +1026,27 @@ class AltoImpacto extends Reportes
               WHERE x.{$carrier}=c.id
               GROUP BY x.{$carrier}, c.name";
         return Balance::model()->findAllBySql($sql);
+    }
+
+    /**
+     *
+     */
+    private function _getTotalAvgCarriers($startDate,$endingDate,$typeCarrier=true)
+    {
+        $titulo="proveedor";
+        $carrier="id_carrier_supplier";
+        if($typeCarrier) $titulo="cliente";
+        if($typeCarrier) $carrier="id_carrier_customer";
+        $sql="SELECT SUM(d.margin) AS margin
+              FROM(SELECT c.name AS {$titulo}, x.{$carrier}, AVG(x.margin) AS margin
+                   FROM(SELECT date_balance, {$carrier}, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                        FROM balance
+                        WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                        GROUP BY {$carrier}, date_balance
+                        ORDER BY margin DESC) x, carrier c
+                   WHERE x.{$carrier}=c.id
+                   GROUP BY x.{$carrier}, c.name)d";
+        return Balance::model()->findBySql($sql);
     }
 
     /**
@@ -948,7 +1066,7 @@ class AltoImpacto extends Reportes
         if($typeDestination) $table="destination";
         
         $sql="SELECT d.name AS destino, AVG(b.margin) AS margin
-              FROM(SELECT date_balance, {$destination}, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT date_balance, {$destination}, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$destination}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$destination} IS NOT NULL
                    GROUP BY {$destination}, date_balance
@@ -956,6 +1074,28 @@ class AltoImpacto extends Reportes
               WHERE b.{$destination}=d.id
               GROUP BY d.name";
         return Balance::model()->findAllBySql($sql);   
+    }
+
+    /** 
+     *
+     */
+    private function _getTotalAvgDestination($startDate,$endingDate,$typeDestination=true)
+    {
+        $destination="id_destination_int";
+        if($typeDestination) $destination="id_destination";
+        $table="destination_int";
+        if($typeDestination) $table="destination";
+        
+        $sql="SELECT SUM(d.margin) AS margin
+              FROM(SELECT d.name AS destino, AVG(b.margin) AS margin
+                   FROM(SELECT date_balance, {$destination}, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                        FROM balance
+                        WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$destination}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$destination} IS NOT NULL
+                        GROUP BY {$destination}, date_balance
+                        ORDER BY margin DESC) b, {$table} d
+                   WHERE b.{$destination}=d.id
+                   GROUP BY d.name)d";
+        return Balance::model()->findBySql($sql);   
     }
 
     /**
@@ -998,7 +1138,7 @@ class AltoImpacto extends Reportes
      */
     private function _getHeaderCarriers()
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=null;
         if($this->type) $c1="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
         if($this->type) $c2="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
         if($this->type) $c3="<td style='".$this->_head['styleHead']."'>Minutes</td>";
@@ -1012,9 +1152,13 @@ class AltoImpacto extends Reportes
         if($this->type && $this->equal) $c11="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
         if($this->type && $this->equal) $c12="<td style='".$this->_head['styleHead']."'></td>";
         if($this->type && $this->equal) $c13="<td style='".$this->_head['styleHead']."'>Promedio 7D</td>";
-        if($this->type) $c14="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        if($this->type) $c15="<td style='".$this->_head['styleHead']."'>PN</td>";
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15;
+        if($this->type && $this->equal) $c14="<td style='".$this->_head['styleHead']."' colspan='2'>Acumulado Mes</td>";
+        if($this->type && $this->equal) $c15="<td style='".$this->_head['styleHead']."'>Proyeccion Mes</td>";
+        if($this->type && $this->equal) $c16="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type && $this->equal) $c17="<td style='".$this->_head['styleHead']."'>Mes Anterior</td>";
+        if($this->type) $c18="<td style='".$this->_head['styleHead']."' colspan='2'>Margin%</td>";
+        if($this->type) $c19="<td style='".$this->_head['styleHead']."'>PN</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19;
     }
 
     /**
@@ -1024,7 +1168,7 @@ class AltoImpacto extends Reportes
      */
     private function _getHeaderDestination()
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=$c20=$c21=null;
         if($this->type) $c1="<td style='".$this->_head['styleHead']."'>TotalCalls</td>";
         if($this->type) $c2="<td style='".$this->_head['styleHead']."'>CompleteCalls</td>";
         if($this->type) $c3="<td style='".$this->_head['styleHead']."'>Minutes</td>";
@@ -1033,16 +1177,20 @@ class AltoImpacto extends Reportes
         if($this->type) $c6="<td style='".$this->_head['styleHead']."'>PDD</td>";
         $c7="<td style='".$this->_head['styleHead']."'>Cost</td>";
         $c8="<td style='".$this->_head['styleHead']."'>Revenue</td>";
-        $c9="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        $c9="<td style='".$this->_head['styleHead']."' colspan='2'>Margin</td>";
         if($this->type && $this->equal) $c10="<td style='".$this->_head['styleHead']."'></td>";
         if($this->type && $this->equal) $c11="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
         if($this->type && $this->equal) $c12="<td style='".$this->_head['styleHead']."'></td>";
         if($this->type && $this->equal) $c13="<td style='".$this->_head['styleHead']."'>Promedio 7D</td>";
-        if($this->type) $c14="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        if($this->type) $c15="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
-        if($this->type) $c16="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
-        if($this->type) $c17="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17;
+        if($this->type && $this->equal) $c14="<td style='".$this->_head['styleHead']."'>Acumulado Mes</td>";
+        if($this->type && $this->equal) $c15="<td style='".$this->_head['styleHead']."' colspan='2'>Proyeccion Mes</td>";
+        if($this->type && $this->equal) $c16="<td style='".$this->_head['styleHead']."'></td>";
+        if($this->type && $this->equal) $c17="<td style='".$this->_head['styleHead']."'>Mes Anterior</td>";
+        if($this->type) $c18="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        if($this->type) $c19="<td style='".$this->_head['styleHead']."'>Cost/Min</td>";
+        if($this->type) $c20="<td style='".$this->_head['styleHead']."'>Rate/Min </td>";
+        if($this->type) $c21="<td style='".$this->_head['styleHead']."'>Margin/Min</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19.$c20.$c21;
     }
     
     /**
@@ -1056,7 +1204,7 @@ class AltoImpacto extends Reportes
      */
     private function _getRow($index,$index2,$attribute,$phrase,$style)
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=null;
+        $previous=$c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=null;
         $margin=null;
         $otro="providers";
         foreach ($this->_objetos[$index][$index2] as $key => $value)
@@ -1073,8 +1221,8 @@ class AltoImpacto extends Reportes
                 $c8="<td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
                 $c9="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
-                if($this->type) $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."</td>";
-                if($this->type) $c15="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+                if($this->type) $c18="<td style='".$style."' colspan='2'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+                if($this->type) $c19="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
             }
         }
         if($this->equal)
@@ -1094,8 +1242,41 @@ class AltoImpacto extends Reportes
                 {
                     $c12="<td style='".$style."'>".$this->_upOrDown($average->margin,$margin)."</td>";
                     $c13="<td style='".$style."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+                    if(strstr($index2, 'customersWithMore')!=false) $this->totalAverageCustomerMore+=$average->margin;
+                    if(strstr($index2, 'customersWithLess')!=false) $this->totalAverageCustomerLess+=$average->margin;
+                    if(strstr($index2, 'providersWithMore')!=false) $this->totalAverageSupplierMore+=$average->margin;
+                    if(strstr($index2, 'providersWithLess')!=false) $this->totalAverageCustomerLess+=$average->margin;
                 }
             }
+            foreach ($this->_objetos[$index][$otro.'Accumulated'] as $key => $accumulated)
+            {
+                if($accumulated->$attribute==$phrase['attribute'])
+                {
+                    $c14="<td style='".$style."' colspan='2'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+                    if(strstr($index2, 'customersWithMore')!=false) $this->totalAccumCustomerMore+=$accumulated->margin;
+                    if(strstr($index2, 'customersWithLess')!=false) $this->totalAccumCustomerLess+=$accumulated->margin;
+                    if(strstr($index2, 'providersWithMore')!=false) $this->totalAccumSupplierMore+=$accumulated->margin;
+                    if(strstr($index2, 'providersWithLess')!=false) $this->totalAccumSupplierLess+=$accumulated->margin;
+                }
+            }
+            $c15="<td style='".$style."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']])."</td>";
+            if(strstr($index2, 'customersWithMore')!=false) $this->totalForecastCustomerMore+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            if(strstr($index2, 'customersWithLess')!=false) $this->totalForecastCustomerLess+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            if(strstr($index2, 'providersWithMore')!=false) $this->totalForecastSupplierMore+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            if(strstr($index2, 'providersWithLess')!=false) $this->totalForecastSupplierLess+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            foreach ($this->_objetos[$index][$otro.'PreviousMonth'] as $key => $month)
+            {
+                if($month->$attribute==$phrase['attribute'])
+                {
+                    $c17="<td style='".$style."'>".Yii::app()->format->format_decimal($month->margin)."</td>";
+                    $previous=$month->margin;
+                    if(strstr($index2, 'customersWithMore')!=false) $this->totalPreviousCustomerMore+=(float)$month->margin;
+                    if(strstr($index2, 'customersWithLess')!=false) $this->totalPreviousCustomerLess+=(float)$month->margin;
+                    if(strstr($index2, 'providersWithMore')!=false) $this->totalPreviousSupplierMore+=(float)$month->margin;
+                    if(strstr($index2, 'providersWithLess')!=false) $this->totalPreviousSupplierLess+=(float)$month->margin;
+                }
+            }
+            $c16="<td style='".$style."'>".$this->_upOrDown($previous,$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']])."</td>";
         }
         if($c7==null) $c7="<td style='".$style."'>--</td>";
         if($c8==null) $c8="<td style='".$style."'>--</td>";
@@ -1108,8 +1289,8 @@ class AltoImpacto extends Reportes
             if($c4==null) $c4="<td style='".$style."'>--</td>";
             if($c5==null) $c5="<td style='".$style."'>--</td>";
             if($c6==null) $c6="<td style='".$style."'>--</td>";
-            if($c12==null) $c14="<td style='".$style."'>--</td>";
-            if($c13==null) $c15="<td style='".$style."'>--</td>";
+            if($c18==null) $c18="<td style='".$style."' colspan='2'>--</td>";
+            if($c19==null) $c19="<td style='".$style."'>--</td>";
         }
         if($this->type && $this->equal)
         {
@@ -1117,8 +1298,12 @@ class AltoImpacto extends Reportes
             if($c11==null) $c11="<td style='".$style."'>--</td>";
             if($c12==null) $c12="<td style='".$style."'>--</td>";
             if($c13==null) $c13="<td style='".$style."'>--</td>";
+            if($c14==null) $c14="<td style='".$style."' colspan='2'>--</td>";
+            if($c15==null) $c15="<td style='".$style."'>--</td>";
+            if($c16==null) $c16="<td style='".$style."'>--</td>";
+            if($c17==null) $c17="<td style='".$style."'>--</td>";
         }
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15;
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19;
     }
 
     /**
@@ -1132,7 +1317,7 @@ class AltoImpacto extends Reportes
      */
     private function _getRowDestination($index,$index2,$attribute,$phrase)
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=$c20=$c21=null;
         $margin=$previous=$average=$previousMonth=null;
         $otro="internal";
         $style=self::colorDestino($phrase['attribute']);
@@ -1148,12 +1333,12 @@ class AltoImpacto extends Reportes
                 if($this->type) $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
                 $c7="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
                 $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $c9="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                $c9="<td style='".$style."' colspan='2'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
-                if($this->type) $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
-                if($this->type) $c15="<td style='".$style."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
-                if($this->type) $c16="<td style='".$style."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
-                if($this->type) $c17="<td style='".$style."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+                if($this->type) $c18="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+                if($this->type) $c19="<td style='".$style."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
+                if($this->type) $c20="<td style='".$style."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
+                if($this->type) $c21="<td style='".$style."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
             }
         }
         if($this->equal)
@@ -1173,12 +1358,45 @@ class AltoImpacto extends Reportes
                 {
                     $c12="<td style='".$style."'>".$this->_upOrDown($average->margin,$margin)."</td>";
                     $c13="<td style='".$style."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+                    if(strstr($index2, 'externalDestinationsMore')!=false) $this->totalAverageExternalDesMore+=$average->margin;
+                    if(strstr($index2, 'externalDestinationsLess')!=false) $this->totalAverageExternalDesLess+=$average->margin;
+                    if(strstr($index2, 'internalDestinationsWithMore')!=false) $this->totalAverageInternalDesMore+=$average->margin;
+                    if(strstr($index2, 'internalDestinationsWithLess')!=false) $this->totalAverageInternalDesLess+=$average->margin;
                 }
             }
+            foreach ($this->_objetos[$index][$otro."Accumulated"] as $key => $accumulated)
+            {
+                if($accumulated->$attribute==$phrase['attribute'])
+                {
+                    $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+                    if(strstr($index2, 'externalDestinationsMore')!=false) $this->totalAccumExternalDesMore+=$accumulated->margin;
+                    if(strstr($index2, 'externalDestinationsLess')!=false) $this->totalAccumExternalDesLess+=$accumulated->margin;
+                    if(strstr($index2, 'internalDestinationsWithMore')!=false) $this->totalAccumInternalDesMore+=$accumulated->margin;
+                    if(strstr($index2, 'internalDestinationsWithLess')!=false) $this->totalAccumInternalDesLess+=$accumulated->margin;
+                }
+            }
+            $c15="<td style='".$style."' colspan='2'>".Yii::app()->format->format_decimal($this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']])."</td>";
+            foreach ($this->_objetos[$index][$otro.'PreviousMonth'] as $key => $month)
+            {
+                if($month->$attribute==$phrase['attribute'])
+                {
+                    $c17="<td style='".$style."'>".Yii::app()->format->format_decimal($month->margin)."</td>";
+                    $previous=$month->margin;
+                    if(strstr($index2, 'externalDestinationsMore')!=false) $this->totalPreviousExternalDesMore+=$month->margin;
+                    if(strstr($index2, 'externalDestinationsLess')!=false) $this->totalPreviousExternalDesLess+=$month->margin;
+                    if(strstr($index2, 'internalDestinationsWithMore')!=false) $this->totalPreviousInternalDesMore+=$month->margin;
+                    if(strstr($index2, 'internalDestinationsWithLess')!=false) $this->totalPreviousInternalDesLess+=$month->margin;
+                }
+            }
+            $c16="<td style='".$style."'>".$this->_upOrDown($previous,$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']])."</td>";
+            if(strstr($index2, 'externalDestinationsMore')!=false) $this->totalForecastExternalDesMore+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            if(strstr($index2, 'externalDestinationsLess')!=false) $this->totalForecastExternalDesLess+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            if(strstr($index2, 'internalDestinationsWithMore')!=false) $this->totalForecastInternalDesMore+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
+            if(strstr($index2, 'internalDestinationsWithLess')!=false) $this->totalForecastInternalDesLess+=$this->_objetos[$index][$otro.'Forecast'][$phrase['attribute']];
         }
         if($c7==null) $c7="<td style='".$style."'>--</td>";
         if($c8==null) $c8="<td style='".$style."'>--</td>";
-        if($c9==null) $c9="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."' colspan='2'>--</td>";
         if($this->type)
         {
             if($c1==null) $c1="<td style='".$style."'>--</td>";
@@ -1187,10 +1405,10 @@ class AltoImpacto extends Reportes
             if($c4==null) $c4="<td style='".$style."'>--</td>";
             if($c5==null) $c5="<td style='".$style."'>--</td>";
             if($c6==null) $c6="<td style='".$style."'>--</td>";
-            if($c14==null) $c14="<td style='".$style."'>--</td>";
-            if($c15==null) $c15="<td style='".$style."'>--</td>";
-            if($c16==null) $c16="<td style='".$style."'>--</td>";
-            if($c17==null) $c17="<td style='".$style."'>--</td>";
+            if($c18==null) $c18="<td style='".$style."'>--</td>";
+            if($c19==null) $c19="<td style='".$style."'>--</td>";
+            if($c20==null) $c20="<td style='".$style."'>--</td>";
+            if($c21==null) $c21="<td style='".$style."'>--</td>";
         }
         if($this->type && $this->equal)
         {
@@ -1198,8 +1416,12 @@ class AltoImpacto extends Reportes
             if($c11==null) $c11="<td style='".$style."'>--</td>";
             if($c12==null) $c12="<td style='".$style."'>--</td>";
             if($c13==null) $c13="<td style='".$style."'>--</td>";
+            if($c14==null) $c14="<td style='".$style."'>--</td>";
+            if($c15==null) $c15="<td style='".$style."' colspan='2'>--</td>";
+            if($c16==null) $c16="<td style='".$style."'>--</td>";
+            if($c17==null) $c17="<td style='".$style."'>--</td>";
         }
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17;
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19.$c20.$c21;
     }
 
     /**
@@ -1213,10 +1435,59 @@ class AltoImpacto extends Reportes
      */
     private function _getRowTotalCarrier($index,$index2,$style,$type=true)
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=null;
-        $margin=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=null;
+        $average=$accumulated=$forecast=$previous=null;
         $value=$this->_objetos[$index][$index2];
         if($this->type && $this->equal) $yesterday=$this->_objetos[$index][$index2."Yesterday"];
+        if($type==true)
+        {
+            if($index2=='clientsTotalMoreThanTenDollars')
+            {
+                if($this->type && $this->equal) $average=$this->totalAverageCustomerMore;
+                if($this->type && $this->equal) $forecast=$this->totalForecastCustomerMore;
+                if($this->type && $this->equal) $accumulated=$this->totalAccumCustomerMore;
+                if($this->type && $this->equal) $previous=$this->totalPreviousCustomerMore;
+            }
+            if($index2=='clientsTotalLessThanTenDollars')
+            {
+                if($this->type && $this->equal) $average=$this->totalAverageCustomerLess;
+                if($this->type && $this->equal) $forecast=$this->totalForecastCustomerLess;
+                if($this->type && $this->equal) $accumulated=$this->totalAccumCustomerLess;
+                if($this->type && $this->equal) $previous=$this->totalPreviousCustomerLess;
+            }
+            if($index2=='suppliersTotalMoreThanTenDollars')
+            {
+                if($this->type && $this->equal) $average=$this->totalAverageSupplierMore;
+                if($this->type && $this->equal) $forecast=$this->totalForecastSupplierMore;
+                if($this->type && $this->equal) $accumulated=$this->totalAccumSupplierMore;
+                if($this->type && $this->equal) $previous=$this->totalPreviousSupplierMore;
+            }
+            if($index2=='suppliersTotalLessThanTenDollars')
+            {
+                if($this->type && $this->equal) $average=$this->totalAverageSupplierLess;
+                if($this->type && $this->equal) $forecast=$this->totalForecastSupplierLess;
+                if($this->type && $this->equal) $accumulated=$this->totalAccumSupplierLess;
+                if($this->type && $this->equal) $previous=$this->totalPreviousSupplierLess;
+            }
+        }
+        else
+        {
+            if($index2=='totalCustomer')
+            {
+                if($this->type && $this->equal) $average=$this->_objetos[$index]['customersTotalAverage']->margin;
+                if($this->type && $this->equal) $accumulated=$this->_objetos[$index]['customersTotalAccumulated']->margin;
+                if($this->type && $this->equal) $forecast=$this->_objetos[$index]['customersTotalForecast'];
+                if($this->type && $this->equal) $previous=$this->_objetos[$index]['customersTotalPreviousMonth']->margin;
+            }
+
+            if($index2=='totalSuppliers')
+            {
+                if($this->type && $this->equal) $average=$this->_objetos[$index]['providersTotalAverage']->margin;
+                if($this->type && $this->equal) $accumulated=$this->_objetos[$index]['providersTotalAccumulated']->margin;
+                if($this->type && $this->equal) $forecast=$this->_objetos[$index]['providersTotalForecast'];
+                if($this->type && $this->equal) $previous=$this->_objetos[$index]['providersTotalPreviousMonth']->margin;
+            }
+        }
         if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
         if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
         if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
@@ -1225,22 +1496,30 @@ class AltoImpacto extends Reportes
         $c9="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
         if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
         if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal && $this->type) $c12="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$value->margin)."</td>";
+        if($this->equal && $this->type) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average)."</td>";
+        if($this->equal && $this->type) $c14="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal($accumulated)."</td>";
+        if($this->equal && $this->type) $c15="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($forecast)."</td>";
+        if($this->equal && $this->type) $c16="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$forecast)."</td>";
+        if($this->equal && $this->type) $c17="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previous)."</td>";
         if(!$type)
         {
             if($this->type) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
             if($this->type) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
             if($this->type) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-            if($this->type) $c12="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            if($this->type) $c18="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            if($this->type) $c19="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
         }
         else
         {
             if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
             if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
             if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c12="<td style='".$this->_head[$style]."'></td>"; 
+            if($this->type) $c18="<td style='".$this->_head[$style]."' colspan='2'></td>"; 
+            if($this->type) $c19="<td style='".$this->_head[$style]."'></td>"; 
         }
-        if($this->type) $c13="<td style='".$this->_head[$style]."'></td>"; 
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13;
+        if($this->type) $c19="<td style='".$this->_head[$style]."'></td>"; 
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19;
     }
 
     /**
@@ -1254,104 +1533,289 @@ class AltoImpacto extends Reportes
      */
     private function _getRowTotalDestination($index,$index2,$style,$type=true)
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c9=$c10=$c10=$c11=$c12=$c13=$c14=$c15=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c9=$c10=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=$c20=$c21=null;
+        $average=$accumulated=$forecast=$previous=null;
         $value=$this->_objetos[$index][$index2];
         if($this->type && $this->equal) $yesterday=$this->_objetos[$index][$index2."Yesterday"];
-        if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
-        if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
-        if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
-        $c9="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
-        $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
-        if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
-        if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
-        if(!$type)
+        if($type)
         {
-            if($this->type) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
-            if($this->type) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
-            if($this->type) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
-            if($this->type) $c12="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
-            if($this->type) $c13="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c14="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c15="<td style='".$this->_head[$style]."'></td>";
+            if(strstr($index2, 'totalExternalDestinationsMore')!=false) $average=$this->totalAverageExternalDesMore;
+            if(strstr($index2, 'totalExternalDestinationsLess')!=false) $average=$this->totalAverageExternalDesLess;
+            if(strstr($index2, 'totalInternalDestinationsWithMore')!=false) $average=$this->totalAverageInternalDesMore;
+            if(strstr($index2, 'totalInternalDestinationsWithLess')!=false) $average=$this->totalAverageInternalDesLess;
+            if(strstr($index2, 'totalExternalDestinationsMore')!=false) $accumulated=$this->totalAccumExternalDesMore;
+            if(strstr($index2, 'totalExternalDestinationsLess')!=false) $accumulated=$this->totalAccumExternalDesLess;
+            if(strstr($index2, 'totalInternalDestinationsWithMore')!=false) $accumulated=$this->totalAccumInternalDesMore;
+            if(strstr($index2, 'totalInternalDestinationsWithLess')!=false) $accumulated=$this->totalAccumInternalDesLess;
+            if(strstr($index2, 'totalExternalDestinationsMore')!=false) $forecast=$this->totalForecastExternalDesMore;
+            if(strstr($index2, 'totalExternalDestinationsLess')!=false) $forecast=$this->totalForecastExternalDesLess;
+            if(strstr($index2, 'totalInternalDestinationsWithMore')!=false) $forecast=$this->totalForecastInternalDesMore;
+            if(strstr($index2, 'totalInternalDestinationsWithLess')!=false) $forecast=$this->totalForecastInternalDesLess;
+            if(strstr($index2, 'totalExternalDestinationsMore')!=false) $previous=$this->totalPreviousExternalDesMore;
+            if(strstr($index2, 'totalExternalDestinationsLess')!=false) $previous=$this->totalPreviousExternalDesLess;
+            if(strstr($index2, 'totalInternalDestinationsWithMore')!=false) $previous=$this->totalPreviousInternalDesMore;
+            if(strstr($index2, 'totalInternalDestinationsWithLess')!=false) $previous=$this->totalPreviousInternalDesLess;
         }
         else
         {
-            if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c12="<td style='".$this->_head[$style]."'></td>";
-            if($this->type) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
-            if($this->type) $c14="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
-            if($this->type) $c15="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+            if(strstr($index2, 'totalExternal')!=false)
+            {
+                if($this->type && $this->equal) $average=$this->_objetos[$index]['externalTotalAverage']->margin;
+                if($this->type && $this->equal) $accumulated=$this->_objetos[$index]['externalTotalAccumulated']->margin;
+                if($this->type && $this->equal) $forecast=$this->_objetos[$index]['externalTotalForecast'];
+                if($this->type && $this->equal) $previous=$this->_objetos[$index]['externalTotalPreviousMonth']->margin;
+            }
+            if(strstr($index2, 'totalInternal')!=false)
+            {
+                if($this->type && $this->equal) $average=$this->_objetos[$index]['internalTotalAverage']->margin;
+                if($this->type && $this->equal) $accumulated=$this->_objetos[$index]['internalTotalAccumulated']->margin;
+                if($this->type && $this->equal) $forecast=$this->_objetos[$index]['internalTotalForecast'];
+                if($this->type && $this->equal) $previous=$this->_objetos[$index]['internalTotalPreviousMonth']->margin;
+            }
         }
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c9.$c10.$c10.$c11.$c12.$c13.$c14.$c15;
+        //Total Calls
+        if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+        //Complete Calls
+        if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+        //Minutes
+        if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+        //ASR
+        if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
+        if(!$type)
+        {
+            if($this->type) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+        }
+        //ACD
+        if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
+        if(!$type)
+        {
+            if($this->type) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+        }
+        //PDD
+        if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
+        if(!$type)
+        {
+            if($this->type) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+        }
+        //Cost
+        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+        //Revenue
+        $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+        //Margin
+        $c9="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+        //indicador dia anterior
+        if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$value->margin)."</td>";
+        //Dia Anterior
+        if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        //Indicador de Promedio
+        if($this->equal && $this->type) $c12="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$value->margin)."</td>";
+        //Promedio
+        if($this->equal && $this->type) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average)."</td>";
+        //Acumulado Mes
+        if($this->equal && $this->type) $c14="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated)."</td>";
+        //Proyeccion Mes
+        if($this->equal && $this->type) $c15="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal($forecast)."</td>";
+        //Indicador Mes anterior
+        if($this->equal && $this->type) $c16="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$forecast)."</td>";
+        //Mes Anterior
+        if($this->equal && $this->type) $c17="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previous)."</td>";
+        //Margen Procentaje
+        if($this->type) $c18="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $c19="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->costmin)."</td>";
+        if($this->type) $c20="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->ratemin)."</td>";
+        if($this->type) $c21="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->marginmin)."</td>";
+        if(!$type)
+        {   
+            //Margen Procentaje
+            if($this->type) $c18="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            if($this->type) $c19="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c20="<td style='".$this->_head[$style]."'></td>";
+            if($this->type) $c21="<td style='".$this->_head[$style]."'></td>";
+        }
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19.$c20.$c21;
     }
 
     /**
      * Retorna las columnas de los index indicados, en este caso el calculo de porcentajes de los carriers seleccionado y el total de los carriers.
      * @access private
      * @param string $index index superior de los objetos
-     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones
+     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones:
+     *      - clientsTotalMoreThanTenDollars 
+     *      - clientsTotalLessThanTenDollars
+     *      - suppliersTotalMoreThanTenDollars
+     *      * suppliersTotalLessThanTenDollars
      * @param string $index3 index secundario del objeto traido de base de datos sin condiciones, es decir el total
      * @param string $style es el estilo que se el asigna a las columnas en ese instante
-     * @return string
+     * @return string 
      */
     private function _getRowTotalCarrierPercentage($index,$index2,$index3,$style)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=null;
         $totalCondition=$this->_objetos[$index][$index2];
-        if($this->type && $this->equal) $yesterdayCondition=$this->_objetos[$index][$index2."Yesterday"];
+        if($this->type && $this->equal)
+        {
+            $yesterdayCondition=$this->_objetos[$index][$index2."Yesterday"];
+            if($index2=='clientsTotalMoreThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageCustomerMore;
+                $accumulatedCondition=$this->totalAccumCustomerMore;
+                $forecastCondition=$this->totalForecastCustomerMore;
+                $previousCondition=$this->totalPreviousCustomerMore;
+            }
+            if($index2=='clientsTotalLessThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageCustomerLess;
+                $accumulatedCondition=$this->totalAccumCustomerLess;
+                $forecastCondition=$this->totalForecastCustomerLess;
+                $previousCondition=$this->totalPreviousCustomerLess;
+            }
+            if($index2=='suppliersTotalMoreThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageSupplierMore;
+                $accumulatedCondition=$this->totalAccumSupplierMore;
+                $forecastCondition=$this->totalForecastSupplierMore;
+                $previousCondition=$this->totalPreviousSupplierMore;
+            }
+            if($index2=='suppliersTotalLessThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageSupplierLess;
+                $accumulatedCondition=$this->totalAccumSupplierLess;
+                $forecastCondition=$this->totalForecastSupplierLess;
+                $previousCondition=$this->totalPreviousSupplierLess;
+            }
+        }
         $total=$this->_objetos[$index][$index3];
-        if($this->type && $this->equal) $yesterday=$this->_objetos[$index][$index3."Yesterday"];
-        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>";
-        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>";
-        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>";
-        if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
-        if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
-        if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
-        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>";
-        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>";
-        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
-        if($this->equal && $this->type) $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($totalCondition->margin/$total->margin)*(100),($yesterdayCondition->margin/$yesterday->margin)*(100))."</td>";
-        if($this->equal && $this->type) $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($yesterdayCondition->margin/$yesterday->margin)*(100))."%</td>";
-        if($this->type) $doce="<td style='".$this->_head[$style]."'></td>";
-        if($this->type) $trece="<td style='".$this->_head[$style]."'></td>"; 
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece;
+        if($this->type && $this->equal)
+        {
+            $yesterday=$this->_objetos[$index][$index3."Yesterday"];
+            if(strstr($index2, 'clientsTotal')!=false)
+            {
+                $average=$this->_objetos[$index]['customersTotalAverage']->margin;
+                $accumulated=$this->_objetos[$index]['customersTotalAccumulated']->margin;
+                $forecast=$this->_objetos[$index]['customersTotalForecast'];
+                $previous=$this->_objetos[$index]['customersTotalPreviousMonth']->margin;
+            }
+            if(strstr($index2, 'suppliersTotal')!=false)
+            {
+                $average=$this->_objetos[$index]['providersTotalAverage']->margin;
+                $accumulated=$this->_objetos[$index]['providersTotalAccumulated']->margin;
+                $forecast=$this->_objetos[$index]['providersTotalForecast'];
+                $previous=$this->_objetos[$index]['providersTotalPreviousMonth']->margin;
+            }
+        }
+        if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>";
+        if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>";
+        if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>";
+        if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
+        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>";
+        $c8="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>";
+        $c9="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
+        if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($yesterdayCondition->margin/$yesterday->margin)*(100),($totalCondition->margin/$total->margin)*(100))."</td>";
+        if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($yesterdayCondition->margin/$yesterday->margin)*(100))."%</td>";
+        if($this->equal && $this->type) $c12="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($averageCondition/$average)*(100),($totalCondition->margin/$total->margin)*(100))."</td>";
+        if($this->equal && $this->type) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($averageCondition/$average)*(100))."%</td>";
+        if($this->equal && $this->type) $c14="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal(($accumulatedCondition/$accumulated)*(100))."%</td>";
+        if($this->equal && $this->type) $c15="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($forecastCondition/$forecast)*(100))."%</td>";
+        if($this->equal && $this->type) $c16="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($previousCondition/$previous)*(100),($forecastCondition/$forecast)*(100))."</td>";
+        if($this->equal && $this->type) $c17="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($previousCondition/$previous)*(100))."%</td>";
+        if($this->type) $c18="<td style='".$this->_head[$style]."' colspan='2'></td>";
+        if($this->type) $c19="<td style='".$this->_head[$style]."'></td>"; 
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19;
     } 
 
     /**
      * Retorna las columnas de los index indicados, en este caso el calculo de porcentajes del destino seleccionado y el total de los destinos.
      * @access private
      * @param string $index index superior de los objetos
-     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones
+     * @param string $index2 index secundario del objeto traido de base de datos con las condiciones:
+     *        - totalExternalDestinationsMoreThanTenDollars
+     *        - totalExternalDestinationsLessThanTenDollars
+     *        - totalInternalDestinationsWithMoreThanTenDollars
+     *        - totalInternalDestinationsWithLessThanTenDollars
      * @param string $index3 index secundario del objeto traido de base de datos sin condiciones, es decir el total
      * @param string $style es el estilo que se el asigna a las columnas en ese instante
      * @return string
      */
     private function _getRowTotalDestinationsPercentage($index,$index2,$index3,$style)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=$doce=$trece=$catorce=$quince=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=$c19=$c20=$c21=null;
         $totalCondition=$this->_objetos[$index][$index2];
-        if($this->type && $this->equal) $yesterdayCondition=$this->_objetos[$index][$index2."Yesterday"];
+        if($this->type && $this->equal)
+        {
+            $yesterdayCondition=$this->_objetos[$index][$index2."Yesterday"];
+            if($index2=='totalExternalDestinationsMoreThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageExternalDesMore;
+                $accumulatedCondition=$this->totalAccumExternalDesMore;
+                $forecastCondition=$this->totalForecastExternalDesMore;
+                $previousCondition=$this->totalPreviousExternalDesMore;
+
+            }
+            if($index2=='totalExternalDestinationsLessThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageExternalDesLess;
+                $accumulatedCondition=$this->totalAccumExternalDesLess;
+                $forecastCondition=$this->totalForecastExternalDesLess;
+                $previousCondition=$this->totalPreviousExternalDesLess;
+            }
+            if($index2=='totalInternalDestinationsWithMoreThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageInternalDesMore;
+                $accumulatedCondition=$this->totalAccumInternalDesMore;
+                $forecastCondition=$this->totalForecastInternalDesMore;
+                $previousCondition=$this->totalPreviousInternalDesMore;
+            }
+            if($index2=='totalInternalDestinationsWithLessThanTenDollars')
+            {
+                $averageCondition=$this->totalAverageInternalDesLess;
+                $accumulatedCondition=$this->totalAccumInternalDesLess;
+                $forecastCondition=$this->totalForecastInternalDesLess;
+                $previousCondition=$this->totalPreviousInternalDesLess;
+            }
+        }
         $total=$this->_objetos[$index][$index3];
-        if($this->type && $this->equal) $yesterday=$this->_objetos[$index][$index3."Yesterday"];
-        if($this->type) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>";
-        if($this->type) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>";
-        if($this->type) $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>";
-        if($this->type) $cuatro="<td style='".$this->_head[$style]."'></td>";
-        if($this->type) $cinco="<td style='".$this->_head[$style]."'></td>";
-        if($this->type) $seis="<td style='".$this->_head[$style]."'></td>";
-        $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>";
-        $ocho="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>";
-        $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
-        if($this->equal && $this->type) $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($totalCondition->margin/$total->margin)*(100),($yesterdayCondition->margin/$yesterday->margin)*(100))."</td>";
-        if($this->equal && $this->type) $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($yesterdayCondition->margin/$yesterday->margin)*(100))."%</td>";
-        if($this->type) $doce="<td style='".$this->_head[$style]."'></td>";
-        if($this->type) $trece="<td style='".$this->_head[$style]."'></td>"; 
-        if($this->type) $catorce="<td style='".$this->_head[$style]."'></td>"; 
-        if($this->type) $quince="<td style='".$this->_head[$style]."'></td>"; 
-        return $uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once.$doce.$trece.$catorce.$quince;
+        if($this->type && $this->equal)
+        {
+            $yesterday=$this->_objetos[$index][$index3."Yesterday"];
+            if(strstr($index2, 'totalExternalDestinations')!=false)
+            {
+                $average=$this->_objetos[$index]['externalTotalAverage']->margin;
+                $accumulated=$this->_objetos[$index]['externalTotalAccumulated']->margin;
+                $forecast=$this->_objetos[$index]['externalTotalForecast'];
+                $previous=$this->_objetos[$index]['externalTotalPreviousMonth']->margin;
+            }
+            if(strstr($index2, 'totalInternalDestinations')!=false)
+            {
+                $average=$this->_objetos[$index]['internalTotalAverage']->margin;
+                $accumulated=$this->_objetos[$index]['internalTotalAccumulated']->margin;
+                $forecast=$this->_objetos[$index]['internalTotalForecast'];
+                $previous=$this->_objetos[$index]['internalTotalPreviousMonth']->margin;
+            }
+        }
+        if($this->type) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->total_calls/$total->total_calls)*(100))."%</td>";
+        if($this->type) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->complete_calls/$total->complete_calls)*(100))."%</td>";
+        if($this->type) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->minutes/$total->minutes)*(100))."%</td>";
+        if($this->type) $c4="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $c5="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $c6="<td style='".$this->_head[$style]."'></td>";
+        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($totalCondition->cost/$total->cost)*(100))."%</td>";
+        $c8="<td style='".$this->_head[$style]."' >".Yii::app()->format->format_decimal(($totalCondition->revenue/$total->revenue)*(100))."%</td>";
+        $c9="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal(($totalCondition->margin/$total->margin)*(100))."%</td>";
+        if($this->equal && $this->type) $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($yesterdayCondition->margin/$yesterday->margin)*(100),($totalCondition->margin/$total->margin)*(100))."</td>";
+        if($this->equal && $this->type) $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($yesterdayCondition->margin/$yesterday->margin)*(100))."%</td>";
+        if($this->equal && $this->type) $c12="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($averageCondition/$average)*(100),($totalCondition->margin/$total->margin)*(100))."</td>";
+        if($this->equal && $this->type) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($averageCondition/$average)*(100))."%</td>";
+        if($this->equal && $this->type) $c14="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($accumulatedCondition/$accumulated)*(100))."%</td>";
+        if($this->equal && $this->type) $c15="<td style='".$this->_head[$style]."' colspan='2'>".Yii::app()->format->format_decimal(($forecastCondition/$forecast)*(100))."%</td>";
+        if($this->equal && $this->type) $c16="<td style='".$this->_head[$style]."'>".$this->_upOrDown(($previousCondition/$previous)*(100),($forecastCondition/$forecast)*(100))."</td>";
+        if($this->equal && $this->type) $c17="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal(($previousCondition/$previous)*(100))."%</td>";
+        if($this->type) $c18="<td style='".$this->_head[$style]."'></td>";
+        if($this->type) $c19="<td style='".$this->_head[$style]."'></td>"; 
+        if($this->type) $c20="<td style='".$this->_head[$style]."'></td>"; 
+        if($this->type) $c21="<td style='".$this->_head[$style]."'></td>"; 
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19.$c20.$c21;
     } 
 }
 ?>
