@@ -982,15 +982,18 @@ class Reportes extends CApplicationComponent
     }
 
     /**
-     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos
+     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos, esta funcion trabaja con strtotime
+     * recibe un segundo parametro que seria el numero de meses a restar o sumar, incluyendo el + ó -
      * @access public
      * @param date $date
+     * @param string $month
      * @return array
      */
-    public function leastOneMonth($date)
+    public function leastOneMonth($date,$month=null)
     {
         if($date==null) $date=date('Y-m-d');
-        $arrayDate['firstday']=date('Y-m-d',strtotime('-1 month',strtotime(Utility::getDayOne($date))));
+        if($month===null) $month="-1";
+        $arrayDate['firstday']=date('Y-m-d',strtotime($month.' month',strtotime(Utility::getDayOne($date))));
         $array=explode('-',$arrayDate['firstday']);
         $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
         return $arrayDate;
