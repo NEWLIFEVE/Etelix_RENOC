@@ -2,6 +2,9 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.11
+- Agregando ltimos cuatro meses en Reporte Ranking Compra/Venta
+
 Release 1.3.10
 - Agregado funcion ABS() en el calculo de margenes.
 - Agregada la proyeccion en el reporte AltoImpacto
