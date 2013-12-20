@@ -5,6 +5,10 @@
 */
 class PosicionNeta extends Reportes
 {
+    function __construct()
+    {
+        $this->_objetos=array();
+    }
     /**
     * @param $fecha date fecha que va a ser consultada
     * @return $cuerpo string con el cuerpo de la tabla
