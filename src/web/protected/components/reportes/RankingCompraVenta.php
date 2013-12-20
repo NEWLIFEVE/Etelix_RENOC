@@ -821,14 +821,8 @@ class RankingCompraVenta extends Reportes
     private function _getRowMonths($index,$phrase,$style)
     {
         $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=null;
-        $margin=$third=$fourth=$fifth=$sixth=null;
-        foreach ($this->_objetos[0][$index] as $key => $value)
-        {
-            if($value->apellido == $phrase)
-            {               
-                $margin=$value->margin;
-            }
-        }
+        $margin=$third=$fourth=$fifth=$sixth=null;            
+        $margin=$this->_objetos[0][$index.'Forecast'][$phrase];
         foreach ($this->_objetos[0][$index.'ThirdMonth'] as $key => $value)
         {
             if($value->apellido == $phrase)
@@ -887,13 +881,7 @@ class RankingCompraVenta extends Reportes
     {
         $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=null;
         $margin=$third=$fourth=$fifth=$sixth=null;
-        foreach ($this->_objetos[0]['consolidated'] as $key => $value)
-        {
-            if($value->apellido == $phrase)
-            {               
-                $margin=$value->margin;
-            }
-        }
+        $margin=$this->_objetos[0]['consolidatedForecast'][$phrase];
         foreach ($this->_objetos[0]['consolidatedThirdMonth'] as $key => $value)
         {
             if($value->apellido == $phrase)
@@ -976,19 +964,19 @@ class RankingCompraVenta extends Reportes
     private function _getHtmlTotalMonth($index,$style)
     {
         $margin=$third=$fourth=$fifth=$sixth=null;
-        $margin=$this->_objetos[0][$index];
+        $margin=$this->_objetos[0][$index.'Close'];
         $third=$this->_objetos[0][$index.'ThirdMonth'];
         $fourth=$this->_objetos[0][$index.'FourthMonth'];
         $fifth=$this->_objetos[0][$index.'FifthMonth'];
         $sixth=$this->_objetos[0][$index.'SixthMonth'];
         $body="";
-        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($third->margin,$margin->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($third->margin,$margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($third->margin)."</td>";
-        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($fourth->margin,$margin->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($fourth->margin,$margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($fourth->margin)."</td>";
-        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($fifth->margin,$margin->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($fifth->margin,$margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($fifth->margin)."</td>";
-        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($sixth->margin,$margin->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($sixth->margin,$margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($sixth->margin)."</td>";
         return $body;
     }
@@ -1016,6 +1004,7 @@ class RankingCompraVenta extends Reportes
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $this->_objetos[0]['totalMargenClose']=$accumulated->margin+$this->_forecast($average->margin);
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth->margin,$accumulated->margin+$this->_forecast($average->margin))."</td>";
         if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         return $body;
