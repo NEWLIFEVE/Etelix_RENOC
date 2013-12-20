@@ -1,7 +1,7 @@
 <?php
 /**
 * Creada para generar reporte de compra venta
-* @version 3.1.1
+* @version 3.1.2
 * @package reportes
 */
 class RankingCompraVenta extends Reportes
