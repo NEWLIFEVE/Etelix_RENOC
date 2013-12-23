@@ -789,7 +789,7 @@ class RankingCompraVenta extends Reportes
         
         if($type==true)
         {
-            if($uno==null) $uno="<td style='".$this->_head[$style]."'>--<td>";
+            if($uno==null) $uno="<td style='".$this->_head[$style]."'>--</td>";
             if($dos==null) $dos="<td style='".$this->_head[$style]."'>--</td>";
         }
         if($tres==null) $tres="<td style='".$this->_head[$style]."'>--</td>";
