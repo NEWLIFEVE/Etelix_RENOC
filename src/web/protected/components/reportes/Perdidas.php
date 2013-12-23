@@ -11,7 +11,7 @@ class Perdidas extends Reportes
                  <tbody>";
         //Selecciono los totales por clientes
         $sql="SELECT c.name AS cliente, d.name AS destino, s.name AS proveedor, b.minutes AS minutes, b.cost AS cost, b.revenue AS revenue, b.margin AS margin   
-              FROM(SELECT id_carrier_customer, id_destination_int, id_carrier_supplier, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT id_carrier_customer, id_destination_int, id_carrier_supplier, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY id_carrier_customer, id_destination_int, id_carrier_supplier
@@ -64,7 +64,7 @@ class Perdidas extends Reportes
         $cuerpo.=self::cabecera(array('Ranking','Cliente','Destino','Proveedor','Minutos','Costo','Revenue','Margen'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         //Selecciono la suma de todos los totales mayores a 10 dolares de margen
         $sqlTotal="SELECT SUM(b.margin) AS margin, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue, SUM(b.minutes) AS minutes
-                   FROM(SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(minutes) AS minutes
+                   FROM(SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(minutes) AS minutes
                          FROM balance
                          WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                          GROUP BY id_carrier_customer, id_destination_int, id_carrier_supplier

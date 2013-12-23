@@ -170,12 +170,12 @@ class SiteController extends Controller
     public function actionMail()
     {
         $this->vaciarAdjuntos();
-        $this->letra=Log::preliminar($_POST['startDate']);
         $startDate=$endingDate=$carrier=null;
         $correos=null;
         $user=UserIdentity::getEmail();
         if(isset($_POST['startDate']))
         {
+            $this->letra=Log::preliminar($_POST['startDate']);
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
             //Ranking Compra Venta
@@ -231,7 +231,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['PNV']))
             {
                 $correos['PNV']['asunto']="RENOC".$this->letra." Posicion Neta por Vendedor".self::reportTitle($startDate,$endingDate);
-                $correos['PNV']['cuerpo']=Yii::app()->reportes->PNV($startDate);
+                $correos['PNV']['cuerpo']=Yii::app()->reportes->posicionNetaVendedor($startDate);
                 $correos['PNV']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['PNV']['asunto'].".xls";
             }
             //Arbol de Trafico Destinos Internal

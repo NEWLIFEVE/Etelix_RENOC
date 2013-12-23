@@ -1,6 +1,7 @@
 <?php
 /**
  * @package components
+ * @version 11.1.0
  */
 class Reportes extends CApplicationComponent
 {
@@ -8,12 +9,42 @@ class Reportes extends CApplicationComponent
      * @access public
      */
     public $tipo;
+    /**
+     * @access protected
+     * @var boolean
+     */
+    protected $type;
+    /**
+     * Un array conn data sobre los estilos para el reporte generado
+     * @var array
+     */
+    protected $_head;
 
     /**
      * @access protected
      * @var date
      */
     protected $fecha;
+    /**
+     * @access public
+     * @var boolean
+     */
+    public $equal;
+    /**
+     * array que almacena datos ordenados
+     * @access protected
+     * @var array
+     */
+    protected $sorted=array();
+    /**
+     * @var int
+     */
+    protected $days;
+    /**
+     * Atributo encargado de almacenar la data traida de base de datos
+     * @var array
+     */
+    protected $_objetos=array();
 
     /**
      * Init method for the application component mode.
@@ -52,7 +83,8 @@ class Reportes extends CApplicationComponent
      */
     public function AltoImpacto($starDate,$endingDate,$type)
     {
-        return AltoImpacto::reporte($starDate,$endingDate,$type);
+        $reporte=new AltoImpacto();
+        return $reporte->reporte($starDate,$endingDate,$type);
     }
 
     /**
@@ -536,7 +568,7 @@ class Reportes extends CApplicationComponent
     {
         if(substr_count($var, 'USA') >= 1 || substr_count($var, 'CANADA') >= 1)
         {
-            $color="<tr style='background-color:#F3F3F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#F3F3F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'SPAIN') >= 1 ||
                 substr_count($var, 'ROMANIA') >= 1 ||
@@ -566,7 +598,7 @@ class Reportes extends CApplicationComponent
                 substr_count($var, 'ISRAEL ') >= 1 ||
                 substr_count($var, 'AUSTRALIA') >= 1)
         {
-            $color="<tr style='background-color:#8BA0AC; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#8BA0AC; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'PERU') >= 1 ||
                 substr_count($var, 'CHILE') >= 1 ||
@@ -577,15 +609,15 @@ class Reportes extends CApplicationComponent
                 substr_count($var, 'ARGENTINA') >= 1 ||
                 substr_count($var, 'URUGUAY') >= 1)
         {
-            $color="<tr style='background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#AED7F3; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'COLOMBIA') >= 1)
         {
-            $color="<tr style='background-color:#BEE2C1; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#BEE2C1; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'VENEZUELA') >= 1)
         {
-            $color="<tr style='background-color:#F0D0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#F0D0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         elseif(substr_count($var, 'MEXICO') >= 1 ||
                 substr_count($var, 'PANAMA') >= 1 ||
@@ -599,11 +631,11 @@ class Reportes extends CApplicationComponent
                 substr_count($var, 'HAITI') >= 1 ||
                 substr_count($var, 'SALVADOR') >= 1)
         {
-            $color="<tr style='background-color:#EDF0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)'>";
+            $color="background-color:#EDF0AE; color:#584E4E; border: 1px solid rgb(121, 115, 115)";
         }
         else
         {
-            $color="<tr style='border: 1px solid rgb(121, 115, 115)''>";
+            $color="border:1px solid rgb(121, 115, 115)";
         }
         return $color;
     }
@@ -891,22 +923,15 @@ class Reportes extends CApplicationComponent
         {
             $temp[$value->$attribute]=$value->$attribute;
         }
-        if(count($temp) == count($lista))
+        foreach($temp as $key => $value)
         {
-            return $temp;
+            $ordenado[]=$lista[$value];
         }
-        elseif(count($temp)<count($lista))
+        foreach ($lista as $key => $value)
         {
-            foreach($temp as $key => $value)
+            if(!isset($temp[$value]))
             {
-                $ordenado[]=$lista[$value];
-            }
-            foreach ($lista as $key => $value)
-            {
-                if(!isset($temp[$value]))
-                {
-                    $ordenado[]=$value;
-                }
+                $ordenado[]=$value;
             }
         }
         return $ordenado;
@@ -954,6 +979,243 @@ class Reportes extends CApplicationComponent
             $lista[$key]['id']=$value->id;
         }
         return $lista;
+    }
+
+    /**
+     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos, esta funcion trabaja con strtotime
+     * recibe un segundo parametro que seria el numero de meses a restar o sumar, incluyendo el + ó -
+     * @access public
+     * @param date $date
+     * @param string $month
+     * @return array
+     */
+    public function leastOneMonth($date,$month=null)
+    {
+        if($date==null) $date=date('Y-m-d');
+        if($month===null) $month="-1";
+        $arrayDate['firstday']=date('Y-m-d',strtotime($month.' month',strtotime(Utility::getDayOne($date))));
+        $array=explode('-',$arrayDate['firstday']);
+        $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
+        return $arrayDate;
+    }
+
+    /**
+     * funcion encargada de verificar que el numero de una columna es el apropiado para ejecutar algo
+     * @access protected
+     * @static
+     * @param int $col en la que esta parado el for
+     * @param int $max la cantidad maxima que deberia tener
+     * @param int $mul es el factor por el cual se multiplica
+     * @return mixed $col si cumple la condicion de lo contrario devuelve false
+     */
+    public static function validColumn($del,$col,$max,$mul)
+    {
+        if($max<2)
+        {
+            if($col==$del+1)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            $j=$mul;
+            for($i=$del+1; $i<=$col; $i++)
+            {
+                if($j<$mul)
+                {
+                    $j+=1;
+                }
+                else
+                {
+                    $j=1;
+                    if($i==$col)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     */
+    public static function validIndex($del,$col,$mul)
+    {
+        $j=$mul;
+        $index=0;
+        for($i=$del; $i<=$col; $i++)
+        {
+            if($j<$mul)
+            {
+                $j+=1;
+            }
+            else
+            {
+                $j=1;
+                if($i>$del) $index=$index+1;
+            }
+        }
+        return $index;
+    }
+    
+    /**
+     * Retorna el primer dia del siguiente mes a la fecha pasada como parametro
+     * @access public
+     * @static
+     * @param date $date
+     * @return date yyyy-mm-dd
+     */
+    public static function firstDayNextMonth($date)
+    {
+        $newDate=strtotime('+1 month',strtotime($date));
+        $newDate=date('Y-m-d',$newDate);
+        $array=explode('-',$newDate);
+        return $array[0]."-".$array[1]."-01";
+    }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access protected
+     * @param int $pos posicion del manager
+     * @param string $phrase es el nombre del manager
+     * @param string $style es el estilo asignado al tipo de manager
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    protected function _getNames($pos,$phrase,$style,$type=true)
+    {
+        if($type) 
+            return "<td style='".$this->_head[$style]."'>{$pos}</td><td style='".$this->_head[$style]."'>{$phrase}</td>";
+        else
+            return "<td style='".$this->_head[$style]."'>{$phrase}</td><td style='".$this->_head[$style]."'>{$pos}</td>";
+    }
+
+    /**
+     * Metodo encargado de colocar un simbolo de subida o bajada en el html
+     * @access protected
+     * @param int $previous es el valor anterior
+     * @param int $actual es el valor actual a revisar
+     * @return string
+     */
+    protected function _upOrDown($previous,$actual)
+    {
+        if($previous!=null || $previous!="")
+        {
+            if($actual>$previous)
+            {
+                return "<font style='color:green;'>&#9650;</font>";
+            }
+            elseif($actual<$previous)
+            {
+                return "<font style='color:red;'>&#9660;</font>";
+            }
+            else
+            {
+                return "<font>=</font>";
+            }
+        }
+        else
+        {
+            if($actual!=null || $actual!="" && $actual>0)
+            {
+                return "<font style='color:green;'>&#9650;</font>";
+            }
+            else
+            {
+                return "<font style='color:red;'>&#9660;</font>";
+            }
+        }
+        
+    }
+
+    /**
+     * Determina el numero de dias que hay desde la fecha pasada hasta el fin del mes
+     * @access protected
+     * @param date $date
+     * @return void
+     */
+    protected function _getDays($date)
+    {
+        $arrayDate=explode('-',$date);
+        $newDate=$arrayDate[0]."-".$arrayDate[1]."-".self::howManyDays($date);
+        $this->days=self::howManyDaysBetween($date,$newDate);
+    }
+
+    /**
+     * Retorna el valor pasado como parametro multiplicado por la variable days
+     * @access protected
+     * @param float $data
+     * @return float
+     */
+    protected function _forecast($data)
+    {
+        return (float)$data*$this->days;
+    }
+
+    /**
+     * calcula el pronostico de cierre
+     * @access protected
+     * @param array $phrase lista de elementos para iterar, dejar null si se quiere hacer un macth entre ambos elementos
+     * @param string $index es la ubicacion dentro del array $this->objetos
+     * @param string $average es la ubicacion del promedio dentro del array $this->objetos[$index]
+     * @param string $accumulated es la ubicacion del acumulado dentro del array $this->objetos[$index]
+     * @return array un array con los datos calculados
+     */
+    protected function _closeOfTheMonth($phrase=null,$index,$average,$accumulated,$attribute=null)
+    {
+        $array=array();
+        if($attribute===null) $attribute="apellido";
+        if($phrase!==null)
+        {
+            foreach ($phrase as $key => $lastname)
+            {
+                foreach ($this->_objetos[$index][$average] as $key => $avg)
+                {
+                    if($avg->$attribute==$lastname)
+                    {
+                        foreach ($this->_objetos[$index][$accumulated] as $key => $acum)
+                        {
+                            if($acum->$attribute==$avg->$attribute)
+                            {
+                                $array[$acum->$attribute]=$acum->margin+$this->_forecast($avg->margin);
+                            }
+                        }
+                    }
+
+                }
+            }
+            foreach ($phrase as $key => $value)
+            {
+                if(!isset($array[$value]))
+                {
+                    $array[$value]=0;
+                }
+            }
+        }
+        else
+        {
+            foreach ($this->_objetos[$index][$average] as $key => $avg)
+            {
+                foreach ($this->_objetos[$index][$accumulated] as $key => $acum)
+                {
+                    if($acum->$attribute==$avg->$attribute)
+                    {
+                        $array[$acum->$attribute]=(float)$acum->margin+(float)$this->_forecast($avg->margin);
+                    }
+                }
+            }
+            foreach ($this->_objetos[$index][$accumulated] as $key => $acum)
+            {
+                if(!isset($array[$acum->$attribute]))
+                {
+                    $array[$acum->$attribute]=$acum->margin;
+                }
+            }
+        }
+        return $array;
     }
 }
 ?>

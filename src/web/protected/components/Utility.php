@@ -21,7 +21,7 @@ class Utility
 	}
 
 	/**
-	 * Metodo que lleva a dia uno cualquier fecha psada como parametro
+	 * Metodo que lleva a dia uno cualquier fecha pasada como parametro
 	 * @access public
 	 * @static
 	 * @param date $date es la fecha en formato yyyy-mm-dd

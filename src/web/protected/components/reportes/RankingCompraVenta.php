@@ -1,27 +1,22 @@
 <?php
 /**
 * Creada para generar reporte de compra venta
+* @version 3.1.2
 * @package reportes
 */
 class RankingCompraVenta extends Reportes
 {
-    /**
-     * @var array
-     */
-    public $objetos;
-    /**
-     * @var boolean
-     */
-    public $equal;
-    /**
-     * @var int
-     */
-    public $days;
-
     function __construct()
     {
-        $this->objetos=array();
         $this->equal=false;
+        $this->_head=array(
+            'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
+            'styleBodySellers'=>self::colorRankingCV(1),
+            'styleBodyBuyers'=>self::colorRankingCV(2),
+            'styleBodyConsolidated'=>self::colorRankingCV(3),
+            'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
+            'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
+            );
     }
     /**
      * Genera el reporte de compraventa
@@ -38,164 +33,265 @@ class RankingCompraVenta extends Reportes
         $this->_loopData($start,$end);
         
         //Cuento el numero de objetos en el array
-        $num=count($this->objetos);
+        $num=count($this->_objetos);
         $last=$num-1;
+        if($num==1)
+        {
+            $span=11;
+        }
+        else
+        {
+            $span=3;
+        }
         $lastnames=self::getLastNameManagers();
         /*Arrays ordenados*/
-        $sorted['sellers']=self::sortByList($lastnames,$this->objetos[$last]['sellers'],'apellido');
-        $sorted['buyers']=self::sortByList($lastnames,$this->objetos[$last]['buyers'],'apellido');
-        $sorted['consolidated']=self::sortByList($lastnames,$this->objetos[$last]['consolidated'],'apellido');
+        $sorted['sellers']=self::sortByList($lastnames,$this->_objetos[$last]['sellers'],'apellido');
+        $sorted['buyers']=self::sortByList($lastnames,$this->_objetos[$last]['buyers'],'apellido');
+        $sorted['consolidated']=self::sortByList($lastnames,$this->_objetos[$last]['consolidated'],'apellido');
+        
         $body="<table>";
-        for($row=0; $row<4; $row++)
+        for($row=1; $row < 55; $row++)
         { 
-            $body.="<tr>";
-            switch($row)
-            {
-                case 0:
-                case 2:
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-1]['title']."</td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                    }
-                    break;
-                case 1:
-                    $head=array(
-                        'title'=>'Vendedor',
-                        'styleHead'=>'background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
-                        'styleBody'=>self::colorRankingCV(1),
-                        'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['sellers'],$type=true)."<br></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td>".$this->_getHtmlTableData($sorted['sellers'],$col-1,'sellers','apellido',$head,true).
-                                        $this->_getHtmlTotal($col-1,'totalVendors',$head,true)."<br></td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['sellers'],$type=false)."<br></td>";
-                        }
-                    }
-                    break;
-                case 3:
-                    $head=array(
-                        'title'=>'Comprador',
-                        'styleHead'=>'background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
-                        'styleBody'=>self::colorRankingCV(2),
-                        'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['buyers'],$type=true)."<br></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td>".$this->_getHtmlTableData($sorted['buyers'],$col-1,'buyers','apellido',$head,true).
-                            $this->_getHtmlTotal($col-1,'totalBuyers',$head,true)."<br></td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['buyers'],$type=false)."<br></td>";
-                        }
-                    }
-                    break;
-            }
-            $body.="</tr>";
-        }
-        $body.="</table>";
-        $body.="<table>";
-        for($row=0; $row<2; $row++)
-        { 
-            $body.="<tr>";
-            switch($row)
-            {
-                case 0:
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->objetos[$col-1]['title']."</td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                        }
-                    }
-                    break;
-                case 1:
-                    $head=array(
-                        'title'=>'Consolidado (Ventas + Compras)',
-                        'styleHead'=>'background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
-                        'styleBody'=>self::colorRankingCV(3),
-                        'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
-                        'styleFooterTotal'=>'background-color:#615E5E; color:#FFFFFF;'
-                        );
-                    for($col=0; $col < $num+2; $col++)
-                    { 
-                        if($col==0)
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['consolidated'],$type=true)."
-                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td></td><td>Total Margen</td></tr></table><br></td>";
-                        }
-                        elseif($col>0 && $col<$num+1)
-                        {
-                            $body.="<td>".$this->_getHtmlTableData($sorted['consolidated'],$col-1,'consolidated','apellido',$head,false).
-                            $this->_getHtmlTotal($col-1,'totalConsolidated',$head,false).
-                            $this->_getHtmlTotalMargen($col-1,'totalMargen')."<br></td>";
-                            if($col!=$num)
-                            {
-                                $body.="<td style='width:5px;'></td>";
-                            }
-                        }
-                        else
-                        {
-                            $body.="<td>".$this->_getHtmlTable($head,$sorted['consolidated'],$type=false)."
-                            <table><tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'><td>Total Margen</td><td></td></tr></table><br></td>";
-                        }
-                    }
-                    break;
-            }
-            $body.="</tr>";
+            $body.="<tr>";   
+            for($col=1; $col <= 3+($num*$span); $col++)
+            { 
+                //Celda vacia superior izquierda
+                if(($row==1 || $row==19) && $col==1)
+                {
+                    $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                if($row==37 && $col==1)
+                {
+                    $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                //Celda vacia superior derecha
+                if(($row==1 || $row==19) && $col==2+($num*$span))
+                {
+                    $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                if($row==37 && $col==2+($num*$span))
+                {
+                    $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+
+                //Cabecera izquiera superior e inferior de las tablas
+                if(($row==2 || $row==16) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
+                }
+                if(($row==20 || $row==34) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Comprador</td>";
+                }
+                if(($row==38 || $row==52) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Consolidado (Ventas + Compras)</td>";
+                }
+                //Cabecera derecha superior e inferior de las tablas
+                if(($row==2 || $row==16) && $col==2+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                if(($row==20 || $row==34) && $col==2+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Comprador</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                if(($row==38 || $row==52) && $col==2+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Consolidado (Ventas + Compras)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+
+                //Cabecera Izquiera de totales
+                if(($row==17 || $row==35) && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."'>Total</td>";
+                }
+                if($row==53 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."' colspan='3'>Total</td>";
+                }
+                //Cabecera Derecha de totales
+                if(($row==17 || $row==35) && $col==2+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'>Total</td><td style='".$this->_head['styleFooter']."'></td>";
+                }
+                if($row==53 && $col==2+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."' colspan='3'>Total</td><td style='".$this->_head['styleFooter']."'></td>";
+                }
+
+                //Cabecera de los totales al final de consolidados
+                if($row==54 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooterTotal']."'></td><td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td>";
+                }
+                if($row==54 && $col==2+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td><td style='".$this->_head['styleFooterTotal']."'></td>";
+                }
+
+                //Nombres de los managers vendedores izquierda
+                if($row>2 && $row<16 && $col==1)
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getNames($pos,$sorted['sellers'][$row-3],'styleBodySellers');
+                }
+                //Nombres de los managers vendedores derecha
+                if(($row>2 && $row<16) && $col==2+($num*$span))
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getNames($pos,$sorted['sellers'][$row-3],'styleBodySellers',false);
+                }
+
+                //Nombres de los managers compradores izquierda
+                if($row>20 && $row<34 && $col==1)
+                {
+                    $pos=$row-20;
+                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-21],'styleBodyBuyers');
+                }
+                //Nombres de los managers compradores derecha
+                if(($row>20 && $row<34) && $col==2+($num*$span))
+                {
+                    $pos=$row-20;
+                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-21],'styleBodyBuyers',false);
+                }
+
+                //Nombres de los managers compradores/vendedores izquierda
+                if(($row>38 && $row<52) && $col==1)
+                {
+                    $pos=$row-38;
+                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-39],'styleBodyConsolidated');
+                }
+                //Nombres de los managers compradores/vendedores derecha
+                if(($row>38 && $row<52) && $col==2+($num*$span))
+                {
+                    $pos=$row-38;
+                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-39],'styleBodyConsolidated',false);
+                }
+                
+                //Titulo de cada mes para diferenciar la data compradores/vendedores
+                if(($row==1 || $row==19) && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(2,$col,$span)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                //Titulo de cada mes para diferenciar la data Consolidado
+                if($row==37 && self::validColumn(2,$col,$num,$span))
+                {
+                    $nuevospan=$span-2;
+                    $body.="<td colspan='".$nuevospan."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(2,$col,$span)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                //Escribe los headers de las columnas de las tablas
+                if(($row==2 || $row==16 || $row==20 || $row==34) && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getHeaderManages(true);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                //Escribe los headers de las columnas de la tabla consolidada
+                if(($row==38 || $row==52) && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getHeaderManages(false);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+
+                //Data de vendedores
+                if(($row>2 && $row<16) && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'sellers',$sorted['sellers'][$row-3],'styleBodySellers',true);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                if($row==17 && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotal(self::validIndex(2,$col,$span),'totalVendors','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                
+                //Data de compradores
+                if(($row>20 && $row<34) && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'buyers',$sorted['buyers'][$row-21],'styleBodyBuyers',true);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                if($row==35 && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotal(self::validIndex(2,$col,$span),'totalBuyers','styleFooter',true);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+
+                //Data de consolidada
+                if(($row>38 && $row<52) && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'consolidated',$sorted['consolidated'][$row-39],'styleBodyConsolidated',false);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                //Data total consolidada
+                if($row==53 && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotal(self::validIndex(2,$col,$span),'totalConsolidated','styleFooter',false);
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                //Data total de total ;)
+                if($row==54 && self::validColumn(2,$col,$num,$span))
+                {
+                    $body.=$this->_getHtmlTotalMargen(self::validIndex(2,$col,$span),'totalMargen','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
+                }
+                //Titulo meses anteriores
+                if(($row==1 || $row==19 || $row==37) && $col==3+($num*$span))
+                {
+                    $body.="<td colspan='8' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                }
+                //titulo de los meses
+                if(($row==2 
+                 || $row==16
+                 || $row==20
+                 || $row==34 
+                 || $row==38
+                 || $row==52) && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
+                }
+                //data de los cuatro meses anteriores de los vendedores
+                if(($row>2 && $row<16) && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getRowMonths('sellers',$sorted['sellers'][$row-3],'styleBodySellers');
+                }
+                if($row==17 && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getHtmlTotalMonth('totalVendors','styleFooter');
+                }
+                //data de los cuatro meses anteriores de los compradores
+                if(($row>20 && $row<34) && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getRowMonths('buyers',$sorted['buyers'][$row-21],'styleBodyBuyers');
+                }
+                if($row==35 && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getHtmlTotalMonth('totalBuyers','styleFooter');
+                }
+                //data de los cuatro meses anteriores de los compradores
+                if(($row>38 && $row<52) && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getRowConsolidatedMonths($sorted['consolidated'][$row-39],'styleBodyConsolidated');
+                }
+                if($row==53 && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getHtmlTotalMonth('totalConsolidated','styleFooter');
+                }
+                if($row==54 && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getHtmlTotalMonth('totalMargen','styleFooterTotal');
+                }
+            }           
+            $body.="</tr>";            
         }
         $body.="</table>";
         return $body;
@@ -227,82 +323,160 @@ class RankingCompraVenta extends Reportes
             $arrayStartTemp=explode('-',$startDateTemp);
             $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
-            $this->objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /*Guardo todos los vendedores*/
-            $this->objetos[$index]['sellers']=$this->_getManagers($startDateTemp,$endingDateTemp,true);
+            $this->_objetos[$index]['sellers']=$this->_getManagers($startDateTemp,$endingDateTemp,true);
             /*Guardo los totales de los vendedores*/
-            $this->objetos[$index]['totalVendors']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,true);
+            $this->_objetos[$index]['totalVendors']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,true);
+            /*El total del margen por vendedor mes anterior*/
+            if($this->equal) $this->_objetos[$index]['sellersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            //tercer mes
+            if($this->equal) $this->_objetos[$index]['sellersThirdMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],true);
+            //cuarto mes
+            if($this->equal) $this->_objetos[$index]['sellersFourthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],true);
+            //quinto mes
+            if($this->equal) $this->_objetos[$index]['sellersFifthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],true);
+            //sexto mes
+            if($this->equal) $this->_objetos[$index]['sellersSixthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],true);
+            /*Guardo los totales de los vendedores*/
+            if($this->equal) $this->_objetos[$index]['totalVendorsPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            //Tercer Mes
+            if($this->equal) $this->_objetos[$index]['totalVendorsThirdMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],true);
+            //Cuarto Mes
+            if($this->equal) $this->_objetos[$index]['totalVendorsFourthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],true);
+            //Quinto Mes
+            if($this->equal) $this->_objetos[$index]['totalVendorsFifthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],true);
+            //Sexto Mes
+            if($this->equal) $this->_objetos[$index]['totalVendorsSixthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],true);
+            //Titulo tercer mes
+            if($this->equal) $this->_objetos[$index]['titleThirdMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            //Titulo Cuarto Mes
+            if($this->equal) $this->_objetos[$index]['titleFourthMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            //Titulo Quinto Mes
+            if($this->equal) $this->_objetos[$index]['titleFifthMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            //Titulo Sexto Mes
+            if($this->equal) $this->_objetos[$index]['titleSixthMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
             /*Guardo los valores de vendedores del dia anterior*/
-            if($this->equal) $this->objetos[$index]['sellersYesterday']=$this->_getManagers($yesterday,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['sellersYesterday']=$this->_getManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los vendedores del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalVendorsYesterday']=$this->_getTotalManagers($yesterday,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsYesterday']=$this->_getTotalManagers($yesterday,$yesterday,true);
             /*Guardo el promedio por vendedores de 7 dias atras*/
-            if($this->equal) $this->objetos[$index]['sellersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['sellersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,true);
             /*Guardo el promedio total*/
-            if($this->equal) $this->objetos[$index]['totalVendorsAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,true);
             /*Guardo el acumulado que lleva hasta el dia en consulta*/
-            if($this->equal) $this->objetos[$index]['sellersAccumulated']=$this->_getManagers($firstDay,$startDate,true);
+            if($this->equal) $this->_objetos[$index]['sellersAccumulated']=$this->_getManagers($firstDay,$startDate,true);
             /*Guardo el total de los acumulados hasta el dia de la consulta*/
-            if($this->equal) $this->objetos[$index]['totalVendorsAccumulated']=$this->_getTotalManagers($firstDay,$startDate,true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsAccumulated']=$this->_getTotalManagers($firstDay,$startDate,true);
             /*Guardo los pronosticos de los vendedores*/
-            if($this->equal) $this->objetos[$index]['sellersForecast']=$this->_closeOfTheMonth($lastnames,$index,'sellersAverage','sellersAccumulated');
+            if($this->equal) $this->_objetos[$index]['sellersForecast']=$this->_closeOfTheMonth($lastnames,$index,'sellersAverage','sellersAccumulated');
             /*guardo los totales de cierre de mes*/
-            if($this->equal) $this->objetos[$index]['totalVendorsClose']=array_sum($this->objetos[$index]['sellersForecast']);
+            if($this->equal) $this->_objetos[$index]['totalVendorsClose']=array_sum($this->_objetos[$index]['sellersForecast']);
 
 
             /*Guardo los totales de los compradores*/
-            $this->objetos[$index]['buyers']=$this->_getManagers($startDateTemp,$endingDateTemp,false);
+            $this->_objetos[$index]['buyers']=$this->_getManagers($startDateTemp,$endingDateTemp,false);
             /*Guardo los totales de todos los compradores*/
-            $this->objetos[$index]['totalBuyers']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,false);
+            $this->_objetos[$index]['totalBuyers']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,false);
+            /*El total del margen por compradores mes anterior*/
+            if($this->equal) $this->_objetos[$index]['buyersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            //tercer mes
+            if($this->equal) $this->_objetos[$index]['buyersThirdMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],false);
+            //cuarto mes
+            if($this->equal) $this->_objetos[$index]['buyersFourthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],false);
+            //quinto mes
+            if($this->equal) $this->_objetos[$index]['buyersFifthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],false);
+            //sexto mes
+            if($this->equal) $this->_objetos[$index]['buyersSixthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],false);
+            /*Guardo los totales de los compradores*/
+            if($this->equal) $this->_objetos[$index]['totalBuyersPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            //Tercer Mes
+            if($this->equal) $this->_objetos[$index]['totalBuyersThirdMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],false);
+            //Cuarto Mes
+            if($this->equal) $this->_objetos[$index]['totalBuyersFourthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],false);
+            //Quinto Mes
+            if($this->equal) $this->_objetos[$index]['totalBuyersFifthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],false);
+            //Sexto Mes
+            if($this->equal) $this->_objetos[$index]['totalBuyersSixthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],false);
             /*Guardo los valores de compradores del dia anterior*/
-            if($this->equal) $this->objetos[$index]['buyersYesterday']=$this->_getManagers($yesterday,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['buyersYesterday']=$this->_getManagers($yesterday,$yesterday,false);
             /*Guardo los totales de los compradores del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalBuyersYesterday']=$this->_getTotalManagers($yesterday,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersYesterday']=$this->_getTotalManagers($yesterday,$yesterday,false);
             /*Guardo el promedio por compradores de 7 dias atras*/
-            if($this->equal) $this->objetos[$index]['buyersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['buyersAverage']=$this->_getAvgMarginManagers($sevenDaysAgo,$yesterday,false);
             /*Guardo el promedio total*/
-            if($this->equal) $this->objetos[$index]['totalBuyersAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersAverage']=$this->_getTotalAvgMarginManagers($sevenDaysAgo,$yesterday,false);
             /*Guardo el acumulado que lleva hasta el dia en consulta*/
-            if($this->equal) $this->objetos[$index]['buyersAccumulated']=$this->_getManagers($firstDay,$startDate,false);
+            if($this->equal) $this->_objetos[$index]['buyersAccumulated']=$this->_getManagers($firstDay,$startDate,false);
             /*Guardo el total de los acumulados hasta el dia de la consulta*/
-            if($this->equal) $this->objetos[$index]['totalBuyersAccumulated']=$this->_getTotalManagers($firstDay,$startDate,false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersAccumulated']=$this->_getTotalManagers($firstDay,$startDate,false);
             /*Guardo los pronosticos de los vendedores*/
-            if($this->equal) $this->objetos[$index]['buyersForecast']=$this->_closeOfTheMonth($lastnames,$index,'buyersAverage','buyersAccumulated');
+            if($this->equal) $this->_objetos[$index]['buyersForecast']=$this->_closeOfTheMonth($lastnames,$index,'buyersAverage','buyersAccumulated');
             /*guardo los totales de cierre de mes*/
-            if($this->equal) $this->objetos[$index]['totalBuyersClose']=array_sum($this->objetos[$index]['buyersForecast']);
+            if($this->equal) $this->_objetos[$index]['totalBuyersClose']=array_sum($this->_objetos[$index]['buyersForecast']);
 
 
             /*guardo los totales de los compradores y vendedores consolidado*/
-            $this->objetos[$index]['consolidated']=$this->_getConsolidados($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['consolidated']=$this->_getConsolidados($startDateTemp,$endingDateTemp);
             /*Guardo el total de los consolidados*/
-            $this->objetos[$index]['totalConsolidated']=$this->_getTotalConsolidado($startDateTemp,$endingDateTemp);
+            $this->_objetos[$index]['totalConsolidated']=$this->_getTotalConsolidado($startDateTemp,$endingDateTemp);
             /*Guardo el margen total de ese periodo*/
-            $this->objetos[$index]['totalMargen']=$this->_getTotalMargen($startDateTemp,$endingDateTemp);
-            /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['consolidatedYesterday']=$this->_getConsolidados($yesterday,$yesterday);
-            /*Guardo el total de los consolidados del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedYesterday']=$this->_getTotalConsolidado($yesterday,$yesterday);
-            /*Guardo el margen total de ese periodo del dia de ayer*/
-            if($this->equal) $this->objetos[$index]['totalMargenYesterday']=$this->_getTotalMargen($yesterday,$yesterday);
-            /*Guardo el promedio de los margenes consolidados*/
-            if($this->equal) $this->objetos[$index]['consolidatedAverage']=$this->_getAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
-            /*Guardo el proomedio total de los margenes consolidados*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedAverage']=$this->_getTotalAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
-            /*Guardo el promedio del margen total*/
-            if($this->equal) $this->objetos[$index]['totalMargenAverage']=$this->_getAvgTotalMargin($sevenDaysAgo,$yesterday);
+            $this->_objetos[$index]['totalMargen']=$this->_getTotalMargen($startDateTemp,$endingDateTemp);
             /*guardo los totales de los compradores y vendedores consolidado*/
-            if($this->equal) $this->objetos[$index]['consolidatedAccumulated']=$this->_getConsolidados($firstDay,$startDate);
+            if($this->equal) $this->_objetos[$index]['consolidatedPreviousMonth']=$this->_getConsolidados($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            //Tercer mes
+            if($this->equal) $this->_objetos[$index]['consolidatedThirdMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            //Cuarto mes
+            if($this->equal) $this->_objetos[$index]['consolidatedFourthMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            //Quinto mes
+            if($this->equal) $this->_objetos[$index]['consolidatedFifthMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            //Sexto mes
+            if($this->equal) $this->_objetos[$index]['consolidatedSixthMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            /*Guardo el total de los consolidados*/
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedPreviousMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            //Tercer Mes
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedThirdMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            //Cuarto Mes
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedFourthMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            //Quinto Mes
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedFifthMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            //Sexto Mes
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedSixthMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            /*Guardo el margen total de ese periodo*/
+            if($this->equal) $this->_objetos[$index]['totalMargenPreviousMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            //Tercer Mes
+            if($this->equal) $this->_objetos[$index]['totalMargenThirdMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            //Cuarto Mes
+            if($this->equal) $this->_objetos[$index]['totalMargenFourthMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            //Quinto Mes
+            if($this->equal) $this->_objetos[$index]['totalMargenFifthMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            //Sexto Mes
+            if($this->equal) $this->_objetos[$index]['totalMargenSixthMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
+            if($this->equal) $this->_objetos[$index]['consolidatedYesterday']=$this->_getConsolidados($yesterday,$yesterday);
+            /*Guardo el total de los consolidados del dia de ayer*/
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedYesterday']=$this->_getTotalConsolidado($yesterday,$yesterday);
+            /*Guardo el margen total de ese periodo del dia de ayer*/
+            if($this->equal) $this->_objetos[$index]['totalMargenYesterday']=$this->_getTotalMargen($yesterday,$yesterday);
+            /*Guardo el promedio de los margenes consolidados*/
+            if($this->equal) $this->_objetos[$index]['consolidatedAverage']=$this->_getAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
+            /*Guardo el proomedio total de los margenes consolidados*/
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedAverage']=$this->_getTotalAvgConsolidatedManagers($sevenDaysAgo,$yesterday);
+            /*Guardo el promedio del margen total*/
+            if($this->equal) $this->_objetos[$index]['totalMargenAverage']=$this->_getAvgTotalMargin($sevenDaysAgo,$yesterday);
+            /*guardo los totales de los compradores y vendedores consolidado*/
+            if($this->equal) $this->_objetos[$index]['consolidatedAccumulated']=$this->_getConsolidados($firstDay,$startDate);
             /*guardo el total de los acumulados hasta la fecha consultada*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedAccumulated']=$this->_getTotalConsolidado($firstDay,$startDate);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedAccumulated']=$this->_getTotalConsolidado($firstDay,$startDate);
             /*Guardo el total de los margenes acumulados hasta esa fecha*/
-            if($this->equal) $this->objetos[$index]['totalMargenAccumulated']=$this->_getTotalMargen($firstDay,$startDate);
+            if($this->equal) $this->_objetos[$index]['totalMargenAccumulated']=$this->_getTotalMargen($firstDay,$startDate);
             /*Guardo los pronosticos de los vendedores*/
-            if($this->equal) $this->objetos[$index]['consolidatedForecast']=$this->_closeOfTheMonth($lastnames,$index,'consolidatedAverage','consolidatedAccumulated');
+            if($this->equal) $this->_objetos[$index]['consolidatedForecast']=$this->_closeOfTheMonth($lastnames,$index,'consolidatedAverage','consolidatedAccumulated');
             /*guardo los totales de cierre de mes*/
-            if($this->equal) $this->objetos[$index]['totalConsolidatedClose']=array_sum($this->objetos[$index]['consolidatedForecast']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedClose']=array_sum($this->_objetos[$index]['consolidatedForecast']);
 
             /*Itero la fecha*/
-            $startDateTemp=$arrayStartTemp[0]."-".($arrayStartTemp[1]+1)."-01";
+            $startDateTemp=self::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
     }
@@ -318,18 +492,15 @@ class RankingCompraVenta extends Reportes
     private function _getManagers($startDate,$endingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-              FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance 
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY {$manager})b,
                    managers m,
                    carrier_managers cm
-              WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+              WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
               GROUP BY m.name, m.lastname
               ORDER BY margin DESC";
         return Balance::model()->findAllBySql($sql);
@@ -346,17 +517,14 @@ class RankingCompraVenta extends Reportes
     private function _getTotalManagers($startDate,$endingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT SUM(d.minutes) AS minutes, SUM(d.revenue) AS revenue, SUM(d.margin) AS margin
               FROM (SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-                    FROM (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY {$manager})b, managers m, carrier_managers cm
-                    WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+                    WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
                     GROUP BY m.name, m.lastname
                     ORDER BY margin DESC) d";
         return Balance::model()->findBySql($sql);
@@ -372,18 +540,18 @@ class RankingCompraVenta extends Reportes
     private function _getConsolidados($startDate,$edingDate)
     {
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
-              FROM(SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT id_carrier_customer AS id, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY id_carrier_customer
                    UNION
-                   SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   SELECT id_carrier_supplier AS id, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance 
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY id_carrier_supplier)cs,
                    managers m,
                    carrier_managers cm
-              WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+              WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
               GROUP BY m.name, m.lastname
               ORDER BY margin DESC";
         return Balance::model()->findAllBySql($sql);
@@ -400,16 +568,16 @@ class RankingCompraVenta extends Reportes
     {
          $sql="SELECT SUM(d.margin) AS margin
                FROM (SELECT m.name AS nombre, m.lastname AS apellido, SUM(cs.margin) AS margin
-                     FROM (SELECT id_carrier_customer AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                     FROM (SELECT id_carrier_customer AS id, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_customer
                            UNION
-                           SELECT id_carrier_supplier AS id, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                           SELECT id_carrier_supplier AS id, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                            GROUP BY id_carrier_supplier)cs, managers m, carrier_managers cm
-                     WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+                     WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
                      GROUP BY m.name, m.lastname
                      ORDER BY margin DESC) d";
         return Balance::model()->findBySql($sql);
@@ -426,18 +594,15 @@ class RankingCompraVenta extends Reportes
     private function _getAvgMarginManagers($startDate,$endingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
               FROM(SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
-                   FROM(SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   FROM(SELECT {$manager},date_balance, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                         FROM balance
                         WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                         GROUP BY {$manager}, date_balance
                         ORDER BY date_balance)b, managers m, carrier_managers cm
-                   WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+                   WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
                    GROUP BY m.name, m.lastname, b.date_balance
                    ORDER BY margin DESC, date_balance) d
               GROUP BY d.nombre, d.apellido";
@@ -455,19 +620,16 @@ class RankingCompraVenta extends Reportes
     private function _getTotalAvgMarginManagers($startDate,$edingDate,$type)
     {
         $manager="id_carrier_customer";
-        if($type==false)
-        {
-            $manager="id_carrier_supplier";
-        }
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, b.date_balance AS date_balance, SUM(b.margin) AS margin
-                          FROM (SELECT {$manager},date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                          FROM (SELECT {$manager},date_balance, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY {$manager}, date_balance
                                 ORDER BY date_balance)b, managers m, carrier_managers cm
-                          WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier
+                          WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
                           GROUP BY m.name, m.lastname, b.date_balance
                           ORDER BY margin DESC, date_balance) d
                     GROUP BY d.nombre, d.apellido)t";
@@ -485,16 +647,16 @@ class RankingCompraVenta extends Reportes
     {
         $sql="SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
               FROM (SELECT m.name AS nombre, m.lastname AS apellido, cs.date_balance, SUM(cs.margin) AS margin
-                    FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY id_carrier_customer, date_balance
                           UNION
-                          SELECT id_carrier_supplier AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                          SELECT id_carrier_supplier AS id, date_balance, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY id_carrier_supplier, date_balance)cs, managers m, carrier_managers cm
-                    WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+                    WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
                     GROUP BY m.name, m.lastname, cs.date_balance
                     ORDER BY margin DESC) d
               GROUP BY d.nombre, d.apellido";
@@ -513,16 +675,16 @@ class RankingCompraVenta extends Reportes
         $sql="SELECT SUM(t.margin) AS margin
               FROM (SELECT d.nombre, d.apellido, AVG(d.margin) AS margin
                     FROM (SELECT m.name AS nombre, m.lastname AS apellido, cs.date_balance, SUM(cs.margin) AS margin
-                          FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                          FROM (SELECT id_carrier_customer AS id, date_balance, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY id_carrier_customer, date_balance
                                 UNION
-                                SELECT id_carrier_supplier AS id, date_balance, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                                SELECT id_carrier_supplier AS id, date_balance, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance
                                 WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                                 GROUP BY id_carrier_supplier, date_balance)cs, managers m, carrier_managers cm
-                          WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier
+                          WHERE m.id = cm.id_managers AND cs.id = cm.id_carrier AND cm.end_date IS NULL
                           GROUP BY m.name, m.lastname, cs.date_balance
                           ORDER BY margin DESC) d
                     GROUP BY d.nombre, d.apellido) t";
@@ -538,7 +700,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _getTotalMargen($startDate,$edingDate)
     {
-        $sql="SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+        $sql="SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
               FROM balance
               WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
 
@@ -555,7 +717,7 @@ class RankingCompraVenta extends Reportes
     private function _getAvgTotalMargin($startDate,$endingDate)
     {
         $sql="SELECT AVG(b.margin) AS margin
-              FROM (SELECT CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, date_balance
+              FROM (SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, date_balance
                     FROM balance
                     WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                     GROUP BY date_balance) b";
@@ -563,285 +725,322 @@ class RankingCompraVenta extends Reportes
     }
 
     /**
-     * Genera una tabla con la lista y ranking del dato pasado
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
      * @access private
-     * @static
-     * @param array $head titulo que lleva la cabecera y su estilo. ej: $array['title']="Clientes"; $array['style']="color:black";
-     * @param array $list lista de nombres incluidos para contruir la tabla
-     * @param string $name es la frase que va acompañada en la cabecera
-     * @param boolean $type si es true es para el principio, false al final
-     * @param boolean 
-     */
-    private function _getHtmlTable($head,$lista,$type=true)
-    {
-        $body="<table>";
-        $pos=0;
-        if($type)
-        {   
-            $body.=self::cabecera(array('Ranking',$head['title']),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                $pos=$pos+1;
-                $body.="<tr style='".$head['styleBody']."'><td>".$pos."</td><td>".$value."</td></tr>";
-            }
-            $body.=self::cabecera(array('Ranking',$head['title']),$head['styleHead']);
-            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td></td><td>Total</td></tr>";
-        }
-        else
-        {
-            $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
-            foreach ($lista as $key => $value)
-            {
-                $pos=$pos+1;
-                $body.="<tr style='".$head['styleBody']."'><td>".$value."</td><td>".$pos."</td></tr>";
-            }
-            $body.=self::cabecera(array($head['title'],'Ranking'),$head['styleHead']);
-            $body.="<tr style='text-align:center;background-color:#999999;color:#FFFFFF;'><td>Total</td><td></td></tr>";
-        }
-        $body.="</table>";
-        return $body;
-    }
-
-    /**
-     * Recibe un objeto de modelo y un atributo, retorna una fila <tr> con los datos del objeto
-     * @access private
-     * @param string $attribute es el atributo del objeto con el que se hará la comparacion
-     * @param string $phrase es la frase con la que debe conincidir el atributo 
-     * @param array $objeto es el objeto traido de base de datos
-     * @param int $position es el numero para indicar el color de la fila en la tabla 
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
      * @param $type true=minutes,revenue,margin false=margin
      * @return string
      */
-    private function _getRow($attribute,$phrase,$index,$index2,$position,$head,$type=true)
+    private function _getRow($index,$index2,$phrase,$style,$type=true)
     {
-        $primera=$segunda=$tercera=$cuarta=$quinta=$sexta=$septima=$previus=null;
+        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $margin=$previous=$average=$previousMonth=null;
+        foreach ($this->_objetos[$index][$index2] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {               
+                if($type==true) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                $margin=$value->margin;
+            }
+        }
         if($this->equal)
         {
-            foreach ($this->objetos[$index][$index2.'Yesterday'] as $key => $value)
+            foreach ($this->_objetos[$index][$index2.'Yesterday'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $cuarta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
-                    $previus=$value->margin;
+                    $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $previous=$value->margin;
                 }
             }
-            foreach ($this->objetos[$index][$index2.'Average'] as $key => $value)
+            $cuatro="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
+            foreach ($this->_objetos[$index][$index2.'Average'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $quinta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $average=$value->margin;
                 }
             }
-            foreach ($this->objetos[$index][$index2.'Accumulated'] as $key => $value)
+            $seis="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
+            foreach ($this->_objetos[$index][$index2.'Accumulated'] as $key => $value)
             {
-                if($value->$attribute == $phrase)
+                if($value->apellido == $phrase)
                 {
-                    $sexta="<td>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $ocho="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 }
             }
-            $septima="<td>".Yii::app()->format->format_decimal($this->objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            foreach ($this->_objetos[$index][$index2.'PreviousMonth'] as $key => $value)
+            {
+                if($value->apellido == $phrase)
+                {
+                    $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $previousMonth=$value->margin;
+                }
+            }
+            $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
         }
-        foreach ($this->objetos[$index][$index2] as $key => $value)
-        {
-            if($value->$attribute == $phrase)
-            {               
-                if($type==true) $primera="<td>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($type==true) $segunda="<td>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $tercera="<td>".$this->_upOrDown($previus,$value->margin).Yii::app()->format->format_decimal($value->margin)."</td>";         
-            }
-        }
+        
         if($type==true)
         {
-            if($primera==null) $primera="<td>--<td>";
-            if($segunda==null) $segunda="<td>--</td>";
+            if($uno==null) $uno="<td style='".$this->_head[$style]."'>--</td>";
+            if($dos==null) $dos="<td style='".$this->_head[$style]."'>--</td>";
         }
-        if($tercera==null) $tercera="<td>--</td>";
+        if($tres==null) $tres="<td style='".$this->_head[$style]."'>--</td>";
         if($this->equal)
         {
-            if($cuarta==null) $cuarta="<td>--</td>";
-            if($quinta==null) $quinta="<td>--</td>";
-            if($sexta==null) $sexta="<td>--</td>";
-            if($septima==null) $septima="<td>--</td>";
+            if($cuatro==null) $cuatro="<td style='".$this->_head[$style]."'></td>";
+            if($cinco==null) $cinco="<td style='".$this->_head[$style]."'>--</td>";
+            if($seis==null) $seis="<td style='".$this->_head[$style]."'></td>";
+            if($siete==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
+            if($ocho==null) $ocho="<td style='".$this->_head[$style]."'>--</td>";
+            if($nueve==null) $nueve="<td style='".$this->_head[$style]."'>--</td>";
+            if($diez==null) $siete="<td style='".$this->_head[$style]."'></td>";
+            if($once==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
         } 
-        $body="<tr style='".$head['styleBody']."'>".$primera.$segunda.$tercera.$cuarta.$quinta.$sexta.$septima."</tr>";
+        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
         return $body;
     }
 
     /**
-     * Genera el cuerpo de la tabla con la data de los managers
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
      * @access private
-     * @param array $list es la lista de apellidos ordenados para sacarlos en la fila
-     * @param 
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
+     * @param $type true=minutes,revenue,margin false=margin
+     * @return string
      */
-    private function _getHtmlTableData($list,$index,$index2,$attribute,$head,$type=true)
+    private function _getRowMonths($index,$phrase,$style)
     {
-        $columns=array('Margin');
-        if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
-        if($this->equal) $columns=array_merge($columns,array('Ayer','Promedio','Acumulado','Cierre Mes'));
-
-        $body="<table>
-                    <thead>";
-                        $body.=self::cabecera($columns,$head['styleHead']);
-                    $body.="</thead>
-                 <tbody>";
-        if($this->objetos[$index][$index2]!=NULL)
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=null;
+        $margin=$third=$fourth=$fifth=$sixth=null;            
+        $margin=$this->_objetos[0][$index.'Forecast'][$phrase];
+        foreach ($this->_objetos[0][$index.'ThirdMonth'] as $key => $value)
         {
-            $pos=0;
-            foreach ($list as $key => $manager)
+            if($value->apellido == $phrase)
             {
-                $pos=$pos+1;
-                $body.=$this->_getRow($attribute,$manager,$index,$index2,$pos,$head,$type);
+                $c1="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
             }
         }
-        else
+        foreach ($this->_objetos[0][$index.'FourthMonth'] as $key => $value)
         {
-            $body.="<tr><td colspan='3'>No se encontraron resultados</td></tr>";
+            if($value->apellido == $phrase)
+            {
+                $c3="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
         }
-        $body.="</tbody>
-                 </table>";
-        return $body;
+        foreach ($this->_objetos[0][$index.'FifthMonth'] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {
+                $c5="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'SixthMonth'] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {
+                $c7="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
+        if($c4==null) $c4="<td style='".$this->_head[$style]."'>--</td>";
+        if($c5==null) $c5="<td style='".$this->_head[$style]."'>--</td>";
+        if($c6==null) $c6="<td style='".$this->_head[$style]."'>--</td>";
+        if($c7==null) $c7="<td style='".$this->_head[$style]."'>--</td>";
+        if($c8==null) $c8="<td style='".$this->_head[$style]."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8;
     }
 
     /**
-     * Retorna una tabla con los totales de los objetos pasados como parametros
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
+     * @access private
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
+     * @param $type true=minutes,revenue,margin false=margin
+     * @return string
+     */
+    private function _getRowConsolidatedMonths($phrase,$style)
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=null;
+        $margin=$third=$fourth=$fifth=$sixth=null;
+        $margin=$this->_objetos[0]['consolidatedForecast'][$phrase];
+        foreach ($this->_objetos[0]['consolidatedThirdMonth'] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {
+                $c1="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0]['consolidatedFourthMonth'] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {
+                $c3="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0]['consolidatedFifthMonth'] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {
+                $c5="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0]['consolidatedSixthMonth'] as $key => $value)
+        {
+            if($value->apellido == $phrase)
+            {
+                $c7="<td style='".$this->_head[$style]."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
+        if($c4==null) $c4="<td style='".$this->_head[$style]."'>--</td>";
+        if($c5==null) $c5="<td style='".$this->_head[$style]."'>--</td>";
+        if($c6==null) $c6="<td style='".$this->_head[$style]."'>--</td>";
+        if($c7==null) $c7="<td style='".$this->_head[$style]."'>--</td>";
+        if($c8==null) $c8="<td style='".$this->_head[$style]."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8;
+    }
+
+    /**
+     * Retorna una tabla con los totales de los _objetos pasados como parametros
      * @access private
      * @param CActiveRecord $total es el objeto que totaliza los que cumplen la condicion
      * @return string
      */
-    private function _getHtmlTotal($index,$index2,$head,$type=true)
+    private function _getHtmlTotal($index,$index2,$style,$type=true)
     {
-        $columns=array('Margin');
-        $total=$this->objetos[$index][$index2];
-        if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
-        if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
-        if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
-        if($this->equal) $close=$this->objetos[$index][$index2.'Close'];
-        if($type==true) $columns=array_merge(array('Minutes','Revenue'),$columns);
-        if($this->equal) $columns=array_merge($columns,array('Ayer','Promedio','Acumulado','Cierre Mes'));
+        $total=$this->_objetos[$index][$index2];
+        if($this->equal) $yesterday=$this->_objetos[$index][$index2.'Yesterday'];
+        if($this->equal) $average=$this->_objetos[$index][$index2.'Average'];
+        if($this->equal) $accumulated=$this->_objetos[$index][$index2.'Accumulated'];
+        if($this->equal) $close=$this->_objetos[$index][$index2.'Close'];
+        if($this->equal) $previousMonth=$this->_objetos[$index][$index2.'PreviousMonth'];
 
-        $body="<table>";
-        $body.=self::cabecera($columns,$head['styleHead']);
-                    $body.="<tr style='".$head['styleFooter']."'>";
-        if($type==true) $body.="<td>".Yii::app()->format->format_decimal($total->minutes)."</td>";
-        if($type==true) $body.="<td>".Yii::app()->format->format_decimal($total->revenue)."</td>";
-        $body.="<td>".Yii::app()->format->format_decimal($total->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($close)."</td>";
-        $body.="</tr>
-                </table>";
+        $body="";
+        if($type==true) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->minutes)."</td>";
+        if($type==true) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->revenue)."</td>";
+        $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$total->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average->margin,$total->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($close)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth->margin,$close)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
+        return $body;
+    }
+    /**
+     * Retorna una tabla con los totales de los _objetos pasados como parametros
+     * @access private
+     * @param CActiveRecord $total es el objeto que totaliza los que cumplen la condicion
+     * @return string
+     */
+    private function _getHtmlTotalMonth($index,$style)
+    {
+        $margin=$third=$fourth=$fifth=$sixth=null;
+        $margin=$this->_objetos[0][$index.'Close'];
+        $third=$this->_objetos[0][$index.'ThirdMonth'];
+        $fourth=$this->_objetos[0][$index.'FourthMonth'];
+        $fifth=$this->_objetos[0][$index.'FifthMonth'];
+        $sixth=$this->_objetos[0][$index.'SixthMonth'];
+        $body="";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($third->margin,$margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($third->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($fourth->margin,$margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($fourth->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($fifth->margin,$margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($fifth->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($sixth->margin,$margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($sixth->margin)."</td>";
         return $body;
     }
 
     /**
      * Retorna el html del total del margen
      * @access private
-     * @param CActiveRecord $data el objeto que se va a imprimir
+     * @param string $index
+     * @param string $index2
+     * @param string $style
      * @return string
      */
-    private function _getHtmlTotalMargen($index,$index2)
+    private function _getHtmlTotalMargen($index,$index2,$style)
     {
-        $data=$this->objetos[$index][$index2];
-        if($this->equal) $yesterday=$this->objetos[$index][$index2.'Yesterday'];
-        if($this->equal) $average=$this->objetos[$index][$index2.'Average'];
-        if($this->equal) $accumulated=$this->objetos[$index][$index2.'Accumulated'];
-        $body="<table>
-                    <tr style='background-color:#615E5E; color:#FFFFFF; text-align:center;'>
-                        <td>".Yii::app()->format->format_decimal($data->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($average->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
-        if($this->equal) $body.="<td>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
-        $body.="</tr>
-                </table>";
+        $data=$this->_objetos[$index][$index2];
+        if($this->equal) $yesterday=$this->_objetos[$index][$index2.'Yesterday'];
+        if($this->equal) $average=$this->_objetos[$index][$index2.'Average'];
+        if($this->equal) $accumulated=$this->_objetos[$index][$index2.'Accumulated'];
+        if($this->equal) $previousMonth=$this->_objetos[$index][$index2.'PreviousMonth'];
+        $body="";
+        $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($data->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($yesterday->margin,$data->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average->margin,$data->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $this->_objetos[0]['totalMargenClose']=$accumulated->margin+$this->_forecast($average->margin);
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth->margin,$accumulated->margin+$this->_forecast($average->margin))."</td>";
+        if($this->equal) $body.="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
         return $body;
     }
 
     /**
-     * Determina el numero de dias que hay desde la fecha pasada hasta el fin del mes
+     * Retorna la cabecera de la data de managers
+     * @access private
+     * @param boolean $type true = compradores/vendedores, false = consolidados
+     * @return string celdas construidas
      */
-    private function _getDays($date)
+    private function _getHeaderManages($type=true)
     {
-        $arrayDate=explode('-',$date);
-        $newDate=$arrayDate[0]."-".$arrayDate[1]."-".self::howManyDays($date);
-        $this->days=self::howManyDaysBetween($date,$newDate);
+        $body="";
+        if($type==true) $body.="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        if($type==true) $body.="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $body.="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td><td style='".$this->_head['styleHead']."'>Dia Anterior</td><td style='".$this->_head['styleHead']."'></td><td style='".$this->_head['styleHead']."'>Promedio 7D</td><td style='".$this->_head['styleHead']."'>Acumulado Mes</td><td style='".$this->_head['styleHead']."'>Proyeccion Mes</td><td style='".$this->_head['styleHead']."'></td><td style='".$this->_head['styleHead']."'>Mes Anterior</td>";
+        return $body;
     }
 
     /**
-     * Retorna el valor pasado como parametro multiplicado por la variable days
+     * Retorna la fila con el nombre del manager y la posicion indicada
      * @access private
-     * @param float $data
-     * @return float
+     * @param int $pos posicion del manager
+     * @param string $phrase es el nombre del manager
+     * @param string $style es el estilo asignado al tipo de manager
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
      */
-    private function _forecast($data)
+    private function _getNamesConsolidated($pos,$phrase,$style,$type=true)
     {
-        return ($data*$this->days);
-    }
-
-    /**
-     * calcula el pronostico de cierre
-     * @access private
-     */
-    private function _closeOfTheMonth($phrase,$index,$average,$accumulated)
-    {
-        $array=array();
-        foreach ($phrase as $key => $lastname)
-        {
-            foreach ($this->objetos[$index][$average] as $key => $avg)
-            {
-                if($avg->apellido==$lastname)
-                {
-                    foreach ($this->objetos[$index][$accumulated] as $key => $acum)
-                    {
-                        if($acum->apellido==$avg->apellido)
-                        {
-                            $array[$acum->apellido]=$acum->margin+$this->_forecast($avg->margin);
-                        }
-                    }
-                }
-
-            }
-        }
-        return $array;
-    }
-
-    /**
-     * Metodo encargado de colocar un simbolo de subida o bajada en el html
-     * @access private
-     * @param int $previous es el valor anterior
-     * @param int $actual es el valor actual a revisar
-     * @return string
-     */
-    private function _upOrDown($previus,$actual)
-    {
-        if($previus!=null || $previus!="")
-        {
-            if($actual>=$previus)
-            {
-                return "<font style='color:green;'>&#9650;</font>";
-            }
-            else
-            {
-                return "<font style='color:red;'>&#9660;</font>";
-            }
-        }
+        if($type) 
+            return "<td style='".$this->_head[$style]."'>{$pos}</td><td style='".$this->_head[$style]."' colspan='3'>{$phrase}</td>";
         else
-        {
-            return false;
-        }
+            return "<td style='".$this->_head[$style]."' colspan='3'>{$phrase}</td><td style='".$this->_head[$style]."'>{$pos}</td>";
     }
-
-    /**
-     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos
-     * @access private
-     * @param date $date
-     * @return array
-     */
-    private function leastOneMonth($date)
-    {
-        
-        $firstday=Utility::getDayOne($date);
-    }       
 }
 ?>

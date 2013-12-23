@@ -21,7 +21,7 @@ class Evolucion extends Reportes
         $select="";
         if($columna=="margin")
         {
-            $select="CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin";
+            $select="CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin";
         }
         elseif($columna=="revenue")
         {
@@ -65,7 +65,7 @@ class Evolucion extends Reportes
                    WHERE date_balance>='{$this->fecha}'::date - '{$dias} days'::interval AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination') AND id_destination IS NOT NULL
                    GROUP BY date_balance
                    UNION
-                   SELECT date_balance, CAST(0 AS double precision) AS minutes, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   SELECT date_balance, CAST(0 AS double precision) AS minutes, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$this->fecha}'::date - '{$dias} days'::interval AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination') AND id_destination IS NOT NULL AND margin<0
                    GROUP BY date_balance)b
