@@ -37,8 +37,8 @@ class EnviarEmail extends CApplicationComponent
             $mailer->Password="sincatest";
             $mailer->IsSMTP();
             $mailer->IsHTML(true);
-            $mailer->From='sinca.test@gmail.com';
-            $mailer->AddReplyTo('sinca.test@gmail.com');
+            $mailer->From='renoc@etelix.com';
+            $mailer->AddReplyTo('renoc@etelix.com');
             $mailer->AddAddress($user);
             if($copia!=null)
             {
