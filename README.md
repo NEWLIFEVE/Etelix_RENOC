@@ -2,6 +2,35 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.14
+- Correcion en consulta a base de datos del reporte de arbol de trafico clientes/proveedores/destinos
+Release 1.3.13
+Release 1.3.12
+Release 1.3.11
+- Agregando ltimos cuatro meses en Reporte Ranking Compra/Venta
+
+Release 1.3.10
+- Agregado funcion ABS() en el calculo de margenes.
+- Agregada la proyeccion en el reporte AltoImpacto
+
+Release 1.3.9
+-Correcion de totales de margenes por managers en Ranking Compra Venta
+
+Release 1.3.8
+- Correccion de formato Reporte Alto Impacto
+
+Release 1.3.7
+- Correcion de formato correo electronico en Raning Compra Venta
+
+Release 1.3.6
+- Correccion de errores de procesamiento de fechas en Ranking Compra Venta y Alto Impacto
+
+Release 1.3.5
+- Correcion de totales de Reporte Ranking Compra Venta
+
+Release 1.3.4
+- Reporte Ranking Compra Venta, Agregada la columna de cierre del mes anterior, ademas de columnas indicadoras del margen con respecto al dia anterior y el promedio. columna indicadora con respecto a la proyeccion de cierre de mes y monto cierre de mes anterior.
+
 Release 1.3.3
 - Reporte Ranking Compra/Venta, es modificado para que incluya el margen del dia de ayer, el acumulado hasta el dia consultado, el promedio de los ultimos 7 dias, y el pronostico de cierre.
 

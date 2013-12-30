@@ -1,6 +1,7 @@
 <?php
 /**
 * @package reportes
+* @version 1.0.1
 */
 class ArbolDestino extends Reportes
 {
@@ -42,7 +43,7 @@ class ArbolDestino extends Reportes
 		$cuerpo="<div>
                   <table>";
         $sqlDestinos="SELECT x.{$this->destino} AS id, d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
-					  FROM(SELECT {$this->destino}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+					  FROM(SELECT {$this->destino}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(minutes)=0 THEN 0 WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, CASE WHEN SUM(pdd)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(pdd)/SUM(incomplete_calls+complete_calls)) END AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
      					   FROM balance
      					   WHERE date_balance='$this->fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
      					   GROUP BY {$this->destino}
@@ -122,20 +123,8 @@ class ArbolDestino extends Reportes
 		$this->define($tipo);
 
 		$cuerpo=self::cabecera(array($this->titulo['tabla'],'TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cost/Min','Rev/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
-		$sql="SELECT c.name AS {$this->titulo['sql']}, 
-					 b.total_calls, 
-					 b.complete_calls, 
-					 b.minutes, 
-					 CASE WHEN b.complete_calls=0 THEN 0 WHEN b.total_calls=0 THEN 0 ELSE (b.complete_calls*100/b.total_calls) END AS asr, 
-					 CASE WHEN b.minutes=0 THEN 0 WHEN b.complete_calls=0 THEN 0 ELSE (b.minutes/b.complete_calls) END AS acd, 
-					 CASE WHEN b.pdd=0 THEN 0 WHEN b.total_calls=0 THEN 0 ELSE (b.pdd/b.total_calls) END AS pdd, 
-					 b.cost, 
-					 b.revenue, 
-					 b.margin, 
-					 CASE WHEN b.minutes=0 THEN 0 WHEN b.cost=0 THEN 0 ELSE (b.cost/b.minutes)*100 END AS costmin, 
-					 CASE WHEN b.minutes=0 THEN 0 WHEN b.revenue=0 THEN 0 ELSE (b.revenue/b.minutes)*100 END AS ratemin, 
-					 CASE WHEN b.minutes=0 THEN 0 ELSE (CASE WHEN b.revenue=0 THEN 0 ELSE (b.revenue/b.minutes)*100 END)-(CASE WHEN b.cost=0 THEN 0 ELSE (b.cost/b.minutes)*100 END) END AS marginmin
-			   FROM(SELECT {$this->carrier} AS id, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(pdd) AS pdd
+		$sql="SELECT c.name AS {$this->titulo['sql']}, b.total_calls, b.complete_calls, b.minutes, CASE WHEN b.complete_calls=0 THEN 0 WHEN b.total_calls=0 THEN 0 ELSE (b.complete_calls*100/b.total_calls) END AS asr, CASE WHEN b.minutes=0 THEN 0 WHEN b.complete_calls=0 THEN 0 ELSE (b.minutes/b.complete_calls) END AS acd, CASE WHEN b.pdd=0 THEN 0 WHEN b.total_calls=0 THEN 0 ELSE (b.pdd/b.total_calls) END AS pdd, b.cost, b.revenue, b.margin, CASE WHEN b.minutes=0 THEN 0 WHEN b.cost=0 THEN 0 ELSE (b.cost/b.minutes)*100 END AS costmin, CASE WHEN b.minutes=0 THEN 0 WHEN b.revenue=0 THEN 0 ELSE (b.revenue/b.minutes)*100 END AS ratemin, CASE WHEN b.minutes=0 THEN 0 ELSE (CASE WHEN b.revenue=0 THEN 0 ELSE (b.revenue/b.minutes)*100 END)-(CASE WHEN b.cost=0 THEN 0 ELSE (b.cost/b.minutes)*100 END) END AS marginmin
+			   FROM(SELECT {$this->carrier} AS id, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(pdd) AS pdd
 			   		FROM balance
 			   		WHERE date_balance='{$this->fecha}' AND {$this->destino}={$idDestino} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino} IS NOT NULL
 			   		GROUP BY {$this->carrier}
@@ -203,7 +192,7 @@ class ArbolDestino extends Reportes
 	{
 		$this->define($tipo);
 		$sql="SELECT SUM(b.total_calls) AS total_calls, SUM(b.complete_calls) AS complete_calls, SUM(b.minutes) AS minutes, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin, CASE WHEN SUM(b.minutes)=0 THEN 0 WHEN SUM(b.cost)=0 THEN 0 ELSE (SUM(b.cost)/SUM(b.minutes))*100 END AS costmin, CASE WHEN SUM(b.minutes)=0 THEN 0 WHEN SUM(b.revenue)=0 THEN 0 ELSE (SUM(b.revenue)/SUM(b.minutes))*100 END AS ratemin, CASE WHEN SUM(b.minutes)=0 THEN 0 ELSE (CASE WHEN SUM(b.revenue)=0 THEN 0 ELSE (SUM(b.revenue)/SUM(b.minutes))*100 END)-(CASE WHEN SUM(b.cost)=0 THEN 0 ELSE (SUM(b.cost)/SUM(b.minutes))*100 END) END AS marginmin
-		      FROM(SELECT {$this->carrier} AS id, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN SUM(revenue-cost)<SUM(margin) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(pdd) AS pdd
+		      FROM(SELECT {$this->carrier} AS id, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin, SUM(pdd) AS pdd
 		      	   FROM balance
 		      	   WHERE date_balance='{$this->fecha}' AND {$this->destino}={$idDestino} AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$this->destino} IS NOT NULL
 		      	   GROUP BY {$this->carrier}
