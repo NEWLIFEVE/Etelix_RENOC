@@ -65,7 +65,7 @@ return array(
             'connectionString'=>'pgsql:host=67.215.160.89;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
-            'password'=>'Nsusfd8263',
+            'password'=>'123',
 			'charset'=>'utf8',
             ),
         'errorHandler'=>array(
