@@ -2,9 +2,11 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+
 Release 1.3.15
 - Agregado un septimo mes en reporte de Ranking Compra Venta
 Release 1.3.14
+- Correcion en consulta a base de datos del reporte de arbol de trafico clientes/proveedores/destinos
 
 Release 1.3.13
 
