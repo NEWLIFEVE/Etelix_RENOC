@@ -16,13 +16,8 @@ class DistribucionComercial extends Reportes
      */
     function __construct()
     {
-        ini_set('max_execution_time', 300);
-        ini_set('memory_limit', '300M');
         $this->excel=new PHPExcel();
         $this->excel->getProperties()->setCreator("RENOC")->setLastModifiedBy("RENOC")->setTitle("RENOC Distribucion Comercial")->setSubject("RENOC Distribucion Comercial")->setDescription("Reportes de Distribucion Comercial")->setKeywords("RENOC Reportes Distribucion Comercial")->setCategory("Distribucion Comercial Reportes");
-        $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_wincache;
-        $cacheSettings = array( 'cacheTime'=>600);
-        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
     }
 
     public function genExcel($name)
