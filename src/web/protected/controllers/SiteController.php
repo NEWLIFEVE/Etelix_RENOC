@@ -178,6 +178,8 @@ class SiteController extends Controller
             $this->letra=Log::preliminar($_POST['startDate']);
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
+            ini_set('max_execution_time', 300);
+            ini_set('memory_limit', '300M');
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {

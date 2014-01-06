@@ -18,9 +18,6 @@ class DistribucionComercial extends Reportes
     {
         $this->excel=new PHPExcel();
         $this->excel->getProperties()->setCreator("RENOC")->setLastModifiedBy("RENOC")->setTitle("RENOC Distribucion Comercial")->setSubject("RENOC Distribucion Comercial")->setDescription("Reportes de Distribucion Comercial")->setKeywords("RENOC Reportes Distribucion Comercial")->setCategory("Distribucion Comercial Reportes");
-        $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_wincache;
-        $cacheSettings = array( 'cacheTime'=>600);
-        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
     }
 
     public function genExcel($name)
@@ -162,37 +159,33 @@ class DistribucionComercial extends Reportes
                 {
                     $registro['vendedor']="";
                     $registro['cargo']="";
-                }*/
-                /*if($data[$com]->termino_pago==$vendedor->termino_pago)
+                }
+                if($data[$com]->termino_pago==$vendedor->termino_pago)
                 {
                     $registro['termino_pago']="";
-                }*/
-                /*if($data[$com]->monetizable==$vendedor->monetizable)
+                }
+                if($data[$com]->monetizable==$vendedor->monetizable)
                 {
                     $registro['monetizable']="";
-                }*/
-                /*if($data[$com]->company==$vendedor->company)
+                }
+                if($data[$com]->company==$vendedor->company)
                 {
                     $registro['company']="";
-                }*/
-                /*if($data[$com]->operador==$vendedor->operador)
+                }
+                if($data[$com]->operador==$vendedor->operador)
                 {
                     $registro['operador']="";
-                }*/
-                /*if($data[$com]->production_unit==$vendedor->production_unit)
+                }
+                if($data[$com]->production_unit==$vendedor->production_unit)
                 {
                     $registro['production_unit']="";
                 }*/
             }
             $row=$key+2;
             $this->excel->getActiveSheet()->setCellValue("A".$row,$registro['cargo']);
-            //$this->excel->getActiveSheet()->getStyle("A".$row)->applyFromArray(self::color($registro['estilo']));                
             $this->excel->getActiveSheet()->setCellValue("B".$row,$registro['vendedor']);
-            //$this->excel->getActiveSheet()->getStyle("B".$row)->applyFromArray(self::color($registro['estilo']));                
             $this->excel->getActiveSheet()->setCellValue("C".$row,$registro['posicion']);
-            //$this->excel->getActiveSheet()->getStyle("C".$row)->applyFromArray(self::color($registro['estilo']));                
             $this->excel->getActiveSheet()->setCellValue("D".$row,$registro['operador']);
-            //$this->excel->getActiveSheet()->getStyle("D".$row)->applyFromArray(self::color($registro['estilo']));                
             $this->excel->getActiveSheet()->setCellValue("E".$row,$registro['company']);
             $this->excel->getActiveSheet()->setCellValue("F".$row,$registro['termino_pago']);
             $this->excel->getActiveSheet()->setCellValue("G".$row,$registro['monetizable']);
@@ -201,14 +194,10 @@ class DistribucionComercial extends Reportes
             $this->excel->getActiveSheet()->setCellValue("J".$row,$vendedor->limite_compra);
             $this->excel->getActiveSheet()->setCellValue("K".$row,$registro['production_unit']);
             $this->excel->getActiveSheet()->setCellValue("L".$row,$registro['status']);
-            //Aplico estilo
-            /*$this->excel->getActiveSheet()->getStyle('E'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['company']));         
-            $this->excel->getActiveSheet()->getStyle('F'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['termino_pago']));         
-            $this->excel->getActiveSheet()->getStyle('G'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['monetizable']));         
-            $this->excel->getActiveSheet()->getStyle('H'.$row)->applyFromArray($this->colorArray($registro['estilo'],$vendedor->dias_disputa));         
-            $this->excel->getActiveSheet()->getStyle('I'.$row)->applyFromArray($this->colorArray($registro['estilo'],$vendedor->limite_credito));         
-            $this->excel->getActiveSheet()->getStyle('J'.$row)->applyFromArray($this->colorArray($registro['estilo'],$vendedor->limite_compra));         
-            $this->excel->getActiveSheet()->getStyle('K'.$row)->applyFromArray($this->colorArray($registro['estilo'],$registro['production_unit']));         */
+            //Aplico el estilo
+            $this->excel->getActiveSheet()->getStyle("A".$row.":L".$row)->applyFromArray(self::color($registro['estilo']));                
+
+            
         }
         
     }
