@@ -547,14 +547,21 @@ class Reportes extends CApplicationComponent
         return $color;
     }
     
-     function mitad($pos, $posicionNeta) {
-        $mitad = ($posicionNeta / 2) + 1;
-        if ($pos < $mitad) {
+    /**
+     *
+     */
+    public function mitad($pos, $posicionNeta)
+    {
+        $mitad=($posicionNeta/2)+1;
+        if($pos<$mitad)
+        {
             return $pos;
-        } else {
-            $diferencia = $pos - $mitad;
-            $pos = ($mitad - $diferencia) - 1;
-            return "-" . $pos;
+        }
+        else
+        {
+            $diferencia=$pos-$mitad;
+            $pos=($mitad-$diferencia)-1;
+            return "-".$pos;
         }
     }
 
