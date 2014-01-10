@@ -142,6 +142,7 @@ class PosicionNeta extends Reportes
      * @access private
      * @param date $startDate
      * @param date $endDate
+     * @return array
      */
     private function _getCarriers($startDate,$endDate)
     {
@@ -164,7 +165,11 @@ class PosicionNeta extends Reportes
     }
 
     /**
-     *
+     * Metodo que consigue el total de las fechas pasadas como parametros
+     * @access private
+     * @param date $startDate
+     * @param date $endDate
+     * @return CActiveRecord
      */
     private function _getTotalCarriers($startDate,$endDate)
     {
@@ -182,7 +187,43 @@ class PosicionNeta extends Reportes
                     GROUP BY id
                     ORDER BY posicion_neta DESC)cs";
         return Balance::model()->findBySql($sql);
+    }
 
+    /**
+     * @access private
+     */
+    private function _loopData($startDate,$endDate)
+    {
+        $startDateTemp=self::valDates($startDate,$endDate)['startDate'];
+        $endingDateTemp=self::valDates($startDate,$endDate)['endingDate'];
+        $yesterday=DateManagement::calculateDate('-1',$startDateTemp);
+        $sevenDaysAgo=DateManagement::calculateDate('-7',$yesterday);
+        $firstDay=DateManagement::getDayOne($startDate);
+        $this->equal=self::valDates($startDate,$endDate)['equal'];
+        $index=0;
+
+        while(self::isLower($startDateTemp,$endingDate))
+        {
+            $endingDateTemp=self::maxDate(DateManagement::separatesDate($startDateTemp)['year']."-".DateManagement::separatesDate($startDateTemp)['month']."-".DateManagement::howManyDays($startDateTemp),$endingDate);
+            //El titulo que va a llevar la seccion
+            $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            //La data de los carriers
+            $this->_objetos[$index]['carriers']=$this->_getCarriers($startDateTemp,$endingDateTemp);
+            //El total de los carriers traidos de base de datos
+            $this->_objetos[$index]['totalCarriers']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp);
+            //traigo la date de los carriers del dia anterior
+            if($this->equal) $this->_objetos[$index]['carriersYesterday']=$this->_getCarriers($yesterday,$yesterday);
+            //traigo totales de los carriers traidos de base de datos
+            if($this->equal) $this->_objetos[$index]['totalCarriersYesterday']=$this->_getTotalCarriers($yesterday,$yesterday);
+            // Average de los carriers
+
+            // totales de los averages
+            
+            //traigo el acumulado de los carrier hasta la fecha
+            if($this->equal) $this->_objetos[$index]['carriersAccumulated']=$this->_getCarriers($firstDay,$startDate);
+            //traigo el total del acumulado de los carriers
+            if($this->equal) $this->_objetos[$index]['totalCarriersAccumulated']=$this->_getTotalCarriers($firstDay,$startDate);
+        }
     }
 }
 ?>
