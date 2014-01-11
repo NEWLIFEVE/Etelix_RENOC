@@ -9,8 +9,11 @@ class PosicionNeta extends Reportes
     * @param $fecha date fecha que va a ser consultada
     * @return $cuerpo string con el cuerpo de la tabla
     */
-	public static function reporte($fecha)
+	public function reporte($start,$end)
 	{
+        $this->_getDays($start);
+
+        $this->_loopData($start,$end);
         
         
 
@@ -265,13 +268,17 @@ class PosicionNeta extends Reportes
             //traigo totales de los carriers traidos de base de datos
             if($this->equal) $this->_objetos[$index]['totalCarriersYesterday']=$this->_getTotalCarriers($yesterday,$yesterday);
             // Average de los carriers
-            if($this->equal) $this->_objetos[$index]['totalCarriersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday);
+            if($this->equal) $this->_objetos[$index]['carriersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday);
             // totales de los averages
-            if($this->equal)
+            if($this->equal) $this->objetos[$index]['totalCarrierAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday);
             //traigo el acumulado de los carrier hasta la fecha
             if($this->equal) $this->_objetos[$index]['carriersAccumulated']=$this->_getCarriers($firstDay,$startDate);
             //traigo el total del acumulado de los carriers
             if($this->equal) $this->_objetos[$index]['totalCarriersAccumulated']=$this->_getTotalCarriers($firstDay,$startDate);
+            //Pronostico de los carrier
+            if($this->equal) $this->_objetos[$index]['carriersForecast']=$this->_closeOfTheMonth(null,$index,'carriersAverage','carriersAccumulated','carrier');
+            // Total de los pronosticos de los carriers
+            if($this->equal) $this->_objetos[$index]['totalCarriersForecast']=array_sum($this->[$index]['carriersForecast']);
         }
     }
 }
