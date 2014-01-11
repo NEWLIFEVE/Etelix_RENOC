@@ -190,6 +190,55 @@ class PosicionNeta extends Reportes
     }
 
     /**
+     * Metodo encargado de regresar 
+     */
+    private function _getAvgCarriers($startDate,$endDate)
+    {
+        $sql="SELECT o.name AS carrier, cs.id, AVG(cs.posicion_neta) AS posicion_neta
+              FROM (SELECT id, date_balance, SUM(vrevenue-ccost) AS posicion_neta
+                    FROM (SELECT id_carrier_customer AS id, date_balance, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                          FROM balance
+                          WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_customer, date_balance
+                          UNION
+                          SELECT id_carrier_supplier AS id, date_balance, CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                          FROM balance
+                          WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_supplier, date_balance) t
+                    GROUP BY id, date_balance
+                    ORDER BY posicion_neta DESC) cs, carrier o
+              WHERE o.id=cs.id
+              GROUP BY cs.id, o.name
+              ORDER BY posicion_neta DESC";
+        return Balance::model()->findAllBySql($sql);
+    }
+
+    /**
+     *
+     */
+    private function _getTotalAvgCarriers($startDate,$endDate)
+    {
+        $sql="SELECT SUM(b.posicion_neta) AS posicion_neta
+              FROM (SELECT o.name AS carrier, cs.id, AVG(cs.posicion_neta) AS posicion_neta
+                    FROM (SELECT id, date_balance, SUM(vrevenue-ccost) AS posicion_neta
+                          FROM (SELECT id_carrier_customer AS id, date_balance, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                                FROM balance
+                                WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                GROUP BY id_carrier_customer, date_balance
+                                UNION
+                                SELECT id_carrier_supplier AS id, date_balance, CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                                FROM balance
+                                WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                GROUP BY id_carrier_supplier, date_balance) t
+                          GROUP BY id, date_balance
+                          ORDER BY posicion_neta DESC) cs, carrier o
+                    WHERE o.id=cs.id
+                    GROUP BY cs.id, o.name
+                    ORDER BY posicion_neta DESC) b";
+        return Balance::model()->findBySql($sql);
+    }
+
+    /**
      * @access private
      */
     private function _loopData($startDate,$endDate)
@@ -216,9 +265,9 @@ class PosicionNeta extends Reportes
             //traigo totales de los carriers traidos de base de datos
             if($this->equal) $this->_objetos[$index]['totalCarriersYesterday']=$this->_getTotalCarriers($yesterday,$yesterday);
             // Average de los carriers
-
+            if($this->equal) $this->_objetos[$index]['totalCarriersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday);
             // totales de los averages
-            
+            if($this->equal)
             //traigo el acumulado de los carrier hasta la fecha
             if($this->equal) $this->_objetos[$index]['carriersAccumulated']=$this->_getCarriers($firstDay,$startDate);
             //traigo el total del acumulado de los carriers
