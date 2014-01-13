@@ -506,7 +506,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['PN']))
             {
                 $correos['PN']['asunto']="RENOC".$this->letra." Posicion Neta".self::reportTitle($startDate,$endingDate);
-                $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate);
+                $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate,$endingDate);
                 $correos['PN']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['PN']['asunto'].".xls";
             }
             //Posicion Neta por vendedor
