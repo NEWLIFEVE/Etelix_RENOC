@@ -9,19 +9,49 @@ class PosicionNeta extends Reportes
     * @param $fecha date fecha que va a ser consultada
     * @return $cuerpo string con el cuerpo de la tabla
     */
-	public static function reporte($fecha)
-	{
-        
-        
+    public function reporte($start,$end)
+    {
+        $this->_getDays($start);
 
-        $cuerpo="<div>
+        $this->_loopData($start,$end);
+
+        //Cuento el numero de objetos en el array
+        $num=count($this->_objetos);
+        $last=$num-1;
+
+
+        $span=15;
+        
+        $body="<table>";
+        
+        for ($row=1; $row <= 2; $row++)
+        { 
+            $body.="<tr>";
+            for ($col=1; $col <= 31; $col++)
+            { 
+                if ($row==1 && ($col==1 || $col==3+($num*$span)))
+                {
+                    $body.="<td colspan='3' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                if($row==1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(3,$col,$span)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+            }
+            $body.="</tr>";
+        }
+
+        $body.="</table>";
+
+/*        $cuerpo="<div>
                     <table >
                         <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
-                  <tbody>";
+                  <tbody>";*/
          
-        $posicionNeta=Balance::model()->findAllBySql($sqlCien);
+        /*$posicionNeta=Balance::model()->findAllBySql($sqlCien);
         if($posicionNeta!=null)
         { 
             $max=count($posicionNeta);
@@ -134,14 +164,15 @@ class PosicionNeta extends Reportes
                      </tr>";
         }
         $cuerpo.="</tbody></table>";
-        $cuerpo.="</div>";
-        return $cuerpo;
-	}
+        $cuerpo.="</div>";*/
+        return $body;
+    }
     /**
      * Metodo encargado de conseguir los carriers para generar el reporte
-     * @access public
+     * @access private
      * @param date $startDate
      * @param date $endDate
+     * @return array
      */
     private function _getCarriers($startDate,$endDate)
     {
@@ -149,12 +180,12 @@ class PosicionNeta extends Reportes
               FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
                    FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
                         FROM balance
-                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                        WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                         GROUP BY id_carrier_customer
                         UNION
                         SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS cmargin
                         FROM balance
-                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                        WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                         GROUP BY id_carrier_supplier)t
                    GROUP BY id
                    ORDER BY posicion_neta DESC)cs, carrier o
@@ -164,25 +195,133 @@ class PosicionNeta extends Reportes
     }
 
     /**
-     *
+     * Metodo que consigue el total de las fechas pasadas como parametros
+     * @access private
+     * @param date $startDate
+     * @param date $endDate
+     * @return CActiveRecord
      */
     private function _getTotalCarriers($startDate,$endDate)
     {
         $sql="SELECT SUM(cs.vminutes) AS vminutes, SUM(cs.vrevenue) AS vrevenue, SUM(cs.vmargin) AS vmargin, SUM(cs.cminutes) AS cminutes, SUM(cs.ccost) AS ccost, SUM(cs.cmargin) AS cmargin, SUM(cs.posicion_neta) AS posicion_neta, SUM(cs.margen_total) AS margen_total
-                   FROM
-                   (SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
-                   FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
-                        FROM balance
-                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                        GROUP BY id_carrier_customer
-                        UNION
-                        SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS cmargin
-                        FROM balance
-                        WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                        GROUP BY id_carrier_supplier)t
-                   GROUP BY id
-                   ORDER BY posicion_neta DESC)cs";
+              FROM (SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
+                    FROM (SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
+                          FROM balance
+                          WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_customer
+                          UNION
+                          SELECT id_carrier_supplier AS id, CAST(0 AS double precision) AS vminutes, CAST(0 AS double precision) AS vrevenue, CAST(0 AS double precision) AS vmargin, SUM(minutes) AS cminutes, SUM(cost) AS ccost, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS cmargin
+                          FROM balance
+                          WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_supplier)t
+                    GROUP BY id
+                    ORDER BY posicion_neta DESC)cs";
+        return Balance::model()->findBySql($sql);
+    }
 
+    /**
+     * Metodo encargado de regresar 
+     */
+    private function _getAvgCarriers($startDate,$endDate)
+    {
+        $sql="SELECT o.name AS carrier, cs.id, AVG(cs.posicion_neta) AS posicion_neta
+              FROM (SELECT id, date_balance, SUM(vrevenue-ccost) AS posicion_neta
+                    FROM (SELECT id_carrier_customer AS id, date_balance, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                          FROM balance
+                          WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_customer, date_balance
+                          UNION
+                          SELECT id_carrier_supplier AS id, date_balance, CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                          FROM balance
+                          WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                          GROUP BY id_carrier_supplier, date_balance) t
+                    GROUP BY id, date_balance
+                    ORDER BY posicion_neta DESC) cs, carrier o
+              WHERE o.id=cs.id
+              GROUP BY cs.id, o.name
+              ORDER BY posicion_neta DESC";
+        return Balance::model()->findAllBySql($sql);
+    }
+
+    /**
+     *
+     */
+    private function _getTotalAvgCarriers($startDate,$endDate)
+    {
+        $sql="SELECT SUM(b.posicion_neta) AS posicion_neta
+              FROM (SELECT o.name AS carrier, cs.id, AVG(cs.posicion_neta) AS posicion_neta
+                    FROM (SELECT id, date_balance, SUM(vrevenue-ccost) AS posicion_neta
+                          FROM (SELECT id_carrier_customer AS id, date_balance, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
+                                FROM balance
+                                WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                GROUP BY id_carrier_customer, date_balance
+                                UNION
+                                SELECT id_carrier_supplier AS id, date_balance, CAST(0 AS double precision) AS vrevenue, SUM(cost) AS ccost
+                                FROM balance
+                                WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                                GROUP BY id_carrier_supplier, date_balance) t
+                          GROUP BY id, date_balance
+                          ORDER BY posicion_neta DESC) cs, carrier o
+                    WHERE o.id=cs.id
+                    GROUP BY cs.id, o.name
+                    ORDER BY posicion_neta DESC) b";
+        return Balance::model()->findBySql($sql);
+    }
+
+    /**
+     * @access private
+     */
+    private function _loopData($startDate,$endingDate)
+    {
+        $startDateTemp=self::valDates($startDate,$endingDate)['startDate'];
+        $endingDateTemp=self::valDates($startDate,$endingDate)['endingDate'];
+        $yesterday=DateManagement::calculateDate('-1',$startDateTemp);
+        $sevenDaysAgo=DateManagement::calculateDate('-7',$yesterday);
+        $firstDay=DateManagement::getDayOne($startDate);
+        $this->equal=self::valDates($startDate,$endingDate)['equal'];
+        $index=0;
+
+        while(self::isLower($startDateTemp,$endingDate))
+        {
+            $endingDateTemp=self::maxDate(DateManagement::separatesDate($startDateTemp)['year']."-".DateManagement::separatesDate($startDateTemp)['month']."-".DateManagement::howManyDays($startDateTemp),$endingDate);
+            //El titulo que va a llevar la seccion
+            $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            //La data de los carriers
+            $this->_objetos[$index]['carriers']=$this->_getCarriers($startDateTemp,$endingDateTemp);
+            //El total de los carriers traidos de base de datos
+            $this->_objetos[$index]['totalCarriers']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp);
+            //traigo la date de los carriers del dia anterior
+            if($this->equal) $this->_objetos[$index]['carriersYesterday']=$this->_getCarriers($yesterday,$yesterday);
+            //traigo totales de los carriers traidos de base de datos
+            if($this->equal) $this->_objetos[$index]['totalCarriersYesterday']=$this->_getTotalCarriers($yesterday,$yesterday);
+            // Average de los carriers
+            if($this->equal) $this->_objetos[$index]['carriersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday);
+            // totales de los averages
+            if($this->equal) $this->objetos[$index]['totalCarrierAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday);
+            //traigo el acumulado de los carrier hasta la fecha
+            if($this->equal) $this->_objetos[$index]['carriersAccumulated']=$this->_getCarriers($firstDay,$startDate);
+            //traigo el total del acumulado de los carriers
+            if($this->equal) $this->_objetos[$index]['totalCarriersAccumulated']=$this->_getTotalCarriers($firstDay,$startDate);
+            //Pronostico de los carrier
+            if($this->equal) $this->_objetos[$index]['carriersForecast']=$this->_closeOfTheMonth(null,$index,'carriersAverage','carriersAccumulated','carrier');
+            // Total de los pronosticos de los carriers
+            if($this->equal) $this->_objetos[$index]['totalCarriersForecast']=array_sum($this->_objetos[$index]['carriersForecast']);
+            // Mes anterior
+            if($this->equal) $this->_objetos[$index]['carriersPreviousMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
+            // Tercer Mes
+            if($this->equal) $this->_objetos[$index]['carriersThirdMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
+            // Cuarto Mes
+            if($this->equal) $this->_objetos[$index]['carriersFourthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
+            // Quinto Mes
+            if($this->equal) $this->_objetos[$index]['carriersFifthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
+            // Sexto Mes
+            if($this->equal) $this->_objetos[$index]['carriersSixthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
+            // Septimo Mes
+            if($this->equal) $this->_objetos[$index]['carriersSeventhMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
+            //Itero la fecha
+            $startDateTemp=self::firstDayNextMonth($startDateTemp);
+            $index+=1;
+        }
     }
 }
 ?>
