@@ -104,10 +104,10 @@ class Reportes extends CApplicationComponent
      * @param $fecha date es la fecha que se necesita el reporte
      * @return $variable string con el cuerpo del reporte
      */
-    public function PosicionNeta($fecha)
+    public function PosicionNeta($startDate,$endingDate)
     {
-        $variable=PosicionNeta::reporte($fecha);
-        return $variable;
+        $variable=new PosicionNeta;
+        return $variable->reporte($startDate,$endingDate);
     }
 
     /**
