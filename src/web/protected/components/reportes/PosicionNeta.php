@@ -9,8 +9,8 @@ class PosicionNeta extends Reportes
     * @param $fecha date fecha que va a ser consultada
     * @return $cuerpo string con el cuerpo de la tabla
     */
-	public static function reporte($fecha)
-	{
+        public static function reporte($fecha)
+        {
         $sqlCien="SELECT o.name AS operador, cs.id, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
                   FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
                        FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
@@ -164,6 +164,6 @@ class PosicionNeta extends Reportes
         $cuerpo.="</tbody></table>";
         $cuerpo.="</div>";
         return $cuerpo;
-	}
+        }
 }
 ?>
