@@ -54,7 +54,7 @@ class Balance extends CActiveRecord
 	public $id_vendedor;
 
 	//para posicion neta
-	public $operador;
+	public $carrier;
 	public $vendedor;
 	public $vminutes;
 	public $vrevenue;

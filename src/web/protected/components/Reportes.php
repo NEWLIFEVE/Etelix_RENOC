@@ -677,6 +677,19 @@ class Reportes extends CApplicationComponent
     }
 
     /**
+     *
+     */
+    protected static function header($columns,$style)
+    {
+        $body="";
+        foreach ($columns as $key => $col)
+        {
+            $body.="<th style='".$_head[$style]."'>".$col."</th>";
+        }
+        return $body;
+    }
+
+    /**
      * Metodo encargado de realizar los rankings
      * @access public
      * @static
