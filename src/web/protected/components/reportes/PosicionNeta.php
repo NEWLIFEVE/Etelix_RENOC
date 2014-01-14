@@ -5,26 +5,85 @@
 */
 class PosicionNeta extends Reportes
 {
+    function __construct()
+    {
+        $this->equal=false;
+        $this->_head=array(
+            'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
+            'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
+            'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
+            );
+    }
+
     /**
     * @param $fecha date fecha que va a ser consultada
     * @return $cuerpo string con el cuerpo de la tabla
     */
-	public function reporte($start,$end)
-	{
+    public function reporte($start,$end)
+    {
         $this->_getDays($start);
 
         $this->_loopData($start,$end);
-        
-        
 
-        $cuerpo="<div>
+        //Cuento el numero de objetos en el array
+
+        $num=count($this->_objetos);
+        $last=$num-1;
+
+        $span=16;
+        
+        $body="<table>";
+        
+        for ($row=1; $row <= 2; $row++)
+        { 
+            $body.="<tr>";
+            for ($col=1; $col <= 31; $col++)
+            {
+                //Espacio gris al principio y al final de las columnas en la primera fila
+                if ($row==1 && ($col==1 || $col==3+($num*$span)))
+                {
+                    $body.="<td colspan='3' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                //Columna central superior que encierra el titulo de la tabla
+                if($row==1 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(3,$col,$span)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //titulo que incluye los meses anteriores
+                if($row==1 && $col==6+($num+$span))
+                {
+                    if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                }
+                // cabecera a la izquierda y al principio del reporte
+                if($row==2 && $col==1)
+                {
+                    $body.=$this->_getHeader(true);
+                }
+                //cabecera a la derecha y al principio
+                if($row==2 && $col==3+($num*$span))
+                {
+                    $body.=$this->_getHeader(false);
+                }
+                //cabecera central
+                if($row==2 && $col==4)
+                {
+                    $body.=$this->_getHeader(null);
+                }
+            }
+            $body.="</tr>";
+        }
+
+        $body.="</table>";
+
+/*        $cuerpo="<div>
                     <table >
                         <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="<thead>
-                  <tbody>";
+                  <tbody>";*/
          
-        $posicionNeta=Balance::model()->findAllBySql($sqlCien);
+        /*$posicionNeta=Balance::model()->findAllBySql($sqlCien);
         if($posicionNeta!=null)
         { 
             $max=count($posicionNeta);
@@ -137,9 +196,10 @@ class PosicionNeta extends Reportes
                      </tr>";
         }
         $cuerpo.="</tbody></table>";
-        $cuerpo.="</div>";
-        return $cuerpo;
-	}
+        $cuerpo.="</div>";*/
+        return $body;
+    }
+
     /**
      * Metodo encargado de conseguir los carriers para generar el reporte
      * @access private
@@ -244,14 +304,15 @@ class PosicionNeta extends Reportes
     /**
      * @access private
      */
-    private function _loopData($startDate,$endDate)
+    private function _loopData($start,$end)
     {
-        $startDateTemp=self::valDates($startDate,$endDate)['startDate'];
-        $endingDateTemp=self::valDates($startDate,$endDate)['endingDate'];
-        $yesterday=DateManagement::calculateDate('-1',$startDateTemp);
+        $startDateTemp=$startDate=self::valDates($start,$end)['startDate'];
+        $endingDateTemp=$endingDate=self::valDates($start,$end)['endingDate'];
+        $this->equal=self::valDates($start,$end)['equal'];
+        $yesterday=DateManagement::calculateDate('-1',$startDate);
         $sevenDaysAgo=DateManagement::calculateDate('-7',$yesterday);
-        $firstDay=DateManagement::getDayOne($startDate);
-        $this->equal=self::valDates($startDate,$endDate)['equal'];
+        $firstDay=DateManagement::getDayOne($start);
+
         $index=0;
 
         while(self::isLower($startDateTemp,$endingDate))
@@ -270,7 +331,7 @@ class PosicionNeta extends Reportes
             // Average de los carriers
             if($this->equal) $this->_objetos[$index]['carriersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday);
             // totales de los averages
-            if($this->equal) $this->objetos[$index]['totalCarrierAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday);
+            if($this->equal) $this->_objetos[$index]['totalCarrierAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday);
             //traigo el acumulado de los carrier hasta la fecha
             if($this->equal) $this->_objetos[$index]['carriersAccumulated']=$this->_getCarriers($firstDay,$startDate);
             //traigo el total del acumulado de los carriers
@@ -278,7 +339,7 @@ class PosicionNeta extends Reportes
             //Pronostico de los carrier
             if($this->equal) $this->_objetos[$index]['carriersForecast']=$this->_closeOfTheMonth(null,$index,'carriersAverage','carriersAccumulated','carrier');
             // Total de los pronosticos de los carriers
-            if($this->equal) $this->_objetos[$index]['totalCarriersForecast']=array_sum($this->[$index]['carriersForecast']);
+            if($this->equal) $this->_objetos[$index]['totalCarriersForecast']=array_sum($this->_objetos[$index]['carriersForecast']);
             // Mes anterior
             if($this->equal) $this->_objetos[$index]['carriersPreviousMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
             // Tercer Mes
@@ -291,7 +352,39 @@ class PosicionNeta extends Reportes
             if($this->equal) $this->_objetos[$index]['carriersSixthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             // Septimo Mes
             if($this->equal) $this->_objetos[$index]['carriersSeventhMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
+            //Itero la fecha
+            $startDateTemp=DateManagement::firstDayNextMonth($startDateTemp);
+            $index+=1;
         }
+    }
+
+    /**
+     *
+     */
+    private function _getHeader($type)
+    {
+        if($type) $array=array('Ranking','Operador','Vendedor');
+        if(!$type) $array=array('Vendedor','Operador','Ranking');
+        if($type===null)
+        {
+            $array[]='Vminutes';
+            $array[]='Vrevenue';
+            $array[]='Vmargin';
+            $array[]='Cminutes';
+            $array[]='Ccost';
+            $array[]='Cmargin';
+            $array[]='Margen Total';
+            $array[]='Posicion Neta';
+            if($this->equal) $array[]='';
+            if($this->equal) $array[]='Dia Anterior';
+            if($this->equal) $array[]='';
+            if($this->equal) $array[]='Promedio 7D';
+            if($this->equal) $array[]='Acumulado Mes';
+            if($this->equal) $array[]='Proyeccion Mes';
+            if($this->equal) $array[]='';
+            if($this->equal) $array[]='Mes Anterior';
+        }
+        return self::header($array,'styleHead');
     }
 }
 ?>

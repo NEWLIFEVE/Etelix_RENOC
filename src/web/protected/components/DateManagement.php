@@ -44,7 +44,7 @@ class DateManagement
     }
 
     /**
-     *
+     * 
      */
     public static function getMonday($date)
     {
@@ -121,10 +121,72 @@ class DateManagement
     {
         if($date==null) $date=date('Y-m-d');
         if($month===null) $month="-1";
-        $arrayDate['firstday']=date('Y-m-d',strtotime($month.' month',strtotime(Utility::getDayOne($date))));
+        $arrayDate['firstday']=date('Y-m-d',strtotime($month.' month',strtotime(self::getDayOne($date))));
         $array=explode('-',$arrayDate['firstday']);
         $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
         return $arrayDate;
+    }
+
+    /**
+     * Retorna el primer dia del siguiente mes a la fecha pasada como parametro
+     * @access public
+     * @static
+     * @param date $date
+     * @return date yyyy-mm-dd
+     */
+    public static function firstDayNextMonth($date)
+    {
+        $newDate=strtotime('+1 month',strtotime($date));
+        $newDate=date('Y-m-d',$newDate);
+        $array=explode('-',$newDate);
+        return $array[0]."-".$array[1]."-01";
+    }
+
+    /**
+     * Retorna la cantidad de meses entre dos fechas
+     * @access protected
+     * @static
+     * @param date $inicio la fecha menor
+     * @param date $fin la fecha final
+     * @return int el numero de meses
+     */
+    protected static function howManyMonths($inicio,$fin)
+    {
+        if(strpos($inicio,'-'))
+        {
+            $arrayInicio=explode('-', $inicio);
+        }
+        if(strpos($fin,'-'))
+        {
+            $arrayFin=explode('-', $fin);
+        }
+        return $arrayFin[1]-$arrayInicio[1]+1;
+    }
+
+    /**
+     * Retorna el nombre del mes de una fecha dada
+     * @access protected
+     * @static
+     * @param date $fecha es la fecha que se quiere consultar
+     * @param booleam $tipo si es true devuelve un string, si es false devuelve un int
+     * @return string el nombre del mes
+     * @return int el numero del mes
+     */
+    protected static function getNameMonth($fecha,$tipo=true)
+    {
+        $mes=array('January'=>'Enero','February'=>'Febrero','March'=>'Marzo','April'=>'Abril','May'=>'Mayo','June'=>'Junio','July'=>'Julio','August'=>'Agosto','September'=>'Septiembre','October'=>'Octubre','November'=>'Noviembre','December'=>'Diciembre');
+        if(strpos($fecha,'-'))
+        {
+            $arrayFecha=explode('-',$fecha);
+        }
+        if($tipo==true)
+        {
+            return $mes[strftime("%B",strtotime($fecha))];
+        }
+        else
+        {
+            return $arrayFecha[1];
+        }
     }
 }
 ?>
