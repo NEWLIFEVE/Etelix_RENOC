@@ -83,6 +83,14 @@ $this->layout=$this->getLayoutFile('menuContent');
                     </label>
                 </div>
                 <div class="choice">
+                        <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
+                        <label for="PN">
+                            <h4 id="td2">
+                                Posicion Neta
+                            </h4>
+                        </label>
+                    </div>
+                <div class="choice">
                     <input type="checkbox" value="true" id="calidad" class="custom-checkbox" name="lista[calidad]">
                     <label for="calidad">
                         <h4 id="td4">
