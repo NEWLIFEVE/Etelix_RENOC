@@ -2,6 +2,7 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+- Agregado Reporte Posicion Neta a la interfaz de especificos incluyendo proyeccion a fin de mes y meses anteriores.
 Release 1.3.14
 - Correcion en consulta a base de datos del reporte de arbol de trafico clientes/proveedores/destinos
 Release 1.3.13
