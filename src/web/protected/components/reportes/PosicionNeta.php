@@ -9,7 +9,7 @@ class PosicionNeta extends Reportes
     {
         $this->equal=false;
         $this->_head=array(
-            'styleHead'=>'text-align:center;background-color:#295FA0; color:#ffffff; width:10%; height:100%;',
+            'styleHead'=>'text-align:center;background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
             'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
             'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
             );
@@ -33,19 +33,24 @@ class PosicionNeta extends Reportes
         if(!$this->equal)
         {
             $span=8;
+            $colu=3;
         }
         else
         {
             $span=16;
+            $colu=7;
         }
+
         
+        $sorted['carriers']=self::sort($this->_objetos[$last]['carriers'],'carrier');
+        $carriers=count($this->_objetos[$last]['carriers']);
         
         $body="<table>";
         
-        for ($row=1; $row <= 2; $row++)
+        for ($row=1; $row <= $carriers+4; $row++)
         { 
             $body.="<tr>";
-            for ($col=1; $col <= 31; $col++)
+            for ($col=1; $col <= $colu+($num*$span); $col++)
             {
                 //Espacio gris al principio y al final de las columnas en la primera fila
                 if ($row==1 && ($col==1 || $col==3+($num*$span)))
@@ -64,22 +69,23 @@ class PosicionNeta extends Reportes
                     if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
                 }
                 // cabecera a la izquierda y al principio del reporte
-                if($row==2 && $col==1)
+                if(($row==2||$row==$carriers+3) && $col==1)
                 {
                     $body.=$this->_getHeader(true);
                 }
                 //cabecera a la derecha y al principio
-                if($row==2 && $col==3+($num*$span))
+                if(($row==2||$row==$carriers+3) && $col==3+($num*$span))
                 {
                     $body.=$this->_getHeader(false);
                 }
                 //cabecera central
-                if($row==2 && $col==4)
+                if(($row==2||$row==$carriers+3)  && self::validColumn(3,$col,$num,$span))
                 {
                     $body.=$this->_getHeader(null);
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
                 //titulo de los meses
-                if($row==2 && $col==6+($num+$span))
+                if(($row==2||$row==$carriers+3) && $col==6+($num+$span))
                 {
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
@@ -92,133 +98,59 @@ class PosicionNeta extends Reportes
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
                 }
+                //Nombres de los carriers izquierda
+                if($row>2 && $row<=$carriers+2 && $col==1)
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-2;
+                    //le resto las dos filas delante y uno mas para que empiece en cero
+                    $body.=$this->_getNames($pos,$sorted['carriers'][$row-3],true);
+                }
+                //para totales
+                if($row==$carriers+4 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."'>TOTAL</td>";
+                }
+                //Nombres de los carriers derecha
+                if($row>2 && $row<=$carriers+2 && $col==3+($num*$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-2;
+                    //le resto las dos filas delante y uno mas para que empiece en cero
+                    $body.=$this->_getNames($pos,$sorted['carriers'][$row-3],false);
+                }
+                //para totales
+                if($row==$carriers+4 && $col==3+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleFooter']."'>TOTAL</td><td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."'></td>";
+                }
+                //data de los carriers
+                if($row>2 && $row<=$carriers+2 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRow(self::validIndex(3,$col,$span),'carriers','carrier',$sorted['carriers'][$row-3],self::colorEstilo($row-2));
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //data de los meses anteriores
+                if($row>2 && $row<=$carriers+2 && $col==6+($num+$span))
+                {
+                    if($this->equal) $body.=$this->_getRowMonths('carriers',$sorted['carriers'][$row-3]['attribute'],self::colorEstilo($row-2));
+                }
+                //
+                if($row==$carriers+4 && self::validColumn(3,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotal(self::validIndex(3,$col,$span),'styleFooter');
+                    if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //
+                if($row==$carriers+4 && $col==6+($num+$span))
+                {
+                    if($this->equal) $body.=$this->_getRowTotalMonth('styleFooter');
+                }
             }
             $body.="</tr>";
         }
 
         $body.="</table>";
-
-/*        $cuerpo="<div>
-                    <table >
-                        <thead>";
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
-        $cuerpo.="<thead>
-                  <tbody>";*/
-         
-        /*$posicionNeta=Balance::model()->findAllBySql($sqlCien);
-        if($posicionNeta!=null)
-        { 
-            $max=count($posicionNeta);
-            foreach($posicionNeta as $key => $operador)
-            {  
-
-                //$pos=self::ranking($key+1,$max);
-                $pos=$key+1;
-                $cuerpo.="<tr>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='ranking'>".
-                                $pos. 
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='operador'>".
-                                $operador->operador.
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='vendedor'>".
-                                CarrierManagers:: getManager($operador->id).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='vminutes'>".
-                                Yii::app()->format->format_decimal($operador->vminutes).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='vrevenue'>".
-                                Yii::app()->format->format_decimal($operador->vrevenue).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='vmargin'>".
-                                Yii::app()->format->format_decimal($operador->vmargin).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='cminutes'>".
-                                Yii::app()->format->format_decimal($operador->cminutes).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='ccost'>".
-                                Yii::app()->format->format_decimal($operador->ccost).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='cmargin'>".
-                                Yii::app()->format->format_decimal($operador->cmargin).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='posicionNeta'>".
-                                Yii::app()->format->format_decimal($operador->margen_total).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='margenTotal'>".
-                                Yii::app()->format->format_decimal($operador->posicion_neta).
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='operador'>".
-                                $operador->operador.
-                           "</td>
-                            <td style='text-align: center;".self::colorEstilo($key+1)."' class='ranking'>".
-                                $pos.
-                           "</td>
-                           <td style='text-align: center;".self::colorEstilo($key+1)."' class='vendedor'>".
-                                CarrierManagers:: getManager($operador->id).
-                           "</td>
-                        </tr>";
-            }
-        }
-        else
-        {
-            $cuerpo.="<tr>
-                        <td colspan='13'>No se encontraron resultados</td>
-                     </tr>";
-        }
-        $cuerpo.=self::cabecera(array('Ranking','Operador','Vendedor','Vminutes','Vrevenue','Vmargin','Cminutes','Ccost','Cmargin','Margen Total','Posicion Neta','Operador','Ranking','Vendedor'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
-        $Total=Balance::model()->findBySql($sqlTotal);
-        if($Total!=null)
-        { 
-            $cuerpo.="<tr>
-                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ranking'>
-                      </td>
-                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
-                      </td>
-                      <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vendedor'>
-                      TOTAL
-                      </td>
-                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vminutes'>".
-                            Yii::app()->format->format_decimal($Total->vminutes).
-                        "</td>
-                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vrevenue'>".
-                            Yii::app()->format->format_decimal($Total->vrevenue).
-                        "</td>
-                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vmargin'>".
-                            Yii::app()->format->format_decimal($Total->vmargin).
-                        "</td>
-                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cminutes'>".
-                            Yii::app()->format->format_decimal($Total->cminutes).
-                        "</td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='ccost'>".
-                            Yii::app()->format->format_decimal($Total->ccost).
-                        "</td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='cmargin'>".
-                            Yii::app()->format->format_decimal($Total->cmargin).
-                        "</td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='margenTotal'>".
-                            Yii::app()->format->format_decimal($Total->margen_total).
-                        "</td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='posicionNeta'>".
-                            Yii::app()->format->format_decimal($Total->posicion_neta).
-                        "</td>
-                         <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='operador'>
-                         TOTAL
-                         </td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
-                        </td>
-                        <td style='background-color:#999999; color:#FFFFFF; text-align:center;' class='vacio'>
-                        </td>
-                    </tr>";
-        }
-        else
-        {
-            $cuerpo.="<tr>
-                      <td colspan='13'>No se encontraron resultados</td>
-                     </tr>";
-        }
-        $cuerpo.="</tbody></table>";
-        $cuerpo.="</div>";*/
         return $body;
     }
 
@@ -303,7 +235,7 @@ class PosicionNeta extends Reportes
      */
     private function _getTotalAvgCarriers($startDate,$endDate)
     {
-        $sql="SELECT SUM(b.posicion_neta) AS posicion_neta
+        $sql="SELECT b.carrier AS carrier, SUM(b.posicion_neta) AS posicion_neta
               FROM (SELECT o.name AS carrier, cs.id, AVG(cs.posicion_neta) AS posicion_neta
                     FROM (SELECT id, date_balance, SUM(vrevenue-ccost) AS posicion_neta
                           FROM (SELECT id_carrier_customer AS id, date_balance, SUM(revenue) AS vrevenue, CAST(0 AS double precision) AS ccost
@@ -319,7 +251,8 @@ class PosicionNeta extends Reportes
                           ORDER BY posicion_neta DESC) cs, carrier o
                     WHERE o.id=cs.id
                     GROUP BY cs.id, o.name
-                    ORDER BY posicion_neta DESC) b";
+                    ORDER BY posicion_neta DESC) b
+               GROUP BY b.carrier";
         return Balance::model()->findBySql($sql);
     }
 
@@ -353,37 +286,49 @@ class PosicionNeta extends Reportes
             // Average de los carriers
             if($this->equal) $this->_objetos[$index]['carriersAverage']=$this->_getAvgCarriers($sevenDaysAgo,$yesterday);
             // totales de los averages
-            if($this->equal) $this->_objetos[$index]['totalCarrierAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday);
+            if($this->equal) $this->_objetos[$index]['totalCarriersAverage']=$this->_getTotalAvgCarriers($sevenDaysAgo,$yesterday);
             //traigo el acumulado de los carrier hasta la fecha
             if($this->equal) $this->_objetos[$index]['carriersAccumulated']=$this->_getCarriers($firstDay,$startDate);
             //traigo el total del acumulado de los carriers
             if($this->equal) $this->_objetos[$index]['totalCarriersAccumulated']=$this->_getTotalCarriers($firstDay,$startDate);
             //Pronostico de los carrier
-            if($this->equal) $this->_objetos[$index]['carriersForecast']=$this->_closeOfTheMonth(null,$index,'carriersAverage','carriersAccumulated','carrier');
+            if($this->equal) $this->_objetos[$index]['carriersForecast']=$this->_closeOfTheMonth(null,$index,'carriersAverage','carriersAccumulated','carrier','posicion_neta');
             // Total de los pronosticos de los carriers
             if($this->equal) $this->_objetos[$index]['totalCarriersForecast']=array_sum($this->_objetos[$index]['carriersForecast']);
             // Mes anterior
             if($this->equal) $this->_objetos[$index]['carriersPreviousMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
+            // Total mes anterior
+            if($this->equal) $this->_objetos[$index]['totalCarriersPreviousMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
             // Tercer Mes
             if($this->equal) $this->_objetos[$index]['carriersThirdMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             // titulo tercer mes
             if($this->equal) $this->_objetos[$index]['titleThirdMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
+            //Totales tercer mes
+            if($this->equal) $this->_objetos[$index]['totalCarriersThirdMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             // Cuarto Mes
             if($this->equal) $this->_objetos[$index]['carriersFourthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             //Titulo cuarto mes
             if($this->equal) $this->_objetos[$index]['titleFourthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
+            //Totales cuarto mes
+            if($this->equal) $this->_objetos[$index]['totalCarriersFourthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             // Quinto Mes
             if($this->equal) $this->_objetos[$index]['carriersFifthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             // Titulo quinto mes
             if($this->equal) $this->_objetos[$index]['titleFifthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
+            //Totales quinto mes
+            if($this->equal) $this->_objetos[$index]['totalCarriersFifthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             // Sexto Mes
             if($this->equal) $this->_objetos[$index]['carriersSixthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             // Titulo sexto mes
             if($this->equal) $this->_objetos[$index]['titleSixthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
+            //Totales sexto mes
+            if($this->equal) $this->_objetos[$index]['totalCarriersSixthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             // Septimo Mes
             if($this->equal) $this->_objetos[$index]['carriersSeventhMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             // Titulo septimo mes
             if($this->equal) $this->_objetos[$index]['titleSeventhMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
+            //Totales septimo mes
+            if($this->equal) $this->_objetos[$index]['totalCarriersSeventhMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             //Itero la fecha
             $startDateTemp=DateManagement::firstDayNextMonth($startDateTemp);
             $index+=1;
@@ -417,6 +362,214 @@ class PosicionNeta extends Reportes
             if($this->equal) $array[]='Mes Anterior';
         }
         return $this->header($array,'styleHead');
+    }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access protected
+     * @param int $pos posicion del manager
+     * @param array $value datos del carrier
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    protected function _getNames($pos,$value,$type=true)
+    {
+        $style=self::colorEstilo($pos);
+        if($type) 
+            return "<td style='".$style."'>{$pos}</td><td style='".$style."'>{$value['attribute']}</td><td style='".$style."'>".CarrierManagers::getManager($value['id'])."</td>";
+        else
+            return "<td style='".$style."'>".CarrierManagers::getManager($value['id'])."</td><td style='".$style."'>{$value['attribute']}</td><td style='".$style."'>{$pos}</td>";
+    }
+
+    /**
+     *
+     */
+    private function _getRow($index,$index2,$attribute,$phrase,$style)
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=null;
+        foreach ($this->_objetos[$index][$index2] as $key => $value)
+        {
+            if($value->$attribute==$phrase['attribute'])
+            {
+                $c1="<td style='".$style."'>".Yii::app()->format->format_decimal($value->vminutes)."</td>";
+                $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->vrevenue)."</td>";
+                $c3="<td style='".$style."'>".Yii::app()->format->format_decimal($value->vmargin)."</td>";
+                $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cminutes)."</td>";
+                $c5="<td style='".$style."'>".Yii::app()->format->format_decimal($value->ccost)."</td>";
+                $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cmargin)."</td>";
+                $c7="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margen_total)."</td>";
+                $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+                $posicion_neta=$value->posicion_neta;
+            }
+            
+        }
+        if($this->equal)
+        {
+            foreach ($this->_objetos[$index][$index2.'Yesterday'] as $key => $yesterday)
+            {
+                if($yesterday->$attribute==$phrase['attribute'])
+                {
+                    $c9="<td style='".$style."'>".$this->_upOrDown($yesterday->posicion_neta,$posicion_neta)."</td>";
+                    $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($yesterday->posicion_neta)."</td>";
+                }
+                
+            }
+            foreach ($this->_objetos[$index][$index2.'Average'] as $key => $average)
+            {
+                if($average->$attribute==$phrase['attribute'])
+                {
+                    $c11="<td style='".$style."'>".$this->_upOrDown($average->posicion_neta,$posicion_neta)."</td>";
+                    $c12="<td style='".$style."'>".Yii::app()->format->format_decimal($average->posicion_neta)."</td>";
+                }
+            }
+            foreach ($this->_objetos[$index][$index2.'Accumulated'] as $key => $accumulated)
+            {
+                if($accumulated->$attribute==$phrase['attribute'])
+                {
+                    $c13="<td style='".$style."'>".Yii::app()->format->format_decimal($accumulated->posicion_neta)."</td>";
+                }
+            }
+            $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Forecast"][$phrase['attribute']])."</td>";
+            foreach ($this->_objetos[$index][$index2.'PreviousMonth'] as $key => $PreviousMonth)
+            {
+                if($PreviousMonth->$attribute==$phrase['attribute'])
+                {
+                    $c15="<td style='".$style."'>".$this->_upOrDown($PreviousMonth->posicion_neta,$posicion_neta)."</td>";
+                    $c16="<td style='".$style."'>".Yii::app()->format->format_decimal($PreviousMonth->posicion_neta)."</td>";
+                }
+            }
+        }
+        if($c1==null) $c1="<td style='".$style."'>--</td>";
+        if($c2==null) $c2="<td style='".$style."'>--</td>";
+        if($c3==null) $c3="<td style='".$style."'>--</td>";
+        if($c4==null) $c4="<td style='".$style."'>--</td>";
+        if($c5==null) $c5="<td style='".$style."'>--</td>";
+        if($c6==null) $c6="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null && $this->equal) $c9="<td style='".$style."'>--</td>";
+        if($c10==null && $this->equal) $c10="<td style='".$style."'>--</td>";
+        if($c11==null && $this->equal) $c11="<td style='".$style."'>--</td>";
+        if($c12==null && $this->equal) $c12="<td style='".$style."'>--</td>";
+        if($c13==null && $this->equal) $c13="<td style='".$style."'>--</td>";
+        if($c14==null && $this->equal) $c14="<td style='".$style."'>--</td>";
+        if($c15==null && $this->equal) $c15="<td style='".$style."'>--</td>";
+        if($c16==null && $this->equal) $c16="<td style='".$style."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16;
+    }
+
+    /**
+     * Retorna las celdas con la data que conincida dentro del index consultado y el apellido pasado como parametro
+     * @access private
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data
+     * @param string $phrase es el apallido que debe coincidir la data
+     * @param string $style el nombre del estilo asignado 
+     * @param $type true=minutes,revenue,margin false=margin
+     * @return string
+     */
+    private function _getRowMonths($index,$phrase,$style,$attribute=null)
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $posicion_neta=$third=$fourth=$fifth=$sixth=null;        
+        $posicion_neta=$this->_objetos[0][$index.'Forecast'][$phrase];
+        foreach ($this->_objetos[0][$index.'ThirdMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase)
+            {
+                $c1="<td style='".$style."'>".$this->_upOrDown($value->posicion_neta,$posicion_neta)."</td>";
+                $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'FourthMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase)
+            {
+                $c3="<td style='".$style."'>".$this->_upOrDown($value->posicion_neta,$posicion_neta)."</td>";
+                $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'FifthMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase)
+            {
+                $c5="<td style='".$style."'>".$this->_upOrDown($value->posicion_neta,$posicion_neta)."</td>";
+                $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'SixthMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase)
+            {
+                $c7="<td style='".$style."'>".$this->_upOrDown($value->posicion_neta,$posicion_neta)."</td>";
+                $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'SeventhMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase)
+            {
+                $c9="<td style='".$style."'>".$this->_upOrDown($value->posicion_neta,$posicion_neta)."</td>";
+                $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
+            }
+        }
+        if($c1==null) $c1="<td style='".$style."'>--</td>";
+        if($c2==null) $c2="<td style='".$style."'>--</td>";
+        if($c3==null) $c3="<td style='".$style."'>--</td>";
+        if($c4==null) $c4="<td style='".$style."'>--</td>";
+        if($c5==null) $c5="<td style='".$style."'>--</td>";
+        if($c6==null) $c6="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."'>--</td>";
+        if($c10==null) $c10="<td style='".$style."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
+    }
+
+    /**
+     *
+     */
+    private function _getRowTotal($index,$style)
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=null;
+        $total=$this->_objetos[$index]['totalCarriers'];
+        if($c1==null) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->vminutes)."</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->vrevenue)."</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->vmargin)."</td>";
+        if($c4==null) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->cminutes)."</td>";
+        if($c5==null) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->ccost)."</td>";
+        if($c6==null) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->cmargin)."</td>";
+        if($c7==null) $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->margen_total)."</td>";
+        if($c8==null) $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($total->posicion_neta)."</td>";
+        if($c9==null && $this->equal) $c9="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[$index]['totalCarriersYesterday']->posicion_neta,$total->posicion_neta)."</td>";
+        if($c10==null && $this->equal) $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index]['totalCarriersYesterday']->posicion_neta)."</td>";
+        if($c11==null && $this->equal) $c11="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[$index]['totalCarriersAverage']->posicion_neta,$total->posicion_neta)."</td>";
+        if($c12==null && $this->equal) $c12="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index]['totalCarriersAverage']->posicion_neta)."</td>";
+        if($c13==null && $this->equal) $c13="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index]['totalCarriersAccumulated']->posicion_neta)."</td>";
+        if($c14==null && $this->equal) $c14="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index]['totalCarriersForecast'])."</td>";
+        if($c15==null && $this->equal) $c15="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[$index]['totalCarriersPreviousMonth']->posicion_neta,$total->posicion_neta)."</td>";
+        if($c16==null && $this->equal) $c16="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index]['totalCarriersPreviousMonth']->posicion_neta)."</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16;
+    }
+
+    /**
+     *
+     */
+    private function _getRowTotalMonth($style)
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $forecast=$this->_objetos[0]['totalCarriersForecast'];
+        if($c1==null) $c1="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersThirdMonth']->posicion_neta,$forecast)."</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersThirdMonth']->posicion_neta)."</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersFourthMonth']->posicion_neta,$forecast)."</td>";
+        if($c4==null) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersFourthMonth']->posicion_neta)."</td>";
+        if($c5==null) $c5="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersFifthMonth']->posicion_neta,$forecast)."</td>";
+        if($c6==null) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersFifthMonth']->posicion_neta)."</td>";
+        if($c7==null) $c7="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersSixthMonth']->posicion_neta,$forecast)."</td>";
+        if($c8==null) $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersSixthMonth']->posicion_neta)."</td>";
+        if($c9==null) $c9="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersSeventhMonth']->posicion_neta,$forecast)."</td>";
+        if($c10==null) $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersSeventhMonth']->posicion_neta)."</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
     }
 }
 ?>

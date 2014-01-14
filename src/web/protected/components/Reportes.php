@@ -1065,10 +1065,11 @@ class Reportes extends CApplicationComponent
      * @param string $accumulated es la ubicacion del acumulado dentro del array $this->objetos[$index]
      * @return array un array con los datos calculados
      */
-    protected function _closeOfTheMonth($phrase=null,$index,$average,$accumulated,$attribute=null)
+    protected function _closeOfTheMonth($phrase=null,$index,$average,$accumulated,$attribute=null,$calc=null)
     {
         $array=array();
         if($attribute===null) $attribute="apellido";
+        if($calc==null) $calc="margin";
         if($phrase!==null)
         {
             foreach ($phrase as $key => $lastname)
@@ -1081,7 +1082,7 @@ class Reportes extends CApplicationComponent
                         {
                             if($acum->$attribute==$avg->$attribute)
                             {
-                                $array[$acum->$attribute]=$acum->margin+$this->_forecast($avg->margin);
+                                $array[$acum->$attribute]=$acum->$calc+$this->_forecast($avg->$calc);
                             }
                         }
                     }
@@ -1104,7 +1105,7 @@ class Reportes extends CApplicationComponent
                 {
                     if($acum->$attribute==$avg->$attribute)
                     {
-                        $array[$acum->$attribute]=(float)$acum->margin+(float)$this->_forecast($avg->margin);
+                        $array[$acum->$attribute]=(float)$acum->$calc+(float)$this->_forecast($avg->$calc);
                     }
                 }
             }
@@ -1112,7 +1113,7 @@ class Reportes extends CApplicationComponent
             {
                 if(!isset($array[$acum->$attribute]))
                 {
-                    $array[$acum->$attribute]=$acum->margin;
+                    $array[$acum->$attribute]=$acum->$calc;
                 }
             }
         }
