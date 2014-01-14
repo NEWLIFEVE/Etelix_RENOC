@@ -686,7 +686,7 @@ class Reportes extends CApplicationComponent
     /**
      *
      */
-    protected static function header($columns,$style)
+    protected function header($columns,$style)
     {
         $body="";
         foreach ($columns as $key => $col)
@@ -811,7 +811,7 @@ class Reportes extends CApplicationComponent
         $f=explode('-', $fin);
         if($i[2]==1 && $f[2]==DateManagement::howManyDays($fin))
         {
-            return " ".self::getNameMonth($inicio,true)." ".$f[0];
+            return " ".DateManagement::getNameMonth($inicio,true)." ".$f[0];
         }
         elseif($inicio==$fin)
         {

@@ -30,7 +30,15 @@ class PosicionNeta extends Reportes
         $num=count($this->_objetos);
         $last=$num-1;
 
-        $span=16;
+        if(!$this->equal)
+        {
+            $span=8;
+        }
+        else
+        {
+            $span=16;
+        }
+        
         
         $body="<table>";
         
@@ -69,6 +77,20 @@ class PosicionNeta extends Reportes
                 if($row==2 && $col==4)
                 {
                     $body.=$this->_getHeader(null);
+                }
+                //titulo de los meses
+                if($row==2 && $col==6+($num+$span))
+                {
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
                 }
             }
             $body.="</tr>";
@@ -344,14 +366,24 @@ class PosicionNeta extends Reportes
             if($this->equal) $this->_objetos[$index]['carriersPreviousMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
             // Tercer Mes
             if($this->equal) $this->_objetos[$index]['carriersThirdMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
+            // titulo tercer mes
+            if($this->equal) $this->_objetos[$index]['titleThirdMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             // Cuarto Mes
             if($this->equal) $this->_objetos[$index]['carriersFourthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
+            //Titulo cuarto mes
+            if($this->equal) $this->_objetos[$index]['titleFourthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             // Quinto Mes
             if($this->equal) $this->_objetos[$index]['carriersFifthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
+            // Titulo quinto mes
+            if($this->equal) $this->_objetos[$index]['titleFifthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             // Sexto Mes
             if($this->equal) $this->_objetos[$index]['carriersSixthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
+            // Titulo sexto mes
+            if($this->equal) $this->_objetos[$index]['titleSixthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             // Septimo Mes
             if($this->equal) $this->_objetos[$index]['carriersSeventhMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
+            // Titulo septimo mes
+            if($this->equal) $this->_objetos[$index]['titleSeventhMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             //Itero la fecha
             $startDateTemp=DateManagement::firstDayNextMonth($startDateTemp);
             $index+=1;
@@ -363,8 +395,8 @@ class PosicionNeta extends Reportes
      */
     private function _getHeader($type)
     {
-        if($type) $array=array('Ranking','Operador','Vendedor');
-        if(!$type) $array=array('Vendedor','Operador','Ranking');
+        if($type===true) $array=array('Ranking','Operador','Vendedor');
+        if($type===false) $array=array('Vendedor','Operador','Ranking');
         if($type===null)
         {
             $array[]='Vminutes';
@@ -384,7 +416,7 @@ class PosicionNeta extends Reportes
             if($this->equal) $array[]='';
             if($this->equal) $array[]='Mes Anterior';
         }
-        return self::header($array,'styleHead');
+        return $this->header($array,'styleHead');
     }
 }
 ?>

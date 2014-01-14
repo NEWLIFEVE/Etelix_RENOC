@@ -150,7 +150,7 @@ class DateManagement
      * @param date $fin la fecha final
      * @return int el numero de meses
      */
-    protected static function howManyMonths($inicio,$fin)
+    public static function howManyMonths($inicio,$fin)
     {
         if(strpos($inicio,'-'))
         {
@@ -172,7 +172,7 @@ class DateManagement
      * @return string el nombre del mes
      * @return int el numero del mes
      */
-    protected static function getNameMonth($fecha,$tipo=true)
+    public static function getNameMonth($fecha,$tipo=true)
     {
         $mes=array('January'=>'Enero','February'=>'Febrero','March'=>'Marzo','April'=>'Abril','May'=>'Mayo','June'=>'Junio','July'=>'Julio','August'=>'Agosto','September'=>'Septiembre','October'=>'Octubre','November'=>'Noviembre','December'=>'Diciembre');
         if(strpos($fecha,'-'))
