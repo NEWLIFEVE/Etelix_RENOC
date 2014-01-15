@@ -63,8 +63,6 @@ class AltoImpacto extends Reportes
 	{
         $this->_getDays($start);
         $this->type=$type;
-        ini_set('max_execution_time', 300);
-        ini_set('memory_limit', '300M');
         //Consigo la data respactiva
         $this->_loopData($start,$end);
         
@@ -649,16 +647,16 @@ class AltoImpacto extends Reportes
         $array=self::valDates($start,$end);
         $startDateTemp=$startDate=$array['startDate'];
         $endingDateTemp=$endingDate=$array['endingDate'];
-        $yesterday=Utility::calculateDate('-1',$startDateTemp);
-        $sevenDaysAgo=Utility::calculateDate('-7',$yesterday);
-        $firstDay=Utility::getDayOne($start);
+        $yesterday=DateManagement::calculateDate('-1',$startDateTemp);
+        $sevenDaysAgo=DateManagement::calculateDate('-7',$yesterday);
+        $firstDay=DateManagement::getDayOne($start);
         $this->equal=$array['equal'];
         $arrayStartTemp=null;
         $index=0;
         while (self::isLower($startDateTemp,$endingDate))
         {
             $arrayStartTemp=explode('-',$startDateTemp);
-            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
+            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".DateManagement::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
             $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /***/
@@ -679,9 +677,9 @@ class AltoImpacto extends Reportes
             //Total de la proyeccion de clientes
             if($this->type && $this->equal) $this->_objetos[$index]['customersTotalForecast']=array_sum($this->_objetos[$index]['customersForecast']);
             //Guardo los totales del mes anterior de los clientes
-            if($this->type && $this->equal) $this->_objetos[$index]['customersPreviousMonth']=$this->_getCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersPreviousMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],true,null,'margin');
             //Total de mes acumulado anterior
-            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalPreviousMonth']=$this->_getTotalCompleteCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalPreviousMonth']=$this->_getTotalCompleteCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],true);
             //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
             // Guardo los datos de los totales de ayer de los clientes con mas de 10 dolares de ganancia
@@ -715,9 +713,9 @@ class AltoImpacto extends Reportes
             //Totales de proyeccion
             if($this->type && $this->equal) $this->_objetos[$index]['providersTotalForecast']=array_sum($this->_objetos[$index]['providersForecast']);
             //Guardo los totales del mes anterior de los providers
-            if($this->type && $this->equal) $this->_objetos[$index]['providersPreviousMonth']=$this->_getCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersPreviousMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],false,null,'margin');
             //Total de mes acumulado anterior
-            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalPreviousMonth']=$this->_getTotalCompleteCarriers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalPreviousMonth']=$this->_getTotalCompleteCarriers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],false);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
             $this->_objetos[$index]['suppliersTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia del dia anterior
@@ -750,9 +748,9 @@ class AltoImpacto extends Reportes
             //Totales de proyeccion
             if($this->type && $this->equal) $this->_objetos[$index]['externalTotalForecast']=array_sum($this->_objetos[$index]['externalForecast']);
             //Guardo los totales del mes anterior de los providers
-            if($this->type && $this->equal) $this->_objetos[$index]['externalPreviousMonth']=$this->_getDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['externalPreviousMonth']=$this->_getDestination(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],true,null,'margin');
             //Totales completos del mes anterior
-            if($this->type && $this->equal) $this->_objetos[$index]['externalTotalPreviousMonth']=$this-> _getTotalDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['externalTotalPreviousMonth']=$this-> _getTotalDestination(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],true,null,'margin');
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalExternalDestinationsMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,true,true);
             //Guardo los datos de los totales de los destinos externos con mas de 10 dolares de ganancia del dia de ayer
@@ -785,9 +783,9 @@ class AltoImpacto extends Reportes
             //Totales de proyeccion
             if($this->type && $this->equal) $this->_objetos[$index]['internalTotalForecast']=array_sum($this->_objetos[$index]['externalForecast']);
             //Guardo los totales del mes anterior de los providers
-            if($this->type && $this->equal) $this->_objetos[$index]['internalPreviousMonth']=$this->_getDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['internalPreviousMonth']=$this->_getDestination(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],false,null,'margin');
             //Totales completos del mes anterior
-            if($this->type && $this->equal) $this->_objetos[$index]['internalTotalPreviousMonth']=$this-> _getTotalDestination($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['internalTotalPreviousMonth']=$this-> _getTotalDestination(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],false,null,'margin');
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia
             $this->_objetos[$index]['totalInternalDestinationsWithMoreThanTenDollars']=$this->_getTotalDestination($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los destinos internos con mas de 10 dolares de ganancia del dia de ayer
@@ -804,7 +802,7 @@ class AltoImpacto extends Reportes
             if($this->type && $this->equal) $this->_objetos[$index]['totalInternalDestinationsWithLessThanTenDollarsYesterday']=$this->_getTotalDestination($yesterday,$yesterday,false,false,'margin');
 
             /*Itero la fecha*/
-            $startDateTemp=self::firstDayNextMonth($startDateTemp);
+            $startDateTemp=DateManagement::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
     }
