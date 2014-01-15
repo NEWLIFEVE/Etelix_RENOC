@@ -16,7 +16,7 @@ class PosicionNetaVendedor extends Reportes
 	*/
 	public function reporte()
 	{
-		$sql="SELECT o.name AS operador, m.id, m.lastname AS vendedor, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
+		$sql="SELECT o.name AS carrier, m.id, m.lastname AS vendedor, cs.vminutes, cs.vrevenue, cs.vmargin, cs.cminutes, cs.ccost, cs.cmargin, cs.posicion_neta, cs.margen_total
 			  FROM(SELECT id, SUM(vminutes) AS vminutes, SUM(vrevenue) AS vrevenue, SUM(vmargin) AS vmargin, SUM(cminutes) AS cminutes, SUM(ccost) AS ccost, SUM(cmargin) AS cmargin, SUM(vrevenue-ccost) AS posicion_neta, SUM(vmargin+cmargin) AS margen_total
 			  	   FROM(SELECT id_carrier_customer AS id, SUM(minutes) AS vminutes, SUM(revenue) AS vrevenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS vmargin, CAST(0 AS double precision) AS cminutes, CAST(0 AS double precision) AS ccost, CAST(0 AS double precision) AS cmargin
 			  	   	    FROM balance
@@ -47,7 +47,7 @@ class PosicionNetaVendedor extends Reportes
         					$this->pos.
         			 "</td>
         				<td style='{$estilo}'>".
-        					$valor->operador.
+        					$valor->carrier.
         			 "</td>
         				<td style='{$estilo}'>".
         					$valor->vendedor.
@@ -77,7 +77,7 @@ class PosicionNetaVendedor extends Reportes
         					Yii::app()->format->format_decimal($valor->posicion_neta).
         			 "</td>
         				<td style='{$estilo}'>".
-        					$valor->operador.
+        					$valor->carrier.
         			 "</td>
         				<td style='{$estilo}'>".
         					$this->pos.
