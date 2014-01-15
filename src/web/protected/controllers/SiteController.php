@@ -173,13 +173,13 @@ class SiteController extends Controller
         $startDate=$endingDate=$carrier=null;
         $correos=null;
         $user=UserIdentity::getEmail();
+        ini_set('max_execution_time', 900);
+        ini_set('memory_limit', '512M');
         if(isset($_POST['startDate']))
         {
             $this->letra=Log::preliminar($_POST['startDate']);
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
-            ini_set('max_execution_time', 300);
-            ini_set('memory_limit', '300M');
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
@@ -226,7 +226,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['PN']))
             {
                 $correos['PN']['asunto']="RENOC".$this->letra." Posicion Neta".self::reportTitle($startDate,$endingDate);
-                $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate);
+                $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate,$endingDate);
                 $correos['PN']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['PN']['asunto'].".xls";
             }
             //Posicion Neta por vendedor
@@ -307,8 +307,6 @@ class SiteController extends Controller
                 }
             }
         }
-        $tiempo=30*count($correos);
-        ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         { 
             //Esto es para que no descargue los archivos cuando se genere uno de estos reportes
@@ -353,6 +351,8 @@ class SiteController extends Controller
             //Alto Impacto Completo
             if(isset($_GET['lista']['AI10']))
             {
+                ini_set('max_execution_time', 300);
+                ini_set('memory_limit', '300M');
                 $archivos['AI10']['nombre']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
                 $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
             }
@@ -370,7 +370,7 @@ class SiteController extends Controller
             if(isset($_GET['lista']['PN']))
             {
                 $archivos['PN']['nombre']="RENOC".$this->letra." Posicion Neta".self::reportTitle($startDate,$endingDate);
-                $archivos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate);
+                $archivos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate,$endingDate);
             }
             if(isset($_GET['lista']['PNV']))
             {
@@ -416,11 +416,15 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_GET['lista']['DC']))
             {
+                ini_set('max_execution_time', 300);
+                ini_set('memory_limit', '300M');
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
                 $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx");
             }
             if(isset($_GET['lista']['Ev']))
             {
+                ini_set('max_execution_time', 300);
+                ini_set('memory_limit', '300M');
                 $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion".self::reportTitle($startDate,$endingDate);
                 $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$archivos['Ev']['nombre'].".xlsx");
             }
@@ -456,6 +460,8 @@ class SiteController extends Controller
         $startDate=$endingDate=$carrier=null;
         $correos=null;
         $user="renoc@etelix.com";
+        ini_set('max_execution_time', 900);
+        ini_set('memory_limit', '512M');
         if(isset($_POST['startDate']))
         {
             $startDate=(string)$_POST['startDate'];
@@ -506,7 +512,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['PN']))
             {
                 $correos['PN']['asunto']="RENOC".$this->letra." Posicion Neta".self::reportTitle($startDate,$endingDate);
-                $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate);
+                $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate,$endingDate);
                 $correos['PN']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['PN']['asunto'].".xls";
             }
             //Posicion Neta por vendedor
@@ -587,8 +593,6 @@ class SiteController extends Controller
                 }
             }
         }
-        $tiempo=30*count($correos);
-        ini_set('max_execution_time', $tiempo);
         foreach($correos as $key => $correo)
         {
             //esto es para evitar que cuando sea alguno de estos reportes no descargue el archivo
@@ -598,19 +602,19 @@ class SiteController extends Controller
             }
             if(stripos($correo['asunto'], "RETAIL"))
             {
-                $lista=array('CarlosBuona@etelix.com','sig@etelix.com');
+                $lista=array('CarlosBuona@etelix.com','auto@etelix.com');
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
             elseif (stripos($correo['asunto'], "Calidad"))
             {
                 $userDif="ceo@etelix.com";
-                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','sig@etelix.com');
+                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com','auto@etelix.com');
                 if(stripos($correo['asunto'], "BSG")) $lista=array_merge($lista,array('txadmin@netuno.net'));
                 Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
             }
             else
             {
-                $lista=array('sig@etelix.com');
+                $lista=array('auto@etelix.com');
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
         }

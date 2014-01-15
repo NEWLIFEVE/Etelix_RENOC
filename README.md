@@ -2,7 +2,11 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
-
+Release 1.3.16
+- Color de fondo para las celdas en Reporte Distribucion Comercial
+- Validacion de las fechas en Reporte Calidad
+- Agregadas la columnas Dia Anterior, Promedio 7D, Acumulado Mes, Proyeccion Mes y Meses Anteriores en Reporte Posicion Neta
+- Agregado a especificos Reporte Posicion Neta
 Release 1.3.15
 - Agregado un septimo mes en reporte de Ranking Compra Venta
 Release 1.3.14

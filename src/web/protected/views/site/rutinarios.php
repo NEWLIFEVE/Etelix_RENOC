@@ -135,7 +135,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="API" class="custom-checkbox" name="lista[API]">
                         <label for="API">
-                            <h4 id="td3">
+                            <h4 id="td4">
                                 AP Internal
                             </h4>
                         </label>
@@ -143,7 +143,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="APE" class="custom-checkbox" name="lista[APE]">
                         <label for="APE">
-                            <h4 id="td3">
+                            <h4 id="td4">
                                 AP External
                             </h4>
                         </label>
@@ -159,7 +159,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                     <div class="choice">
                         <input type="checkbox" value="true" id="Ev" class="custom-checkbox" name="lista[Ev]">
                         <label for="Ev">
-                            <h4 id="td5">
+                            <h4 id="td4">
                                 Evolucion
                             </h4>
                         </label>

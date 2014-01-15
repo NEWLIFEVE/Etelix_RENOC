@@ -312,9 +312,9 @@ class RankingCompraVenta extends Reportes
         //verifico las fechas
         $array=self::valDates($start,$end);
         $startDateTemp=$startDate=$array['startDate'];
-        $yesterday=Utility::calculateDate('-1',$startDateTemp);
-        $sevenDaysAgo=Utility::calculateDate('-7',$yesterday);
-        $firstDay=Utility::getDayOne($start);
+        $yesterday=DateManagement::calculateDate('-1',$startDateTemp);
+        $sevenDaysAgo=DateManagement::calculateDate('-7',$yesterday);
+        $firstDay=DateManagement::getDayOne($start);
         $endingDateTemp=$endingDate=$array['endingDate'];
         $this->equal=$array['equal'];
 
@@ -323,7 +323,7 @@ class RankingCompraVenta extends Reportes
         while (self::isLower($startDateTemp,$endingDate))
         {
             $arrayStartTemp=explode('-',$startDateTemp);
-            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".self::howManyDays($startDateTemp),$endingDate);
+            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".DateManagement::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
             $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /*Guardo todos los vendedores*/
@@ -331,39 +331,39 @@ class RankingCompraVenta extends Reportes
             /*Guardo los totales de los vendedores*/
             $this->_objetos[$index]['totalVendors']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,true);
             /*El total del margen por vendedor mes anterior*/
-            if($this->equal) $this->_objetos[$index]['sellersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersPreviousMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],true);
             //tercer mes
-            if($this->equal) $this->_objetos[$index]['sellersThirdMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersThirdMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],true);
             //cuarto mes
-            if($this->equal) $this->_objetos[$index]['sellersFourthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersFourthMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],true);
             //quinto mes
-            if($this->equal) $this->_objetos[$index]['sellersFifthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersFifthMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],true);
             //sexto mes
-            if($this->equal) $this->_objetos[$index]['sellersSixthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersSixthMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],true);
             //sexto mes
-            if($this->equal) $this->_objetos[$index]['sellersSeventhMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['sellersSeventhMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],true);
             /*Guardo los totales de los vendedores*/
-            if($this->equal) $this->_objetos[$index]['totalVendorsPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsPreviousMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],true);
             //Tercer Mes
-            if($this->equal) $this->_objetos[$index]['totalVendorsThirdMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsThirdMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],true);
             //Cuarto Mes
-            if($this->equal) $this->_objetos[$index]['totalVendorsFourthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsFourthMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],true);
             //Quinto Mes
-            if($this->equal) $this->_objetos[$index]['totalVendorsFifthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsFifthMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],true);
             //Sexto Mes
-            if($this->equal) $this->_objetos[$index]['totalVendorsSixthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsSixthMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],true);
             //Septimo mes
-            if($this->equal) $this->_objetos[$index]['totalVendorsSeventhMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday'],true);
+            if($this->equal) $this->_objetos[$index]['totalVendorsSeventhMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],true);
             //Titulo tercer mes
-            if($this->equal) $this->_objetos[$index]['titleThirdMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            if($this->equal) $this->_objetos[$index]['titleThirdMonth']=$this->reportTitle(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             //Titulo Cuarto Mes
-            if($this->equal) $this->_objetos[$index]['titleFourthMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            if($this->equal) $this->_objetos[$index]['titleFourthMonth']=$this->reportTitle(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             //Titulo Quinto Mes
-            if($this->equal) $this->_objetos[$index]['titleFifthMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            if($this->equal) $this->_objetos[$index]['titleFifthMonth']=$this->reportTitle(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             //Titulo Sexto Mes
-            if($this->equal) $this->_objetos[$index]['titleSixthMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            if($this->equal) $this->_objetos[$index]['titleSixthMonth']=$this->reportTitle(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             //Titulo del septimo mes
-            if($this->equal) $this->_objetos[$index]['titleSeventhMonth']=$this->reportTitle($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday']);
+            if($this->equal) $this->_objetos[$index]['titleSeventhMonth']=$this->reportTitle(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             /*Guardo los valores de vendedores del dia anterior*/
             if($this->equal) $this->_objetos[$index]['sellersYesterday']=$this->_getManagers($yesterday,$yesterday,true);
             /*Guardo los totales de los vendedores del dia de ayer*/
@@ -387,29 +387,29 @@ class RankingCompraVenta extends Reportes
             /*Guardo los totales de todos los compradores*/
             $this->_objetos[$index]['totalBuyers']=$this->_getTotalManagers($startDateTemp,$endingDateTemp,false);
             /*El total del margen por compradores mes anterior*/
-            if($this->equal) $this->_objetos[$index]['buyersPreviousMonth']=$this->_getManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersPreviousMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],false);
             //tercer mes
-            if($this->equal) $this->_objetos[$index]['buyersThirdMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersThirdMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],false);
             //cuarto mes
-            if($this->equal) $this->_objetos[$index]['buyersFourthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersFourthMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],false);
             //quinto mes
-            if($this->equal) $this->_objetos[$index]['buyersFifthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersFifthMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],false);
             //sexto mes
-            if($this->equal) $this->_objetos[$index]['buyersSixthMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersSixthMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],false);
             //Septimo mes
-            if($this->equal) $this->_objetos[$index]['buyersSeventhMonth']=$this->_getManagers($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['buyersSeventhMonth']=$this->_getManagers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],false);
             /*Guardo los totales de los compradores*/
-            if($this->equal) $this->_objetos[$index]['totalBuyersPreviousMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersPreviousMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],false);
             //Tercer Mes
-            if($this->equal) $this->_objetos[$index]['totalBuyersThirdMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersThirdMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],false);
             //Cuarto Mes
-            if($this->equal) $this->_objetos[$index]['totalBuyersFourthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersFourthMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],false);
             //Quinto Mes
-            if($this->equal) $this->_objetos[$index]['totalBuyersFifthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersFifthMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],false);
             //Sexto Mes
-            if($this->equal) $this->_objetos[$index]['totalBuyersSixthMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersSixthMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],false);
             //Septimo mes
-            if($this->equal) $this->_objetos[$index]['totalBuyersSeventhMonth']=$this->_getTotalManagers($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday'],false);
+            if($this->equal) $this->_objetos[$index]['totalBuyersSeventhMonth']=$this->_getTotalManagers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],false);
             /*Guardo los valores de compradores del dia anterior*/
             if($this->equal) $this->_objetos[$index]['buyersYesterday']=$this->_getManagers($yesterday,$yesterday,false);
             /*Guardo los totales de los compradores del dia de ayer*/
@@ -435,41 +435,41 @@ class RankingCompraVenta extends Reportes
             /*Guardo el margen total de ese periodo*/
             $this->_objetos[$index]['totalMargen']=$this->_getTotalMargen($startDateTemp,$endingDateTemp);
             /*guardo los totales de los compradores y vendedores consolidado*/
-            if($this->equal) $this->_objetos[$index]['consolidatedPreviousMonth']=$this->_getConsolidados($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            if($this->equal) $this->_objetos[$index]['consolidatedPreviousMonth']=$this->_getConsolidados(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
             //Tercer mes
-            if($this->equal) $this->_objetos[$index]['consolidatedThirdMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            if($this->equal) $this->_objetos[$index]['consolidatedThirdMonth']=$this->_getConsolidados(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             //Cuarto mes
-            if($this->equal) $this->_objetos[$index]['consolidatedFourthMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            if($this->equal) $this->_objetos[$index]['consolidatedFourthMonth']=$this->_getConsolidados(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             //Quinto mes
-            if($this->equal) $this->_objetos[$index]['consolidatedFifthMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            if($this->equal) $this->_objetos[$index]['consolidatedFifthMonth']=$this->_getConsolidados(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             //Sexto mes
-            if($this->equal) $this->_objetos[$index]['consolidatedSixthMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            if($this->equal) $this->_objetos[$index]['consolidatedSixthMonth']=$this->_getConsolidados(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             //Septimo mes
-            if($this->equal) $this->_objetos[$index]['consolidatedSeventhMonth']=$this->_getConsolidados($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday']);
+            if($this->equal) $this->_objetos[$index]['consolidatedSeventhMonth']=$this->_getConsolidados(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             /*Guardo el total de los consolidados*/
-            if($this->equal) $this->_objetos[$index]['totalConsolidatedPreviousMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedPreviousMonth']=$this->_getTotalConsolidado(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
             //Tercer Mes
-            if($this->equal) $this->_objetos[$index]['totalConsolidatedThirdMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedThirdMonth']=$this->_getTotalConsolidado(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             //Cuarto Mes
-            if($this->equal) $this->_objetos[$index]['totalConsolidatedFourthMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedFourthMonth']=$this->_getTotalConsolidado(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             //Quinto Mes
-            if($this->equal) $this->_objetos[$index]['totalConsolidatedFifthMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedFifthMonth']=$this->_getTotalConsolidado(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             //Sexto Mes
-            if($this->equal) $this->_objetos[$index]['totalConsolidatedSixthMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedSixthMonth']=$this->_getTotalConsolidado(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             //Septimo mes
-            if($this->equal) $this->_objetos[$index]['totalConsolidatedSeventhMonth']=$this->_getTotalConsolidado($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalConsolidatedSeventhMonth']=$this->_getTotalConsolidado(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             /*Guardo el margen total de ese periodo*/
-            if($this->equal) $this->_objetos[$index]['totalMargenPreviousMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate)['firstday'],$this->leastOneMonth($startDate)['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalMargenPreviousMonth']=$this->_getTotalMargen(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday']);
             //Tercer Mes
-            if($this->equal) $this->_objetos[$index]['totalMargenThirdMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-2')['firstday'],$this->leastOneMonth($startDate,'-2')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalMargenThirdMonth']=$this->_getTotalMargen(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday']);
             //Cuarto Mes
-            if($this->equal) $this->_objetos[$index]['totalMargenFourthMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-3')['firstday'],$this->leastOneMonth($startDate,'-3')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalMargenFourthMonth']=$this->_getTotalMargen(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             //Quinto Mes
-            if($this->equal) $this->_objetos[$index]['totalMargenFifthMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-4')['firstday'],$this->leastOneMonth($startDate,'-4')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalMargenFifthMonth']=$this->_getTotalMargen(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             //Sexto Mes
-            if($this->equal) $this->_objetos[$index]['totalMargenSixthMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-5')['firstday'],$this->leastOneMonth($startDate,'-5')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalMargenSixthMonth']=$this->_getTotalMargen(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             //Septimo mes
-            if($this->equal) $this->_objetos[$index]['totalMargenSeventhMonth']=$this->_getTotalMargen($this->leastOneMonth($startDate,'-6')['firstday'],$this->leastOneMonth($startDate,'-6')['lastday']);
+            if($this->equal) $this->_objetos[$index]['totalMargenSeventhMonth']=$this->_getTotalMargen(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             /*guardo los totales de los compradores y vendedores consolidado del dia de ayer*/
             if($this->equal) $this->_objetos[$index]['consolidatedYesterday']=$this->_getConsolidados($yesterday,$yesterday);
             /*Guardo el total de los consolidados del dia de ayer*/
@@ -494,7 +494,7 @@ class RankingCompraVenta extends Reportes
             if($this->equal) $this->_objetos[$index]['totalConsolidatedClose']=array_sum($this->_objetos[$index]['consolidatedForecast']);
 
             /*Itero la fecha*/
-            $startDateTemp=self::firstDayNextMonth($startDateTemp);
+            $startDateTemp=DateManagement::firstDayNextMonth($startDateTemp);
             $index+=1;
         }
     }

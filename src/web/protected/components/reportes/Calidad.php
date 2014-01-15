@@ -17,6 +17,8 @@ class Calidad extends Reportes
 	 */
 	public static function getHtmlDestinations($startDate,$endingDate,$carrier,$type=true)
 	{
+		$startDate=self::valDates($startDate,$endingDate)['startDate'];
+		$endingDate=self::valDates($startDate,$endingDate)['endingDate'];
 		$nombre=Carrier::getName($carrier);
 		if($type==false)
 		{

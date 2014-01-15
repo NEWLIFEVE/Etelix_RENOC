@@ -104,10 +104,10 @@ class Reportes extends CApplicationComponent
      * @param $fecha date es la fecha que se necesita el reporte
      * @return $variable string con el cuerpo del reporte
      */
-    public function PosicionNeta($fecha)
+    public function PosicionNeta($startDate,$endingDate)
     {
-        $variable=PosicionNeta::reporte($fecha);
-        return $variable;
+        $variable=new PosicionNeta;
+        return $variable->reporte($startDate,$endingDate);
     }
 
     /**
@@ -547,14 +547,21 @@ class Reportes extends CApplicationComponent
         return $color;
     }
     
-     function mitad($pos, $posicionNeta) {
-        $mitad = ($posicionNeta / 2) + 1;
-        if ($pos < $mitad) {
+    /**
+     *
+     */
+    public function mitad($pos, $posicionNeta)
+    {
+        $mitad=($posicionNeta/2)+1;
+        if($pos<$mitad)
+        {
             return $pos;
-        } else {
-            $diferencia = $pos - $mitad;
-            $pos = ($mitad - $diferencia) - 1;
-            return "-" . $pos;
+        }
+        else
+        {
+            $diferencia=$pos-$mitad;
+            $pos=($mitad-$diferencia)-1;
+            return "-".$pos;
         }
     }
 
@@ -677,6 +684,19 @@ class Reportes extends CApplicationComponent
     }
 
     /**
+     *
+     */
+    protected function header($columns,$style)
+    {
+        $body="";
+        foreach ($columns as $key => $col)
+        {
+            $body.="<th style='".$this->_head[$style]."'>".$col."</th>";
+        }
+        return $body;
+    }
+
+    /**
      * Metodo encargado de realizar los rankings
      * @access public
      * @static
@@ -725,92 +745,6 @@ class Reportes extends CApplicationComponent
                 return "-".$negativos;
             }
         }
-    }
-
-    /** 
-     * Retorna la cantidad de dias de un mes
-     * @access protected
-     * @static
-     * @param date $fecha la fecha que se dira la cantidad de dias que tiene el mes
-     * @return int 
-     */
-    protected static function howManyDays($fecha=null)
-    {
-        if(strpos($fecha,'-'))
-        {
-            $arrayFecha=explode('-',$fecha);
-        }
-        if(is_callable('cal_days_in_month'))
-        {
-            return cal_days_in_month(CAL_GREGORIAN, $arrayFecha[1], $arrayFecha[0]);
-        }
-        else
-        {
-            return date('d',mktime(0,0,0,$arrayFecha[1]+1,0,$arrayFecha[0]));
-        }
-    }
-
-    /**
-     * Retorna la cantidad de meses entre dos fechas
-     * @access protected
-     * @static
-     * @param date $inicio la fecha menor
-     * @param date $fin la fecha final
-     * @return int el numero de meses
-     */
-    protected static function howManyMonths($inicio,$fin)
-    {
-        if(strpos($inicio,'-'))
-        {
-            $arrayInicio=explode('-', $inicio);
-        }
-        if(strpos($fin,'-'))
-        {
-            $arrayFin=explode('-', $fin);
-        }
-        return $arrayFin[1]-$arrayInicio[1]+1;
-    }
-
-    /**
-     * Retorna el nombre del mes de una fecha dada
-     * @access protected
-     * @static
-     * @param date $fecha es la fecha que se quiere consultar
-     * @param booleam $tipo si es true devuelve un string, si es false devuelve un int
-     * @return string el nombre del mes
-     * @return int el numero del mes
-     */
-    protected static function getNameMonth($fecha,$tipo=true)
-    {
-        $mes=array('January'=>'Enero','February'=>'Febrero','March'=>'Marzo','April'=>'Abril','May'=>'Mayo','June'=>'Junio','July'=>'Julio','August'=>'Agosto','September'=>'Septiembre','October'=>'Octubre','November'=>'Noviembre','December'=>'Diciembre');
-        if(strpos($fecha,'-'))
-        {
-            $arrayFecha=explode('-',$fecha);
-        }
-        if($tipo==true)
-        {
-            return $mes[strftime("%B",strtotime($fecha))];
-        }
-        else
-        {
-            return $arrayFecha[1];
-        }
-    }
-
-    /**
-     * Retorna la cantidad de dias que existe de una fecha a otra
-     * @access protected
-     * @static
-     * @param date $inicio la fecha menor a consultar
-     * @param date $fina la fecha mayor del rango a consultar
-     * @return int con el numero de dias entre ambas fechas
-     */
-    protected static function howManyDaysBetween($inicio,$fin)
-    {
-        $i=strtotime($inicio);
-        $f=strtotime($fin);
-        $cant=$f-$i;
-        return $cant/(60*60*24);
     }
 
     /**
@@ -875,9 +809,9 @@ class Reportes extends CApplicationComponent
     {
         $i=explode('-', $inicio);
         $f=explode('-', $fin);
-        if($i[2]==1 && $f[2]==self::howManyDays($fin))
+        if($i[2]==1 && $f[2]==DateManagement::howManyDays($fin))
         {
-            return " ".self::getNameMonth($inicio,true)." ".$f[0];
+            return " ".DateManagement::getNameMonth($inicio,true)." ".$f[0];
         }
         elseif($inicio==$fin)
         {
@@ -982,24 +916,6 @@ class Reportes extends CApplicationComponent
     }
 
     /**
-     * Recibe una fecha y retorna un array con la fecha inicio y fin de un mes menos, esta funcion trabaja con strtotime
-     * recibe un segundo parametro que seria el numero de meses a restar o sumar, incluyendo el + ó -
-     * @access public
-     * @param date $date
-     * @param string $month
-     * @return array
-     */
-    public function leastOneMonth($date,$month=null)
-    {
-        if($date==null) $date=date('Y-m-d');
-        if($month===null) $month="-1";
-        $arrayDate['firstday']=date('Y-m-d',strtotime($month.' month',strtotime(Utility::getDayOne($date))));
-        $array=explode('-',$arrayDate['firstday']);
-        $arrayDate['lastday']=$array[0]."-".$array[1]."-".self::howManyDays($arrayDate['firstday']);
-        return $arrayDate;
-    }
-
-    /**
      * funcion encargada de verificar que el numero de una columna es el apropiado para ejecutar algo
      * @access protected
      * @static
@@ -1059,21 +975,6 @@ class Reportes extends CApplicationComponent
             }
         }
         return $index;
-    }
-    
-    /**
-     * Retorna el primer dia del siguiente mes a la fecha pasada como parametro
-     * @access public
-     * @static
-     * @param date $date
-     * @return date yyyy-mm-dd
-     */
-    public static function firstDayNextMonth($date)
-    {
-        $newDate=strtotime('+1 month',strtotime($date));
-        $newDate=date('Y-m-d',$newDate);
-        $array=explode('-',$newDate);
-        return $array[0]."-".$array[1]."-01";
     }
 
     /**
@@ -1140,8 +1041,8 @@ class Reportes extends CApplicationComponent
     protected function _getDays($date)
     {
         $arrayDate=explode('-',$date);
-        $newDate=$arrayDate[0]."-".$arrayDate[1]."-".self::howManyDays($date);
-        $this->days=self::howManyDaysBetween($date,$newDate);
+        $newDate=$arrayDate[0]."-".$arrayDate[1]."-".DateManagement::howManyDays($date);
+        $this->days=DateManagement::howManyDaysBetween($date,$newDate);
     }
 
     /**
@@ -1164,10 +1065,11 @@ class Reportes extends CApplicationComponent
      * @param string $accumulated es la ubicacion del acumulado dentro del array $this->objetos[$index]
      * @return array un array con los datos calculados
      */
-    protected function _closeOfTheMonth($phrase=null,$index,$average,$accumulated,$attribute=null)
+    protected function _closeOfTheMonth($phrase=null,$index,$average,$accumulated,$attribute=null,$calc=null)
     {
         $array=array();
         if($attribute===null) $attribute="apellido";
+        if($calc==null) $calc="margin";
         if($phrase!==null)
         {
             foreach ($phrase as $key => $lastname)
@@ -1180,7 +1082,7 @@ class Reportes extends CApplicationComponent
                         {
                             if($acum->$attribute==$avg->$attribute)
                             {
-                                $array[$acum->$attribute]=$acum->margin+$this->_forecast($avg->margin);
+                                $array[$acum->$attribute]=$acum->$calc+$this->_forecast($avg->$calc);
                             }
                         }
                     }
@@ -1203,7 +1105,7 @@ class Reportes extends CApplicationComponent
                 {
                     if($acum->$attribute==$avg->$attribute)
                     {
-                        $array[$acum->$attribute]=(float)$acum->margin+(float)$this->_forecast($avg->margin);
+                        $array[$acum->$attribute]=(float)$acum->$calc+(float)$this->_forecast($avg->$calc);
                     }
                 }
             }
@@ -1211,7 +1113,7 @@ class Reportes extends CApplicationComponent
             {
                 if(!isset($array[$acum->$attribute]))
                 {
-                    $array[$acum->$attribute]=$acum->margin;
+                    $array[$acum->$attribute]=$acum->$calc;
                 }
             }
         }
