@@ -631,6 +631,47 @@ class AltoImpacto extends Reportes
                     $body.=$this->_getRowTotalDestinationsPercentage(self::validIndex(3,$col,$span),'totalInternalDestinationsWithLessThanTenDollars','totalInternalDestinations','styleFooterTotal');
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
+                //titulo de los meses
+                if(($row==2
+                 || $row==$numCustomer+6
+                 || $row==$numCustomer+$numCustomerLess+6 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+6
+                 || $row==$numCustomer+3 
+                 || $row==$numCustomer+$numCustomerLess+3 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+3 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+3
+                 || ($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+6
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+3
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+3
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+3
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+3)) && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
+                }
+                //titulo que incluye los meses anteriores
+                if(($row==1
+                 || $row==$numCustomer+5
+                 || $row==$numCustomer+$numCustomerLess+5 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+5
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+5) && $col==3+($num*$span))
+                {
+                    if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                }
             }
             $body.="</tr>";
         }
