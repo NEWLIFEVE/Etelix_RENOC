@@ -469,16 +469,23 @@ class AltoImpacto extends Reportes
                 {
                     //le resto las siete filas que tiene delante
                     $pos=$row-2;
-                    if($this->equal) $body.="<td>;P</td>"/*$this->_getRowMonths('customers',$sorted['customersWithMoreThanTenDollars'][$row-3],self::colorEstilo($pos))*/;
+                    if($this->equal) $body.=$this->_getRowMonths('customers',$sorted['customersWithMoreThanTenDollars'][$row-3],self::colorEstilo($pos));
                 }
                 //Nombres de los managers vendedores izquierda con menos de 10$
-                if($row>$numCustomer+6  && $row<=$numCustomer+$numCustomerLess && self::validColumn(3,$col,$num,$span))
+                if($row>$numCustomer+6 && $row<=$numCustomer+$numCustomerLess && self::validColumn(3,$col,$num,$span))
                 {
                     //le resto las 8 filas que tiene delante para que continue la cuenta anterior
                     $pos=$row-8;
                     //le resto el total de clientes - 7 filas
                     $body.=$this->_getRow(self::validIndex(3,$col,$span),'customersWithLessThanTenDollars','cliente',$sorted['customersWithLessThanTenDollars'][$row-$numCustomer-7],self::colorEstilo($pos));
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //meses anteriores de los clientes con menos de diez dolares
+                if($row>$numCustomer+6 && $row<=$numCustomer+$numCustomerLess && $col==3+($num*$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-8;
+                    if($this->equal) $body.=$this->_getRowMonths('customers',$sorted['customersWithLessThanTenDollars'][$row-$numCustomer-7],self::colorEstilo($pos));
                 }
                 //Nombres de los managers proveedores izquierda con mas de 10$
                 if($row>$numCustomer+$numCustomerLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier && self::validColumn(3,$col,$num,$span))
@@ -487,12 +494,26 @@ class AltoImpacto extends Reportes
                     $body.=$this->_getRow(self::validIndex(3,$col,$span),'providersWithMoreThanTenDollars','proveedor',$sorted['providersWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-7],self::colorEstilo($pos));
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
+                //meses anteriores de los clientes con menos de diez dolares
+                if($row>$numCustomer+$numCustomerLess+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier && $col==3+($num*$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-$numCustomer-$numCustomerLess-6;
+                    if($this->equal) $body.=$this->_getRowMonths('providers',$sorted['providersWithMoreThanTenDollars'][$row-$numCustomer-$numCustomerLess-7],self::colorEstilo($pos));
+                }
                 //Nombres de los managers proveedores izquierda con menos de 10$
                 if($row>$numCustomer+$numCustomerLess+$numSupplier+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess && self::validColumn(3,$col,$num,$span))
                 {
                     $pos=$row-$numCustomer-$numCustomerLess-12;
                     $body.=$this->_getRow(self::validIndex(3,$col,$span),'providersWithLessThanTenDollars','proveedor',$sorted['providersWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-7],self::colorEstilo($pos));
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //meses anteriores de los clientes con menos de diez dolares
+                if($row>$numCustomer+$numCustomerLess+$numSupplier+6  && $row<=$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess && $col==3+($num*$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-$numCustomer-$numCustomerLess-12;
+                    if($this->equal) $body.=$this->_getRowMonths('providers',$sorted['providersWithLessThanTenDollars'][$row-$numCustomer-$numCustomerLess-$numSupplier-7],self::colorEstilo($pos));
                 }
 
                 //Nombres de los destinos external con mas de 10$
@@ -1523,12 +1544,15 @@ class AltoImpacto extends Reportes
      */
     private function _getRowMonths($index,$phrase,$style)
     {
+        $name="proveedor";
+        if($index=="customers") $name="cliente";
+
         $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
         $margin=$third=$fourth=$fifth=$sixth=null;        
         $margin=$this->_objetos[0][$index.'Forecast'][$phrase['attribute']];
         foreach ($this->_objetos[0][$index.'ThirdMonth'] as $key => $value)
         {
-            if($value->carrier == $phrase['attribute'])
+            if($value->$name == $phrase['attribute'])
             {
                 $c1="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
                 $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
@@ -1536,7 +1560,7 @@ class AltoImpacto extends Reportes
         }
         foreach ($this->_objetos[0][$index.'FourthMonth'] as $key => $value)
         {
-            if($value->carrier == $phrase['attribute'])
+            if($value->$name == $phrase['attribute'])
             {
                 $c3="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
                 $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
@@ -1544,7 +1568,7 @@ class AltoImpacto extends Reportes
         }
         foreach ($this->_objetos[0][$index.'FifthMonth'] as $key => $value)
         {
-            if($value->carrier == $phrase['attribute'])
+            if($value->$name == $phrase['attribute'])
             {
                 $c5="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
                 $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
@@ -1552,7 +1576,7 @@ class AltoImpacto extends Reportes
         }
         foreach ($this->_objetos[0][$index.'SixthMonth'] as $key => $value)
         {
-            if($value->carrier == $phrase['attribute'])
+            if($value->$name == $phrase['attribute'])
             {
                 $c7="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
                 $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
@@ -1560,7 +1584,7 @@ class AltoImpacto extends Reportes
         }
         foreach ($this->_objetos[0][$index.'SeventhMonth'] as $key => $value)
         {
-            if($value->carrier == $phrase['attribute'])
+            if($value->$name == $phrase['attribute'])
             {
                 $c9="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
                 $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
