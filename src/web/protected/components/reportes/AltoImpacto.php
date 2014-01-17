@@ -464,6 +464,13 @@ class AltoImpacto extends Reportes
                     $body.=$this->_getRow(self::validIndex(3,$col,$span),'customersWithMoreThanTenDollars','cliente',$sorted['customersWithMoreThanTenDollars'][$row-3],self::colorEstilo($pos));
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
+                //meses de los clientes con mas de 10$
+                if($row>2 && $row<=$numCustomer && $col==3+($num*$span))
+                {
+                    //le resto las siete filas que tiene delante
+                    $pos=$row-2;
+                    if($this->equal) $body.="<td>;P</td>"/*$this->_getRowMonths('customers',$sorted['customersWithMoreThanTenDollars'][$row-3],self::colorEstilo($pos))*/;
+                }
                 //Nombres de los managers vendedores izquierda con menos de 10$
                 if($row>$numCustomer+6  && $row<=$numCustomer+$numCustomerLess && self::validColumn(3,$col,$num,$span))
                 {
@@ -1090,31 +1097,6 @@ class AltoImpacto extends Reportes
     }
 
     /**
-     * Retorna el total de la data de todos los destinos
-     * @access private
-     * @param date $startDate fecha inicio de la consulta
-     * @param date $endingDate fecha fin de la consulta
-     * @param boolean $typeDestination true=external, false=internal
-     * @return object $model
-     */
-    /*private function _getTotalCompleteDestination($startDate,$endingDate,$typeDestination=true,$attribute=null)
-    {
-        $select="id_destination_int";
-        if($typeDestination) $select="id_destination";
-        $table="destination_int";
-        if($typeDestination) $table="destination";
-        $data="SUM({$attribute}) AS {$attribute}";
-        if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage";
-        $sql="SELECT {$data}
-              FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                   FROM balance
-                   WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
-                   GROUP BY {$select}
-                   ORDER BY margin DESC) balance";
-        return Balance::model()->findBySql($sql);
-    }*/
-
-    /**
      * Retorna un array con los promedios de los carriers
      * @access private
      * @param date $starDate fecha inicio de la consulta
@@ -1534,6 +1516,67 @@ class AltoImpacto extends Reportes
             if($c17==null) $c17="<td style='".$style."'>--</td>";
         }
         return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18.$c19.$c20.$c21;
+    }
+
+    /**
+     *
+     */
+    private function _getRowMonths($index,$phrase,$style)
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $margin=$third=$fourth=$fifth=$sixth=null;        
+        $margin=$this->_objetos[0][$index.'Forecast'][$phrase['attribute']];
+        foreach ($this->_objetos[0][$index.'ThirdMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase['attribute'])
+            {
+                $c1="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'FourthMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase['attribute'])
+            {
+                $c3="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'FifthMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase['attribute'])
+            {
+                $c5="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'SixthMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase['attribute'])
+            {
+                $c7="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        foreach ($this->_objetos[0][$index.'SeventhMonth'] as $key => $value)
+        {
+            if($value->carrier == $phrase['attribute'])
+            {
+                $c9="<td style='".$style."'>".$this->_upOrDown($value->margin,$margin)."</td>";
+                $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+            }
+        }
+        if($c1==null) $c1="<td style='".$style."'>--</td>";
+        if($c2==null) $c2="<td style='".$style."'>--</td>";
+        if($c3==null) $c3="<td style='".$style."'>--</td>";
+        if($c4==null) $c4="<td style='".$style."'>--</td>";
+        if($c5==null) $c5="<td style='".$style."'>--</td>";
+        if($c6==null) $c6="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."'>--</td>";
+        if($c10==null) $c10="<td style='".$style."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
     }
 
     /**
