@@ -597,10 +597,20 @@ class AltoImpacto extends Reportes
                     $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'totalCustomer','styleFooterTotal',false);
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
+                //total generales meses anteriores
+                if(($row==$numCustomer+2||$row==$numCustomer+$numCustomerLess+2) && $col==3+($num*$span))
+                {
+                    $body.=$this->_getTotalMonths('customers','styleFooterTotal');
+                }
                 if(($row==$numCustomer+$numCustomerLess+$numSupplier+2||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+2) && self::validColumn(3,$col,$num,$span))
                 {
                     $body.=$this->_getRowTotalCarrier(self::validIndex(3,$col,$span),'totalSuppliers','styleFooterTotal',false);
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //total generales meses anteriores
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+2||$row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+2) && $col==3+($num*$span))
+                {
+                    $body.=$this->_getTotalMonths('providers','styleFooterTotal');
                 }
 
                 //Totales en porcentajes
@@ -636,6 +646,12 @@ class AltoImpacto extends Reportes
                     $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalExternalDestinationsLessThanTenDollars','styleFooter',true);
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
+                //total generales meses anteriores
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+1 
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+1) && $col==3+($num*$span))
+                {
+                    $body.=$this->_getTotalMonths('external','styleFooterTotal');
+                }
                 if($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+1 && self::validColumn(3,$col,$num,$span))
                 {
                     $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalInternalDestinationsWithMoreThanTenDollars','styleFooter',true);
@@ -645,6 +661,12 @@ class AltoImpacto extends Reportes
                 {
                     $body.=$this->_getRowTotalDestination(self::validIndex(3,$col,$span),'totalInternalDestinationsWithLessThanTenDollars','styleFooter',true);
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
+                }
+                //total generales meses anteriores
+                if(($row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+1
+                 || $row==$numCustomer+$numCustomerLess+$numSupplier+$numSupplierLess+$numDestinationExt+$numDestinationExtLess+$numDestinationInt+$numDestinationIntLess+1) && $col==3+($num*$span))
+                {
+                    $body.=$this->_getTotalMonths('internal','styleFooterTotal');
                 }
 
                 //Totales completos
@@ -777,31 +799,31 @@ class AltoImpacto extends Reportes
             //Guardo el tercer mes
             if($this->type && $this->equal) $this->_objetos[$index]['customersThirdMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],true,null,'margin');
             //Guardo el total del tercer mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalCustomerThirdMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalThirdMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],true,null,'margin');
             // Titulo del cuarto mes
             if($this->type && $this->equal) $this->_objetos[$index]['titleFourthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday']);
             //Guardo el cuarto mes
             if($this->type && $this->equal) $this->_objetos[$index]['customersFourthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],true,null,'margin');
             //Guardo el total del cuarto mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalCustomerFourthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalFourthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],true,null,'margin');
             // Titulo del quinto mes
             if($this->type && $this->equal) $this->_objetos[$index]['titleFifthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday']);
             //Guardo el quinto mes
             if($this->type && $this->equal) $this->_objetos[$index]['customersFifthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],true,null,'margin');
             //Guardo el total del quinto mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalCustomerFifthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalFifthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],true,null,'margin');
             // Titulo del sexto mes
             if($this->type && $this->equal) $this->_objetos[$index]['titleSixthMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday']);
             //Guardo el sexto mes
             if($this->type && $this->equal) $this->_objetos[$index]['customersSixthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],true,null,'margin');
             //Guardo el total del sexto mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalCustomerSixthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalSixthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],true,null,'margin');
             // Titulo del septimo mes
             if($this->type && $this->equal) $this->_objetos[$index]['titleSeventhMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             //Guardo el septimo mes
             if($this->type && $this->equal) $this->_objetos[$index]['customersSeventhMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],true,null,'margin');
             //Guardo el total del septimo mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalCustomerSeventhMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],true,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['customersTotalSeventhMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],true,null,'margin');
             //Guardo los datos de los totales de los clientes con mas de 10 dolares de ganancia
             $this->_objetos[$index]['clientsTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,true,true);
             // Guardo los datos de los totales de ayer de los clientes con mas de 10 dolares de ganancia
@@ -841,23 +863,23 @@ class AltoImpacto extends Reportes
             // Guardo los totales del tercer mes
             if($this->type && $this->equal) $this->_objetos[$index]['providersThirdMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],false,null,'margin');
             // Guardo el total del tercer mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalProvidersThirdMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalThirdMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],false,null,'margin');
             // Guardo totales del cuarto mes
             if($this->type && $this->equal) $this->_objetos[$index]['providersFourthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],false,null,'margin');
             // Guardo el total del cuarto mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalProvidersFourthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalFourthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],false,null,'margin');
             // Guardo totales del quinto mes
             if($this->type && $this->equal) $this->_objetos[$index]['providersFifthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],false,null,'margin');
             // Guardo el total del quinto mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalProvidersFifthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalFifthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],false,null,'margin');
             // Guardo los totales del sexto mes
             if($this->type && $this->equal) $this->_objetos[$index]['providersSixthMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],false,null,'margin');
             // Guardo el total del sexto mes
-            if($this->type && $this->equal) $this->_objetos[$index]['totalProvidersSixthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalSixthMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],false,null,'margin');
             // Guardo totales del septimo mes
             if($this->type && $this->equal) $this->_objetos[$index]['providersSeventhMonth']=$this->_getCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],false,null,'margin');
             //
-            if($this->type && $this->equal) $this->_objetos[$index]['totalProvidersSeventhMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],false,null,'margin');
+            if($this->type && $this->equal) $this->_objetos[$index]['providersTotalSeventhMonth']=$this->_getTotalCarriers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],false,null,'margin');
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia
             $this->_objetos[$index]['suppliersTotalMoreThanTenDollars']=$this->_getTotalCarriers($startDateTemp,$endingDateTemp,false,true);
             //Guardo los datos de los totales de los proveedores con mas de 10 dolares de ganancia del dia anterior
@@ -1505,6 +1527,40 @@ class AltoImpacto extends Reportes
         if($c8==null) $c8="<td style='".$style."'>--</td>";
         if($c9==null) $c9="<td style='".$style."'>--</td>";
         if($c10==null) $c10="<td style='".$style."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
+    }
+
+    /**
+     *
+     */
+    private function _getTotalMonths($index,$style)
+    {
+        $name="proveedor";
+        if($index=="customers") $name="cliente";
+
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $margin=$third=$fourth=$fifth=$sixth=null;        
+        $margin=$this->_objetos[0][$index.'TotalForecast'];
+        $c1="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0][$index.'TotalThirdMonth']->margin,$margin)."</td>";
+        $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0][$index.'TotalThirdMonth']->margin)."</td>";
+        $c3="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0][$index.'TotalFourthMonth']->margin,$margin)."</td>";
+        $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0][$index.'TotalFourthMonth']->margin)."</td>";
+        $c5="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0][$index.'TotalFifthMonth']->margin,$margin)."</td>";
+        $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0][$index.'TotalFifthMonth']->margin)."</td>";
+        $c7="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0][$index.'TotalSixthMonth']->margin,$margin)."</td>";
+        $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0][$index.'TotalSixthMonth']->margin)."</td>";
+        $c9="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0][$index.'TotalSeventhMonth']->margin,$margin)."</td>";
+        $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0][$index.'TotalSeventhMonth']->margin)."</td>";
+        if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
+        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
+        if($c4==null) $c4="<td style='".$this->_head[$style]."'>--</td>";
+        if($c5==null) $c5="<td style='".$this->_head[$style]."'>--</td>";
+        if($c6==null) $c6="<td style='".$this->_head[$style]."'>--</td>";
+        if($c7==null) $c7="<td style='".$this->_head[$style]."'>--</td>";
+        if($c8==null) $c8="<td style='".$this->_head[$style]."'>--</td>";
+        if($c9==null) $c9="<td style='".$this->_head[$style]."'>--</td>";
+        if($c10==null) $c10="<td style='".$this->_head[$style]."'>--</td>";
         return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
     }
 
