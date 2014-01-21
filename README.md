@@ -8,6 +8,7 @@ Sistema de Reportes para el NOC
 - Agregadas la columnas Dia Anterior, Promedio 7D, Acumulado Mes, Proyeccion Mes y Meses Anteriores en Reporte Posicion Neta
 - Agregado a especificos Reporte Posicion Neta
 Release 1.3.15
+
 Release 1.3.14
 - Correcion en consulta a base de datos del reporte de arbol de trafico clientes/proveedores/destinos
 Release 1.3.13
