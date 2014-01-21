@@ -1,8 +1,8 @@
 <?php
 /**
-* @package reportes
-* @version 1.0
-*/
+ * @package reportes
+ * @version 1.0}
+ */
 class PosicionNeta extends Reportes
 {
     function __construct()
@@ -16,20 +16,16 @@ class PosicionNeta extends Reportes
     }
 
     /**
-    * @param $fecha date fecha que va a ser consultada
-    * @return $cuerpo string con el cuerpo de la tabla
-    */
+     * @param $fecha date fecha que va a ser consultada
+     * @return $cuerpo string con el cuerpo de la tabla
+     */
     public function reporte($start,$end)
     {
         $this->_getDays($start);
-
         $this->_loopData($start,$end);
-
         //Cuento el numero de objetos en el array
-
         $num=count($this->_objetos);
         $last=$num-1;
-
         if(!$this->equal)
         {
             $span=8;
@@ -41,19 +37,17 @@ class PosicionNeta extends Reportes
             $colu=7;
         }
 
-        
         $sorted['carriers']=self::sort($this->_objetos[$last]['carriers'],'carrier');
         $carriers=count($this->_objetos[$last]['carriers']);
-        
+
         $body="<table>";
-        
-        for ($row=1; $row <= $carriers+4; $row++)
-        { 
+        for($row=1;$row<=$carriers+4;$row++)
+        {
             $body.="<tr>";
-            for ($col=1; $col <= $colu+($num*$span); $col++)
+            for($col=1;$col<=$colu+($num*$span);$col++)
             {
                 //Espacio gris al principio y al final de las columnas en la primera fila
-                if ($row==1 && ($col==1 || $col==3+($num*$span)))
+                if($row==1 && ($col==1 || $col==3+($num*$span)))
                 {
                     $body.="<td colspan='3' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
