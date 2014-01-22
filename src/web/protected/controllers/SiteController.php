@@ -626,7 +626,7 @@ class SiteController extends Controller
      */
     public function genExcel($nombre,$html,$salida=true)
     {
-        if(stripos($nombre,"Evolucion") || stripos($nombre,"Comercial"))
+        if(stripos($nombre,"Evolucion") || strstr($nombre,"Comercial"))
         {
             header("Location: /adjuntos/{$nombre}.xlsx");
         }
