@@ -3,18 +3,23 @@ Etelix_RENOC
 
 Sistema de Reportes para el NOC
 - Agregados meses anteriores a reporte Alto Impacto
+- Cambio en la forma de generar los excel
+Release 1.3.16
 - Color de fondo para las celdas en Reporte Distribucion Comercial
 - Validacion de las fechas en Reporte Calidad
 - Agregadas la columnas Dia Anterior, Promedio 7D, Acumulado Mes, Proyeccion Mes y Meses Anteriores en Reporte Posicion Neta
 - Agregado a especificos Reporte Posicion Neta
 Release 1.3.15
-
+- Agregado un septimo mes en reporte de Ranking Compra Venta
 Release 1.3.14
 - Correcion en consulta a base de datos del reporte de arbol de trafico clientes/proveedores/destinos
+
 Release 1.3.13
+
 Release 1.3.12
+
 Release 1.3.11
-- Agregando ltimos cuatro meses en Reporte Ranking Compra/Venta
+- Agregando ultimos cuatro meses en Reporte Ranking Compra/Venta
 
 Release 1.3.10
 - Agregado funcion ABS() en el calculo de margenes.

@@ -173,7 +173,7 @@ class SiteController extends Controller
         $startDate=$endingDate=$carrier=null;
         $correos=null;
         $user=UserIdentity::getEmail();
-        ini_set('max_execution_time', 900);
+        ini_set('max_execution_time', 1200);
         ini_set('memory_limit', '512M');
         if(isset($_POST['startDate']))
         {
@@ -460,7 +460,7 @@ class SiteController extends Controller
         $startDate=$endingDate=$carrier=null;
         $correos=null;
         $user="renoc@etelix.com";
-        ini_set('max_execution_time', 900);
+        ini_set('max_execution_time', 1200);
         ini_set('memory_limit', '512M');
         if(isset($_POST['startDate']))
         {
@@ -602,7 +602,7 @@ class SiteController extends Controller
             }
             if(stripos($correo['asunto'], "RETAIL"))
             {
-                $lista=array('CarlosBuona@etelix.com','sig@etelix.com');
+                $lista=array('CarlosBuona@etelix.com','auto@etelix.com');
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
             }
             elseif (stripos($correo['asunto'], "Calidad"))
@@ -626,37 +626,49 @@ class SiteController extends Controller
      */
     public function genExcel($nombre,$html,$salida=true)
     {
+        $name=null;
         if(stripos($nombre,"Evolucion") || stripos($nombre,"Comercial"))
         {
-            header("Location: /adjuntos/{$nombre}.xlsx");
+            $name=$nombre.".xlsx";
         }
         else
         {
-            if($salida)
+            $name=$nombre.".xls";
+        }
+        if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
+        {
+            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+            $fp=fopen($ruta.$name,"w+");
+            $cuerpo="
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset='utf-8'>
+                    <meta http-equiv='Content-Type' content='application/vnd.ms-excel charset=utf-8'>
+                </head>
+                <body>";
+            $cuerpo.=$html;
+            $cuerpo.="</body>
+            </html>";
+            fwrite($fp,$cuerpo);
+        }
+        if($salida)
+        {
+            header("Content-Disposition: attachment; filename=" .$name);    
+            header("Content-Type: application/force-download");
+            header("Content-Type: application/octet-stream");
+            header("Content-Type: application/download");
+            header("Content-Description: File Transfer");             
+            header("Content-Length: " . filesize($ruta.$name));
+            flush(); // this doesn't really matter.
+
+            $fp = fopen($ruta.$name, "r"); 
+            while (!feof($fp))
             {
-                header("Content-type: application/vnd.ms-excel; charset=utf-8"); 
-                header("Content-Disposition: attachment; filename={$nombre}.xls");
-                header("Pragma: no-cache");
-                header("Expires: 0");
-                echo $html;
-            }
-            else
-            {
-                $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
-                $fp=fopen($ruta."$nombre.xls","w+");
-                $cuerpo="
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset='utf-8'>
-                        <meta http-equiv='Content-Type' content='application/vnd.ms-excel charset=utf-8'>
-                    </head>
-                    <body>";
-                $cuerpo.=$html;
-                $cuerpo.="</body>
-                </html>";
-                fwrite($fp,$cuerpo);
-            }
+                echo fread($fp, 65536); 
+                flush(); // this is essential for large downloads
+            }  
+            fclose($fp);
         }
     }
 
