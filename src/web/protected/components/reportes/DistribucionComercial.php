@@ -42,7 +42,11 @@ class DistribucionComercial extends Reportes
             $this->setDataToSheet($value,self::getData($value),$titles,$key);
         }
         $this->excel->setActiveSheetIndex(0);
+	try{
         $this->writeFile($name);
+	}catch(Exception $e){
+		echo "Exception capturada: ", $e->getMessage(), "\n";
+	}
     }
 
     /**
