@@ -416,8 +416,8 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_GET['lista']['DC']))
             {
-                ini_set('max_execution_time', 512);
-                ini_set('memory_limit', '512');
+                ini_set('max_execution_time', 300);
+                ini_set('memory_limit', '512M');
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
                 $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx");
             }
