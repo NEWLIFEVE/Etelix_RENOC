@@ -76,7 +76,7 @@
     <?php echo $content; ?>
     <!-- fin de contenido-->
     <div id="footer">
-        Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.3.16
+        Copyright &copy; <?php echo date('Y'); ?> SACET All Rights Reserved. Version 1.3.17
     </div>
     <div class="clear"></div>
     <div class='cargandosori'>

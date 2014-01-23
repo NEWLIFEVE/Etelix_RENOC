@@ -2,6 +2,7 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.17
 - Agregados meses anteriores a reporte Alto Impacto
 - Cambio en la forma de generar los excel
 Release 1.3.16
