@@ -2,6 +2,8 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+- Depurados division por cero en Reporte Alto Impacto(+10$)
+- Cambio en Reporte Ranking Compra Venta para soporte para cualquier cantidad de managers
 - Agregados meses anteriores a reporte Alto Impacto
 - Cambio en la forma de generar los excel
 Release 1.3.16
