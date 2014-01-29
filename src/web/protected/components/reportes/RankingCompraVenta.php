@@ -1,7 +1,7 @@
 <?php
 /**
 * Creada para generar reporte de compra venta
-* @version 3.2
+* @version 3.2.1
 * @package reportes
 */
 class RankingCompraVenta extends Reportes
@@ -55,10 +55,10 @@ class RankingCompraVenta extends Reportes
         $numConsolidated=count($this->_objetos[$last]['consolidated']);
 
         $body="<table>";
-        for($row=1; $row < $numSellers+$numBuyers+$numConsolidated+16; $row++)
+        for($row=1; $row<$numSellers+$numBuyers+$numConsolidated+16; $row++)
         { 
             $body.="<tr>";   
-            for($col=1; $col <= 3+($num*$span); $col++)
+            for($col=1; $col<=2+($num*$span); $col++)
             { 
                 //Celda vacia superior izquierda de sellers y buyers
                 if(($row==1 || $row==$numSellers+6) && $col==1)
