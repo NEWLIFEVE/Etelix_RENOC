@@ -130,7 +130,7 @@ class AltoImpacto extends Reportes
         for($row=1;$row<$total;$row++)
         {
             $body.="<tr>";
-            for ($col=1; $col <= 3+($num*$span); $col++)
+            for ($col=1; $col<=3+($num*$span); $col++)
             { 
                 //Celda vacia superior izquierda
                 if(($row==1 
