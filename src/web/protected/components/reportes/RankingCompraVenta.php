@@ -255,9 +255,9 @@ class RankingCompraVenta extends Reportes
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Titulo meses anteriores
-                if(($row==1 || $row==$numSellers+6 || $row==$numSellers+$numBuyers+11) && $col==3+($num*$span))
+                if(($row==1 || $row==$numSellers+6 || $row==$numSellers+$numBuyers+11) && $col==2+($num*$span))
                 {
-                    $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                    if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
                 }
                 //titulo de los meses
                 if(($row==2 
@@ -265,7 +265,7 @@ class RankingCompraVenta extends Reportes
                  || $row==$numSellers+7
                  || $row==$numSellers+$numBuyers+8 
                  || $row==$numSellers+$numBuyers+12
-                 || $row==$numSellers+$numBuyers+$numConsolidated+13) && $col==3+($num*$span))
+                 || $row==$numSellers+$numBuyers+$numConsolidated+13) && $col==2+($num*$span))
                 {
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
@@ -279,34 +279,34 @@ class RankingCompraVenta extends Reportes
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
                 }
                 //data de los cuatro meses anteriores de los vendedores
-                if(($row>2 && $row<$numSellers+3) && $col==3+($num*$span))
+                if(($row>2 && $row<$numSellers+3) && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getRowMonths('sellers',$sorted['sellers'][$row-3],'styleBodySellers');
                 }
-                if($row==$numSellers+4 && $col==3+($num*$span))
+                if($row==$numSellers+4 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalVendors','styleFooter');
                 }
                 //data de los cuatro meses anteriores de los compradores
-                if(($row>$numSellers+7 && $row<$numSellers+$numBuyers+8) && $col==3+($num*$span))
+                if(($row>$numSellers+7 && $row<$numSellers+$numBuyers+8) && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getRowMonths('buyers',$sorted['buyers'][$row-$numSellers-8],'styleBodyBuyers');
                 }
                 //total de los cuatro meses de los compradores
-                if($row==$numSellers+$numBuyers+9 && $col==3+($num*$span))
+                if($row==$numSellers+$numBuyers+9 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalBuyers','styleFooter');
                 }
                 //data de los cuatro meses anteriores de los compradores
-                if(($row>$numSellers+$numBuyers+12 && $row<$numSellers+$numBuyers+$numConsolidated+13) && $col==3+($num*$span))
+                if(($row>$numSellers+$numBuyers+12 && $row<$numSellers+$numBuyers+$numConsolidated+13) && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getRowConsolidatedMonths($sorted['consolidated'][$row-$numSellers-$numBuyers-13],'styleBodyConsolidated');
                 }
-                if($row==$numSellers+$numBuyers+$numConsolidated+14 && $col==3+($num*$span))
+                if($row==$numSellers+$numBuyers+$numConsolidated+14 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalConsolidated','styleFooter');
                 }
-                if($row==$numSellers+$numBuyers+$numConsolidated+15 && $col==3+($num*$span))
+                if($row==$numSellers+$numBuyers+$numConsolidated+15 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalMargen','styleFooterTotal');
                 }
