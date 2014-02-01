@@ -27,7 +27,7 @@ class AltoImpactoRetail extends Reportes
                       ORDER BY x.margin DESC";*/
         //$clientes=Balance::model()->findAllBySql($sqlClientes);
 
-        if($clientes!=null)
+        /*if($clientes!=null)
         {
             foreach ($clientes as $key => $cliente)
             {
@@ -83,7 +83,7 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.="<tr>
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
-        }
+        }*/
         /*Suma de totales por cliente con mas de 1 dolar de margen*/
         /*$sqlClientesTotal="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
                            FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
@@ -92,7 +92,7 @@ class AltoImpactoRetail extends Reportes
                                 GROUP BY id_carrier_customer) x
                            WHERE x.margin>1";*/
         //$clientesTotal=Balance::model()->findBySql($sqlClientesTotal);
-        if($clientesTotal->total_calls!=null)
+        /*if($clientesTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -138,15 +138,15 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.="<tr>
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
-        }
+        }*/
         /*Suma de totales por cliente en general*/
-        $sqlClientesTotalCompleto="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.complete_calls)) AS acd, SUM(x.pdd)/SUM(x.total_calls) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
+        /*$sqlClientesTotalCompleto="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.complete_calls)) AS acd, SUM(x.pdd)/SUM(x.total_calls) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
                                    FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                         FROM balance 
                                         WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                                         GROUP BY id_carrier_customer) x";
-        $clientesTotalCompleto=Balance::model()->findBySql($sqlClientesTotalCompleto);
-        if($clientesTotalCompleto->total_calls!=null)
+        $clientesTotalCompleto=Balance::model()->findBySql($sqlClientesTotalCompleto);*/
+        /*if($clientesTotalCompleto->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -197,7 +197,7 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.="<tr>
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
-        }
+        }*/
         $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
