@@ -1,6 +1,7 @@
 <?php
 /**
 * @package reportes
+* @version 2.0
 */
 class AltoImpactoRetail extends Reportes
 {
@@ -17,14 +18,14 @@ class AltoImpactoRetail extends Reportes
         $cuerpo.="</thead>
                  <tbody>";
         /*Total por cliente con mas de 1 dolar de margen*/
-        $sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        /*$sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance 
                            WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance='$fecha' AND id_destination_int IS NOT NULL
                            GROUP BY id_carrier_customer) x, carrier c
                       WHERE x.margin>1 AND x.id_carrier_customer=c.id
-                      ORDER BY x.margin DESC";
-        $clientes=Balance::model()->findAllBySql($sqlClientes);
+                      ORDER BY x.margin DESC";*/
+        //$clientes=Balance::model()->findAllBySql($sqlClientes);
 
         if($clientes!=null)
         {
@@ -1028,5 +1029,22 @@ class AltoImpactoRetail extends Reportes
         $cuerpo.="</div>";
         return $cuerpo;
 	}
+    /**
+     * Funcion encargada de traer la data correspondiente de los carriers retail
+     * @since 2.0
+     * @access private
+     * @return array
+     */
+    private function _getCustomers($startDate,$endDate)
+    {
+        $sql="SELECT c.name AS carrier, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+              FROM (SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%') AND date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_destination_int IS NOT NULL
+                    GROUP BY id_carrier_customer) x, carrier c
+              WHERE x.margin>1 AND x.id_carrier_customer=c.id
+              ORDER BY x.margin DESC";
+        return Balance::model()->findAllBySql($sql);
+    }
 }
 ?>
