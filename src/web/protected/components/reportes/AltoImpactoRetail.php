@@ -11,12 +11,13 @@ class AltoImpactoRetail extends Reportes
 	*/
 	public static function reporte($fecha)
 	{
-		$cuerpo="<div>
+		/*$cuerpo="<div>
                   <table >
                   <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Cliente RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Cliente RP','Ranking'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
-                 <tbody>";
+                 <tbody>";*/
+                 /////////////////////////////////////////////////LISTO//////////////////////////
         /*Total por cliente con mas de 1 dolar de margen*/
         /*$sqlClientes="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                       FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
@@ -85,6 +86,7 @@ class AltoImpactoRetail extends Reportes
                      </tr>";
         }*/
         /*Suma de totales por cliente con mas de 1 dolar de margen*/
+        ///////////////////////////////LISTO/////////////////////////////////
         /*$sqlClientesTotal="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
                            FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance 
@@ -140,6 +142,7 @@ class AltoImpactoRetail extends Reportes
                      </tr>";
         }*/
         /*Suma de totales por cliente en general*/
+        ////////////////////////////////////////////LISTO/////////////////////////////////////
         /*$sqlClientesTotalCompleto="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.complete_calls)) AS acd, SUM(x.pdd)/SUM(x.total_calls) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
                                    FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                         FROM balance 
@@ -198,7 +201,7 @@ class AltoImpactoRetail extends Reportes
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
         }*/
-        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+        /*$cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -210,8 +213,8 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#f8f8f8',
-                                    'background-color:#f8f8f8'));
-        if($clientesTotal->total_calls!=null)
+                                    'background-color:#f8f8f8'));*/
+        /*if($clientesTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -259,23 +262,24 @@ class AltoImpactoRetail extends Reportes
                      </tr>
                      </table>
             <br>";
-        }
-        $cuerpo.="<table>
+        }*/
+        /*$cuerpo.="<table>
                  <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Destino RP','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino RP','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
-                 <tbody>";
+                 <tbody>";*/
         /*Total por destino con mas de 1 dolar de margen*/
-        $sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
+        ////////////////////////////////////////////LISTO//////////////////////////////////
+        /*$sqlDestinos="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
                       FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%')
                            GROUP BY id_destination
                            ORDER BY margin DESC) x, destination d
                       WHERE x.margin > 1 AND x.id_destination = d.id
-                      ORDER BY x.margin DESC";
+                      ORDER BY x.margin DESC";*/
 
-        $destinos=Balance::model()->findAllBySql($sqlDestinos);
+        /*$destinos=Balance::model()->findAllBySql($sqlDestinos);
         if($destinos!=null)
         {
             foreach($destinos as $key => $destino)
@@ -342,17 +346,18 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.="<tr>
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
-        }
+        }*/
         /*Suma de totales por destino con mas de 1 dolar de margen*/
-        $sqlDestinosTotal="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
+        ////////////////////////////////////////////LISTO//////////////////////////////////
+        /*$sqlDestinosTotal="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
                            FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                 FROM balance 
                                 WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%')
                                 GROUP BY id_destination
                                 ORDER BY margin DESC) balance
-                           WHERE margin>1";
+                           WHERE margin>1";*/
 
-        $destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
+        /*$destinosTotal=Balance::model()->findBySql($sqlDestinosTotal);
         if($destinosTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
@@ -409,16 +414,16 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.="<tr>
                         <td colspan='12'>No se encontraron resultados</td>
                      </tr>";
-        }
+        }*/
         /*Suma de totales por destino en general*/
-        $sqlDestinosTotalCompleto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage
+        /*$sqlDestinosTotalCompleto="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage
                                    FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                         FROM balance 
                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%')
                                         GROUP BY id_destination
-                                        ORDER BY margin DESC) balance";
-        $destinosTotalCompleto=Balance::model()->findBySql($sqlDestinosTotalCompleto);
-        if($destinosTotalCompleto->total_calls!=null)
+                                        ORDER BY margin DESC) balance";*/
+        //$destinosTotalCompleto=Balance::model()->findBySql($sqlDestinosTotalCompleto);
+        /*if($destinosTotalCompleto->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
@@ -474,8 +479,8 @@ class AltoImpactoRetail extends Reportes
             $cuerpo.="<tr>
                         <td colspan='17'>No se encontraron resultados</td>
                      </tr>";
-        }
-        $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min'),
+        }*/
+        /*$cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min'),
                                 array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -491,8 +496,8 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    ));
-        if($destinosTotal->total_calls!=null)
+                                    ));*/
+        /*if($destinosTotal->total_calls!=null)
         {
             $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                         <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -546,18 +551,18 @@ class AltoImpactoRetail extends Reportes
                      </tr>
                      </table>
                      <br>";
-          }
+          }*/
         /*****RPRO*****/
         /*Totales por cliente con mas de 1 dollar de margen RPRO*/
-        $sqlClientesRpro="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
+        /*$sqlClientesRpro="SELECT c.name AS cliente, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
                           FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                FROM balance 
                                WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RPRO%') AND date_balance='$fecha' AND id_destination_int IS NOT NULL
                                GROUP BY id_carrier_customer) x, carrier c
                           WHERE x.margin>1 AND x.id_carrier_customer=c.id
-                          ORDER BY x.margin DESC";
-        $clientesRpro=Balance::model()->findAllBySql($sqlClientesRpro);
-        if($clientesRpro!=null)
+                          ORDER BY x.margin DESC";*/
+        //$clientesRpro=Balance::model()->findAllBySql($sqlClientesRpro);
+        /*if($clientesRpro!=null)
         {
             $cuerpo.="<table style='font:13px/150% Arial,Helvetica,sans-serif;'>
                     <thead>";
@@ -611,16 +616,16 @@ class AltoImpactoRetail extends Reportes
                             $pos.
                         "</td>
                     </tr>";         
-            }
+            }*/
             /* suma de Totales por cliente con mas de 1 dollar de margen RPRO*/
-            $sqlClientesTotalRpro="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
+            /*$sqlClientesTotalRpro="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
                                    FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                         FROM balance 
                                         WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RPRO%') AND date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                                         GROUP BY id_carrier_customer) x
-                                   WHERE x.margin>1";
-            $clientesTotalRpro=Balance::model()->findBySql($sqlClientesTotalRpro);
-            if($clientesTotalRpro->total_calls!=null)
+                                   WHERE x.margin>1";*/
+            //$clientesTotalRpro=Balance::model()->findBySql($sqlClientesTotalRpro);
+            /*if($clientesTotalRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -660,15 +665,15 @@ class AltoImpactoRetail extends Reportes
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
                             </td>
                         </tr>";  
-            }
+            }*/
             /* suma de totales Totales por cliente  RPRO*/
-            $sqlClientesTotalCompletoRpro="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.complete_calls)) AS acd, SUM(x.pdd)/SUM(x.total_calls) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
+            /*$sqlClientesTotalCompletoRpro="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, (SUM(x.complete_calls)*100/SUM(x.total_calls)) AS asr, (SUM(x.minutes)/SUM(x.complete_calls)) AS acd, SUM(x.pdd)/SUM(x.total_calls) AS pdd, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin, (((SUM(x.revenue)*100)/SUM(x.cost))-100) AS margin_percentage
                                            FROM(SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                                 FROM balance 
                                                 WHERE id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RPRO%') AND date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
-                                                GROUP BY id_carrier_customer) x";
-            $clientesTotalCompletoRpro=Balance::model()->findBySql($sqlClientesTotalCompletoRpro);
-            if($clientesTotalCompletoRpro->total_calls!=null)
+                                                GROUP BY id_carrier_customer) x";*/
+            //$clientesTotalCompletoRpro=Balance::model()->findBySql($sqlClientesTotalCompletoRpro);
+            /*if($clientesTotalCompletoRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -713,8 +718,8 @@ class AltoImpactoRetail extends Reportes
                             </td>
                         </tr>"; 
                
-            }
-            $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
+            }*/
+            /*$cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','',''),
                                 array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -726,8 +731,8 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#f8f8f8',
-                                    'background-color:#f8f8f8'));
-            if($clientesTotalRpro->total_calls!=null)
+                                    'background-color:#f8f8f8'));*/
+            /*if($clientesTotalRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -767,23 +772,23 @@ class AltoImpactoRetail extends Reportes
                         </tr>
                     </table>
                     <br>";
-            }
-            $cuerpo.="<table>
+            }*/
+            /*$cuerpo.="<table>
                  <thead>";
         $cuerpo.=self::cabecera(array('Ranking','Destino RPRO','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','Destino RPRO','Ranking','Cost/Min','Rate/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
         $cuerpo.="</thead>
-                 <tbody>";
+                 <tbody>";*/
             /*Totales por destino con mas de 1 dollar de margen RPRO*/
-            $sqlDestinosRpro="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
+            /*$sqlDestinosRpro="SELECT d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
                               FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                    FROM balance
                                    WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RPRO%')
                                    GROUP BY id_destination
                                    ORDER BY margin DESC) x, destination d
                               WHERE x.margin > 1 AND x.id_destination = d.id
-                              ORDER BY x.margin DESC";
-            $destinosRpro=Balance::model()->findAllBySql($sqlDestinosRpro);
-            if($destinosRpro!=null)
+                              ORDER BY x.margin DESC";*/
+            //$destinosRpro=Balance::model()->findAllBySql($sqlDestinosRpro);
+            /*if($destinosRpro!=null)
             {
                 foreach($destinosRpro as $key => $destinoRpro)
                 {
@@ -842,17 +847,17 @@ class AltoImpactoRetail extends Reportes
                             "</td>
                          </tr>";
                 }
-            }
+            }*/
             /*Suma de totales por destino con mas de 1 dolar de margen RPRO*/
-            $sqlDestinosTotalRpro="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
+            /*$sqlDestinosTotalRpro="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
                                    FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                         FROM balance 
                                         WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RPRO%')
                                         GROUP BY id_destination
                                         ORDER BY margin DESC) balance
-                                   WHERE margin>1";
-            $destinosTotalRpro=Balance::model()->findBySql($sqlDestinosTotalRpro);
-            if($destinosTotalRpro->total_calls!=null)
+                                   WHERE margin>1";*/
+            //$destinosTotalRpro=Balance::model()->findBySql($sqlDestinosTotalRpro);
+            /*if($destinosTotalRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#999999; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
@@ -901,16 +906,16 @@ class AltoImpactoRetail extends Reportes
                                 Yii::app()->format->format_decimal($destinosTotalRpro->marginmin).
                            "</td>
                         </tr>";
-            }
+            }*/
             /*Suma de totales por destino en general RPRO*/
-            $sqlDestinosTotalCompletoRpro="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
+            /*$sqlDestinosTotalCompletoRpro="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
                                            FROM(SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                                                 FROM balance 
                                                 WHERE date_balance='$fecha' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name = 'Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id FROM carrier WHERE name LIKE 'RPRO%')
                                                 GROUP BY id_destination
-                                                ORDER BY margin DESC) balance";
-            $destinosTotalCompletoRpro=Balance::model()->findBySql($sqlDestinosTotalCompletoRpro);
-            if($destinosTotalCompletoRpro->total_calls!=null)
+                                                ORDER BY margin DESC) balance";*/
+            //$destinosTotalCompletoRpro=Balance::model()->findBySql($sqlDestinosTotalCompletoRpro);
+            /*if($destinosTotalCompletoRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>                
@@ -960,8 +965,8 @@ class AltoImpactoRetail extends Reportes
                             <td style='text-align: center;' class='etiqueta'>                
                             </td>
                             </tr>";    
-            }
-            $cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min'),
+            }*/
+            /*$cuerpo.=self::cabecera(array('','','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Margin%','','','Cost/Min','Rate/Min','Margin/Min'),
                                 array('background-color:#f8f8f8','background-color:#f8f8f8','background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
@@ -977,8 +982,8 @@ class AltoImpactoRetail extends Reportes
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
                                     'background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
-                                    ));
-            if($destinosTotalRpro->total_calls!=null)
+                                    ));*/
+            /*if($destinosTotalRpro->total_calls!=null)
             {
                 $cuerpo.="<tr style='background-color:#615E5E; color:#FFFFFF;'>
                             <td style='text-align: left; background-color:#f8f8f8' class='vacio'>
@@ -1025,11 +1030,53 @@ class AltoImpactoRetail extends Reportes
                         </table>
                         <br>";
             }
-        }
-        $cuerpo.="</div>";
-        return $cuerpo;
+        }*/
+        /*$cuerpo.="</div>";
+        return $cuerpo;*/
 	}
-    
+
+    /**
+     * Encargado de generar el array con la data
+     * @since 2.0
+     * @access private
+     * @param date $start
+     * @param date $end
+     * @return array
+     */
+    private function _loopData($start,$end)
+    {
+        //verifico las fechas
+        $array=self::valDates($start,$end);
+        $startDateTemp=$startDate=$array['startDate'];
+        $endingDateTemp=$endingDate=$array['endingDate'];
+        $yesterday=DateManagement::calculateDate('-1',$startDateTemp);
+        $sevenDaysAgo=DateManagement::calculateDate('-7',$yesterday);
+        $firstDay=DateManagement::getDayOne($start);
+        $this->equal=$array['equal'];
+        $arrayStartTemp=null;
+        $index=0;
+
+        while (self::isLower($startDateTemp,$endingDate))
+        {
+            $arrayStartTemp=explode('-',$startDateTemp);
+            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".DateManagement::howManyDays($startDateTemp),$endingDate);
+            //El titulo que va a llevar la seccion
+            $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
+            //Clientes RP y R-E con mas de un dollar de margen
+            $this->_objetos[$index]['customersRPWithMoreThanOneDollar']=$this->_getCustomers($startDateTemp,$endingDateTemp);
+            //Total de los clientes RP y R-E con mas de un dollar de margen
+            $this->_objetos[$index]['totalCustomersRPWithMoreThanOneDollar']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp);
+            //Total de los clientes RP y R-E
+            $this->_objetos[$index]['totalCustomersRPComplete']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,false);
+            //Destinos RP y RE con mas de un dollar de margen
+            $this->_objetos[$index]['destinationsRPWithMoreThanOneDollar']=$this->_getDestinations($startDateTemp,$endingDateTemp);
+            //Total de los destinos RP y R-E con mas de un dollar de margen
+            $this->_objetos[$index]['totalDestinationsRPWithMoreThanOneDollar']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp);
+            //Total de los destinos RP y RE
+            $this->_objetos[$index]['totalDestinationsRPComplete']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,false);
+        }
+    }
+
     /**
      * Encargada de traer la data correspondiente de los carriers retail
      * @since 2.0
@@ -1062,10 +1109,13 @@ class AltoImpactoRetail extends Reportes
      * @access private
      * @param date $startDate
      * @param date $endDate
+     * @param boolean $type, true=mayores a 1$, false=todos
      * @return CActiveRecord
      */
-    private function _getTotalCustomers($startDate,$endDate)
+    private function _getTotalCustomers($startDate,$endDate,$type=true)
     {
+        $condition="";
+        if($type) $condition="WHERE x.margin>1";
         $sql="SELECT SUM(x.total_calls) AS total_calls, SUM(x.complete_calls) AS complete_calls, SUM(x.minutes) AS minutes, SUM(x.cost) AS cost, SUM(x.revenue) AS revenue, SUM(x.margin) AS margin
               FROM (SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                     FROM balance
@@ -1081,8 +1131,72 @@ class AltoImpactoRetail extends Reportes
                                                                                                                                                                                                                            FROM destination_int 
                                                                                                                                                                                                                            WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
                                                                                                                                                                     GROUP BY id_carrier_customer) x
-              WHERE x.margin>1";
+              {$condition}";
         return Balance::model()->findBySql($sql):
+    }
+
+    /**
+     * Encargada de traer la data correspondiente de los destinos de los clientes retail
+     * @since 2.0
+     * @access private
+     * @param date $startDate
+     * @param date $endDate
+     * @return array
+     */
+    private function _getDestinations($startDate,$endDate)
+    {
+        $sql="SELECT d.name AS destination, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
+              FROM (SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id 
+                                                                                                                FROM carrier 
+                                                                                                                WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id 
+                                                                                                                                                                   FROM destination 
+                                                                                                                                                                   WHERE name='Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id 
+                                                                                                                                                                                                                                                                FROM carrier 
+                                                                                                                                                                                                                                                                WHERE name LIKE 'RP %' 
+                                                                                                                                                                                                                                                                UNION 
+                                                                                                                                                                                                                                                                SELECT id 
+                                                                                                                                                                                                                                                                FROM carrier 
+                                                                                                                                                                                                                                                                WHERE name LIKE 'R-E%')
+                                                                                                                GROUP BY id_destination
+                                                                                                                ORDER BY margin DESC) x, destination d
+              WHERE x.margin > 1 AND x.id_destination=d.id
+              ORDER BY x.margin DESC";
+        return Balance::model()->findAllBySql($sql);
+    }
+
+    /**
+     * Encargado de traer los destinos de retail
+     * @since 2.0
+     * @access private
+     * @param date $startDate
+     * @param date $endDate
+     * @param boolean $type
+     * @return CActiveRecord
+     */
+    private function _getTotalDestinations($startDate,$endDate,$type=true)
+    {
+        $condition="";
+        if($type) $condition="WHERE margin>1";
+        $sql="SELECT SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, (SUM(cost)/SUM(minutes))*100 AS costmin, (SUM(revenue)/SUM(minutes))*100 AS ratemin, ((SUM(revenue)/SUM(minutes))*100)-((SUM(cost)/SUM(minutes))*100) AS marginmin
+              FROM (SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id 
+                                                                                                                FROM carrier 
+                                                                                                                WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id 
+                                                                                                                                                                   FROM destination 
+                                                                                                                                                                   WHERE name='Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN (SELECT id 
+                                                                                                                                                                                                                                                                FROM carrier 
+                                                                                                                                                                                                                                                                WHERE name LIKE 'RP %' 
+                                                                                                                                                                                                                                                                UNION 
+                                                                                                                                                                                                                                                                SELECT id 
+                                                                                                                                                                                                                                                                FROM carrier 
+                                                                                                                                                                                                                                                                WHERE name LIKE 'R-E%')
+                                                                                                                GROUP BY id_destination
+                                                                                                                ORDER BY margin DESC) balance
+              {$condition}";
+        return Balance::model()->findBySql($sql);
     }
 }
 ?>
