@@ -54,7 +54,7 @@ class Balance extends CActiveRecord
 	public $id_vendedor;
 
 	//Alto Impacto Retail
-	public $destination
+	public $destination;
 
 	//para posicion neta
 	public $carrier;
