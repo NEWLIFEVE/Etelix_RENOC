@@ -28,6 +28,12 @@ class AltoImpactoRetail extends Reportes
         $this->_getDays($start);
         //Obtengo los datos
         $this->_loopData($start,$end);
+
+        //Cuento el numero de objetos dentro del array
+        $num=count($this->_objetos);
+        $last=$num-1;
+
+
     }
 
     /**
@@ -56,6 +62,10 @@ class AltoImpactoRetail extends Reportes
             $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             //Clientes RP y R-E con mas de un dollar de margen
             $this->_objetos[$index]['customersRPWithMoreThanOneDollar']=$this->_getCustomers($startDateTemp,$endingDateTemp,'RP');
+            //Clientes RP y R-E con mas de un dollar de margen del dia anterior
+            $this->_objetos[$index]['customersRPYesterday']=$this->_getCustomers($yesterday,$yesterday,'RP');
+            //Promedio de clientes RP y R-E de los ultimos 7 dias
+            $this->_objetos[$index]['customersRPAverage']=$this->_getAvgCustomers($sevenDaysAgo,$yesterday,'RP');
             //Total de los clientes RP y R-E con mas de un dollar de margen
             $this->_objetos[$index]['totalCustomersRPWithMoreThanOneDollar']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RP',true);
             //Total de los clientes RP y R-E
@@ -203,6 +213,31 @@ class AltoImpactoRetail extends Reportes
                                                                                                                 ORDER BY margin DESC) balance
               {$condition}";
         return Balance::model()->findBySql($sql);
+    }
+
+    /**
+     * Encargada de traer el average correspondiente de los carriers retail
+     * @since 2.0
+     * @access private
+     * @param date $startDate
+     * @param date $endDate
+     * @param string $string, "RP" trae las RP y R-E, "RPRO" trae las RPRO 
+     * @return array
+     */
+    private function _getAvgCustomers($startDate,$endDate,$string)
+    {
+        //Que tipo de cliente
+        if($string=="RPRO") $carriers="SELECT id FROM carrier WHERE name LIKE 'RPRO%'";
+        if($string=="RP") $carriers="SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%'";
+        //Construyo la consulta
+        $sql="SELECT c.name AS carrier, x.id_carrier_customer, AVG(x.margin) AS margin
+              FROM (SELECT date_balance, id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE id_carrier_customer IN ({$carriers}) AND date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_destination_int IS NOT NULL
+                    GROUP BY id_carrier_customer, date_balance) x, carrier c
+              WHERE x.id_carrier_customer=c.id
+              GROUP BY x.id_carrier_customer, c.name";
+        return Balance::model()->findAllBySql($sql);
     }
 }
 ?>
