@@ -78,8 +78,10 @@ class Reportes extends CApplicationComponent
 
     /**
      * @access public
-     * @param $fecha date fecha para ser consuldada
-     * @return $variable string cuerpo de reporte
+     * @param date $startDate
+     * @param date $endingDate
+     * @param boolean $type
+     * @return string
      */
     public function AltoImpacto($starDate,$endingDate,$type)
     {
@@ -89,13 +91,14 @@ class Reportes extends CApplicationComponent
 
     /**
      * @access public
-     * @param $fecha date fecha para ser consuldada
-     * @return $variable string cuerpo de reporte
+     * @param date $startDate
+     * @param date $endingDate
+     * @return string
      */
-    public function AltoImpactoRetail($fecha)
+    public function altoImpactoRetail($startDate,$endingDate)
     {
-        $variable=AltoImpactoRetail::reporte($fecha);
-        return $variable;
+        $reporte=new AltoImpactoRetail;
+        return $reporte->report($startDate,$endingDate);
     }
 
     /**
