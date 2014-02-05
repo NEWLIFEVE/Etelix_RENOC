@@ -99,7 +99,7 @@ class AltoImpactoRetail extends Reportes
             //Total del promedio de los clientes RP y R-E de mas de un dollar
             if($this->equal) $this->_objetos[$index]['totalCustomersRPAverage']=$this->_getTotalAvgCustomers($sevenDaysAgo,$yesterday,'RP');
             //Total de lo que va de mes de los clientes RP y R-E con mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPAccumulated']=$this->_getTotalCustomers($firstday,$startDate,'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalCustomersRPAccumulated']=$this->_getTotalCustomers($firstDay,$startDate,'RP',false);
             //Total del promedio de los ultimos siete deias de clientes RP y R-E con mas de un dollar
             if($this->equal) $this->_objetos[$index]['totalCustomersRPForecast']=array_sum($this->_objetos[$index]['customersRPForecast']);
             //total del mes anterior de clientes RP y R-E con mas de un dollar de margen
@@ -193,7 +193,7 @@ class AltoImpactoRetail extends Reportes
             //Total del promedio de los clientes RPRO de mas de un dollar
             if($this->equal) $this->_objetos[$index]['totalCustomersRPROAverage']=$this->_getTotalAvgCustomers($sevenDaysAgo,$yesterday,'RPRO');
             //Total de lo que va de mes de los clientes RPRO con mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROAccumulated']=$this->_getTotalCustomers($firstday,$startDate,'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalCustomersRPROAccumulated']=$this->_getTotalCustomers($firstDay,$startDate,'RPRO',false);
             //Total del promedio de los ultimos siete deias de clientes RPRO con mas de un dollar
             if($this->equal) $this->_objetos[$index]['totalCustomersRPROForecast']=array_sum($this->_objetos[$index]['customersRPROForecast']);
             //total del mes anterior de clientes RPRO con mas de un dollar de margen
@@ -282,8 +282,8 @@ class AltoImpactoRetail extends Reportes
         if($string=="RPRO") $carriers="SELECT id FROM carrier WHERE name LIKE 'RPRO%'";
         if($string=="RP") $carriers="SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%'";
         //Construyo la consulta
-        $sql="SELECT c.name AS carrier, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage
-              FROM (SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+        $sql="SELECT c.name AS carrier, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, CASE WHEN x.pdd=0 THEN 0 WHEN x.total_calls=0 THEN 0 ELSE x.pdd/x.total_calls END AS pdd, x.cost, x.revenue, x.margin, CASE WHEN x.revenue=0 THEN 0 WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage
+              FROM (SELECT id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(minutes)=0 THEN 0 WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                     FROM balance
                     WHERE id_carrier_customer IN ({$carriers}) AND date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_destination_int IS NOT NULL
                     GROUP BY id_carrier_customer) x, carrier c
@@ -341,16 +341,12 @@ class AltoImpactoRetail extends Reportes
         if($string=="RPRO") $carriers="SELECT id FROM carrier WHERE name LIKE 'RPRO%'";
         if($string=="RP") $carriers="SELECT id FROM carrier WHERE name LIKE 'RP %' UNION SELECT id FROM carrier WHERE name LIKE 'R-E%'";
         //COnstruyo la consulta sql
-        $sql="SELECT d.name AS destination, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd/x.total_calls AS pdd, x.cost, x.revenue, x.margin, (((x.revenue*100)/x.cost)-100) AS margin_percentage, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
-              FROM (SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+        $sql="SELECT d.name AS destination, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, CASE WHEN x.pdd=0 THEN 0 WHEN x.total_calls=0 THEN 0 ELSE x.pdd/x.total_calls END AS pdd, x.cost, x.revenue, x.margin, CASE WHEN x.revenue=0 THEN 0 WHEN x.cost=0 THEN 0 ELSE (((x.revenue*100)/x.cost)-100) END AS margin_percentage, CASE WHEN x.cost=0 THEN 0 WHEN x.minutes=0 THEN 0 ELSE (x.cost/x.minutes)*100 END AS costmin, CASE WHEN x.revenue=0 THEN 0 WHEN x.minutes=0 THEN 0 ELSE (x.revenue/x.minutes)*100 END AS ratemin, CASE WHEN x.revenue=0 THEN 0 WHEN x.minutes=0 THEN 0 WHEN x.cost=0 THEN 0 ELSE ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) END AS marginmin
+              FROM (SELECT id_destination, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(minutes)=0 THEN 0 WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                     FROM balance
-                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id 
-                                                                                                                FROM carrier 
-                                                                                                                WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id 
-                                                                                                                                                                   FROM destination 
-                                                                                                                                                                   WHERE name='Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN ({$carriers})
-                                                                                                                GROUP BY id_destination
-                                                                                                                ORDER BY margin DESC) x, destination d
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination<>(SELECT id FROM destination WHERE name='Unknown_Destination') AND id_destination IS NOT NULL AND id_carrier_customer IN ({$carriers})
+                    GROUP BY id_destination
+                    ORDER BY margin DESC) x, destination d
               {$condition}
               ORDER BY x.margin DESC";
         return Balance::model()->findAllBySql($sql);
@@ -431,7 +427,7 @@ class AltoImpactoRetail extends Reportes
         //Construyo la consulta
         $sql="SELECT SUM(d.margin) AS margin
               FROM (SELECT c.name AS carrier, x.id_carrier_customer, AVG(x.margin) AS margin
-                    FROM (SELECT date_balance, id_carrier_customer, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, (SUM(minutes)/SUM(complete_calls)) AS acd, SUM(pdd) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM (SELECT date_balance, id_carrier_customer, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                           FROM balance
                           WHERE id_carrier_customer IN ({$carriers}) AND date_balance>='{$startDate}' AND date_balance<='{$endDate}' AND id_destination_int IS NOT NULL
                           GROUP BY id_carrier_customer, date_balance) x, carrier c
