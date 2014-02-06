@@ -33,7 +33,77 @@ class AltoImpactoRetail extends Reportes
         $num=count($this->_objetos);
         $last=$num-1;
 
+        //Sumo los carriers para saber cuantas filas voy a generar
+        $numCRP=count($this->_objetos[$last]['customersRPOneDollar'])+2;
+        $numDRP=count($this->_objetos[$last]['destinationsRPOneDollar'])+6;
+        $numCRPRO=count($this->_objetos[$last]['customersRPROOneDollar'])+6;
+        $numDRPRO=count($this->_objetos[$last]['destinationsRPROOneDollar'])+6;
+        $total=$numCRP/*+$numDRP+$numCRPRO+$numDRPRO*/;
 
+        //establezco el orden que va a regir las tablas
+        $sorted['customersRPOneDollar']=self::sort($this->_objetos[$last]['customersRPOneDollar'],'carrier');
+        $sorted['destinationsRPOneDollar']=self::sort($this->_objetos[$last]['destinationsRPOneDollar'],'destination');
+        $sorted['customersRPROOneDollar']=self::sort($this->_objetos[$last]['customersRPROOneDollar'],'carrier');
+        $sorted['destinationsRPROOneDollar']=self::sort($this->_objetos[$last]['destinationsRPROOneDollar'],'destination');
+
+        //este numero es por la cantidad de columnas en los carriers
+        $span=10;
+        $spanDes=13;
+        //este numero sale de la cantidad de columnas que identifican el registro, ranking, carrier/destino
+        $before=2;
+        $body="<table>";
+        for($row=1; $row<=$total; $row++)
+        {
+            $body.="<tr>";
+            $body.="<td>".$row."</td>";
+            for($col=1; $col<=$before+($num*$span); $col++)
+            {
+                //Celdas vacias izquierda y derecha en la tabla
+                if(($row==1 
+                 /*|| $row==$numCRP+5
+                 || $row==$numCRP+$numDRP+5
+                 || $row==$numCRP+$numDRP+$numCRPRO+5
+                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && ($col==1 || $col==$before+($num*$span)))
+                {
+                    $body.="<td colspan='{$before}' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
+                //Titulo de cada mes para diferenciar la data 
+                if(($row==1 
+                 /*|| $row==$numCRP+5
+                 || $row==$numCRP+$numDRP+5
+                 || $row==$numCRP+$numDRP+$numCRPRO+5
+                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && self::validColumn($before,$col,$num,$span))
+                {
+                    $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex($before,$col,$span)]['title']."</td>";
+                    if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Cabecera superior izquierda de los clientes RP y R-E
+                if($row==2 && $col==1)
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td>";
+                }
+                //Cabecera superior derecha de los clientes RP y R-E
+                if($row==2 && $col==$before+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                //Cabecera con las columnas
+                if($row==2 && self::validColumn($before,$col,$num,$span))
+                {
+                    $body.=$this->_getHeaderCarriers();
+                    if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Nombres de los carriers
+                if(($row>2  && $row<=$numCRP) && $col==1)
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getNames($pos,$sorted['customersRPOneDollar'][$row-3],true);
+                }
+            }
+            $body.="</tr>";
+        }
+        $body.="</table>";
+        return $body;
     }
 
     /**
@@ -485,6 +555,45 @@ class AltoImpactoRetail extends Reportes
                     WHERE b.id_destination=d.id
                     GROUP BY b.id_destination, d.name) x";
         return Balance::model()->findBySql($sql);
+    }
+
+    /**
+     * Encargada de generar las columnas que van para la cabecera de carriers
+     * @since 2.0
+     * @access private
+     * @return string
+     */
+    private function _getHeaderCarriers()
+    {
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $c1="<td style='".$this->_head['styleHead']."'>Total Calls</td>";
+        $c2="<td style='".$this->_head['styleHead']."'>Complete Calls</td>";
+        $c3="<td style='".$this->_head['styleHead']."'>Minutes</td>";
+        $c4="<td style='".$this->_head['styleHead']."'>ASR</td>";
+        $c5="<td style='".$this->_head['styleHead']."'>ACD</td>";
+        $c6="<td style='".$this->_head['styleHead']."'>PDD</td>";
+        $c7="<td style='".$this->_head['styleHead']."'>Cost</td>";
+        $c8="<td style='".$this->_head['styleHead']."'>Revenue</td>";
+        $c9="<td style='".$this->_head['styleHead']."'>Margin</td>";
+        $c10="<td style='".$this->_head['styleHead']."'>Margin%</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
+    }
+
+    /**
+     * Retorna la fila con el nombre del manager y la posicion indicada
+     * @access protected
+     * @param int $pos posicion del manager
+     * @param array $value datos del carrier
+     * @param boolean $type, true es izquierda, false es derecha
+     * @return string la celda construida
+     */
+    protected function _getNames($pos,$value,$type=true)
+    {
+        $style=self::colorEstilo($pos);
+        if($type) 
+            return "<td style='".$style."'>{$pos}</td><td style='".$style."'>{$value['attribute']}</td>";
+        else
+            return "<td style='".$style."'>{$value['attribute']}</td><td style='".$style."'>{$pos}</td>";
     }
 }
 ?>
