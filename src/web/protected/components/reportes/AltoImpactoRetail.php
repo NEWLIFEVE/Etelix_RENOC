@@ -5,9 +5,9 @@
 */
 class AltoImpactoRetail extends Reportes
 {
+    private $_totals;
     function __construct()
     {
-        $this->_objetos=array();
         $this->_head=array(
             'styleHead'=>'text-align:center;background-color:#615E5E; color:#62C25E; width:10%; height:100%;',
             'styleFooter'=>'text-align:center;background-color:#999999; color:#FFFFFF;',
@@ -34,20 +34,20 @@ class AltoImpactoRetail extends Reportes
         $last=$num-1;
 
         //Sumo los carriers para saber cuantas filas voy a generar
-        $numCRP=count($this->_objetos[$last]['customersRPOneDollar'])+2;
-        $numDRP=count($this->_objetos[$last]['destinationsRPOneDollar'])+6;
-        $numCRPRO=count($this->_objetos[$last]['customersRPROOneDollar'])+6;
-        $numDRPRO=count($this->_objetos[$last]['destinationsRPROOneDollar'])+6;
-        $total=$numCRP/*+$numDRP+$numCRPRO+$numDRPRO*/;
+        $numCRP=count($this->_objetos[$last]['customersRP'])+2;
+        $numDRP=count($this->_objetos[$last]['destinationsRP'])+6;
+        $numCRPRO=count($this->_objetos[$last]['customersRPRO'])+6;
+        $numDRPRO=count($this->_objetos[$last]['destinationsRPRO'])+6;
+        $total=$numCRP+1/*+$numDRP+$numCRPRO+$numDRPRO*/;
 
         //establezco el orden que va a regir las tablas
-        $sorted['customersRPOneDollar']=self::sort($this->_objetos[$last]['customersRPOneDollar'],'carrier');
-        $sorted['destinationsRPOneDollar']=self::sort($this->_objetos[$last]['destinationsRPOneDollar'],'destination');
-        $sorted['customersRPROOneDollar']=self::sort($this->_objetos[$last]['customersRPROOneDollar'],'carrier');
-        $sorted['destinationsRPROOneDollar']=self::sort($this->_objetos[$last]['destinationsRPROOneDollar'],'destination');
+        $sorted['customersRP']=self::sort($this->_objetos[$last]['customersRP'],'carrier');
+        $sorted['destinationsRP']=self::sort($this->_objetos[$last]['destinationsRP'],'destination');
+        $sorted['customersRPRO']=self::sort($this->_objetos[$last]['customersRPRO'],'carrier');
+        $sorted['destinationsRPRO']=self::sort($this->_objetos[$last]['destinationsRPRO'],'destination');
 
         //este numero es por la cantidad de columnas en los carriers
-        $span=10;
+        $span=18;
         $spanDes=13;
         //este numero sale de la cantidad de columnas que identifican el registro, ranking, carrier/destino
         $before=2;
@@ -55,7 +55,7 @@ class AltoImpactoRetail extends Reportes
         for($row=1; $row<=$total; $row++)
         {
             $body.="<tr>";
-            $body.="<td>".$row."</td>";
+            //$body.="<td>".$row."</td>";
             for($col=1; $col<=$before+($num*$span); $col++)
             {
                 //Celdas vacias izquierda y derecha en la tabla
@@ -77,15 +77,15 @@ class AltoImpactoRetail extends Reportes
                     $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex($before,$col,$span)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
+                //Titulo de meses anteriores
+                if($row==1 && $col==$before+($num*$span))
+                {
+                    if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                }
                 //Cabecera superior izquierda de los clientes RP y R-E
                 if($row==2 && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td>";
-                }
-                //Cabecera superior derecha de los clientes RP y R-E
-                if($row==2 && $col==$before+($num*$span))
-                {
-                    $body.="<td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
                 }
                 //Cabecera con las columnas
                 if($row==2 && self::validColumn($before,$col,$num,$span))
@@ -93,11 +93,70 @@ class AltoImpactoRetail extends Reportes
                     $body.=$this->_getHeaderCarriers();
                     if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
-                //Nombres de los carriers
+                //titulo de los meses
+                if($row==2 && $col==$before+($num*$span))
+                {
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
+                }
+                //Cabecera superior derecha de los clientes RP y R-E
+                if($row==2 && $col==$before+($num*$span))
+                {
+                    $body.="<td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                //Nombres de los carriers izquierda RP y R-E
                 if(($row>2  && $row<=$numCRP) && $col==1)
                 {
                     $pos=$row-2;
-                    $body.=$this->_getNames($pos,$sorted['customersRPOneDollar'][$row-3],true);
+                    $body.=$this->_getNames($pos,$sorted['customersRP'][$row-3],true);
+                }
+                //Nombres de los carriers derecha RP y R-E
+                if(($row>2  && $row<=$numCRP) && $col==$before+($num*$span))
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getNames($pos,$sorted['customersRP'][$row-3],true);
+                }
+                //data de los clientes RP y R-E
+                if(($row>2  && $row<=$numCRP) && self::validColumn($before,$col,$num,$span))
+                {
+                    $pos=$row-2;
+                    $body.=$this->_getRow(self::validIndex($before,$col,$span),'customersRP','carrier',$sorted['customersRP'][$row-3],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //data de los clientes RP y R-E meses anteriores
+                if(($row>2  && $row<=$numCRP) && $col==$before+($num*$span))
+                {
+                    $pos=$row-2;
+                    if($this->equal) $body.=$this->_getRowMonth('customersRP','carrier',$sorted['customersRP'][$row-3],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Celdas izquierda de total
+                if($row==$numCRP+1 && $col==1)
+                {
+                    $body.="<td></td><td style='text-align:center;background-color:#999999;color:#FFFFFF;'>TOTAL</td>";
+                }
+                //Totales de Clientes RP y R-E
+                if($row==$numCRP+1 && self::validColumn($before,$col,$num,$span))
+                {
+                    $body.=$this->_getRowTotal(self::validIndex($before,$col,$span),'totalcustomersRP','styleFooter',true);
+                }
+                //Celdas derecha de total
+                if($row==$numCRP+1 && $col==$before+($num*$span))
+                {
+                    $body.="<td style='text-align:center;background-color:#999999;color:#FFFFFF;'>TOTAL</td><td></td>";
+                }
+                //Totales altos de meses anteriores
+                if($row==$numCRP+1 && $col==$before+($num*$span))
+                {
+                    if($this->equal) $body.=$this->_getRowTotalMonth('totalcustomersRP','styleFooter',true);
                 }
             }
             $body.="</tr>";
@@ -141,7 +200,7 @@ class AltoImpactoRetail extends Reportes
             //El titulo de septimo mes
             $this->_objetos[$index]['titleSeventhMonth']=self::reportTitle(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday']);
             //Clientes RP y R-E con mas de un dollar de margen
-            $this->_objetos[$index]['customersRPOneDollar']=$this->_getCustomers($startDateTemp,$endingDateTemp,'RP',true);
+            $this->_objetos[$index]['customersRP']=$this->_getCustomers($startDateTemp,$endingDateTemp,'RP',true);
             //Clientes RP y R-E con mas de un dollar de margen del dia anterior
             if($this->equal) $this->_objetos[$index]['customersRPYesterday']=$this->_getCustomers($yesterday,$yesterday,'RP',false);
             //Promedio de clientes RP y R-E de los ultimos 7 dias
@@ -163,32 +222,37 @@ class AltoImpactoRetail extends Reportes
             //Guardo el margen del septimo mes de clientes RP y R-E
             if($this->equal) $this->_objetos[$index]['customersRPSeventhMonth']=$this->_getCustomers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RP',false);
             //Total de los clientes RP y R-E con mas de un dollar de margen
-            $this->_objetos[$index]['totalCustomersRPOneDollar']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RP',true);
+            $this->_objetos[$index]['totalcustomersRP']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RP',true);
             //Total de los clientes RP y R-E con mas de un dollar de margen del dia de ayer
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPYesterday']=$this->_getTotalCustomers($yesterday,$yesterday,'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPYesterday']=$this->_getTotalCustomers($yesterday,$yesterday,'RP',false);
             //Total del promedio de los clientes RP y R-E de mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPAverage']=$this->_getTotalAvgCustomers($sevenDaysAgo,$yesterday,'RP');
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPAverage']=$this->_getTotalAvgCustomers($sevenDaysAgo,$yesterday,'RP');
             //Total de lo que va de mes de los clientes RP y R-E con mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPAccumulated']=$this->_getTotalCustomers($firstDay,$startDate,'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPAccumulated']=$this->_getTotalCustomers($firstDay,$startDate,'RP',false);
             //Total del promedio de los ultimos siete deias de clientes RP y R-E con mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPForecast']=array_sum($this->_objetos[$index]['customersRPForecast']);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPForecast']=array_sum($this->_objetos[$index]['customersRPForecast']);
             //total del mes anterior de clientes RP y R-E con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPPreviousMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPPreviousMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RP',false);
             //Total del tercer mes de clientes RP y R-E con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPThirdMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPThirdMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totalcustomersRPThirdMonth']=0;
             //total del cuarto mes de clientes RP y R-E con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPFourthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPFourthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totalcustomersRPFourthMonth']=0;
             //Total del quimto mes de clientes RP y R-E con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPFifthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPFifthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totalcustomersRPFifthMonth']=0;
             //Total del sexto mes de clientes RP y R-E con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPSixthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPSixthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totalcustomersRPSixthMonth']=0;
             //Total del septimo mes de clientes RP y R-E con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPSeventhMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPSeventhMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totalcustomersRPSeventhMonth']=0;
             //Total de los clientes RP y R-E
-            $this->_objetos[$index]['totalCustomersRPComplete']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RP',false);
+            $this->_objetos[$index]['totalcustomersRPComplete']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RP',false);
             ///////////////////////////////////////////////////
             //Destinos RP y RE con mas de un dollar de margen
-            $this->_objetos[$index]['destinationsRPOneDollar']=$this->_getDestinations($startDateTemp,$endingDateTemp,'RP',true);
+            $this->_objetos[$index]['destinationsRP']=$this->_getDestinations($startDateTemp,$endingDateTemp,'RP',true);
             //Destino RP y R-E del dia anterior
             if($this->equal) $this->_objetos[$index]['destinationsRPYesterday']=$this->_getDestinations($startDateTemp,$endingDateTemp,'RP',false);
             //Promedio de destinos de los ultimos 7 dias
@@ -210,32 +274,37 @@ class AltoImpactoRetail extends Reportes
             //Destinos del septimo mes
             if($this->equal) $this->_objetos[$index]['destinationsRPSeventhMonth']=$this->_getDestinations(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RP',false);
             //Total de los destinos RP y R-E con mas de un dollar de margen
-            $this->_objetos[$index]['totalDestinationsRPOneDollar']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RP',true);
+            $this->_objetos[$index]['totaldestinationsRP']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RP',true);
             //Total de los destinos RP y R-E del dia anterior
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPYesterday']=$this->_getTotalDestinations($yesterday,$yesterday,'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPYesterday']=$this->_getTotalDestinations($yesterday,$yesterday,'RP',false);
             //Promedio de los destinos RP y R-E
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPAverage']=$this->_getTotalAvgDestinations($sevenDaysAgo,$yesterday,'RP');
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPAverage']=$this->_getTotalAvgDestinations($sevenDaysAgo,$yesterday,'RP');
             //Acumulado en lo que va de mes de destinos RP y R-E
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPAccumulated']=$this->_getTotalDestinations($firstDay,$startDate,'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPAccumulated']=$this->_getTotalDestinations($firstDay,$startDate,'RP',false);
             //Pronosticos para fin del mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPForecast']=array_sum($this->_objetos[$index]['destinationsRPForecast']);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPForecast']=array_sum($this->_objetos[$index]['destinationsRPForecast']);
             //Total de destinos RP y R-E del mes anterior
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPPreviousMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPPreviousMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RP',false);
             //Total de destinos RP y R-E del tercer mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPThirdMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPThirdMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totaldestinationsRPThirdMonth']=0;
             //Total de destinos RP y R-E del cuarto mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPFourthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPFourthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totaldestinationsRPFourthMonth']=0;
             //Total de destinos RP y R-E del quinto mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPFifthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPFifthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totaldestinationsRPFifthMonth']=0;
             //Total de destinos RP y R-E del sexto mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPSixthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPSixthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totaldestinationsRPSixthMonth']=0;
             //Total de destinos RP y R-E del septimo mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPSeventhMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RP',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPSeventhMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RP',false);
+            if($this->equal) $this->_totals['totaldestinationsRPSeventhMonth']=0;
             //Total de los destinos RP y RE
-            $this->_objetos[$index]['totalDestinationsRPComplete']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RP',false);
+            $this->_objetos[$index]['totaldestinationsRPComplete']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RP',false);
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //Clientes RPRO con mas de un dollar de margen
-            $this->_objetos[$index]['customersRPROOneDollar']=$this->_getCustomers($startDateTemp,$endingDateTemp,'RPRO',true);
+            $this->_objetos[$index]['customersRPRO']=$this->_getCustomers($startDateTemp,$endingDateTemp,'RPRO',true);
             //Clientes RPRO con mas de un dollar de margen del dia anterior
             if($this->equal) $this->_objetos[$index]['customersRPROYesterday']=$this->_getCustomers($yesterday,$yesterday,'RPRO',false);
             //Promedio de clientes RPRO de los ultimos 7 dias
@@ -257,32 +326,37 @@ class AltoImpactoRetail extends Reportes
             //Guardo el margen del septimo mes de clientes RPRO
             if($this->equal) $this->_objetos[$index]['customersRPROSeventhMonth']=$this->_getCustomers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RPRO',false);
             //Total de los clientes RPRO con mas de un dollar de margen
-            $this->_objetos[$index]['totalCustomersRPROOneDollar']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RPRO',true);
+            $this->_objetos[$index]['totalcustomersRPRO']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RPRO',true);
             //Total de los clientes RPRO con mas de un dollar de margen del dia de ayer
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROYesterday']=$this->_getTotalCustomers($yesterday,$yesterday,'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROYesterday']=$this->_getTotalCustomers($yesterday,$yesterday,'RPRO',false);
             //Total del promedio de los clientes RPRO de mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROAverage']=$this->_getTotalAvgCustomers($sevenDaysAgo,$yesterday,'RPRO');
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROAverage']=$this->_getTotalAvgCustomers($sevenDaysAgo,$yesterday,'RPRO');
             //Total de lo que va de mes de los clientes RPRO con mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROAccumulated']=$this->_getTotalCustomers($firstDay,$startDate,'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROAccumulated']=$this->_getTotalCustomers($firstDay,$startDate,'RPRO',false);
             //Total del promedio de los ultimos siete deias de clientes RPRO con mas de un dollar
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROForecast']=array_sum($this->_objetos[$index]['customersRPROForecast']);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROForecast']=array_sum($this->_objetos[$index]['customersRPROForecast']);
             //total del mes anterior de clientes RPRO con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROPreviousMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROPreviousMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RPRO',false);
             //Total del tercer mes de clientes RPRO con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROThirdMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROThirdMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totalcustomersRPROThirdMonth']=0;
             //total del cuarto mes de clientes RPRO con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROFourthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROFourthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totalcustomersRPROFourthMonth']=0;
             //Total del quimto mes de clientes RPRO con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROFifthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROFifthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totalcustomersRPROFifthMonth']=0;
             //Total del sexto mes de clientes RPRO con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROSixthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROSixthMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totalcustomersRPROSixthMonth']=0;
             //Total del septimo mes de clientes RPRO con mas de un dollar de margen
-            if($this->equal) $this->_objetos[$index]['totalCustomersRPROSeventhMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totalcustomersRPROSeventhMonth']=$this->_getTotalCustomers(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totalcustomersRPROSeventhMonth']=0;
             //Total de los clientes RPRO
-            $this->_objetos[$index]['totalCustomersRPROComplete']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RPRO',false);
+            $this->_objetos[$index]['totalcustomersRPROComplete']=$this->_getTotalCustomers($startDateTemp,$endingDateTemp,'RPRO',false);
             ///////////////////////////////////////////////////
             //Destinos RPRO con mas de un dollar de margen
-            $this->_objetos[$index]['destinationsRPROOneDollar']=$this->_getDestinations($startDateTemp,$endingDateTemp,'RPRO',true);
+            $this->_objetos[$index]['destinationsRPRO']=$this->_getDestinations($startDateTemp,$endingDateTemp,'RPRO',true);
             //Destino RPRO del dia anterior
             if($this->equal) $this->_objetos[$index]['destinationsRPROYesterday']=$this->_getDestinations($startDateTemp,$endingDateTemp,'RPRO',false);
             //Promedio de destinos de los ultimos 7 dias
@@ -304,29 +378,34 @@ class AltoImpactoRetail extends Reportes
             //Destinos del septimo mes
             if($this->equal) $this->_objetos[$index]['destinationsRPROSeventhMonth']=$this->_getDestinations(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RPRO',false);
             //Total de los destinos RPRO con mas de un dollar de margen
-            $this->_objetos[$index]['totalDestinationsRPROOneDollar']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RPRO',true);
+            $this->_objetos[$index]['totaldestinationsRPRO']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RPRO',true);
             //Total de los destinos RPRO del dia anterior
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROYesterday']=$this->_getTotalDestinations($yesterday,$yesterday,'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROYesterday']=$this->_getTotaldestinations($yesterday,$yesterday,'RPRO',false);
             //Promedio de los destinos RPRO
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROAverage']=$this->_getTotalAvgDestinations($sevenDaysAgo,$yesterday,'RPRO');
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROAverage']=$this->_getTotalAvgDestinations($sevenDaysAgo,$yesterday,'RPRO');
             //Acumulado en lo que va de mes de destinos RPRO
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROAccumulated']=$this->_getTotalDestinations($firstDay,$startDate,'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROAccumulated']=$this->_getTotalDestinations($firstDay,$startDate,'RPRO',false);
             //Pronosticos para fin del mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROForecast']=array_sum($this->_objetos[$index]['destinationsRPROForecast']);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROForecast']=array_sum($this->_objetos[$index]['destinationsRPROForecast']);
             //Total de destinos RPRO del mes anterior
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROPreviousMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROPreviousMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate)['firstday'],DateManagement::leastOneMonth($startDate)['lastday'],'RPRO',false);
             //Total de destinos RPRO del tercer mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROThirdMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROThirdMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-2')['firstday'],DateManagement::leastOneMonth($startDate,'-2')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totaldestinationsRPROThirdMonth']=0;
             //Total de destinos RPRO del cuarto mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROFourthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROFourthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-3')['firstday'],DateManagement::leastOneMonth($startDate,'-3')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totaldestinationsRPROFourthMonth']=0;
             //Total de destinos RPRO del quinto mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROFifthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROFifthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-4')['firstday'],DateManagement::leastOneMonth($startDate,'-4')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totaldestinationsRPROFifthMonth']=0;
             //Total de destinos RPRO del sexto mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROSixthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROSixthMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-5')['firstday'],DateManagement::leastOneMonth($startDate,'-5')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totaldestinationsRPROSixthMonth']=0;
             //Total de destinos RPRO del septimo mes
-            if($this->equal) $this->_objetos[$index]['totalDestinationsRPROSeventhMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RPRO',false);
+            if($this->equal) $this->_objetos[$index]['totaldestinationsRPROSeventhMonth']=$this->_getTotalDestinations(DateManagement::leastOneMonth($startDate,'-6')['firstday'],DateManagement::leastOneMonth($startDate,'-6')['lastday'],'RPRO',false);
+            if($this->equal) $this->_totals['totaldestinationsRPROSeventhMonth']=0;
             //Total de los destinos RPRO
-            $this->_objetos[$index]['totalDestinationsRPROComplete']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RP',false);
+            $this->_objetos[$index]['totaldestinationsRPROComplete']=$this->_getTotalDestinations($startDateTemp,$endingDateTemp,'RP',false);
 
             /*Itero la fecha*/
             $startDateTemp=DateManagement::firstDayNextMonth($startDateTemp);
@@ -565,7 +644,6 @@ class AltoImpactoRetail extends Reportes
      */
     private function _getHeaderCarriers()
     {
-        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
         $c1="<td style='".$this->_head['styleHead']."'>Total Calls</td>";
         $c2="<td style='".$this->_head['styleHead']."'>Complete Calls</td>";
         $c3="<td style='".$this->_head['styleHead']."'>Minutes</td>";
@@ -576,7 +654,15 @@ class AltoImpactoRetail extends Reportes
         $c8="<td style='".$this->_head['styleHead']."'>Revenue</td>";
         $c9="<td style='".$this->_head['styleHead']."'>Margin</td>";
         $c10="<td style='".$this->_head['styleHead']."'>Margin%</td>";
-        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
+        $c11="<td style='".$this->_head['styleHead']."'></td>";
+        $c12="<td style='".$this->_head['styleHead']."'>Dia Anterior</td>";
+        $c13="<td style='".$this->_head['styleHead']."'></td>";
+        $c14="<td style='".$this->_head['styleHead']."'>Promedio 7D</td>";
+        $c15="<td style='".$this->_head['styleHead']."'>Acumulado Mes</td>";
+        $c16="<td style='".$this->_head['styleHead']."'>Proyeccion Mes</td>";
+        $c17="<td style='".$this->_head['styleHead']."'></td>";
+        $c18="<td style='".$this->_head['styleHead']."'>Mes Anterior</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18;
     }
 
     /**
@@ -594,6 +680,258 @@ class AltoImpactoRetail extends Reportes
             return "<td style='".$style."'>{$pos}</td><td style='".$style."'>{$value['attribute']}</td>";
         else
             return "<td style='".$style."'>{$value['attribute']}</td><td style='".$style."'>{$pos}</td>";
+    }
+
+    /**
+     * Encargada de generar las columnas con la data
+     * @since 2.0
+     * @access private
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data, customersRP, customersRPYesterday, customersRPAverage, customersRPForecast
+     * @param string $attribute es el atributo con el que el siguiente parametro deberá coincidir
+     * @param string $phrase el dato que debe coincidir
+     * @return string
+     */
+    private function _getRow($index,$index2,$attribute,$phrase,$style)
+    {
+        $margin=$c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=$c17=$c18=null;
+        foreach($this->_objetos[$index][$index2] as $key => $value)
+        {
+            if($value->$attribute == $phrase['attribute'])
+            {               
+                $c1="<td style='".$style."'>".Yii::app()->format->format_decimal($value->total_calls,0)."</td>";
+                $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($value->complete_calls,0)."</td>";
+                $c3="<td style='".$style."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($value->asr)."</td>";
+                $c5="<td style='".$style."'>".Yii::app()->format->format_decimal($value->acd)."</td>";
+                $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->pdd)."</td>";
+                $c7="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cost)."</td>";
+                $c8="<td style='".$style."' >".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $margin=$value->margin;
+                $c9="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margin_percentage)."%</td>";
+            }
+        }
+        foreach($this->_objetos[$index][$index2."Yesterday"] as $key => $yesterday)
+        {
+            if($yesterday->$attribute == $phrase['attribute'])
+            {
+                $c11="<td style='".$style."'>".$this->_upOrDown($yesterday->margin,$margin)."</td>";
+                $c12="<td style='".$style."'>".Yii::app()->format->format_decimal($yesterday->margin)."</td>";
+            }
+        }
+        foreach($this->_objetos[$index][$index2."Average"] as $key => $average)
+        {
+            if($average->$attribute == $phrase['attribute'])
+            {
+                $c13="<td style='".$style."'>".$this->_upOrDown($average->margin,$margin)."</td>";
+                $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($average->margin)."</td>";
+            }
+        }
+        foreach($this->_objetos[$index][$index2."Accumulated"] as $key => $accumulated)
+        {
+            if($accumulated->$attribute == $phrase['attribute'])
+            {
+                $c15="<td style='".$style."'>".Yii::app()->format->format_decimal($accumulated->margin)."</td>";
+            }
+        }
+        $c16="<td style='".$style."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Forecast"][$phrase['attribute']])."</td>";
+        foreach ($this->_objetos[$index][$index2."PreviousMonth"] as $key => $previousMonth)
+        {
+            if($previousMonth->$attribute == $phrase['attribute'])
+            {
+                $c17="<td style='".$style."'>".$this->_upOrDown($previousMonth->margin,$this->_objetos[$index][$index2."Forecast"][$phrase['attribute']])."</td>";
+                $c18="<td style='".$style."'>".Yii::app()->format->format_decimal($previousMonth->margin)."</td>";
+            }
+        }
+        if($c1==null) $c1="<td style='".$style."'>--</td>";
+        if($c2==null) $c2="<td style='".$style."'>--</td>";
+        if($c3==null) $c3="<td style='".$style."'>--</td>";
+        if($c4==null) $c4="<td style='".$style."'>--</td>";
+        if($c5==null) $c5="<td style='".$style."'>--</td>";
+        if($c6==null) $c6="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."'>--</td>";
+        if($c10==null) $c10="<td style='".$style."'>--</td>";
+        if($c11==null) $c11="<td style='".$style."'>--</td>";
+        if($c12==null) $c12="<td style='".$style."'>--</td>";
+        if($c13==null) $c13="<td style='".$style."'>--</td>";
+        if($c14==null) $c14="<td style='".$style."'>--</td>";
+        if($c15==null) $c15="<td style='".$style."'>--</td>";
+        if($c16==null) $c16="<td style='".$style."'>--</td>";
+        if($c17==null) $c17="<td style='".$style."'>--</td>";
+        if($c18==null) $c18="<td style='".$style."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18;
+    }
+
+    /**
+     * Encargada de generar las columnas con la data de los meses anteriores
+     * @since 2.0
+     * @access private
+     * @param string $index es el index superior donde se encutra la data
+     * @param string $index2 es el index inferior donde se encuentra la data, customersRP, customersRPYesterday, customersRPAverage, customersRPForecast
+     * @param string $attribute es el atributo con el que el siguiente parametro deberá coincidir
+     * @param string $phrase el dato que debe coincidir
+     * @return string
+     */
+    private function _getRowMonth($index,$attribute,$phrase,$style)
+    {
+        $margin=$c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $margin=$this->_objetos[0][$index."Forecast"][$phrase['attribute']];
+        foreach($this->_objetos[0][$index."ThirdMonth"] as $key => $third)
+        {
+            if($third->$attribute == $phrase['attribute'])
+            {               
+                $c1="<td style='".$style."'>".$this->_upOrDown($third->margin,$margin)."</td>";
+                $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($third->margin)."</td>";
+                $this->_totals["total".$index."ThirdMonth"]+=$third->margin;
+            }
+        }
+        foreach($this->_objetos[0][$index."FourthMonth"] as $key => $fourth)
+        {
+            if($fourth->$attribute == $phrase['attribute'])
+            {               
+                $c3="<td style='".$style."'>".$this->_upOrDown($fourth->margin,$margin)."</td>";
+                $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($fourth->margin)."</td>";
+                $this->_totals["total".$index."FourthMonth"]+=$fourth->margin;
+            }
+        }
+        foreach($this->_objetos[0][$index."FifthMonth"] as $key => $fifth)
+        {
+            if($fifth->$attribute == $phrase['attribute'])
+            {               
+                $c5="<td style='".$style."'>".$this->_upOrDown($fifth->margin,$margin)."</td>";
+                $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($fifth->margin)."</td>";
+                $this->_totals["total".$index."FifthMonth"]+=$fifth->margin;
+            }
+        }
+        foreach($this->_objetos[0][$index."SixthMonth"] as $key => $sixth)
+        {
+            if($sixth->$attribute == $phrase['attribute'])
+            {               
+                $c7="<td style='".$style."'>".$this->_upOrDown($sixth->margin,$margin)."</td>";
+                $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($sixth->margin)."</td>";
+                $this->_totals["total".$index."SixthMonth"]+=$sixth->margin;
+            }
+        }
+        foreach($this->_objetos[0][$index."SeventhMonth"] as $key => $seventh)
+        {
+            if($seventh->$attribute == $phrase['attribute'])
+            {               
+                $c9="<td style='".$style."'>".$this->_upOrDown($seventh->margin,$margin)."</td>";
+                $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($seventh->margin)."</td>";
+                $this->_totals["total".$index."SeventhMonth"]+=$seventh->margin;
+            }
+        }
+        if($c1==null) $c1="<td style='".$style."'>--</td>";
+        if($c2==null) $c2="<td style='".$style."'>--</td>";
+        if($c3==null) $c3="<td style='".$style."'>--</td>";
+        if($c4==null) $c4="<td style='".$style."'>--</td>";
+        if($c5==null) $c5="<td style='".$style."'>--</td>";
+        if($c6==null) $c6="<td style='".$style."'>--</td>";
+        if($c7==null) $c7="<td style='".$style."'>--</td>";
+        if($c8==null) $c8="<td style='".$style."'>--</td>";
+        if($c9==null) $c9="<td style='".$style."'>--</td>";
+        if($c10==null) $c10="<td style='".$style."'>--</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
+    }
+
+    /**
+     * Encargado de generar el html de la fila de totales
+     * @since 2.0
+     * @access private
+     * @param int $index
+     * @param string $index2
+     * @param string $style
+     * @param boolean $type
+     * @return string
+     */
+    private function _getRowTotal($index,$index2,$style,$type=true)
+    {
+        $c4=$c5=$c6=$c10=null;
+        //Total calls
+        $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->total_calls)."</td>";
+        //Complete calls
+        $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->complete_calls)."</td>";
+        //Minutes
+        $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->minutes)."</td>";
+        //ASR
+        if(!$type) $c4="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->asr)."</td>";
+        //ACD
+        if(!$type) $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->acd)."</td>";
+        //PDD
+        if(!$type) $c6="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->pdd)."</td>";
+        //Cost
+        $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->cost)."</td>";
+        //Revenue
+        $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->revenue)."</td>";
+        //Margin
+        $c9="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->margin)."</td>";
+        //Margin Percentage
+        if(!$type) $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2]->margin_percentage)."</td>";
+        //Simbolo dia anterior
+        $c11="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[$index][$index2."Yesterday"]->margin,$this->_objetos[$index][$index2]->margin)."</td>";
+        //Dia Anterior
+        $c12="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Yesterday"]->margin)."</td>";
+        //Simbolo promedio
+        $c13="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[$index][$index2."Average"]->margin,$this->_objetos[$index][$index2]->margin)."</td>";
+        //Promedio
+        $c14="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Average"]->margin)."</td>";
+        //Acumulado
+        $c15="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Accumulated"]->margin)."</td>";
+        //Proyeccion
+        $c16="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Forecast"])."</td>";
+        //Simbolo del mes anterior
+        $c17="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[$index][$index2."PreviousMonth"]->margin,$this->_objetos[$index][$index2."Forecast"])."</td>";
+        //Mes anterior
+        $c18="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."PreviousMonth"]->margin)."</td>";
+        if($c4==null) $c4="<td style='".$this->_head[$style]."'></td>";
+        if($c5==null) $c5="<td style='".$this->_head[$style]."'></td>";
+        if($c6==null) $c6="<td style='".$this->_head[$style]."'></td>";
+        if($c10==null) $c10="<td style='".$this->_head[$style]."'></td>";
+
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16.$c17.$c18;
+    }
+
+    /**
+     * Encargado de traer el total de meses anteriores
+     */
+    private function _getRowTotalMonth($index,$style,$type=true)
+    {
+        $margin=$c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        $margin=$this->_objetos[0][$index."Forecast"];
+        $third=$this->_objetos[0][$index."ThirdMonth"]->margin;
+        if($type) $third=$this->_totals[$index."ThirdMonth"];
+        $fourth=$this->_objetos[0][$index."FourthMonth"]->margin;
+        if($type) $fourth=$this->_totals[$index."FourthMonth"];
+        $fifth=$this->_objetos[0][$index."FifthMonth"]->margin;
+        if($type) $fifth=$this->_totals[$index."FifthMonth"];
+        $sixth=$this->_objetos[0][$index."SixthMonth"]->margin;
+        if($type) $sixth=$this->_totals[$index."SixthMonth"];
+        $seventh=$this->_objetos[0][$index."SeventhMonth"]->margin;
+        if($type) $seventh=$this->_totals[$index."SeventhMonth"];
+        //Simbolo del tercer mes
+        $c1="<td style='".$this->_head[$style]."'>".$this->_upOrDown($third,$margin)."</td>";
+        //Tercer mes
+        $c2="<td style='".$style."'>".Yii::app()->format->format_decimal($third)."</td>";
+        //Simbolo del cuarto mes
+        $c3="<td style='".$style."'>".$this->_upOrDown($fourth,$margin)."</td>";
+        //Cuarto mes
+        $c4="<td style='".$style."'>".Yii::app()->format->format_decimal($fourth)."</td>";
+        //Simbolo del quinto mes
+        $c5="<td style='".$style."'>".$this->_upOrDown($fifth,$margin)."</td>";
+        //Quinto mes
+        $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($fifth)."</td>";
+        //Simbolo de sexto mes
+        $c7="<td style='".$style."'>".$this->_upOrDown($sixth,$margin)."</td>";
+        //Sexto mes
+        $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($sixth)."</td>";
+        //Simbolo del septimo mes
+        $c9="<td style='".$style."'>".$this->_upOrDown($seventh,$margin)."</td>";
+        //Septimo mes
+        $c10="<td style='".$style."'>".Yii::app()->format->format_decimal($seventh)."</td>";
+        return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
     }
 }
 ?>
