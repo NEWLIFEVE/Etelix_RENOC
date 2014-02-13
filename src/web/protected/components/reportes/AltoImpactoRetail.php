@@ -50,6 +50,7 @@ class AltoImpactoRetail extends Reportes
         $span=18;
         if(!$this->equal) $span=10;
         $spanDes=21;
+        if(!$this->equal) $spanDes=13;
         //este numero sale de la cantidad de columnas que identifican el registro, ranking, carrier/destino
         $before=2;
         $body="<table>";
@@ -226,7 +227,7 @@ class AltoImpactoRetail extends Reportes
                 if(($row==$numCRP+5
                  /*|| $row==$numCRP+$numDRP+5
                  || $row==$numCRP+$numDRP+$numCRPRO+5
-                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && self::validColumn($before,$col,$num,$span))
+                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && self::validColumn($before,$col,$num,$spanDes))
                 {
                     $body.="<td colspan='".$spanDes."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex($before,$col,$spanDes)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex($before,$col,$spanDes))) $body.="<td></td>";
@@ -251,7 +252,7 @@ class AltoImpactoRetail extends Reportes
                     $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRP'][$row-$numCRP-7],true);
                 }
                 //data de los destinos RP y R-E
-                if(($row>$numCRP+6  && $row<=$numCRP+$numDRP) && self::validColumn($before,$col,$num,$span))
+                if(($row>$numCRP+6  && $row<=$numCRP+$numDRP) && self::validColumn($before,$col,$num,$spanDes))
                 {
                     $pos=$row-$numCRP-6;
                     $body.=$this->_getRowDestinations(self::validIndex($before,$col,$spanDes),'destinationsRP','destination',$sorted['destinationsRP'][$row-$numCRP-7],self::colorDestino($sorted['destinationsRP'][$row-$numCRP-7]['attribute']));
@@ -295,6 +296,7 @@ class AltoImpactoRetail extends Reportes
                 if($row==$numCRP+$numDRP+4 && self::validColumn($before,$col,$num,$spanDes))
                 {
                     $body.=$this->_getRowPercentageDestinations(self::validIndex($before,$col,$span),'totaldestinationsRP','styleFooterTotal');
+                    if(!$this->equal && $last>(self::validIndex($before,$col,$spanDes))) $body.="<td></td>";
                 }
                 //Procentajes de destinos RP y R-E meses anteriores
                 if($row==$numCRP+$numDRP+4 && $col==$before+($num*$span))
