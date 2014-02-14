@@ -198,7 +198,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['AIR']))
             {
                 $correos['AIR']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$)".self::reportTitle($startDate,$endingDate);
-                $correos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
+                $correos['AIR']['cuerpo']=Yii::app()->reportes->altoImpactoRetail($startDate,$endingDate);
                 $correos['AIR']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AIR']['asunto'].".xls";
             }
             //Alto Impacto +10$ Completo
@@ -346,7 +346,7 @@ class SiteController extends Controller
             if(isset($_GET['lista']['AIR']))
             {
                 $archivos['AIR']['nombre']="RENOC".$this->letra." Alto Impacto RETAIL (+1$)".self::reportTitle($startDate,$endingDate);
-                $archivos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
+                $archivos['AIR']['cuerpo']=Yii::app()->reportes->altoImpactoRetail($startDate,$endingDate);
             }
             //Alto Impacto Completo
             if(isset($_GET['lista']['AI10']))
@@ -484,7 +484,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['AIR']))
             {
                 $correos['AIR']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$)".self::reportTitle($startDate,$endingDate);
-                $correos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
+                $correos['AIR']['cuerpo']=Yii::app()->reportes->altoImpactoRetail($startDate,$endingDate);
                 $correos['AIR']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AIR']['asunto'].".xls";
             }
             //Alto Impacto +10$ Completo
