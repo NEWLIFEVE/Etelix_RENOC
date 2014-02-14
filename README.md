@@ -2,6 +2,8 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+- Agregada la proyeccion y seis meses anteriores a reporte Alto Impacto Retail
+- Agregado a reportes especificos Alto Impacto Retail
 - Depurados division por cero en Reporte Alto Impacto(+10$)
 - Cambio en Reporte Ranking Compra Venta para soporte para cualquier cantidad de managers
 - Agregados meses anteriores a reporte Alto Impacto
