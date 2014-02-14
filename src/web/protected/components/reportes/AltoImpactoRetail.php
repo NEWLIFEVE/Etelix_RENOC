@@ -38,7 +38,7 @@ class AltoImpactoRetail extends Reportes
         $numDRP=count($this->_objetos[$last]['destinationsRP'])+6;
         $numCRPRO=count($this->_objetos[$last]['customersRPRO'])+6;
         $numDRPRO=count($this->_objetos[$last]['destinationsRPRO'])+6;
-        $total=$numCRP+$numDRP+9/*+$numDRP+$numCRPRO+$numDRPRO*/;
+        $total=$numCRP+$numDRP+$numCRPRO+9/*+$numDRP+$numCRPRO+$numDRPRO*/;
 
         //establezco el orden que va a regir las tablas
         $sorted['customersRP']=self::sort($this->_objetos[$last]['customersRP'],'carrier');
@@ -60,29 +60,28 @@ class AltoImpactoRetail extends Reportes
             //$body.="<td>".$row."</td>";
             for($col=1; $col<=$before+($num*$span); $col++)
             {
-                $index=self::validIndex($before,$col,$span);
                 //Celdas vacias izquierda y derecha en la tabla
                 if(($row==1 
-                 || $row==$numCRP+5
-                 /*|| $row==$numCRP+$numDRP+$numCRPRO+5
-                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && ($col==1 || $col==$before+($num*$span)))
+                 || $row==$numCRP+5) && ($col==1 || $col==$before+($num*$span)))
                 {
                     $body.="<td colspan='{$before}' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
                 //celdas vacias debajo de los destinos RP y R-E
-                /*if($row==$numCRP+$numDRP+5 && ($col==1 || $col==$before+($num*$span)))
+                if($row==$numCRP+$numDRP+5 && ($col==1 || $col==$before+($num*$span)))
                 {
-                    //if($this->_objetos[$index]['customersRPRO']!=null) $body.="<td colspan='{$before}' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
-                    $body.="<td>Index:".$index."</td><td>Before:".$before."</td><td>Col:".$col."</td><td>span:".$span."</td>";
-                }*/
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td colspan='{$before}' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
+                }
                 //Titulo de cada mes para diferenciar la data 
-                if(($row==1
-                 /*|| $row==$numCRP+$numDRP+5
-                 || $row==$numCRP+$numDRP+$numCRPRO+5
-                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && self::validColumn($before,$col,$num,$span))
+                if($row==1 && self::validColumn($before,$col,$num,$span))
                 {
                     $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex($before,$col,$span)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Titulo de cada mes de cliente RPRO
+                if($row==$numCRP+$numDRP+5 && self::validColumn($before,$col,$num,$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex($before,$col,$span)]['title']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
                 //Titulo de meses anteriores
                 if(($row==1 
@@ -90,12 +89,29 @@ class AltoImpactoRetail extends Reportes
                 {
                     if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
                 }
+                //Titulo de meses anteriores de clientes RPRO
+                if($row==$numCRP+$numDRP+5 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                }
                 //Cabecera superior izquierda de los clientes RP y R-E
                 if($row==2 && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td>";
                 }
-                //Cabecera con las columnas
+                //Cabecera superior izquierda de los clientes RPRO
+                if($row==$numCRP+$numDRP+6 && $col==1)
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Clientes RPRO (+1)</td>";
+                }
+                //Cabecera con las columnas de clientes RPRO
+                if(($row==$numCRP+$numDRP+6
+                 || $row==$numCRP+$numDRP+$numCRPRO+3) && self::validColumn($before,$col,$num,$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getHeaderCarriers();
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Cabecera con las columnas de clientes RP y R-E
                 if(($row==2 
                  || $row==$numCRP+3) && self::validColumn($before,$col,$num,$span))
                 {
@@ -106,6 +122,11 @@ class AltoImpactoRetail extends Reportes
                 if($row==2 && $col==$before+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Clientes RP (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                }
+                //Cabecera superior derecha de los clientes RPRO
+                if($row==$numCRP+$numDRP+6 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td style='".$this->_head['styleHead']."'>Clientes RPRO (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
                 }
                 //Celdas vacias izquierda y derecha
                 if(($row==$numCRP+3
@@ -152,7 +173,7 @@ class AltoImpactoRetail extends Reportes
                 if(($row>2  && $row<=$numCRP) && $col==$before+($num*$span))
                 {
                     $pos=$row-2;
-                    $body.=$this->_getNames($pos,$sorted['customersRP'][$row-3],true);
+                    $body.=$this->_getNames($pos,$sorted['customersRP'][$row-3],false);
                 }
                 //data de los clientes RP y R-E
                 if(($row>2  && $row<=$numCRP) && self::validColumn($before,$col,$num,$span))
@@ -224,10 +245,7 @@ class AltoImpactoRetail extends Reportes
                     if($this->equal) $body.=$this->_getRowPercentageMonth('totalcustomersRP','styleFooterTotal');
                 }
                 //Titulo mes de destinos
-                if(($row==$numCRP+5
-                 /*|| $row==$numCRP+$numDRP+5
-                 || $row==$numCRP+$numDRP+$numCRPRO+5
-                 || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+5*/) && self::validColumn($before,$col,$num,$spanDes))
+                if($row==$numCRP+5 && self::validColumn($before,$col,$num,$spanDes))
                 {
                     $body.="<td colspan='".$spanDes."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex($before,$col,$spanDes)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex($before,$col,$spanDes))) $body.="<td></td>";
@@ -262,7 +280,7 @@ class AltoImpactoRetail extends Reportes
                 if(($row>$numCRP+6  && $row<=$numCRP+$numDRP) && $col==$before+($num*$span))
                 {
                     $pos=$row-$numCRP-6;
-                    $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRP'][$row-$numCRP-7],true);
+                    $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRP'][$row-$numCRP-7],false);
                 }
                 //data de los clientes RP y R-E meses anteriores
                 if(($row>$numCRP+6  && $row<=$numCRP+$numDRP) && $col==$before+($num*$span))
@@ -302,6 +320,104 @@ class AltoImpactoRetail extends Reportes
                 if($row==$numCRP+$numDRP+4 && $col==$before+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getRowPercentageMonth('totaldestinationsRP','styleFooterTotal');
+                }
+                //Nombres de los carriers izquierda RPRO
+                if(($row>$numCRP+$numDRP+6  && $row<=$numCRP+$numDRP+$numCRPRO) && $col==1)
+                {
+                    $pos=$row-$numCRP-$numDRP-$numCRPRO+1;
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getNames($pos,$sorted['customersRPRO'][$row-$numCRP-$numDRP-$numCRPRO],true);
+                }
+                //data de los clientes RPRO
+                if(($row>$numCRP+$numDRP+6  && $row<=$numCRP+$numDRP+$numCRPRO) && self::validColumn($before,$col,$num,$span))
+                {
+                    $pos=$row-$numCRP-$numDRP-$numCRPRO+1;
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRow(self::validIndex($before,$col,$span),'customersRPRO','carrier',$sorted['customersRPRO'][$row-$numCRP-$numDRP-$numCRPRO],self::colorEstilo($pos));
+                    if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Nombres de los carriers derecha RPRO
+                if(($row>$numCRP+$numDRP+6  && $row<=$numCRP+$numDRP+$numCRPRO) && $col==$before+($num*$span))
+                {
+                    $pos=$row-$numCRP-$numDRP-$numCRPRO+1;
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getNames($pos,$sorted['customersRPRO'][$row-$numCRP-$numDRP-$numCRPRO],false);
+                }
+                //data de los clientes RP y R-E meses anteriores
+                if(($row>$numCRP+$numDRP+6  && $row<=$numCRP+$numDRP+$numCRPRO) && $col==$before+($num*$span))
+                {
+                    $pos=$row-$numCRP-$numDRP-$numCRPRO+1;
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowMonth('customersRPRO','carrier',$sorted['customersRPRO'][$row-$numCRP-$numDRP-$numCRPRO],self::colorEstilo($pos));
+                }
+                //Celdas izquierda de total clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+1 && $col==1)
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td></td><td style='".$this->_head['styleFooter']."'>TOTAL</td>";
+                }
+                //Totales de Clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+1 && self::validColumn($before,$col,$num,$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowTotal(self::validIndex($before,$col,$span),'totalcustomersRPRO','styleFooter',true);
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Celdas derecha de total clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+1 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td style='".$this->_head['styleFooter']."'>TOTAL</td><td></td>";
+                }
+                //Totales altos de meses anteriores de clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+1 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowTotalMonth('totalcustomersRPRO','styleFooter',true);
+                }
+                //Celdas izquierda de total completo clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+2 && $col==1)
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td></td><td style='".$this->_head['styleFooterTotal']."'>TOTAL</td>";
+                }
+                //Totales completos de Clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+2 && self::validColumn($before,$col,$num,$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowTotal(self::validIndex($before,$col,$span),'totalcustomersRPRO','styleFooterTotal',false);
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                //Celdas derecha de total completos clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+2 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td style='".$this->_head['styleFooterTotal']."'>TOTAL</td><td></td>";
+                }
+                //Totales completos de meses anteriores de clientes RPRO
+                if($row==$numCRP+$numDRP+$numCRPRO+2 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowTotalMonth('totalcustomersRPRO','styleFooterTotal',false);
+                }
+                //Celdas vacias izquierda y derecha de clientes RPRO
+                if(($row==$numCRP+$numDRP+$numCRPRO+3
+                //Celdas vacias para porcentajes clientes RPRO
+                 || $row==$numCRP+$numDRP+$numCRPRO+4) && ($col==1 || $col==$before+($num*$span)))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td></td><td></td>";
+                }
+                //titulo de los meses anteriores de clientes RPRO
+                if(($row==$numCRP+$numDRP+6
+                 || $row==$numCRP+$numDRP+$numCRPRO+3) && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
+                }
+                if($row==$numCRP+$numDRP+$numCRPRO+4 && self::validColumn($before,$col,$num,$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowPercentage(self::validIndex($before,$col,$span),'totalcustomersRPRO','styleFooterTotal');
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                }
+                if($row==$numCRP+$numDRP+$numCRPRO+4 && $col==$before+($num*$span))
+                {
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowPercentageMonth('totalcustomersRPRO','styleFooterTotal');
                 }
             }
             $body.="</tr>";
