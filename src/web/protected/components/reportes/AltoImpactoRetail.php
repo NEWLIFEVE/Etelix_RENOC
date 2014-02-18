@@ -445,94 +445,94 @@ class AltoImpactoRetail extends Reportes
                 //Cabecera superior izquierda de los Destinos RPRO
                 if($row==$numCRP+$numDRP+$numCRPRO+6 && $col==1)
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Destinos RPRO (+1)</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Destinos RPRO (+1)</td>";
                 }
                 //Cabecera con las columnas de destinos RPRO
                 if(($row==$numCRP+$numDRP+$numCRPRO+6
                 //Cabecera de debajo de destinos RPRO
                  || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+3) && self::validColumn($before,$col,$num,$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getHeaderDestinations();
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getHeaderDestinations();
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
                 //Cabecera superior derecha de los destinos RPRO
                 if($row==$numCRP+$numDRP+$numCRPRO+6 && $col==$before+($num*$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.="<td style='".$this->_head['styleHead']."'>Destinos RPRO (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.="<td style='".$this->_head['styleHead']."'>Destinos RPRO (+1)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
                 }
                 //titulo de los meses anteriores de Destinos RPRO
                 if(($row==$numCRP+$numDRP+$numCRPRO+6
                 //Cabecera de debajo de destinos RPRO meses anteriores
                  || $row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+3) && $col==$before+($num*$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFourthMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleFifthMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSixthMonth']."</td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
                 }
                 //Nombres Destinos RPRO izquierda
                 if(($row>$numCRP+$numDRP+$numCRPRO+6  && $row<=$numCRP+$numDRP+$numCRPRO+$numDRPRO) && $col==1)
                 {
                     $pos=$row-$numCRP-$numDRP-$numCRPRO-6;
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],true);
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],true);
                 }
                 //data de los destinos RPRO
                 if(($row>$numCRP+$numDRP+$numCRPRO+6  && $row<=$numCRP+$numDRP+$numCRPRO+$numDRPRO) && self::validColumn($before,$col,$num,$span))
                 {
                     $pos=$row-$numCRP-$numDRP-$numCRPRO-6;
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getRowDestinations(self::validIndex($before,$col,$span),'destinationsRPRO','destination',$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],self::colorDestino($sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7]['attribute']));
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowDestinations(self::validIndex($before,$col,$span),'destinationsRPRO','destination',$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],self::colorDestino($sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7]['attribute']));
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
                 //Nombres Destinos RPRO derecha
                 if(($row>$numCRP+$numDRP+$numCRPRO+6  && $row<=$numCRP+$numDRP+$numCRPRO+$numDRPRO) && $col==$before+($num*$span))
                 {
                     $pos=$row-$numCRP-$numDRP-$numCRPRO-6;
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],false);
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getNamesDestinations($pos,$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],false);
                 }
                 //data de los Destinos RPRO meses anteriores
                 if(($row>$numCRP+$numDRP+$numCRPRO+6  && $row<=$numCRP+$numDRP+$numCRPRO+$numDRPRO) && $col==$before+($num*$span))
                 {
                     $pos=$row-$numCRP-$numDRP-$numCRPRO-6;
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.=$this->_getRowMonth('destinationsRPRO','destination',$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],self::colorDestino($sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7]['attribute']));
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowMonth('destinationsRPRO','destination',$sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7],self::colorDestino($sorted['destinationsRPRO'][$row-$numCRP-$numDRP-$numCRPRO-7]['attribute']));
                 }
                 //totales destinos RPRO
                 if($row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+1 && self::validColumn($before,$col,$num,$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getRowTotalDestinations(self::validIndex($before,$col,$span),'totaldestinationsRPRO','styleFooter',true);
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowTotalDestinations(self::validIndex($before,$col,$span),'totaldestinationsRPRO','styleFooter',true);
                     if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
                 //Totales Destinos RPRO de meses anteriores
                 if($row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+1 && $col==$before+($num*$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.=$this->_getRowTotalMonth('totaldestinationsRPRO','styleFooter',true);
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowTotalMonth('totaldestinationsRPRO','styleFooter',true);
                 }
                 //totales completos destinos RPRO
                 if($row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+2 && self::validColumn($before,$col,$num,$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getRowTotalDestinations(self::validIndex($before,$col,$span),'totaldestinationsRPRO','styleFooterTotal',false);
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowTotalDestinations(self::validIndex($before,$col,$span),'totaldestinationsRPRO','styleFooterTotal',false);
                     if(!$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
                 //Totales completos Destinos RPRO de meses anteriores
                 if($row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+2 && $col==$before+($num*$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.=$this->_getRowTotalMonth('totaldestinationsRPRO','styleFooterTotal',false);
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowTotalMonth('totaldestinationsRPRO','styleFooterTotal',false);
                 }
                 //porcentaje de destinos RPRO
                 if($row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+4 && self::validColumn($before,$col,$num,$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null) $body.=$this->_getRowPercentageDestinations(self::validIndex($before,$col,$span),'totaldestinationsRPRO','styleFooterTotal');
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
+                    if($this->_objetos[$last]['customersRPRO']!=null) $body.=$this->_getRowPercentageDestinations(self::validIndex($before,$col,$span),'totaldestinationsRPRO','styleFooterTotal');
+                    if($this->_objetos[$last]['customersRPRO']!=null && !$this->equal && $last>(self::validIndex($before,$col,$span))) $body.="<td></td>";
                 }
                 //Percentaje de Clientes RPRO
                 if($row==$numCRP+$numDRP+$numCRPRO+$numDRPRO+4 && $col==$before+($num*$span))
                 {
-                    if($this->_objetos[$last]['destinationsRPRO']!=null && $this->equal) $body.=$this->_getRowPercentageMonth('totaldestinationsRPRO','styleFooterTotal');
+                    if($this->_objetos[$last]['customersRPRO']!=null && $this->equal) $body.=$this->_getRowPercentageMonth('totaldestinationsRPRO','styleFooterTotal');
                 }
             }
             $body.="</tr>";

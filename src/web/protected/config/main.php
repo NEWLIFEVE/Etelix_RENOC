@@ -65,7 +65,7 @@ return array(
             'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
 			'emulatePrepare'=>true,
 			'username'=>'postgres',
-            'password'=>'123',
+            'password'=>'Nsusfd8263',
 			'charset'=>'utf8',
             ),
         'errorHandler'=>array(
@@ -92,6 +92,6 @@ return array(
     // using Yii::app()->params['paramName']
     'params'=>array(
         // this is used in contact page
-        'adminEmail'=>'manuel@newlifeve.com',
+        'adminEmail'=>'manuelz@sacet.biz',
         ),
     );
