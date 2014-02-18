@@ -63,7 +63,7 @@ class AltoImpacto extends Reportes
 	{
         $this->_getDays($start);
         $this->type=$type;
-        //Consigo la data respactiva
+        //Consigo la data respe ctiva
         $this->_loopData($start,$end);
         
         //Cuento el numero de objetos en el array
@@ -809,8 +809,7 @@ class AltoImpacto extends Reportes
         $index=0;
         while (self::isLower($startDateTemp,$endingDate))
         {
-            $arrayStartTemp=explode('-',$startDateTemp);
-            $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".DateManagement::howManyDays($startDateTemp),$endingDate);
+            $endingDateTemp=self::maxDate(DateManagement::separatesDate($startDateTemp)['year']."-".DateManagement::separatesDate($startDateTemp)['month']."-".DateManagement::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
             $this->_objetos[$index]['title']=self::reportTitle($startDateTemp,$endingDateTemp);
             /***/
@@ -1141,7 +1140,7 @@ class AltoImpacto extends Reportes
      * @param string $attribute default null, es usado para traer solo uno de los atributos del modelo, ejemplo ='margin'
      * @return array $models
      */
-    private function _getCarriers($startDate,$endingDate,$typeCarrier=true,$type=null,$attribute=null)
+    private function _gestCarriers($startDate,$endingDate,$typeCarrier=true,$type=null,$attribute=null)
     {
         $condition="x.margin<10";
         if($type) $condition="x.margin>=10";
