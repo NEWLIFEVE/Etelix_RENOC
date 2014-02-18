@@ -1140,7 +1140,7 @@ class AltoImpacto extends Reportes
      * @param string $attribute default null, es usado para traer solo uno de los atributos del modelo, ejemplo ='margin'
      * @return array $models
      */
-    private function _gestCarriers($startDate,$endingDate,$typeCarrier=true,$type=null,$attribute=null)
+    private function _getCarriers($startDate,$endingDate,$typeCarrier=true,$type=null,$attribute=null)
     {
         $condition="x.margin<10";
         if($type) $condition="x.margin>=10";
