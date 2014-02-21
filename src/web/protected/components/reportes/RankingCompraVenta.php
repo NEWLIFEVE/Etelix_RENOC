@@ -772,15 +772,15 @@ class RankingCompraVenta extends Reportes
      */
     private function _getRow($index,$index2,$phrase,$style,$type=true)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=null;
         $margin=$previous=$average=$previousMonth=null;
         foreach ($this->_objetos[$index][$index2] as $key => $value)
         {
             if($value->apellido == $phrase)
             {               
-                if($type==true) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($type==true) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($type==true) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
             }
         }
@@ -790,57 +790,57 @@ class RankingCompraVenta extends Reportes
             {
                 if($value->apellido == $phrase)
                 {
-                    $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $previous=$value->margin;
                 }
             }
-            $cuatro="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
+            $c4="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
             foreach ($this->_objetos[$index][$index2.'Average'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
-                    $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $average=$value->margin;
                 }
             }
-            $seis="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
+            $c6="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
             foreach ($this->_objetos[$index][$index2.'Accumulated'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
-                    $ocho="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 }
             }
-            $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $c9="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
             foreach ($this->_objetos[$index][$index2.'PreviousMonth'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
-                    $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $previousMonth=$value->margin;
                 }
             }
-            $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
         }
         
         if($type==true)
         {
-            if($uno==null) $uno="<td style='".$this->_head[$style]."'>--</td>";
-            if($dos==null) $dos="<td style='".$this->_head[$style]."'>--</td>";
+            if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
+            if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
         }
-        if($tres==null) $tres="<td style='".$this->_head[$style]."'>--</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
         if($this->equal)
         {
-            if($cuatro==null) $cuatro="<td style='".$this->_head[$style]."'></td>";
-            if($cinco==null) $cinco="<td style='".$this->_head[$style]."'>--</td>";
-            if($seis==null) $seis="<td style='".$this->_head[$style]."'></td>";
-            if($siete==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
-            if($ocho==null) $ocho="<td style='".$this->_head[$style]."'>--</td>";
-            if($nueve==null) $nueve="<td style='".$this->_head[$style]."'>--</td>";
-            if($diez==null) $siete="<td style='".$this->_head[$style]."'></td>";
-            if($once==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
+            if($c4==null) $c4="<td style='".$this->_head[$style]."'></td>";
+            if($c5==null) $c5="<td style='".$this->_head[$style]."'>--</td>";
+            if($c6==null) $c6="<td style='".$this->_head[$style]."'></td>";
+            if($c7==null) $c7="<td style='".$this->_head[$style]."'>--</td>";
+            if($c8==null) $c8="<td style='".$this->_head[$style]."'>--</td>";
+            if($c9==null) $c9="<td style='".$this->_head[$style]."'>--</td>";
+            if($c10==null) $c10="<td style='".$this->_head[$style]."'></td>";
+            if($c11==null) $c11="<td style='".$this->_head[$style]."'>--</td>";
         } 
-        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
+        $body=$c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11;
         return $body;
     }
 
@@ -900,7 +900,6 @@ class RankingCompraVenta extends Reportes
             }
         }
         if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
-        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
         if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
         if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
         if($c4==null) $c4="<td style='".$this->_head[$style]."'>--</td>";
