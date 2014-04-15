@@ -614,8 +614,8 @@ class SiteController extends Controller
             }
             else
             {
-                $lista=array('auto@etelix.com');
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
+                //$lista=array('auto@etelix.com');
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']/*,$lista*/);
             }
         }
         echo "Mensaje Enviado";
