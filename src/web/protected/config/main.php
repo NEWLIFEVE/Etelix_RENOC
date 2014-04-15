@@ -1,5 +1,27 @@
-
 <?php
+$server=$_SERVER['SERVER_NAME'];
+switch ($server)
+{
+    case SERVER_NAME_PROD:
+        $server_db='localhost';
+        $renoc_db='sori';
+        $user_db='postgres';
+        $pass_db='Nsusfd8263';
+        break;
+    case SERVER_NAME_PRE_PROD:
+        $server_db='localhost';
+        $renoc_db='dev_sori';
+        $user_db='postgres';
+        $pass_db='Nsusfd8263';
+        break;
+    case SERVER_NAME_DEV:
+    default:
+        $server_db='172.16.17.190';
+        $renoc_db='sori';
+        $user_db='postgres';
+        $pass_db='123';
+        break;
+}
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
 // 
@@ -62,10 +84,10 @@ return array(
 			),
 		),
         'db'=>array(
-            'connectionString'=>'pgsql:host=localhost;port=5432;dbname=sori',
+            'connectionString'=>'pgsql:host='.$server_db.';port=5432;dbname='.$renoc_db,
 			'emulatePrepare'=>true,
-			'username'=>'postgres',
-            'password'=>'Nsusfd8263',
+			'username'=>$user_db,
+            'password'=>$pass_db,
 			'charset'=>'utf8',
             ),
         'errorHandler'=>array(
@@ -92,6 +114,6 @@ return array(
     // using Yii::app()->params['paramName']
     'params'=>array(
         // this is used in contact page
-        'adminEmail'=>'manuel@newlifeve.com',
+        'adminEmail'=>'manuelz@sacet.biz',
         ),
     );
