@@ -2,7 +2,8 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
-
+Release 1.3.19.3
+- Diferenciados entornos de desarrollo y producción.
 Release 1.3.19.2
 - Correcion de margen total en Ranking Compra Venta
 Release 1.3.19.1
