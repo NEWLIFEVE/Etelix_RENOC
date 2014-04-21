@@ -736,10 +736,11 @@ class RankingCompraVenta extends Reportes
      */
     private function _getTotalMargen($startDate,$edingDate)
     {
-        $sql="SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-              FROM balance
-              WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
-
+        $sql="SELECT SUM(margin) AS margin
+              FROM (SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                    GROUP BY date_balance) b";
         return Balance::model()->findBySql($sql);
     }
 
