@@ -10,6 +10,7 @@ return array(
     'name'=>'RENOC',
     'language'=>'es',
     'timeZone'=>'America/Caracas',
+    'charset'=>'utf-8',
     // preloading 'log' component
     'preload'=>array('log','bootstrap'),
     // autoloading model and component classes
