@@ -1,5 +1,5 @@
 src/web/protected/runtime/*
-src/web/protected/config/*
+src/web/protected/config/db.php
 src/web/assets/*
 
 #sublimetext
