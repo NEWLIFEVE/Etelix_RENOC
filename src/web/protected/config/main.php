@@ -56,7 +56,6 @@ return array(
             'routes'=>array(
                 array(
                     'class'=>'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
-                    'ipFilters'=>array('127.0.0.1','64.71.225.102'),
                 ),
                 // uncomment the following to show log messages on web pages
                 /*

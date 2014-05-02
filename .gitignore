@@ -1,5 +1,6 @@
 src/web/protected/runtime/*
 src/web/protected/config/db.php
+src/web/protected/config/gii.php
 src/web/assets/*
 
 #sublimetext
