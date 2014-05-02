@@ -32,7 +32,8 @@ switch ($server)
 }
 $main=require(dirname(__FILE__).'/protected/config/main.php');
 $db=require(dirname(__FILE__).'/protected/config/db.php');
+$gii=require(dirname(__FILE__).'/protected/config/gii.php');
 
-$config=CMap::mergeArray($main,$db);
+$config=CMap::mergeArray($main,$db,$gii);
 
 Yii::createWebApplication($config)->run();
