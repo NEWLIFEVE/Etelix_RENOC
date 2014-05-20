@@ -84,9 +84,17 @@
             <b>Re-Rate en proceso &nbsp;<img src='/images/cargandosori.gif'width='15px' height='5px'/><b>
         </h6>
     </div>
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui.js"/></script>
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.js"/></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui.js"></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.blockUI.js"></script>
+    <!--<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"></script>-->
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.js"></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.ui.js"></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.ajax.js"></script>
+    <script>
+    $(document).on('ready',function()
+    {  
+        $RENOC.init();
+    });
+    </script>
 </body>
 </html>
