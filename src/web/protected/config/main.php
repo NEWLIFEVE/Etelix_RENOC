@@ -1,27 +1,4 @@
 <?php
-$server=$_SERVER['SERVER_NAME'];
-switch ($server)
-{
-    case SERVER_NAME_PROD:
-        $server_db='localhost';
-        $renoc_db='sori';
-        $user_db='postgres';
-        $pass_db='Nsusfd8263';
-        break;
-    case SERVER_NAME_PRE_PROD:
-        $server_db='localhost';
-        $renoc_db='dev_sori';
-        $user_db='postgres';
-        $pass_db='Nsusfd8263';
-        break;
-    case SERVER_NAME_DEV:
-    default:
-        $server_db='172.16.17.190';
-        $renoc_db='sori';
-        $user_db='postgres';
-        $pass_db='123';
-        break;
-}
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
 // 
@@ -32,6 +9,8 @@ return array(
     'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
     'name'=>'RENOC',
     'language'=>'es',
+    'timeZone'=>'America/Caracas',
+    'charset'=>'utf-8',
     // preloading 'log' component
     'preload'=>array('log','bootstrap'),
     // autoloading model and component classes
@@ -41,21 +20,7 @@ return array(
         'application.components.reportes.*',
         'application.components.phpexcel.*',
     ),
-    'modules'=>array(
-        // uncomment the following to enable the Gii tool
-        'gii'=>array(
-            'class'=>'system.gii.GiiModule',
-			'password'=>'123',
-            // If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'=>array(
-                '127.0.0.1',
-                '::1'
-                ),
-            'generatorPaths'=>array(
-                'bootstrap.gii',
-                ),
-            ),
-        ),
+    'modules'=>array(),
     // application components
     'components'=>array(
         'reportes'=>array(
@@ -83,13 +48,6 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
-        'db'=>array(
-            'connectionString'=>'pgsql:host='.$server_db.';port=5432;dbname='.$renoc_db,
-			'emulatePrepare'=>true,
-			'username'=>$user_db,
-            'password'=>$pass_db,
-			'charset'=>'utf8',
-            ),
         'errorHandler'=>array(
             // use 'site/error' action to display errors
             'errorAction'=>'site/error',
@@ -98,15 +56,17 @@ return array(
             'class'=>'CLogRouter',
             'routes'=>array(
                 array(
-                    'class'=>'CFileLogRoute',
-                    'levels'=>'error, warning',
-                    ),
-                // uncomment the following to show log messages on web pages
-                /*
-                array(
                     'class'=>'CWebLogRoute',
+                    // I include *trace* for the
+                    // sake of the example, you can include
+                    // more levels separated by commas
+                    'levels'=>'trace',
+                    // I include *vardump* but you
+                    // can include more separated by commas
+                    'categories'=>'vardump',
+                    // This is self-explanatory right?
+                    'showInFireBug'=>true
                     ),
-                */
                 ),
             ),
         ),
