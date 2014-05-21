@@ -1,5 +1,8 @@
+src/web/protected/config/db.php
+src/web/protected/config/gii.php
 src/web/protected/runtime/*
 src/web/assets/*
+src/web/adjuntos/*
 
 #sublimetext
 /*.sublime-project
