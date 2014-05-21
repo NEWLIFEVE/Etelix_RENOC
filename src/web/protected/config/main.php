@@ -56,14 +56,17 @@ return array(
             'class'=>'CLogRouter',
             'routes'=>array(
                 array(
-                    'class'=>'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
-                ),
-                // uncomment the following to show log messages on web pages
-                /*
-                array(
                     'class'=>'CWebLogRoute',
+                    // I include *trace* for the
+                    // sake of the example, you can include
+                    // more levels separated by commas
+                    'levels'=>'trace',
+                    // I include *vardump* but you
+                    // can include more separated by commas
+                    'categories'=>'vardump',
+                    // This is self-explanatory right?
+                    'showInFireBug'=>true
                     ),
-                */
                 ),
             ),
         ),

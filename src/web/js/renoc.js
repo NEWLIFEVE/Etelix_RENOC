@@ -15,3 +15,14 @@
  * Modulo para almacenamiento de data traida desde el servidor
  */
 $RENOC.DATA={};
+/**
+ * Modulo donde se instancian los elementos del dom
+ */
+$RENOC.DOM={};
+/**
+ * Modulo que guarda las comfiguraciones
+ */
+$RENOC.SETTINGS={
+	mainLayer:'#capa',
+	newLayer:'.vistas'
+};

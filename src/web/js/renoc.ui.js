@@ -9,6 +9,9 @@
  	 */
  	function init()
  	{
+ 		//Asigna el dom de la capa principal a una variable
+ 		_setMain();
+ 		//this.objetoMain=$(this.main);
  		//Crea los inputs usados para la fecha en especificos
  		var checkFecha=document.getElementsByName('lista[Fecha]');
  		if(checkFecha.length!=0)
@@ -196,6 +199,22 @@
 	{
 		$(spot).fadeOut('slow');
 		$(spot).remove();
+	}
+
+	/**
+	 * Asigna al submodulo de DOM.main el objeto principal
+	 */
+	function _setMain()
+	{
+		$RENOC.DOM.mainLayer=$($RENOC.SETTINGS.mainCapa);
+	}
+
+	/**
+	 * Asigna al submodulo de DOM.nueva el objeto que se va amanipular para cargar las vistas por AJAX
+	 */
+	function _setNew()
+	{
+		$RENOC.DOM.newLayer=$($RENOC.SETTINGS.newLayer);
 	}
 
 	/**
