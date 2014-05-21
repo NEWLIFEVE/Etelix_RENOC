@@ -32,7 +32,7 @@ var navegar=function()
 navegar.prototype.run=function()
 {
     this.boton=$(this.enlaces);
-    this.objetoMain=$(this.main);
+    this.objetoMain=$(this.main);//lista
     this.objetoNueva=$(this.nueva);
     this.pisaAqui();
 }
@@ -66,8 +66,6 @@ navegar.prototype.ida=function()
     {
         self.objetoMain.toggle('slide');
         self.objetoNueva.fadeIn('fast');
-        $RENOC.UI.init();
-        $RENOC.AJAX.init();
     });
 }
 /**
@@ -103,8 +101,9 @@ ajax.prototype.run=function()
     var self=this;
     $('#mail,#excel,#lista').on('click',function(e)
     {
+        console.log("le dio");
 
-        var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
+        /*var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
         //Reviso cuantos check han sido seleccionados
@@ -132,7 +131,7 @@ ajax.prototype.run=function()
         self.validarReporte();
         //mando a ejecutar las cosas
         self.ejecutarAcciones();
-        id=tipo=numero=valor=nombre=mensaje=null;
+        id=tipo=numero=valor=nombre=mensaje=null;*/
     });
 }
 ajax.prototype.genExcel=function()

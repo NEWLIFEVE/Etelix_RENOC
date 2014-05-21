@@ -85,8 +85,16 @@
         </h6>
     </div>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui.js"/></script>
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.js"/></script>
     <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.blockUI.js"></script>
+    <!--<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>-->
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.js"/></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.ui.js"/></script>
+    <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/renoc.ajax.js"/></script>
+    <script type="text/javascript">
+    $(document).on('ready',function()
+    {
+        $RENOC.init(); 
+    });
+    </script>
 </body>
 </html>
