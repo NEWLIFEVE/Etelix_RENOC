@@ -327,7 +327,7 @@
 	            _createLayer(mensaje);
 	            setTimeout(function()
 	            {
-	                self.destruirCapa();
+	                _destroyLayer();
 	            }, 2000);
 	            mensaje=null;
 	            self.setUno();
@@ -353,6 +353,16 @@
 			$('.mensaje').html(mensaje);
 			$('.cargando').fadeIn('fast');
 		}
+	}
+
+	/** 
+	 * Metodo encargado de eliminar capa de mensaje
+	 */
+	function _destroyLayer()
+	{
+		$RENOC.DOM.messageLayer.fadeOut('slow');
+		$RENOC.DOM.messageLayer.remove();
+		$RENOC.DOM.messageLayer=null;
 	}
 
 

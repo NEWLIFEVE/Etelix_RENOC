@@ -233,12 +233,12 @@ ajax.prototype.enviar=function()
     }
     
 }*/
-ajax.prototype.destruirCapa=function()
+/*ajax.prototype.destruirCapa=function()
 {
     this.capa.fadeOut('slow');
     this.capa.remove();
     this.capa=null;
-}
+}*/
 ajax.prototype.setUno=function()
 {
     this.error=1;
