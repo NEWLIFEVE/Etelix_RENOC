@@ -49,6 +49,18 @@ $RENOC.AJAX=(function()
 	function init()
 	{
 		_getNamesCarriers();
+		$.ajax({ 
+        url: "Log/revisarRR",     
+        success: function(data) 
+        {
+            if(data==true){
+                var espere=$(".cargandosori");
+                espere.prop("display",'block');
+                espere.slideDown('slow');
+                $RENOC.DATA.rerate=true;
+            }        
+        }
+    });
 	}
 
 	return {init:init}
