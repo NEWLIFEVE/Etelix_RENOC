@@ -2,6 +2,7 @@
 /**
 * @var $this SiteController
 */
+$this->layout=$this->getLayoutFile('menuContent');
 ?>
 <div id="atras">
     <ul class="thumbnails">

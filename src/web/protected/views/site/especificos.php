@@ -110,6 +110,6 @@ $this->layout=$this->getLayoutFile('menuContent');
         </article>
     </section>
 </div> 
-<script src="/js/jquery-ui.js"></script>
+<!--<script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-<script src="http://malsup.github.io/jquery.blockUI.js"></script>
+<script src="http://malsup.github.io/jquery.blockUI.js"></script>-->
