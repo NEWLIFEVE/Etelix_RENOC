@@ -35,7 +35,12 @@ $RENOC.SETTINGS={
  */
 $RENOC.ERRORS={
 	status:null,
-	NONE:0
+	NONE:0,
+	ANY_SELECTED_REPORT:1,
+	setStatus:function(status)
+	{
+		this.status=this[status];
+	}
 };
 /**
  * Modulo para almacenmiento temporal
