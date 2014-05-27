@@ -313,15 +313,46 @@
 	{
 		$('#mail,#excel,#lista').on('click',function(e)
 		{
-			var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
+			var numero=mensaje=null;
 			e.preventDefault();
 			//Reviso cuantos check han sido seleccionados
 		    numero=$('input[type="checkbox"]').filter(function()
 		    {
 		        return $(this).is(':checked');
 		    });
-		    console.log(numero);
+		    $RENOC.TEMP.type=$(this).attr('id');
+		    if(numero.length<=0)
+	        {
+	            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+	            _createLayer(mensaje);
+	            setTimeout(function()
+	            {
+	                self.destruirCapa();
+	            }, 2000);
+	            mensaje=null;
+	            self.setUno();
+	        }
 		});
+	}
+
+	/**
+	 * Encargada de crear un capa con cierto mensaje pasado por parametros
+	 * @param {String} message
+	 * @access private
+	 */
+	function _createLayer(message)
+	{
+		if($('.cargando').length>0)
+		{
+			$('.mensaje').html(message);
+		}
+		else
+		{
+			$RENOC.DOM.messageLayer=$("<div class='cargando'><div class='mensaje'></div></div>").hide();
+			$("body").append($RENOC.DOM.messageLayer);
+			$('.mensaje').html(mensaje);
+			$('.cargando').fadeIn('fast');
+		}
 	}
 
 

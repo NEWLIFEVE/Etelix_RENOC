@@ -34,5 +34,10 @@ $RENOC.SETTINGS={
  * Modulo handler de errores
  */
 $RENOC.ERRORS={
+	status:null,
 	NONE:0
 };
+/**
+ * Modulo para almacenmiento temporal
+ */
+$RENOC.TEMP={};

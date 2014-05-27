@@ -218,7 +218,7 @@ ajax.prototype.enviar=function()
         }, 4000);
     });
 }
-ajax.prototype.crearCapa=function(mensaje)
+/*ajax.prototype.crearCapa=function(mensaje)
 {
     if($('.cargando').length>0)
     {
@@ -232,7 +232,7 @@ ajax.prototype.crearCapa=function(mensaje)
         $('.cargando').fadeIn('fast');
     }
     
-}
+}*/
 ajax.prototype.destruirCapa=function()
 {
     this.capa.fadeOut('slow');
