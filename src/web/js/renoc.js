@@ -37,6 +37,7 @@ $RENOC.ERRORS={
 	status:null,
 	NONE:0,
 	ANY_SELECTED_REPORT:1,
+	RUNNING_RERATE:2,
 	setStatus:function(status)
 	{
 		this.status=this[status];
