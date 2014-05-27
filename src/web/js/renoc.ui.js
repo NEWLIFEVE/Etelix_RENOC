@@ -5,13 +5,16 @@
  {
  	/**
  	 * Metodo para inicialzar acciones de click en interfaz
- 	 * @acces public
+ 	 * @acces {public}
  	 */
  	function init()
  	{
- 		//Asigna el dom de la capa principal a una variable
- 		_setMain();
- 		//this.objetoMain=$(this.main);
+ 		//
+ 		setAll();
+ 		//Pendiente de los click
+ 		_listen();
+ 		
+
  		//Crea los inputs usados para la fecha en especificos
  		var checkFecha=document.getElementsByName('lista[Fecha]');
  		if(checkFecha.length!=0)
@@ -103,9 +106,31 @@
  	}
 
  	/**
+ 	 *
+ 	 */
+ 	function _listen()
+ 	{
+ 		if($RENOC.DOM.links.length!=0)
+ 		{
+ 			$RENOC.DOM.links.on('click',function(e)
+ 			{
+ 				e.preventDefault();
+ 				if($(this).attr('href')=="/")
+ 				{
+ 					_back();
+ 				}
+ 				else
+ 				{
+ 					_go($(this));
+ 				}
+ 			});
+ 		}
+ 	}
+
+ 	/**
 	 * Encargado de asignar/quitar una clase.
-	 * @access private
-	 * @param jQuery obj es el objeto de la fila que se quiere manipular
+	 * @access {private}
+	 * @param {jQuery} obj es el objeto de la fila que se quiere manipular
 	 */
 	function _changeClass(obj,activeClass,desactiveClass,options)
 	{
@@ -150,13 +175,13 @@
 
 	/**
 	 * Crea un elemento html con todas caracteristicas
-	 * @access private
-	 * @param string element es el nombre del elemento a crear
-	 * @param string id es el id que se le asigna al elemento
-	 * @param string name es el nombre del elemento
-	 * @param string className son la/las clases que llevara el elemento
-	 * @param string type tipo de elemento
-	 * @return dom newElement
+	 * @access {private}
+	 * @param {String} element es el nombre del elemento a crear
+	 * @param {String} id es el id que se le asigna al elemento
+	 * @param {String} name es el nombre del elemento
+	 * @param {String} className son la/las clases que llevara el elemento
+	 * @param {String} type tipo de elemento
+	 * @return {DOM} newElement
 	 */
 	function _createElement(element,id,name,className,type,placeholder)
 	{
@@ -178,9 +203,10 @@
 
 	/**
 	 * Recibe un objeto html y una ubicacion jQuery este mostrara el elemento
-	 * @access private
-	 * @param dom object es el elemento html a agregar y mostrar
-	 * @param string spot es la ubicacion tipo jQuery donde agregar el elemento
+	 * @access {private}
+	 * @param {DOM} object es el elemento html a agregar y mostrar
+	 * @param {String} spot es la ubicacion tipo jQuery donde agregar el elemento
+	 * @return {void}
 	 */
 	function _showElement(object,spot)
 	{
@@ -192,8 +218,9 @@
 
 	/**
 	 * Recibe un string de ubicacion tipo jQuery y esta oculta y luego elimina el elemento
-	 * @access private
-	 * @param string spot es la ubicacion tipo jQuery
+	 * @access {private}
+	 * @param {String} spot es la ubicacion tipo jQuery
+	 * @return {void}
 	 */
 	function _hideElement(spot)
 	{
@@ -202,20 +229,101 @@
 	}
 
 	/**
+	 *
+	 */
+	function setAll()
+	{
+		$RENOC.DOM=null;
+		$RENOC.DOM={};
+		_setMain();
+		_setNew();
+		_setLinks();
+	}
+
+	/**
 	 * Asigna al submodulo de DOM.main el objeto principal
+	 * @access {private}
+	 * @return {void}
 	 */
 	function _setMain()
 	{
-		$RENOC.DOM.mainLayer=$($RENOC.SETTINGS.mainCapa);
+		$RENOC.DOM.mainLayer=$($RENOC.SETTINGS.mainLayer);
 	}
 
 	/**
 	 * Asigna al submodulo de DOM.nueva el objeto que se va amanipular para cargar las vistas por AJAX
+	 * @access {private}
+	 * @return {void}
 	 */
 	function _setNew()
 	{
 		$RENOC.DOM.newLayer=$($RENOC.SETTINGS.newLayer);
 	}
+
+	/**
+	 * Asigna los botones con lo que se navegara en la aplicacion
+	 * @access {private}
+	 * @return {void}
+	 */
+	function _setLinks()
+	{
+		$RENOC.DOM.links=$($RENOC.SETTINGS.links);
+	}
+
+	/**
+	 * Encargada de cargar la nueva capa con efectos
+	 * @access {private}
+	 * @return {void}
+	 */
+	function _go(obj)
+	{
+		$RENOC.DOM.newLayer.hide().load(obj.attr('href'),function()
+		{
+			$RENOC.DOM.mainLayer.hide('slow');
+			$RENOC.DOM.newLayer.show('slow',function()
+			{
+				setAll();
+				if(obj.attr('href')=='/site/rutinarios')
+				{
+					_routineBottons();
+				}
+			});
+			_listen();
+		});
+	}
+
+	/**
+	 * Encargada de cargar la anterior vista con efectos
+	 * @access {private}
+	 * @return {void}
+	 */
+	function _back()
+	{
+		$RENOC.DOM.newLayer.hide('slow');
+		$RENOC.DOM.mainLayer.show('slow',function()
+		{
+			$RENOC.DOM.newLayer.html("",setAll());
+		});
+	}
+
+	/** 
+	 * Activa los botones de rutinarios
+	 */
+	function _routineBottons()
+	{
+		$('#mail,#excel,#lista').on('click',function(e)
+		{
+			var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
+			e.preventDefault();
+			//Reviso cuantos check han sido seleccionados
+		    numero=$('input[type="checkbox"]').filter(function()
+		    {
+		        return $(this).is(':checked');
+		    });
+		    console.log(numero);
+		});
+	}
+
 
 	/**
 	 * retorna los metodos publicos

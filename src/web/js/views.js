@@ -20,26 +20,26 @@ selector.prototype.run=function()
 /**
 *
 */
-var navegar=function()
+/*var navegar=function()
 {
-    this.enlaces='a#flecha-forward'/*, a#flecha-backward'*/;
+    this.enlaces='a#flecha-forward', a#flecha-backward';
     this.main='#capa';
     this.nueva='.vistas';
-}
+}*/
 /**
  *
  */
-navegar.prototype.run=function()
+/*navegar.prototype.run=function()
 {
-    this.boton=$(this.enlaces);
+    this.boton=$(this.enlaces);//lista
     this.objetoMain=$(this.main);//lista
-    this.objetoNueva=$(this.nueva);
+    this.objetoNueva=$(this.nueva);//lista
     this.pisaAqui();
-}
+}*/
 /**
  *
  */
-navegar.prototype.pisaAqui=function()
+/*navegar.prototype.pisaAqui=function()
 {
     var self=this;
     this.boton.on('click',function(e)
@@ -55,11 +55,11 @@ navegar.prototype.pisaAqui=function()
             self.ida();
         }
     });
-}
+}*/
 /**
  *
  */
-navegar.prototype.ida=function()
+/*navegar.prototype.ida=function()
 {
     var self=this;
     this.objetoNueva.load(this.url,function()
@@ -67,11 +67,11 @@ navegar.prototype.ida=function()
         self.objetoMain.toggle('slide');
         self.objetoNueva.fadeIn('fast');
     });
-}
+}*/
 /**
  *
  */
-navegar.prototype.vuelta=function()
+/*navegar.prototype.vuelta=function()
 {
     var self=this;
     this.objetoNueva.load(this.url,function()
@@ -79,12 +79,12 @@ navegar.prototype.vuelta=function()
         self.objetoNueva.fadeOut('slow');
         self.objetoMain.toggle('slide');
     });
-}
+}*/
 
 /**
 **
 */
-var ajax=function()
+/*var ajax=function()
 {
     this.formulario=null;
     this.mail="/site/mail";
@@ -92,7 +92,7 @@ var ajax=function()
     this.mailLista="/site/maillista";
     this.ruta=null;
     this.error=0;
-}
+}*/
 /**
  *
  */
