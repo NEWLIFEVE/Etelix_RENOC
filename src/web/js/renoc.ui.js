@@ -330,7 +330,7 @@
 	                _destroyLayer();
 	            }, 2000);
 	            mensaje=null;
-	            self.setUno();
+	            $RENOC.ERRORS.setStatus('ANY_SELECTED_REPORT');
 	        }
 		});
 	}

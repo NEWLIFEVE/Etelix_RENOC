@@ -239,10 +239,10 @@ ajax.prototype.enviar=function()
     this.capa.remove();
     this.capa=null;
 }*/
-ajax.prototype.setUno=function()
+/*ajax.prototype.setUno=function()
 {
     this.error=1;
-}
+}*/
 ajax.prototype.setCero=function()
 {
     this.error=0;
