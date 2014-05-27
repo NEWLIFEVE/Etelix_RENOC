@@ -23,6 +23,16 @@ $RENOC.DOM={};
  * Modulo que guarda las comfiguraciones
  */
 $RENOC.SETTINGS={
+	links:'a#flecha-forward, a#flecha-backward',
 	mainLayer:'#capa',
-	newLayer:'.vistas'
+	newLayer:'.vistas',
+	mail:'/site/mail',
+	excel:'/site/excel',
+	mailList:'/site/maillista'
+};
+/**
+ * Modulo handler de errores
+ */
+$RENOC.ERRORS={
+	NONE:0
 };
