@@ -21,7 +21,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <footer>
                 <div id="excel" class="botones">
                     <img src="/images/excel.png" class='ver'>
-                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta'>
                 </div>
                 <div id="lista" class="botones">
                     <img src="/images/mailRenoc.png" class='ver'>
@@ -170,7 +170,7 @@ $this->layout=$this->getLayoutFile('menuContent');
         </article>
     </section>
 </div>       
-<script src="/js/jquery-ui.js"></script>
+<!--<script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
-<script src="http://malsup.github.io/jquery.blockUI.js"></script>
+<script src="http://malsup.github.io/jquery.blockUI.js"></script>-->
 
