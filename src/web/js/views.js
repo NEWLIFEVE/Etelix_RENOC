@@ -243,11 +243,11 @@ ajax.prototype.enviar=function()
 {
     this.error=1;
 }*/
-ajax.prototype.setCero=function()
+/*ajax.prototype.setCero=function()
 {
     this.error=0;
-}
-ajax.prototype.validarRerate=function()
+}*/
+/*ajax.prototype.validarRerate=function()
 {
     self=this;
     if(self.error==0)
@@ -273,7 +273,7 @@ ajax.prototype.validarRerate=function()
             });
         }
     }
-}
+}*/
 ajax.prototype.validarReporte=function()
 {
     self=this;

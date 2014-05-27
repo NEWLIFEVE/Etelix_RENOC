@@ -332,6 +332,7 @@
 	            mensaje=null;
 	            $RENOC.ERRORS.setStatus('ANY_SELECTED_REPORT');
 	        }
+	        _validateRerate();
 		});
 	}
 
@@ -339,6 +340,7 @@
 	 * Encargada de crear un capa con cierto mensaje pasado por parametros
 	 * @param {String} message
 	 * @access private
+	 * @return void
 	 */
 	function _createLayer(message)
 	{
@@ -357,6 +359,8 @@
 
 	/** 
 	 * Metodo encargado de eliminar capa de mensaje
+	 * @access private
+	 * @return void
 	 */
 	function _destroyLayer()
 	{
@@ -365,6 +369,38 @@
 		$RENOC.DOM.messageLayer=null;
 	}
 
+	/**
+	 * Metodo encarcado de validar que el rerate no este en funcionamiento
+	 * @access private
+	 * @return void
+	 */
+	function _validateRerate()
+	{
+		var mensaje=null;
+		if($RENOC.ERRORS.status==$RENOC.ERRORS.NONE)
+		{
+			if($RENOC.DATA.rerate==true)
+			{
+				mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div class='rerateBtn'><div id='cancelar' class='cancelar'>Cancelar</div><div id='confirma' class='confirma'>Confirmar</div></div>";
+            	_createLayer(mensaje);
+            	$RENOC.ERRORS.setStatus('RUNNING_RERATE');
+            	$('#cancelar, #confirma').on('click',function()
+            	{
+            		id=$(this).attr('id');
+            		if(id=="confirma")
+            		{
+            			$RENOC.ERRORS.setStatus('NONE');
+                	}
+                	else
+                	{
+                    	$RENOC.ERRORS.setStatus('RUNNING_RERATE');
+                	}
+                	_destroyLayer();
+                	//self.validarReporte('calidad','carrier');
+            	});
+        	}
+    	}
+	}
 
 	/**
 	 * retorna los metodos publicos
