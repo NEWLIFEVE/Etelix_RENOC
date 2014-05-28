@@ -181,6 +181,19 @@ class Reportes extends CApplicationComponent
         $variable=$reporte->reporte();
         return $variable;
     }
+    
+    
+    
+    public function Arbol2NProveedor($startDate,$tipo=true,$endingDate,$carrier)
+    {
+        ini_set('max_execution_time', 60);
+        $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,$carrier);
+        $variable=$reporte->reporte();
+        return $variable;
+    }
+    
+    
+    
 
     /**
      * Genera el reporte de evolucion
