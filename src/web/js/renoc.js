@@ -20,7 +20,12 @@ $RENOC.DATA={};
 /**
  * Modulo donde se instancian los elementos del dom
  */
-$RENOC.DOM={};
+$RENOC.DOM={
+	getFormPost:function()
+	{
+		this.form=$("#formulario").serializeArray();
+	}
+};
 
 /**
  * Modulo que guarda las comfiguraciones
@@ -52,12 +57,7 @@ $RENOC.ERRORS={
 /**
  * Modulo para almacenmiento temporal
  */
-$RENOC.TEMP={
-	getFormPost:function()
-	{
-		this.form=$("#formulario").serializeArray();
-	}
-};
+$RENOC.TEMP={};
 
 /**
  * Modulo encarcado de las validaciones
