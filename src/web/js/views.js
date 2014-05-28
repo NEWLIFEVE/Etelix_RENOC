@@ -190,7 +190,7 @@
 {
     this.formulario=$("#formulario").serializeArray();
 }*/
-ajax.prototype.enviar=function()
+/*ajax.prototype.enviar=function()
 {
     var self=this, mensaje=null;
     var opciones=
@@ -215,7 +215,7 @@ ajax.prototype.enviar=function()
             self.destruirCapa();
         }, 4000);
     });
-}
+}*/
 /*ajax.prototype.crearCapa=function(mensaje)
 {
     if($('.cargando').length>0)

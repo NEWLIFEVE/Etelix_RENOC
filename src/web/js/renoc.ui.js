@@ -504,6 +504,45 @@
 	/**
 	 *
 	 */
+	function _send()
+	{
+		var mensaje=null;
+		var opciones={
+			url:$RENOC.TEMP.route,
+			data:$RENOC.DOM.form,
+			type:'POST'
+		};
+		$RENOC.AJAX.send(opciones,_done,_fail);
+	}
+
+	/**
+	 *
+	 */
+	function _done(datos)
+    {
+        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
+        self.crearCapa(mensaje);
+        setTimeout(function()
+        {
+            self.destruirCapa();
+        }, 3000);
+    }
+
+    /**
+     *
+     */
+    function _fail()
+    {
+        mensaje="<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/>";
+        setTimeout(function()
+        {
+            self.destruirCapa();
+        }, 4000);
+    }
+
+	/**
+	 *
+	 */
 	function marcar(source)
 	{
 	    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
@@ -518,7 +557,7 @@
 	        }
 	    }
 	}
-	
+
 	/**
 	 * retorna los metodos publicos
 	 */
