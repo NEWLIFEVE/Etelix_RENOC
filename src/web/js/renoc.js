@@ -7,6 +7,7 @@
  		$RENOC.ERRORS.setStatus('NONE');
  		$RENOC.UI.init();
         $RENOC.AJAX.init();
+        
         //Descomentar para ver las caracteristicas de la aplicación
  		console.dir(this);
  	}
@@ -36,7 +37,8 @@ $RENOC.SETTINGS={
 	newLayer:'.vistas',
 	mail:'/site/mail',
 	excel:'/site/excel',
-	mailList:'/site/maillista'
+	mailList:'/site/maillista',
+	datePicker:'#inicio,#datepicker,#fin'
 };
 
 /**

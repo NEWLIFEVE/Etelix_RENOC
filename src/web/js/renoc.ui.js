@@ -238,6 +238,7 @@
 		_setMain();
 		_setNew();
 		_setLinks();
+		_setDatePicker();
 	}
 
 	/**
@@ -268,6 +269,23 @@
 	function _setLinks()
 	{
 		$RENOC.DOM.links=$($RENOC.SETTINGS.links);
+	}
+
+	/**
+	 * Asigna los datepickers
+	 * @access private
+	 * @return void
+	 */
+	function _setDatePicker()
+	{
+		$RENOC.DOM.datePicker=$($RENOC.SETTINGS.datePicker);
+		$RENOC.DOM.datePicker.datepicker({
+			dateFormat: 'yy-mm-dd',
+			onSelect: function(dateText, inst)
+			{
+				$("#startDate").val(dateText);
+			}
+		});
 	}
 
 	/**
@@ -503,6 +521,7 @@
 		init:init,
 		createLayer:createLayer,
 		destroyLayer:destroyLayer,
-		marcar:marcar
+		marcar:marcar,
+		setAll:setAll
 	}
  })();

@@ -393,7 +393,7 @@ $(document).on('ready',function()
     ventana.run();
     fecha.run();
     marcar();
-    $.ajax({ 
+    /*$.ajax({ 
         url: "Log/revisarRR",     
         success: function(data) 
         {
@@ -404,7 +404,7 @@ $(document).on('ready',function()
                 $RENOC.DATA.rerate="true";
             }        
         }
-    });
+    });*/
     
     /*$(this).ajaxComplete(function()
     {
