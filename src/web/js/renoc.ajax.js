@@ -4,16 +4,6 @@
 $RENOC.AJAX=(function()
 {
 	/**
-	 * Obtiene los datos del formulario 
-	 * @access private
-	 * @param string id es el id tipo jQuery para llamar el formulario
-	 */
-	function _getFormPost(id)
-	{
-	    return $(id).serializeArray();
-	}
-
-	/**
 	 * Crea un array con los nombres de carrier y los grupos de carriers
 	 * @access private
 	 */
@@ -49,19 +39,31 @@ $RENOC.AJAX=(function()
 	function init()
 	{
 		_getNamesCarriers();
-		$.ajax({ 
-        url: "Log/revisarRR",     
-        success: function(data) 
-        {
-            if(data==true){
-                var espere=$(".cargandosori");
-                espere.prop("display",'block');
-                espere.slideDown('slow');
-                $RENOC.DATA.rerate=true;
-            }        
-        }
-    });
+		$.ajax({
+			url: "Log/revisarRR",
+			success: function(data)
+			{
+				if(data==true)
+				{
+					var espere=$(".cargandosori");
+					espere.prop("display",'block');
+					espere.slideDown('slow');
+					$RENOC.DATA.rerate=true;
+				}
+			}
+		});
 	}
 
-	return {init:init}
+	/**
+	 *
+	 */
+	function send(options,done,fail)
+	{
+		$.ajax(options).done(done).fail(fail);
+	}
+
+	return {
+		init:init,
+		send:send
+	}
 })();
