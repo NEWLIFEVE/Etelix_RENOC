@@ -395,7 +395,7 @@
 	 */
 	function _runningRoutine()
 	{
-		var mensaje=null;
+		var mensaje=id=null;
 		if($RENOC.ERRORS.status==$RENOC.ERRORS.NONE)
 		{
 			mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
@@ -411,32 +411,31 @@
 			{
 				$RENOC.TEMP.route=$RENOC.SETTINGS.mail;
 				$RENOC.DOM.getFormPost();
-
-            self.enviar();
-        }
-        else if(self.tipo=="lista")
-        {
-            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+				_send();
+			}
+			else if($RENOC.TEMP.type=="lista")
+			{
+				mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
                      class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
                      <p><label><b>Aceptar</b></label></div></div>";
-            self.crearCapa(mensaje);
-            $('#cancelar, #confirma').on('click',function()
-            {
-                id=$(this).attr('id');
-                if(id=='confirma')
-                {
-                    mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
-                    self.crearCapa(mensaje);
-                    self.ruta=self.mailLista;
-                    self.getFormPost();
-                    self.enviar();
-                }
-                else
-                {
-                    self.destruirCapa();
-                }
-            });
-        }
+            	$RENOC.UI.createLayer(mensaje);
+            	$('#cancelar, #confirma').on('click',function()
+            	{
+            		id=$(this).attr('id');
+            		if(id=='confirma')
+            		{
+            			mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+            			createLayer(mensaje);
+            			$RENOC.TEMP.route=$RENOC.SETTINGS.mailList;
+            			$RENOC.DOM.getFormPost();
+            			_send();
+            		}
+            		else
+            		{
+            			destroyLayer();
+            		}
+            	});
+            }
     	}
 	}
 	
@@ -520,11 +519,11 @@
 	 */
 	function _done(datos)
     {
-        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
-        self.crearCapa(mensaje);
+        var mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
+        $RENOC.UI.createLayer(mensaje);
         setTimeout(function()
         {
-            self.destruirCapa();
+            $RENOC.UI.destroyLayer();
         }, 3000);
     }
 
@@ -533,10 +532,11 @@
      */
     function _fail()
     {
-        mensaje="<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/>";
+        var mensaje="<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/>";
+        $RENOC.UI.createLayer(mensaje);
         setTimeout(function()
         {
-            self.destruirCapa();
+        	$RENOC.UI.destroyLayer();
         }, 4000);
     }
 

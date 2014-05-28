@@ -322,7 +322,7 @@
         }
     }
 }*/
-ajax.prototype.ejecutarAcciones=function()
+/*ajax.prototype.ejecutarAcciones=function()
 {
     self=this;
     if(self.error==0)
@@ -366,7 +366,7 @@ ajax.prototype.ejecutarAcciones=function()
             });
         }
     }
-}
+}*/
 /**
 **
 */
