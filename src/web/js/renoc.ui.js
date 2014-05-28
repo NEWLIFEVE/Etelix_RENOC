@@ -324,15 +324,15 @@
 		    if(numero.length<=0)
 	        {
 	            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
-	            _createLayer(mensaje);
+	            createLayer(mensaje);
 	            setTimeout(function()
 	            {
-	                _destroyLayer();
+	                destroyLayer();
 	            }, 2000);
 	            mensaje=null;
 	            $RENOC.ERRORS.setStatus('ANY_SELECTED_REPORT');
 	        }
-	        _validateRerate();
+	        $RENOC.VALIDATOR.validateRerate();
 		});
 	}
 
@@ -342,7 +342,7 @@
 	 * @access private
 	 * @return void
 	 */
-	function _createLayer(message)
+	function createLayer(message)
 	{
 		if($('.cargando').length>0)
 		{
@@ -362,50 +362,21 @@
 	 * @access private
 	 * @return void
 	 */
-	function _destroyLayer()
+	function destroyLayer()
 	{
 		$RENOC.DOM.messageLayer.fadeOut('slow');
 		$RENOC.DOM.messageLayer.remove();
 		$RENOC.DOM.messageLayer=null;
 	}
 
-	/**
-	 * Metodo encarcado de validar que el rerate no este en funcionamiento
-	 * @access private
-	 * @return void
-	 */
-	function _validateRerate()
-	{
-		var mensaje=null;
-		if($RENOC.ERRORS.status==$RENOC.ERRORS.NONE)
-		{
-			if($RENOC.DATA.rerate==true)
-			{
-				mensaje="<h4>En estos momentos se esta corriendo un proceso de Re-Rate, es posible que la data en los reportes no sea fiable, desea igualmente emitir el/los reporte/es?.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div class='rerateBtn'><div id='cancelar' class='cancelar'>Cancelar</div><div id='confirma' class='confirma'>Confirmar</div></div>";
-            	_createLayer(mensaje);
-            	$RENOC.ERRORS.setStatus('RUNNING_RERATE');
-            	$('#cancelar, #confirma').on('click',function()
-            	{
-            		id=$(this).attr('id');
-            		if(id=="confirma")
-            		{
-            			$RENOC.ERRORS.setStatus('NONE');
-                	}
-                	else
-                	{
-                    	$RENOC.ERRORS.setStatus('RUNNING_RERATE');
-                	}
-                	_destroyLayer();
-                	//self.validarReporte('calidad','carrier');
-            	});
-        	}
-    	}
-	}
+	
 
 	/**
 	 * retorna los metodos publicos
 	 */
 	return{
-		init:init
+		init:init,
+		createLayer:createLayer,
+		destroyLayer:destroyLayer
 	}
  })();
