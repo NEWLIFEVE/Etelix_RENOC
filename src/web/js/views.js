@@ -132,7 +132,7 @@
         id=tipo=numero=valor=nombre=mensaje=null;
     });
 }*/
-ajax.prototype.genExcel=function()
+/*ajax.prototype.genExcel=function()
 {
     var self=this,reportes=Array(),fechas=Array(), opciones=Array();
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
@@ -185,7 +185,7 @@ ajax.prototype.genExcel=function()
             ventana[key]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=200px,height=100px');
         }
     }
-}
+}*/
 /*ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formulario").serializeArray();

@@ -407,10 +407,11 @@
 				_generateExcel();
 				destroyLayer();
 			}
-			/*else if(self.tipo=="mail")
-        {
-            self.ruta=self.mail;
-            self.getFormPost();
+			else if($RENOC.TEMP.type=="mail")
+			{
+				$RENOC.TEMP.route=$RENOC.SETTINGS.mail;
+				$RENOC.DOM.getFormPost();
+
             self.enviar();
         }
         else if(self.tipo=="lista")
@@ -435,7 +436,7 @@
                     self.destruirCapa();
                 }
             });
-        }*/
+        }
     	}
 	}
 	
@@ -500,6 +501,9 @@
 	    }
 	}
 
+	/**
+	 *
+	 */
 	function marcar(source)
 	{
 	    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
@@ -514,6 +518,7 @@
 	        }
 	    }
 	}
+	
 	/**
 	 * retorna los metodos publicos
 	 */
