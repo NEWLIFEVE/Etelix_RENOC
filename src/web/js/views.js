@@ -101,9 +101,7 @@ ajax.prototype.run=function()
     var self=this;
     $('#mail,#excel,#lista').on('click',function(e)
     {
-        console.log("le dio");
-
-        /*var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
+        var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
         //Reviso cuantos check han sido seleccionados
@@ -131,7 +129,7 @@ ajax.prototype.run=function()
         self.validarReporte();
         //mando a ejecutar las cosas
         self.ejecutarAcciones();
-        id=tipo=numero=valor=nombre=mensaje=null;*/
+        id=tipo=numero=valor=nombre=mensaje=null;
     });
 }
 ajax.prototype.genExcel=function()
@@ -274,7 +272,7 @@ ajax.prototype.enviar=function()
         }
     }
 }*/
-ajax.prototype.validarReporte=function()
+/*ajax.prototype.validarReporte=function()
 {
     self=this;
     if(self.error==0)
@@ -323,7 +321,7 @@ ajax.prototype.validarReporte=function()
             }
         }
     }
-}
+}*/
 ajax.prototype.ejecutarAcciones=function()
 {
     self=this;

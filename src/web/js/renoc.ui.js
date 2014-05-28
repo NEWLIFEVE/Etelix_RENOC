@@ -333,6 +333,7 @@
 	            $RENOC.ERRORS.setStatus('ANY_SELECTED_REPORT');
 	        }
 	        $RENOC.VALIDATOR.validateRerate();
+	        $RENOC.VALIDATOR.validationReport();
 		});
 	}
 

@@ -4,6 +4,7 @@
  var $RENOC={
  	init:function()
  	{
+ 		$RENOC.ERRORS.setStatus('NONE');
  		$RENOC.UI.init();
         $RENOC.AJAX.init();
         //Descomentar para ver las caracteristicas de la aplicación
@@ -41,6 +42,7 @@ $RENOC.ERRORS={
 	NONE:0,
 	ANY_SELECTED_REPORT:1,
 	RUNNING_RERATE:2,
+	MISSING_DATA:3,
 	setStatus:function(status)
 	{
 		this.status=this[status];
@@ -93,7 +95,57 @@ $RENOC.VALIDATOR=(function()
 	/**
 	 *
 	 */
+	function validationReport()
+	{
+		if($RENOC.ERRORS.status==$RENOC.ERRORS.NONE)
+		{
+			//validad el reporte de calidad
+			if($('#calidad:checked').val()=="true")
+			{
+				var carrier=$('#carrier').val(),
+				    group=$('#group').val(),
+				    fecha=$('#startDate').val(),
+				    frase="Debe ",
+				    mensaje=null;
+            	if(((carrier==="" || carrier===undefined) && (group==="" || group===undefined)) || (fecha==="" || fecha===undefined))
+            	{
+            		if((carrier=="" || carrier==undefined) || (group==="" || group===undefined)) frase=frase+" seleccionar carrier";
+            		if((carrier=="" || carrier==undefined) && (fecha=="" || fecha==undefined)) frase=frase+" y";
+            		if(fecha=="" || fecha==undefined) frase=frase+" seleccionar al menos una fecha";
+            		frase=frase+" para generar el reporte";
+            		mensaje="<h3>"+frase+"</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+            		$RENOC.UI.createLayer(mensaje);
+            		setTimeout(function()
+            		{
+            			$RENOC.UI.destroyLayer();
+            		}, 2000);
+            		carrier=group=fecha=frase=mensaje=null;
+            		$RENOC.ERRORS.setStatus('MISSING_DATA');
+            	}
+            }
+        	//valida los demas reportes
+        	if($('#compraventa:checked').val()=="true" || $('#AI10:checked').val()=="true" || $('#AI10R:checked').val()=="true")
+        	{
+        		if($('#startDate').val()=="" || $('#startDate').val()==undefined)
+        		{
+        			mensaje="<h3>Debe seleccionar al menos una fecha para generar el reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+        			$RENOC.UI.createLayer(mensaje);
+        			setTimeout(function()
+        			{
+        				$RENOC.UI.destroyLayer();
+        			}, 2000);
+        			mensaje=null;
+        			$RENOC.ERRORS.setStatus('MISSING_DATA');
+        		}
+        	}
+        }
+    }
+
+	/**
+	 *
+	 */
 	return {
-		validateRerate:validateRerate
+		validateRerate:validateRerate,
+		validationReport:validationReport
 	}
 })();
