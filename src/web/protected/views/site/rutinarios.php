@@ -37,7 +37,7 @@ $this->layout=$this->getLayoutFile('menuContent');
             <p>Seleccione los Reportes</p>
             <form id="formulario">
                 <div class="choice">
-                    <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="marcar(this);">
+                    <input type="checkbox" value="true" id="todos" class="custom-checkbox" name="lista[todos]" onClick="$RENOC.UI.marcar(this);">
                     <label for="todos">
                         <h4 id="td1">
                             Todos

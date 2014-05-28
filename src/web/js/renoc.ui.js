@@ -334,6 +334,8 @@
 	        }
 	        $RENOC.VALIDATOR.validateRerate();
 	        $RENOC.VALIDATOR.validationReport();
+	        self.ejecutarAcciones();
+        	numero=mensaje=null;
 		});
 	}
 
@@ -370,14 +372,137 @@
 		$RENOC.DOM.messageLayer=null;
 	}
 
+	/**
+	 * Corre el envio o generacion del excel
+	 */
+	function _runningRoutine()
+	{
+		var mensaje=null;
+		if($RENOC.ERRORS.status==$RENOC.ERRORS.NONE)
+		{
+			mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+			createLayer(mensaje);
+			if($RENOC.TEMP.type=="excel")
+			{
+				$RENOC.TEMP.route=$RENOC.SETTINGS.excel;
+				$RENOC.DOM.getFormPost();
+				_generateExcel();
+				destroyLayer();
+			}
+			/*else if(self.tipo=="mail")
+        {
+            self.ruta=self.mail;
+            self.getFormPost();
+            self.enviar();
+        }
+        else if(self.tipo=="lista")
+        {
+            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
+                     class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
+                     <p><label><b>Aceptar</b></label></div></div>";
+            self.crearCapa(mensaje);
+            $('#cancelar, #confirma').on('click',function()
+            {
+                id=$(this).attr('id');
+                if(id=='confirma')
+                {
+                    mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
+                    self.crearCapa(mensaje);
+                    self.ruta=self.mailLista;
+                    self.getFormPost();
+                    self.enviar();
+                }
+                else
+                {
+                    self.destruirCapa();
+                }
+            });
+        }*/
+    	}
+	}
 	
+	/**
+	 * Encargada de generar los excel
+	 * @access private
+	 * @return void
+	 */
+	function _generateExcel()
+	{
+		var reportes=Array(), fechas=Array(), opciones=Array();
+		var total=$RENOC.DOM.form.length-1;
+		for(var i=0, j=total;i<=j; i++)
+		{
+			switch($RENOC.DOM.form[i].name)
+			{
+				case "lista[compraventa]":
+            	case "lista[perdidas]":
+            	case "lista[AIR]":
+            	case "lista[AI10]":
+            	case "lista[AI10R]":
+            	case "lista[AI10V]":
+            	case "lista[PN]":
+            	case "lista[PNV]":
+            	case "lista[ADI]":
+            	case "lista[ADE]":
+            	case "lista[ACI]":
+            	case "lista[ACE]":
+            	case "lista[API]":
+            	case "lista[APE]":
+            	case "lista[DC]":
+            	case "lista[Ev]":
+            	case "lista[calidad]":
+                	reportes[$RENOC.DOM.form[i].name]={name:$RENOC.DOM.form[i].name,value:$RENOC.DOM.form[i].value};
+                	break;
+	            case "startDate":
+	            case "endingDate":
+	                fechas[$RENOC.DOM.form[i].name]={name:$RENOC.DOM.form[i].name,value:$RENOC.DOM.form[i].value};
+	                break;
+	            case "carrier":
+	            case "group":
+	                opciones[$RENOC.DOM.form[i].name]={name:$RENOC.DOM.form[i].name,value:$RENOC.DOM.form[i].value};
+	                break;
+        	}
+        }
 
+        if(fechas['endingDate']==undefined) fechas['endingDate']={name:'endingDate',value:''};
+
+        for(var key in reportes)
+        {
+        	if(reportes[key].name=="lista[calidad]")
+        	{
+        		for(var key2 in opciones)
+            	{
+                	ventana[key2]=window.open($RENOC.TEMP.route+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=100px,height=100px');
+            	}
+	        }
+	        else
+	        {
+	            ventana[key]=window.open($RENOC.TEMP.route+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=100px,height=100px');
+	        }
+	    }
+	}
+
+	function marcar(source)
+	{
+	    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
+	    if(checkboxes.length>0)
+	    {
+	        for(i=0,j=checkboxes.length-1; i<=j; i++) //recoremos todos los controles
+	        {
+	            if(checkboxes[i].type=="checkbox") //solo si es un checkbox entramos
+	            {
+	                checkboxes[i].checked = source.checked; //si es un checkbox le damos el valor del checkbox que lo llamó (Marcar/Desmarcar Todos)
+	            }
+	        }
+	    }
+	}
 	/**
 	 * retorna los metodos publicos
 	 */
 	return{
 		init:init,
 		createLayer:createLayer,
-		destroyLayer:destroyLayer
+		destroyLayer:destroyLayer,
+		marcar:marcar
 	}
  })();

@@ -370,7 +370,7 @@ ajax.prototype.ejecutarAcciones=function()
 /**
 **
 */
-function marcar(source)
+/*function marcar(source)
 {
     checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
     if(checkboxes.length>0)
@@ -383,7 +383,7 @@ function marcar(source)
             }
         }
     }
-};
+};*/
 var ventana=new navegar();
 var fecha=new selector("#inicio,#datepicker,#fin");
 var ejecutar=new ajax();
