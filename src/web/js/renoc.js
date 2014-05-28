@@ -52,7 +52,12 @@ $RENOC.ERRORS={
 /**
  * Modulo para almacenmiento temporal
  */
-$RENOC.TEMP={};
+$RENOC.TEMP={
+	getFormPost:function()
+	{
+		this.form=$("#formulario").serializeArray();
+	}
+};
 
 /**
  * Modulo encarcado de las validaciones

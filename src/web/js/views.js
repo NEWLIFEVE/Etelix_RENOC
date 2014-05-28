@@ -186,10 +186,10 @@ ajax.prototype.genExcel=function()
         }
     }
 }
-ajax.prototype.getFormPost=function()
+/*ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formulario").serializeArray();
-}
+}*/
 ajax.prototype.enviar=function()
 {
     var self=this, mensaje=null;
