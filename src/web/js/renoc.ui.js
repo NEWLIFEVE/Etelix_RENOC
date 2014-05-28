@@ -352,7 +352,7 @@
 	        }
 	        $RENOC.VALIDATOR.validateRerate();
 	        $RENOC.VALIDATOR.validationReport();
-	        self.ejecutarAcciones();
+	        _runningRoutine();
         	numero=mensaje=null;
 		});
 	}

@@ -1,11 +1,11 @@
 /**
 *
 */
-var selector=function(id)
+/*var selector=function(id)
 {
     this.variable=id;
-}
-selector.prototype.run=function()
+}*/
+/*selector.prototype.run=function()
 {
     this.objeto=$(this.variable);
     this.objeto.datepicker(
@@ -16,7 +16,7 @@ selector.prototype.run=function()
             $("#startDate").val(dateText);
         }
     });
-}
+}*/
 /**
 *
 */
@@ -96,7 +96,7 @@ selector.prototype.run=function()
 /**
  *
  */
-ajax.prototype.run=function()
+/*ajax.prototype.run=function()
 {
     var self=this;
     $('#mail,#excel,#lista').on('click',function(e)
@@ -131,7 +131,7 @@ ajax.prototype.run=function()
         self.ejecutarAcciones();
         id=tipo=numero=valor=nombre=mensaje=null;
     });
-}
+}*/
 ajax.prototype.genExcel=function()
 {
     var self=this,reportes=Array(),fechas=Array(), opciones=Array();
