@@ -1,4 +1,3 @@
-
 <?php
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
@@ -10,6 +9,7 @@ return array(
     'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
     'name'=>'RENOC',
     'language'=>'es',
+    'timeZone'=>'America/Caracas',
     // preloading 'log' component
     'preload'=>array('log','bootstrap'),
     // autoloading model and component classes
@@ -61,13 +61,6 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
-        'db'=>array(
-            'connectionString'=>'pgsql:host=172.16.17.190;port=5432;dbname=sori',
-			'emulatePrepare'=>true,
-			'username'=>'postgres',
-                        'password'=>'123',
-			'charset'=>'utf8',
-            ),
         'errorHandler'=>array(
             // use 'site/error' action to display errors
             'errorAction'=>'site/error',
@@ -92,6 +85,6 @@ return array(
     // using Yii::app()->params['paramName']
     'params'=>array(
         // this is used in contact page
-        'adminEmail'=>'manuel@newlifeve.com',
+        'adminEmail'=>'manuelz@sacet.biz',
         ),
     );

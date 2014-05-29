@@ -130,7 +130,7 @@ class AltoImpacto extends Reportes
         for($row=1;$row<$total;$row++)
         {
             $body.="<tr>";
-            for ($col=1; $col <= 3+($num*$span); $col++)
+            for ($col=1; $col<=3+($num*$span); $col++)
             { 
                 //Celda vacia superior izquierda
                 if(($row==1 
@@ -1159,7 +1159,7 @@ class AltoImpacto extends Reportes
         if($type===null) $where="WHERE x.".$carrier."=c.id AND x.".$carrier."=cs.id";
         
         $sql="SELECT {$data}
-              FROM(SELECT {$carrier}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+              FROM(SELECT {$carrier}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, CASE WHEN SUM(pdd)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(pdd)/SUM(incomplete_calls+complete_calls)) END AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                    FROM balance
                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                    GROUP BY {$carrier}
@@ -1201,7 +1201,7 @@ class AltoImpacto extends Reportes
         $select="id_carrier_supplier";
         if($typeCarrier) $select="id_carrier_customer";
         $data="SUM({$attribute}) AS {$attribute}";
-        if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100)/SUM(total_calls) AS asr, SUM(minutes)/SUM(complete_calls) AS acd, SUM(pdd)/SUM(total_calls) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, ((SUM(revenue)*100)/SUM(cost))-100 AS margin_percentage";
+        if($attribute==null) $data="SUM(total_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(total_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100)/SUM(total_calls) END AS asr, CASE WHEN SUM(minutes)=0 THEN 0 WHEN SUM(complete_calls)=0 THEN 0 ELSE SUM(minutes)/SUM(complete_calls) END AS acd, CASE WHEN SUM(pdd)=0 THEN 0 WHEN SUM(total_calls)=0 THEN 0 ELSE SUM(pdd)/SUM(total_calls) END AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, SUM(margin) AS margin, CASE WHEN SUM(revenue)=0 THEN 0 WHEN SUM(cost)=0 THEN 0 ELSE ((SUM(revenue)*100)/SUM(cost))-100 END AS margin_percentage";
 
         if($type===null) $condicion="";
         $sql="SELECT {$data}
@@ -1237,7 +1237,7 @@ class AltoImpacto extends Reportes
         $completa="WHERE {$condicion} AND x.{$select}=d.id";
         if($type===null) $completa="WHERE x.{$select}=d.id";
         $sql="SELECT {$data}
-                      FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, (SUM(pdd)/SUM(incomplete_calls+complete_calls)) AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                      FROM(SELECT {$select}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, CASE WHEN SUM(pdd)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(pdd)/SUM(incomplete_calls+complete_calls)) END AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                            FROM balance
                            WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND {$select}<>(SELECT id FROM {$table} WHERE name='Unknown_Destination') AND {$select} IS NOT NULL
                            GROUP BY {$select}

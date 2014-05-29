@@ -2,6 +2,17 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+Release 1.3.19.3
+- Diferenciados entornos de desarrollo y producción.
+Release 1.3.19.2
+- Correcion de margen total en Ranking Compra Venta
+Release 1.3.19.1
+- Correcion de sin asignar en clientes, para el mes anterior en Ranking Compra Venta
+Release 1.3.19
+- Correccion de mes anterior en Ranking Compra Venta
+Release 1.3.18
+- Depurados division por cero en Reporte Alto Impacto(+10$)
+- Cambio en Reporte Ranking Compra Venta para soporte para cualquier cantidad de managers
 Release 1.3.17
 - Agregados meses anteriores a reporte Alto Impacto
 - Cambio en la forma de generar los excel

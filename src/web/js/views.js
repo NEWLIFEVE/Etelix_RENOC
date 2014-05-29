@@ -103,12 +103,12 @@ ajax.prototype.run=function()
     var self=this;
     $('#mail,#excel,#lista').on('click',function(e)
     {
-
+        console.log("siii ;)");
         var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
         //Reviso cuantos check han sido seleccionados
-        numero=$('input[type="checkbox"]').filter(function()
+        var numero=$('input[type="checkbox"]').filter(function()
         {
             return $(this).is(':checked');
         });

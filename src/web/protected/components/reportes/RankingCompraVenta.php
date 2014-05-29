@@ -1,7 +1,7 @@
 <?php
 /**
 * Creada para generar reporte de compra venta
-* @version 3.1.2
+* @version 3.2.1
 * @package reportes
 */
 class RankingCompraVenta extends Reportes
@@ -49,206 +49,223 @@ class RankingCompraVenta extends Reportes
         $sorted['buyers']=self::sortByList($lastnames,$this->_objetos[$last]['buyers'],'apellido');
         $sorted['consolidated']=self::sortByList($lastnames,$this->_objetos[$last]['consolidated'],'apellido');
         
+        //Cuento el numero de managers por cada tipo
+        $numSellers=count($this->_objetos[$last]['sellers']);
+        $numBuyers=count($this->_objetos[$last]['buyers']);
+        $numConsolidated=count($this->_objetos[$last]['consolidated']);
+
         $body="<table>";
-        for($row=1; $row < 55; $row++)
+        for($row=1; $row<$numSellers+$numBuyers+$numConsolidated+16; $row++)
         { 
             $body.="<tr>";   
-            for($col=1; $col <= 3+($num*$span); $col++)
+            for($col=1; $col<=2+($num*$span); $col++)
             { 
-                //Celda vacia superior izquierda
-                if(($row==1 || $row==19) && $col==1)
+                //Celda vacia superior izquierda de sellers y buyers
+                if(($row==1 || $row==$numSellers+6) && $col==1)
                 {
                     $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
-                if($row==37 && $col==1)
+                //Celda vacia superior izquierda de consolidado
+                if($row==$numSellers+$numBuyers+11 && $col==1)
                 {
                     $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
-                //Celda vacia superior derecha
-                if(($row==1 || $row==19) && $col==2+($num*$span))
+                //Celda vacia superior derecha de sellers y buyers
+                if(($row==1 || $row==$numSellers+6) && $col==2+($num*$span))
                 {
                     $body.="<td colspan='2' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
-                if($row==37 && $col==2+($num*$span))
+                //Celda vacia superior derecha de consolidado
+                if($row==$numSellers+$numBuyers+11 && $col==2+($num*$span))
                 {
                     $body.="<td colspan='4' style='text-align:center;background-color:#999999;color:#FFFFFF;'></td>";
                 }
 
-                //Cabecera izquiera superior e inferior de las tablas
-                if(($row==2 || $row==16) && $col==1)
+                //Cabecera izquiera superior e inferior de las tablas de sellers
+                if(($row==2 || $row==$numSellers+3) && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Vendedor</td>";
                 }
-                if(($row==20 || $row==34) && $col==1)
+                //Cabecera izquiera superior e inferior de las tablas de buyers
+                if(($row==$numSellers+7 || $row==$numSellers+$numBuyers+8) && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."'>Comprador</td>";
                 }
-                if(($row==38 || $row==52) && $col==1)
+                //Cabecera izquiera superior e inferior de las tablas de consolidated
+                if(($row==$numSellers+$numBuyers+12 || $row==$numSellers+$numBuyers+$numConsolidated+13) && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Ranking</td><td style='".$this->_head['styleHead']."' colspan='3'>Consolidado (Ventas + Compras)</td>";
                 }
-                //Cabecera derecha superior e inferior de las tablas
-                if(($row==2 || $row==16) && $col==2+($num*$span))
+                //Cabecera derecha superior e inferior de sellers
+                if(($row==2 || $row==$numSellers+3) && $col==2+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Vendedor</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
                 }
-                if(($row==20 || $row==34) && $col==2+($num*$span))
+                //Cabecera derecha superior e inferior de buyers
+                if(($row==$numSellers+7 || $row==$numSellers+$numBuyers+8) && $col==2+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleHead']."'>Comprador</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
                 }
-                if(($row==38 || $row==52) && $col==2+($num*$span))
+                //cabecera derecha superior e inferior de consolidated
+                if(($row==$numSellers+$numBuyers+12 || $row==$numSellers+$numBuyers+$numConsolidated+13) && $col==2+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleHead']."' colspan='3'>Consolidado (Ventas + Compras)</td><td style='".$this->_head['styleHead']."'>Ranking</td>";
                 }
 
-                //Cabecera Izquiera de totales
-                if(($row==17 || $row==35) && $col==1)
+                //Cabecera Izquiera de totales de sellers y buyers
+                if(($row==$numSellers+4 || $row==$numSellers+$numBuyers+9) && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."'>Total</td>";
                 }
-                if($row==53 && $col==1)
+                //Cabecera izquierda de totales de consolidated
+                if($row==$numSellers+$numBuyers+$numConsolidated+14 && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleFooter']."'></td><td style='".$this->_head['styleFooter']."' colspan='3'>Total</td>";
                 }
-                //Cabecera Derecha de totales
-                if(($row==17 || $row==35) && $col==2+($num*$span))
+                //Cabecera Derecha de totales de sellers y buyers
+                if(($row==$numSellers+4 || $row==$numSellers+$numBuyers+9) && $col==2+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleFooter']."'>Total</td><td style='".$this->_head['styleFooter']."'></td>";
                 }
-                if($row==53 && $col==2+($num*$span))
+                //Cabecera Derecha de totales de consolidated
+                if($row==$numSellers+$numBuyers+$numConsolidated+14 && $col==2+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleFooter']."' colspan='3'>Total</td><td style='".$this->_head['styleFooter']."'></td>";
                 }
 
-                //Cabecera de los totales al final de consolidados
-                if($row==54 && $col==1)
+                //Cabecera izquierda de los totales al final de consolidados
+                if($row==$numSellers+$numBuyers+$numConsolidated+15 && $col==1)
                 {
                     $body.="<td style='".$this->_head['styleFooterTotal']."'></td><td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td>";
                 }
-                if($row==54 && $col==2+($num*$span))
+                //Cabecera derecha de los totales al final de consolidados
+                if($row==$numSellers+$numBuyers+$numConsolidated+15 && $col==2+($num*$span))
                 {
                     $body.="<td style='".$this->_head['styleFooterTotal']."' colspan='3'>Total</td><td style='".$this->_head['styleFooterTotal']."'></td>";
                 }
 
                 //Nombres de los managers vendedores izquierda
-                if($row>2 && $row<16 && $col==1)
+                if(($row>2 && $row<$numSellers+3) && $col==1)
                 {
                     $pos=$row-2;
                     $body.=$this->_getNames($pos,$sorted['sellers'][$row-3],'styleBodySellers');
                 }
                 //Nombres de los managers vendedores derecha
-                if(($row>2 && $row<16) && $col==2+($num*$span))
+                if(($row>2 && $row<$numSellers+3) && $col==2+($num*$span))
                 {
                     $pos=$row-2;
                     $body.=$this->_getNames($pos,$sorted['sellers'][$row-3],'styleBodySellers',false);
                 }
 
                 //Nombres de los managers compradores izquierda
-                if($row>20 && $row<34 && $col==1)
+                if(($row>$numSellers+7 && $row<$numSellers+$numBuyers+8) && $col==1)
                 {
-                    $pos=$row-20;
-                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-21],'styleBodyBuyers');
+                    $pos=$row-$numSellers-7;
+                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-$numSellers-8],'styleBodyBuyers');
                 }
                 //Nombres de los managers compradores derecha
-                if(($row>20 && $row<34) && $col==2+($num*$span))
+                if(($row>$numSellers+7 && $row<$numSellers+$numBuyers+8) && $col==2+($num*$span))
                 {
-                    $pos=$row-20;
-                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-21],'styleBodyBuyers',false);
+                    $pos=$row-$numSellers-7;
+                    $body.=$this->_getNames($pos,$sorted['buyers'][$row-$numSellers-8],'styleBodyBuyers',false);
                 }
 
                 //Nombres de los managers compradores/vendedores izquierda
-                if(($row>38 && $row<52) && $col==1)
+                if(($row>$numSellers+$numBuyers+12 && $row<$numSellers+$numBuyers+$numConsolidated+13) && $col==1)
                 {
-                    $pos=$row-38;
-                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-39],'styleBodyConsolidated');
+                    $pos=$row-$numSellers-$numBuyers-12;
+                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-$numSellers-$numBuyers-13],'styleBodyConsolidated');
                 }
                 //Nombres de los managers compradores/vendedores derecha
-                if(($row>38 && $row<52) && $col==2+($num*$span))
+                if(($row>$numSellers+$numBuyers+12 && $row<$numSellers+$numBuyers+$numConsolidated+13) && $col==2+($num*$span))
                 {
-                    $pos=$row-38;
-                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-39],'styleBodyConsolidated',false);
+                    $pos=$row-$numSellers-$numBuyers-12;
+                    $body.=$this->_getNamesConsolidated($pos,$sorted['consolidated'][$row-$numSellers-$numBuyers-13],'styleBodyConsolidated',false);
                 }
                 
                 //Titulo de cada mes para diferenciar la data compradores/vendedores
-                if(($row==1 || $row==19) && self::validColumn(2,$col,$num,$span))
+                if(($row==1 || $row==$numSellers+6) && self::validColumn(2,$col,$num,$span))
                 {
                     $body.="<td colspan='".$span."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(2,$col,$span)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Titulo de cada mes para diferenciar la data Consolidado
-                if($row==37 && self::validColumn(2,$col,$num,$span))
+                if($row==$numSellers+$numBuyers+11 && self::validColumn(2,$col,$num,$span))
                 {
                     $nuevospan=$span-2;
                     $body.="<td colspan='".$nuevospan."' style='text-align:center;background-color:#999999;color:#FFFFFF;'>".$this->_objetos[self::validIndex(2,$col,$span)]['title']."</td>";
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Escribe los headers de las columnas de las tablas
-                if(($row==2 || $row==16 || $row==20 || $row==34) && self::validColumn(2,$col,$num,$span))
+                if(($row==2 
+                 || $row==$numSellers+3 
+                 || $row==$numSellers+7 
+                 || $row==$numSellers+$numBuyers+8) && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getHeaderManages(true);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Escribe los headers de las columnas de la tabla consolidada
-                if(($row==38 || $row==52) && self::validColumn(2,$col,$num,$span))
+                if(($row==$numSellers+$numBuyers+12 || $row==$numSellers+$numBuyers+$numConsolidated+13) && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getHeaderManages(false);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
 
                 //Data de vendedores
-                if(($row>2 && $row<16) && self::validColumn(2,$col,$num,$span))
+                if(($row>2 && $row<$numSellers+3) && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getRow(self::validIndex(2,$col,$span),'sellers',$sorted['sellers'][$row-3],'styleBodySellers',true);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
-                if($row==17 && self::validColumn(2,$col,$num,$span))
+                if($row==$numSellers+4 && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getHtmlTotal(self::validIndex(2,$col,$span),'totalVendors','styleFooter',true);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 
                 //Data de compradores
-                if(($row>20 && $row<34) && self::validColumn(2,$col,$num,$span))
+                if(($row>$numSellers+7 && $row<$numSellers+$numBuyers+8) && self::validColumn(2,$col,$num,$span))
                 {
-                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'buyers',$sorted['buyers'][$row-21],'styleBodyBuyers',true);
+                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'buyers',$sorted['buyers'][$row-$numSellers-8],'styleBodyBuyers',true);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
-                if($row==35 && self::validColumn(2,$col,$num,$span))
+                if($row==$numSellers+$numBuyers+9 && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getHtmlTotal(self::validIndex(2,$col,$span),'totalBuyers','styleFooter',true);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
 
                 //Data de consolidada
-                if(($row>38 && $row<52) && self::validColumn(2,$col,$num,$span))
+                if(($row>$numSellers+$numBuyers+12 && $row<$numSellers+$numBuyers+$numConsolidated+13) && self::validColumn(2,$col,$num,$span))
                 {
-                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'consolidated',$sorted['consolidated'][$row-39],'styleBodyConsolidated',false);
+                    $body.=$this->_getRow(self::validIndex(2,$col,$span),'consolidated',$sorted['consolidated'][$row-$numSellers-$numBuyers-13],'styleBodyConsolidated',false);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Data total consolidada
-                if($row==53 && self::validColumn(2,$col,$num,$span))
+                if($row==$numSellers+$numBuyers+$numConsolidated+14 && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getHtmlTotal(self::validIndex(2,$col,$span),'totalConsolidated','styleFooter',false);
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Data total de total ;)
-                if($row==54 && self::validColumn(2,$col,$num,$span))
+                if($row==$numSellers+$numBuyers+$numConsolidated+15 && self::validColumn(2,$col,$num,$span))
                 {
                     $body.=$this->_getHtmlTotalMargen(self::validIndex(2,$col,$span),'totalMargen','styleFooterTotal');
                     if(!$this->equal && $last>(self::validIndex(2,$col,$span))) $body.="<td></td>";
                 }
                 //Titulo meses anteriores
-                if(($row==1 || $row==19 || $row==37) && $col==3+($num*$span))
+                if(($row==1 || $row==$numSellers+6 || $row==$numSellers+$numBuyers+11) && $col==2+($num*$span))
                 {
-                    $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
+                    if($this->equal) $body.="<td colspan='10' style='text-align:center;background-color:#BFBEBE;color:#FFFFFF;'>Meses Anteriores</td>";
                 }
                 //titulo de los meses
                 if(($row==2 
-                 || $row==16
-                 || $row==20
-                 || $row==34 
-                 || $row==38
-                 || $row==52) && $col==3+($num*$span))
+                 || $row==$numSellers+3
+                 || $row==$numSellers+7
+                 || $row==$numSellers+$numBuyers+8 
+                 || $row==$numSellers+$numBuyers+12
+                 || $row==$numSellers+$numBuyers+$numConsolidated+13) && $col==2+($num*$span))
                 {
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'></td>";
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleThirdMonth']."</td>";
@@ -262,33 +279,34 @@ class RankingCompraVenta extends Reportes
                     if($this->equal) $body.="<td style='".$this->_head['styleHead']."'>".$this->_objetos[0]['titleSeventhMonth']."</td>";
                 }
                 //data de los cuatro meses anteriores de los vendedores
-                if(($row>2 && $row<16) && $col==3+($num*$span))
+                if(($row>2 && $row<$numSellers+3) && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getRowMonths('sellers',$sorted['sellers'][$row-3],'styleBodySellers');
                 }
-                if($row==17 && $col==3+($num*$span))
+                if($row==$numSellers+4 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalVendors','styleFooter');
                 }
                 //data de los cuatro meses anteriores de los compradores
-                if(($row>20 && $row<34) && $col==3+($num*$span))
+                if(($row>$numSellers+7 && $row<$numSellers+$numBuyers+8) && $col==2+($num*$span))
                 {
-                    if($this->equal) $body.=$this->_getRowMonths('buyers',$sorted['buyers'][$row-21],'styleBodyBuyers');
+                    if($this->equal) $body.=$this->_getRowMonths('buyers',$sorted['buyers'][$row-$numSellers-8],'styleBodyBuyers');
                 }
-                if($row==35 && $col==3+($num*$span))
+                //total de los cuatro meses de los compradores
+                if($row==$numSellers+$numBuyers+9 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalBuyers','styleFooter');
                 }
                 //data de los cuatro meses anteriores de los compradores
-                if(($row>38 && $row<52) && $col==3+($num*$span))
+                if(($row>$numSellers+$numBuyers+12 && $row<$numSellers+$numBuyers+$numConsolidated+13) && $col==2+($num*$span))
                 {
-                    if($this->equal) $body.=$this->_getRowConsolidatedMonths($sorted['consolidated'][$row-39],'styleBodyConsolidated');
+                    if($this->equal) $body.=$this->_getRowConsolidatedMonths($sorted['consolidated'][$row-$numSellers-$numBuyers-13],'styleBodyConsolidated');
                 }
-                if($row==53 && $col==3+($num*$span))
+                if($row==$numSellers+$numBuyers+$numConsolidated+14 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalConsolidated','styleFooter');
                 }
-                if($row==54 && $col==3+($num*$span))
+                if($row==$numSellers+$numBuyers+$numConsolidated+15 && $col==2+($num*$span))
                 {
                     if($this->equal) $body.=$this->_getHtmlTotalMonth('totalMargen','styleFooterTotal');
                 }
@@ -718,10 +736,11 @@ class RankingCompraVenta extends Reportes
      */
     private function _getTotalMargen($startDate,$edingDate)
     {
-        $sql="SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-              FROM balance
-              WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')";
-
+        $sql="SELECT SUM(margin) AS margin
+              FROM (SELECT CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$edingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination') AND id_destination_int IS NOT NULL
+                    GROUP BY date_balance) b";
         return Balance::model()->findBySql($sql);
     }
 
@@ -754,15 +773,15 @@ class RankingCompraVenta extends Reportes
      */
     private function _getRow($index,$index2,$phrase,$style,$type=true)
     {
-        $uno=$dos=$tres=$cuatro=$cinco=$seis=$siete=$ocho=$nueve=$diez=$once=null;
+        $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=null;
         $margin=$previous=$average=$previousMonth=null;
         foreach ($this->_objetos[$index][$index2] as $key => $value)
         {
             if($value->apellido == $phrase)
             {               
-                if($type==true) $uno="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
-                if($type==true) $dos="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
-                $tres="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                if($type==true) $c1="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->minutes)."</td>";
+                if($type==true) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->revenue)."</td>";
+                $c3="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 $margin=$value->margin;
             }
         }
@@ -772,57 +791,57 @@ class RankingCompraVenta extends Reportes
             {
                 if($value->apellido == $phrase)
                 {
-                    $cinco="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c5="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $previous=$value->margin;
                 }
             }
-            $cuatro="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
+            $c4="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previous,$margin)."</td>";
             foreach ($this->_objetos[$index][$index2.'Average'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
-                    $siete="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c7="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $average=$value->margin;
                 }
             }
-            $seis="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
+            $c6="<td style='".$this->_head[$style]."'>".$this->_upOrDown($average,$margin)."</td>";
             foreach ($this->_objetos[$index][$index2.'Accumulated'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
-                    $ocho="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c8="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                 }
             }
-            $nueve="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $c9="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
             foreach ($this->_objetos[$index][$index2.'PreviousMonth'] as $key => $value)
             {
                 if($value->apellido == $phrase)
                 {
-                    $once="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
+                    $c11="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($value->margin)."</td>";
                     $previousMonth=$value->margin;
                 }
             }
-            $diez="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
+            $c10="<td style='".$this->_head[$style]."'>".$this->_upOrDown($previousMonth,$this->_objetos[$index][$index2.'Forecast'][$phrase])."</td>";
         }
         
         if($type==true)
         {
-            if($uno==null) $uno="<td style='".$this->_head[$style]."'>--</td>";
-            if($dos==null) $dos="<td style='".$this->_head[$style]."'>--</td>";
+            if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
+            if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
         }
-        if($tres==null) $tres="<td style='".$this->_head[$style]."'>--</td>";
+        if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
         if($this->equal)
         {
-            if($cuatro==null) $cuatro="<td style='".$this->_head[$style]."'></td>";
-            if($cinco==null) $cinco="<td style='".$this->_head[$style]."'>--</td>";
-            if($seis==null) $seis="<td style='".$this->_head[$style]."'></td>";
-            if($siete==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
-            if($ocho==null) $ocho="<td style='".$this->_head[$style]."'>--</td>";
-            if($nueve==null) $nueve="<td style='".$this->_head[$style]."'>--</td>";
-            if($diez==null) $siete="<td style='".$this->_head[$style]."'></td>";
-            if($once==null) $siete="<td style='".$this->_head[$style]."'>--</td>";
+            if($c4==null) $c4="<td style='".$this->_head[$style]."'></td>";
+            if($c5==null) $c5="<td style='".$this->_head[$style]."'>--</td>";
+            if($c6==null) $c6="<td style='".$this->_head[$style]."'></td>";
+            if($c7==null) $c7="<td style='".$this->_head[$style]."'>--</td>";
+            if($c8==null) $c8="<td style='".$this->_head[$style]."'>--</td>";
+            if($c9==null) $c9="<td style='".$this->_head[$style]."'>--</td>";
+            if($c10==null) $c10="<td style='".$this->_head[$style]."'></td>";
+            if($c11==null) $c11="<td style='".$this->_head[$style]."'>--</td>";
         } 
-        $body=$uno.$dos.$tres.$cuatro.$cinco.$seis.$siete.$ocho.$nueve.$diez.$once;
+        $body=$c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11;
         return $body;
     }
 
@@ -882,7 +901,6 @@ class RankingCompraVenta extends Reportes
             }
         }
         if($c1==null) $c1="<td style='".$this->_head[$style]."'>--</td>";
-        if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
         if($c2==null) $c2="<td style='".$this->_head[$style]."'>--</td>";
         if($c3==null) $c3="<td style='".$this->_head[$style]."'>--</td>";
         if($c4==null) $c4="<td style='".$this->_head[$style]."'>--</td>";
