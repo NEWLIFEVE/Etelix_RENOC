@@ -147,6 +147,7 @@ class Reportes extends CApplicationComponent
      */
     public function RankingCompraVenta($starDate,$endingDate)
     {
+        ini_set('max_execution_time', 260);
         $reporte=new RankingCompraVenta();
         return $reporte->reporte($starDate,$endingDate);
     }
