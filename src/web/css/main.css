@@ -3,6 +3,7 @@
     font-size: 40px;
     text-align:center;
 }
+
 #login-form1
 {
     border: 10px solid black;
@@ -755,7 +756,7 @@ input#LoginForm_username
     background-position:198px -17px;
     border-left: 5px solid #68AD68;
 }
-div.login.error input#LoginForm_username
+div.error 
 {
     background-position:198px -17px;
     border-bottom:1px solid red;
