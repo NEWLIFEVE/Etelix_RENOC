@@ -1,6 +1,4 @@
 <?php
-
-
 //Definimos nuestro servidor de produccion 
 define('SERVER_NAME_PROD','renoc.sacet.com.ve');
 //Definimos nuestro servidor de preproduccion 
