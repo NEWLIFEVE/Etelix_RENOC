@@ -131,7 +131,9 @@ ajax.prototype.run=function()
         //Valido el reportes
         self.validarReporte();
         //mando a ejecutar las cosas
+        console.log("aja aja =D");
         self.ejecutarAcciones();
+        
         id=tipo=numero=valor=nombre=mensaje=null;
     });
 }
@@ -159,6 +161,7 @@ ajax.prototype.genExcel=function()
             case "lista[DC]":
             case "lista[Ev]":
             case "lista[calidad]":
+            case "lista[A2NP]":
                 reportes[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
                 break;
             case "startDate":
@@ -176,7 +179,7 @@ ajax.prototype.genExcel=function()
 
     for(var key in reportes)
     {
-        if(reportes[key].name=="lista[calidad]")
+        if(reportes[key].name=="lista[calidad]" || reportes[key].name=="lista[A2NP]")
         {
             for(var key2 in opciones)
             {
@@ -327,7 +330,10 @@ ajax.prototype.validarReporte=function()
 }
 ajax.prototype.ejecutarAcciones=function()
 {
+    console.log("aja, paso para metodo ejecutar acciones");
+    console.log(self);
     self=this;
+    console.log(this);
     if(self.error==0)
     {
         mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
@@ -335,9 +341,12 @@ ajax.prototype.ejecutarAcciones=function()
         if(self.tipo=="excel")
         {
             self.ruta=self.excel;
+            console.log("llego al caso excel");
+            
             self.getFormPost();
             self.genExcel();
             self.destruirCapa();
+            console.log("GENERO TODO");
         }
         else if(self.tipo=="mail")
         {

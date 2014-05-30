@@ -185,15 +185,21 @@ class Reportes extends CApplicationComponent
     
     
     
-    public function Arbol2NProveedor($startDate,$tipo=true,$endingDate,$nameGroup)
+    public function Arbol2NProveedor($startDate,$tipo=true,$endingDate,$operator, $groupOrCarrier)
     {
         ini_set('max_execution_time', 60);
-        $variable=null;
-        $modelGroup=Carrier::getCarrierForGroup(CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$nameGroup))->id);
-        foreach ($modelGroup as $key => $carrier) {
-            $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,$carrier->id,$nameGroup);
-            $variable.=$reporte->reporte();
-        } 
+        if($endingDate==null)  $endingDate=date('Y-m-d');
+        if($groupOrCarrier==true){
+            $variable=null;
+            $modelGroup=Carrier::getCarrierForGroup(CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
+            foreach ($modelGroup as $key => $carrier) {
+                $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,$carrier->id,$operator);
+                $variable.=$reporte->reporte();
+            } 
+        }else{
+            $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,$operator);
+            $variable=$reporte->reporte();
+        }
         return $variable;
     }
     

@@ -306,6 +306,22 @@ class SiteController extends Controller
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
+            {
+                if(isset($_POST['carrier']))
+                {
+                    $correos['carrier']['asunto']="RENOC Arbol 2N Proveedor - Carrier ".$_POST['carrier']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['carrier']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
+                    $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                }
+                if(isset($_POST['group']))
+                {
+                    $correos['group']['asunto']="RENOC Arbol 2N Proveedor - Grupo ".$_POST['group']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['group']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
+                    $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                }
+            }
         }
         foreach($correos as $key => $correo)
         { 
@@ -413,13 +429,6 @@ class SiteController extends Controller
                 $archivos['APE']['nombre']="RENOC".$this->letra." Arbol Proveedores External".self::reportTitle($startDate,$endingDate);
                 $archivos['APE']['cuerpo']=Yii::app()->reportes->ArbolTrafico($startDate,false,true);
             }
-            
-            //Arbol 2N Proveedor
-            if(isset($_GET['lista']['A2NP']))
-            {
-                $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Grupo ".$_GET['group']." ".self::reportTitle($startDate,$endingDate);
-                $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_GET['group']);
-            }
             //Distribucion Comercial
             if(isset($_GET['lista']['DC']))
             {
@@ -448,6 +457,20 @@ class SiteController extends Controller
                     $archivos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_GET['group']))->id,false);
                 }
             }
+            //Arbol 2N Proveedor
+            if(isset($_GET['lista']['A2NP']))
+            {
+                if(isset($_GET['carrier']))
+                {
+                    $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Carrier ".$_GET['carrier']." ".self::reportTitle($startDate,$endingDate);
+                    $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_GET['carrier'], false);
+                }
+                if(isset($_GET['group']))
+                {
+                    $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Grupo ".$_GET['group']." ".self::reportTitle($startDate,$endingDate);
+                    $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_GET['group'],true);
+                }
+            }    
         }
         foreach($archivos as $key => $archivo)
         {
@@ -596,6 +619,22 @@ class SiteController extends Controller
                 {
                     $correos['group']['asunto']="RENOC Calidad ".$_POST['group'].self::reportTitle($startDate,$endingDate);
                     $correos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
+                    $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                }
+            }
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
+            {
+                if(isset($_POST['carrier']))
+                {
+                    $correos['carrier']['asunto']="RENOC Arbol 2N Proveedor - Carrier ".$_POST['carrier']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['carrier']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
+                    $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                }
+                if(isset($_POST['group']))
+                {
+                    $correos['group']['asunto']="RENOC Arbol 2N Proveedor - Grupo ".$_POST['group']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['group']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }
