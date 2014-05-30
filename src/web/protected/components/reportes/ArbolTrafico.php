@@ -102,8 +102,8 @@ class ArbolTrafico extends ArbolDestino
         					Yii::app()->format->format_decimal($carrier->marginmin).
         			   "</td>
         			</tr>";
-        	$cuerpo.=$this->testFirstSeven($carrier->id,'border:solid #615E5E 1px;background:#AFD699; color:#615E5E;');
-        	$cuerpo.=$this->testTotal($carrier->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;');
+        	$cuerpo.=$this->firstSeven($carrier->id,'border:solid #615E5E 1px;background:#AFD699; color:#615E5E;');
+        	$cuerpo.=$this->total($carrier->id,'border:solid #615E5E 1px;background:#999999; color:#615E5E;');
         	$cuerpo.="<tr><td colspan='13'></td></tr><tr><td colspan='13'></td></tr>";
         }
         $cuerpo.="</table>
@@ -118,7 +118,7 @@ class ArbolTrafico extends ArbolDestino
 	 * @param string $estilo el estilo que se le va a la tabla
 	 * @return string $cuerpo
 	 */
-	public function testFirstSeven($idCarrier,$estilo)
+	public function firstSeven($idCarrier,$estilo)
 	{
 		$cuerpo=self::cabecera(array('Destinos','TotalCalls','CompleteCalls','Minutes','ASR','ACD','PDD','Cost','Revenue','Margin','Cost/Min','Rev/Min','Margin/Min'),'background-color:#615E5E; color:#62C25E; width:10%; height:100%;');
 		$sql="SELECT b.{$this->destino}, d.name AS destino, b.total_calls, b.complete_calls, b.minutes, b.asr, b.acd, b.pdd, b.cost, b.revenue, b.margin, b.costmin, b.ratemin, b.marginmin
@@ -184,7 +184,7 @@ class ArbolTrafico extends ArbolDestino
 	 * @param string $estilo es el estilo que se define para la fila
 	 * @return string $cuerpo
 	 */
-	public function testTotal($idCarrier,$estilo)
+	public function total($idCarrier,$estilo)
 	{
 		$sql="SELECT SUM(b.total_calls) AS total_calls, SUM(b.complete_calls) AS complete_calls, SUM(b.minutes) AS minutes, SUM(b.cost) AS cost, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin, CASE WHEN SUM(b.minutes)=0 THEN 0 WHEN SUM(b.cost)=0 THEN 0 ELSE (SUM(b.cost)/SUM(b.minutes))*100 END AS costmin, CASE WHEN SUM(b.minutes)=0 THEN 0 WHEN SUM(b.revenue)=0 THEN 0 ELSE (SUM(b.revenue)/SUM(b.minutes))*100 END AS ratemin, CASE WHEN SUM(b.minutes)=0 THEN 0 ELSE (CASE WHEN SUM(b.revenue)=0 THEN 0 ELSE (SUM(b.revenue)/SUM(b.minutes))*100 END)-(CASE WHEN SUM(b.cost)=0 THEN 0 ELSE (SUM(b.cost)/SUM(b.minutes))*100 END) END AS marginmin
 		      FROM(SELECT b.{$this->destino}, d.name AS destino, b.total_calls, b.complete_calls, b.minutes, b.asr, b.acd, b.pdd, b.cost, b.revenue, b.margin, b.costmin, b.ratemin, b.marginmin
