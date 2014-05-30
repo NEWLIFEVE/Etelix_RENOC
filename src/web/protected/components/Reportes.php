@@ -147,7 +147,7 @@ class Reportes extends CApplicationComponent
      */
     public function RankingCompraVenta($starDate,$endingDate)
     {
-        ini_set('max_execution_time', 260);
+        ini_set('max_execution_time', 1260);
         $reporte=new RankingCompraVenta();
         return $reporte->reporte($starDate,$endingDate);
     }
@@ -161,7 +161,7 @@ class Reportes extends CApplicationComponent
     */
     public function ArbolDestino($fecha,$tipo=true)
     {
-        ini_set('max_execution_time', 60);
+        ini_set('max_execution_time', 1060);
         $reporte=new ArbolDestino($fecha,$tipo);
         $variable=$reporte->reporte();
         return $variable;
@@ -177,7 +177,7 @@ class Reportes extends CApplicationComponent
      */
     public function ArbolTrafico($fecha,$tipo=true,$destino=true)
     {
-        ini_set('max_execution_time', 60);
+        ini_set('max_execution_time', 1060);
         $reporte=new ArbolTrafico($fecha,$tipo,$destino);
         $variable=$reporte->reporte();
         return $variable;
@@ -187,7 +187,7 @@ class Reportes extends CApplicationComponent
     
     public function Arbol2NProveedor($startDate,$tipo=true,$endingDate,$group)
     {
-        ini_set('max_execution_time', 60);
+        ini_set('max_execution_time', 1060);
         $variable=null;
         $modelGroup=Carrier::getCarrierForGroup($group);
         foreach ($modelGroup as $key => $carrier) {

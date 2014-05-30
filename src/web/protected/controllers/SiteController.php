@@ -351,7 +351,7 @@ class SiteController extends Controller
             //Alto Impacto Completo
             if(isset($_GET['lista']['AI10']))
             {
-                ini_set('max_execution_time', 300);
+                ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '300M');
                 $archivos['AI10']['nombre']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
                 $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
@@ -423,14 +423,14 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_GET['lista']['DC']))
             {
-                ini_set('max_execution_time', 300);
+                ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '512M');
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
                 $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx");
             }
             if(isset($_GET['lista']['Ev']))
             {
-                ini_set('max_execution_time', 300);
+                ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '300M');
                 $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion".self::reportTitle($startDate,$endingDate);
                 $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$archivos['Ev']['nombre'].".xlsx");
