@@ -54,7 +54,7 @@ class Arbol2NProveedor extends Reportes
      					   WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier=$this->carrier  AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
      					   GROUP BY {$this->destino}
      					   ORDER BY margin DESC) x, {$this->table} d
-					  WHERE x.margin > 10 AND x.{$this->destino} = d.id";
+					  WHERE x.margin > 0 AND x.{$this->destino} = d.id";
         $amountTotal=Balance::model()->findBySql($sqlamountTotal);
 
         $sqlDestinos="SELECT x.{$this->destino} AS id, d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
@@ -63,7 +63,7 @@ class Arbol2NProveedor extends Reportes
      					   WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier=$this->carrier  AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
      					   GROUP BY {$this->destino}
      					   ORDER BY margin DESC) x, {$this->table} d
-					  WHERE x.margin > 10 AND x.{$this->destino} = d.id
+					  WHERE x.margin > 0 AND x.{$this->destino} = d.id
 					  ORDER BY x.margin DESC";
         
         $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -121,7 +121,7 @@ class Arbol2NProveedor extends Reportes
 			   		WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND {$this->destino}={$idDestino} AND id_carrier_supplier=$this->idcarrier/*<>(SELECT id FROM carrier WHERE name='Unknown_Carrier')*/  AND {$this->destino} IS NOT NULL
 			   		GROUP BY {$this->carrier}
 			   		ORDER BY minutes DESC
-			   		LIMIT 7)b, carrier c
+			   		)b, carrier c
 			   WHERE c.id=b.id";
 		$varios=Balance::model()->findAllBySql($sql);
 		foreach ($varios as $key => $uno)

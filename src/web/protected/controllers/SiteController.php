@@ -417,7 +417,7 @@ class SiteController extends Controller
             //Arbol 2N Proveedor
             if(isset($_GET['lista']['A2NP']))
             {
-                $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor".self::reportTitle($startDate,$endingDate);
+                $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Grupo ".$_GET['group']." ".self::reportTitle($startDate,$endingDate);
                 $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_GET['group']))->id);
             }
             //Distribucion Comercial
