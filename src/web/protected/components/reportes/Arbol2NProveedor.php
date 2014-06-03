@@ -54,7 +54,7 @@ class Arbol2NProveedor extends Reportes
 	{
          ini_set('max_execution_time', 1200);
          ini_set('memory_limit', '512M'); 
-         $sqlamountTotal="SELECT SUM(x.minutes)AS minutes, SUM(x.cost), SUM(x.revenue)AS revenue, SUM((x.cost/x.minutes)*100) AS costmin, SUM((x.revenue/x.minutes)*100) AS ratemin
+         $sqlamountTotal="SELECT SUM(x.minutes)AS minutes, SUM(x.cost)AS cost, SUM(x.revenue)AS revenue, SUM((x.cost/x.minutes)*100) AS costmin, ((SUM(x.revenue)/SUM(x.minutes))*100) AS ratemin
 					  FROM(SELECT {$this->destino}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(minutes)=0 THEN 0 WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, CASE WHEN SUM(pdd)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(pdd)/SUM(incomplete_calls+complete_calls)) END AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
      					   FROM balance
      					   WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier=$this->carrier  AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
