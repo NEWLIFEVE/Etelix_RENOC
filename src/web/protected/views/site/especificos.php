@@ -15,10 +15,11 @@ $this->layout=$this->getLayoutFile('menuContent');
             ESPECIFICOS
         </article>
         
-            <p>Seleccione los parametros</p>
+            
             
             <form id="formulario">
                 <article class="parametros">
+                    <p>Seleccione los parametros</p>
                         <div class="choice_parametros fecha">
                             <input type="checkbox" value="true" id="fecha" class="custom-checkbox" name="lista[Fecha]">
                             <label for="fecha">
