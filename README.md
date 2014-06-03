@@ -2,7 +2,9 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
-- Correcciones en reportes arbol 2n proveedor.
+Realese 1.3.20
+- Agregado reporte arbol 2n proveedor a especifico.
+- Correcciones en interfaz especifico, problemas con indexado del html.
 Release 1.3.19.3
 - Diferenciados entornos de desarrollo y producción.
 Release 1.3.19.2
