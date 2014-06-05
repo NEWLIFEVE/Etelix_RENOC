@@ -193,12 +193,16 @@ class Reportes extends CApplicationComponent
             $variable=null;
             $modelGroup=Carrier::getCarrierForGroup(CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
             foreach ($modelGroup as $key => $carrier) {
-                $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,$carrier->id,$operator);
+                $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,$carrier->id,$operator,NULL);
                 $variable.=$reporte->reporte();
-            } 
+            }
+            $summary=new Arbol2NProveedor($startDate,$tipo,$endingDate,$operator,$operator,"select id from carrier where id_carrier_groups=".CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
+            $variable.=$summary->summaryDestination();
         }else{
-            $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,$operator);
+            $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,  Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,  CarrierGroups::model()->find("id=:id",array(':id'=>Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id_carrier_groups) )->name,  NULL);
             $variable=$reporte->reporte();
+            $summary=new Arbol2NProveedor($startDate,$tipo,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,$operator,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
+            $variable.=$summary->summaryDestination();
         }
         return $variable;
     }
