@@ -2,6 +2,7 @@ Etelix_RENOC
 ============
 
 Sistema de Reportes para el NOC
+- Reparado costo por minutos para los carriers en el reporte Arbol 2N proveedor.
 - Agregado totales por destinos en reporte arbol 2n proveedor 
 - Agregado totales por destinos en arbol 2n proveedor.
 - Correcciones en reportes arbol 2n proveedor.
