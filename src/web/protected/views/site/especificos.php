@@ -15,8 +15,6 @@ $this->layout=$this->getLayoutFile('menuContent');
             ESPECIFICOS
         </article>
         
-            
-            
             <form id="formulario">
                 <article class="parametros">
                     <p>Seleccione los parametros</p>
@@ -52,6 +50,10 @@ $this->layout=$this->getLayoutFile('menuContent');
                             <div id="lista" class="botones">
                                 <img src="/images/mailRenoc.png" class='ver'>
                                 <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                            </div>
+                            <div id="mail" class="botones">
+                                <img src="/images/mail.png" class='ver'>
+                                <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
                             </div>
                             <div id="mail" class="botones">
                                 <img src="/images/mail.png" class='ver'>
