@@ -188,6 +188,7 @@ class Reportes extends CApplicationComponent
     public function Arbol2NProveedor($startDate,$tipo=true,$endingDate,$operator, $groupOrCarrier)
     {
         ini_set('max_execution_time', 60);
+        $dataNull="<h1>No hay data para la fecha y el operador seleccionado</h1>";
         if($endingDate==null)  $endingDate=date('Y-m-d');
         if($groupOrCarrier==true){
             $variable=null;
@@ -197,12 +198,16 @@ class Reportes extends CApplicationComponent
                 $variable.=$reporte->reporte();
             }
             $summary=new Arbol2NProveedor($startDate,$tipo,$endingDate,$operator,$operator,"select id from carrier where id_carrier_groups=".CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
-            $variable.=$summary->summaryDestination();
+            if($variable!=NULL)$variable.=$summary->summaryDestination();
+            else
+                $variable=$dataNull;
         }else{
             $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,  Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,  CarrierGroups::model()->find("id=:id",array(':id'=>Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id_carrier_groups) )->name,  NULL);
             $variable=$reporte->reporte();
             $summary=new Arbol2NProveedor($startDate,$tipo,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,$operator,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
-            $variable.=$summary->summaryDestination();
+            if($variable!=NULL)$variable.=$summary->summaryDestination();
+            else
+                $variable=$dataNull;
         }
         return $variable;
     }
