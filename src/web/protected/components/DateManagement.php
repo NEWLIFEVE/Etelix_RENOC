@@ -106,6 +106,7 @@ class DateManagement
         $i=strtotime($startDate);
         $f=strtotime($endDate);
         $cant=$f-$i;
+        
         return $cant/(60*60*24);
     }
 

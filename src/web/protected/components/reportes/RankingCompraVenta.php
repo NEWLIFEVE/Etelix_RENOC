@@ -28,7 +28,12 @@ class RankingCompraVenta extends Reportes
     public function reporte($start,$end)
     {
         //Especifico la fecha final del mes que estoy consultado
+     
         $this->_getDays($start);
+     
+       
+        
+        
         //Cargo en memoria toda la data a ser impresa en HTML
         $this->_loopData($start,$end);
         
@@ -326,6 +331,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _loopData($start,$end)
     {
+    	
         $lastnames=self::getLastNameManagers();
         //verifico las fechas
         $array=self::valDates($start,$end);
@@ -340,6 +346,7 @@ class RankingCompraVenta extends Reportes
         $index=0;
         while (self::isLower($startDateTemp,$endingDate))
         {
+        	
             $arrayStartTemp=explode('-',$startDateTemp);
             $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".DateManagement::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
@@ -527,21 +534,22 @@ class RankingCompraVenta extends Reportes
      */
     private function _getManagers($startDate,$endingDate,$type)
     {
-        $manager="id_carrier_customer";
-        if($type==false) $manager="id_carrier_supplier";
-        $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-              FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-                   FROM balance 
-                   WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-                   GROUP BY {$manager})b,
-                   managers m,
-                   carrier_managers cm
-              WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
-              GROUP BY m.name, m.lastname
-              ORDER BY margin DESC";
-        return Balance::model()->findAllBySql($sql);
+    	    $manager="id_carrier_customer";
+        	if($type==false) $manager="id_carrier_supplier";
+        	$sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
+              	FROM
+              	(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
+                   	FROM balance 
+                   	WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
+                  	GROUP BY {$manager})b,
+                   	managers m,
+                   	carrier_managers cm
+             	WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND (cm.start_date>='{$startDate}' AND cm.end_date<='{$endingDate}'  )
+              	GROUP BY m.name, m.lastname
+              	ORDER BY margin DESC";
+        	 return Balance::model()->findAllBySql($sql);
     }
-
+//WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND (cm.start_date>='{$startDate}' AND (cm.end_date<='{$endingDate}' || cm.end_date is NULL)  )
     /**
      * Obtiene el total de los managers en un periodo de tiempo
      * @access private
@@ -552,6 +560,8 @@ class RankingCompraVenta extends Reportes
      */
     private function _getTotalManagers($startDate,$endingDate,$type)
     {
+
+    	
         $manager="id_carrier_customer";
         if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT SUM(d.minutes) AS minutes, SUM(d.revenue) AS revenue, SUM(d.margin) AS margin
@@ -560,10 +570,11 @@ class RankingCompraVenta extends Reportes
                           FROM balance
                           WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
                           GROUP BY {$manager})b, managers m, carrier_managers cm
-                    WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date IS NULL
+                    WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date is NULL
                     GROUP BY m.name, m.lastname
                     ORDER BY margin DESC) d";
         return Balance::model()->findBySql($sql);
+
     }
 
     /**

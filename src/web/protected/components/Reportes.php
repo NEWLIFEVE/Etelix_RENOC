@@ -147,6 +147,7 @@ class Reportes extends CApplicationComponent
      */
     public function RankingCompraVenta($starDate,$endingDate)
     {
+    	 
         $reporte=new RankingCompraVenta();
         return $reporte->reporte($starDate,$endingDate);
     }
@@ -1042,7 +1043,9 @@ class Reportes extends CApplicationComponent
     {
         $arrayDate=explode('-',$date);
         $newDate=$arrayDate[0]."-".$arrayDate[1]."-".DateManagement::howManyDays($date);
+      
         $this->days=DateManagement::howManyDaysBetween($date,$newDate);
+//         return  $this->days;
     }
 
     /**

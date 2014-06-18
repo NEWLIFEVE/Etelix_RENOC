@@ -183,6 +183,7 @@ class SiteController extends Controller
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
+            	$endingDate=date("Y-m-d");
                 $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['compraventa']['asunto'].".xls";
@@ -330,14 +331,17 @@ class SiteController extends Controller
         $archivos=array();
         if(isset($_GET['startDate']))
         {
+        	
             $startDate=(string)$_GET['startDate'];
             if(isset($_GET['endingDate'])) $endingDate=$_GET['endingDate'];
             if(isset($_GET['carrier'])) $carrier=$_GET['carrier'];
             if(isset($_GET['lista']['compraventa']))
             {
-                $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
+//            	$endingDate=date("Y-m-d");
+		    	$archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
                 $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
-            }
+		    	
+		   }
             if(isset($_GET['lista']['perdidas']))
             {
                 $archivos['perdidas']['nombre']="RENOC".$this->letra." Perdidas".self::reportTitle($startDate,$endingDate);
@@ -446,6 +450,7 @@ class SiteController extends Controller
         {
             $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
         }
+        
     }
 
     /**
@@ -469,6 +474,7 @@ class SiteController extends Controller
             //Ranking Compra Venta
             if(isset($_POST['lista']['compraventa']))
             {
+            	$endingDate=date("Y-m-d");
                 $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['compraventa']['asunto'].".xls";
