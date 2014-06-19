@@ -307,6 +307,22 @@ class SiteController extends Controller
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
+            {
+                if(isset($_POST['carrier']))
+                {
+                    $correos['carrier']['asunto']="RENOC Arbol 2N Proveedor - Carrier ".$_POST['carrier']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['carrier']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
+                    $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                }
+                if(isset($_POST['group']))
+                {
+                    $correos['group']['asunto']="RENOC Arbol 2N Proveedor - Grupo ".$_POST['group']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['group']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
+                    $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                }
+            }
         }
         foreach($correos as $key => $correo)
         { 
@@ -355,7 +371,7 @@ class SiteController extends Controller
             //Alto Impacto Completo
             if(isset($_GET['lista']['AI10']))
             {
-                ini_set('max_execution_time', 300);
+                ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '300M');
                 $archivos['AI10']['nombre']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
                 $archivos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
@@ -420,14 +436,14 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_GET['lista']['DC']))
             {
-                ini_set('max_execution_time', 300);
+                ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '512M');
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
                 $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx");
             }
             if(isset($_GET['lista']['Ev']))
             {
-                ini_set('max_execution_time', 300);
+                ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '300M');
                 $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion".self::reportTitle($startDate,$endingDate);
                 $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$archivos['Ev']['nombre'].".xlsx");
@@ -445,6 +461,20 @@ class SiteController extends Controller
                     $archivos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_GET['group']))->id,false);
                 }
             }
+            //Arbol 2N Proveedor
+            if(isset($_GET['lista']['A2NP']))
+            {
+                if(isset($_GET['carrier']))
+                {
+                    $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Carrier ".$_GET['carrier']." ".self::reportTitle($startDate,$endingDate);
+                    $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_GET['carrier'], false);
+                }
+                if(isset($_GET['group']))
+                {
+                    $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Grupo ".$_GET['group']." ".self::reportTitle($startDate,$endingDate);
+                    $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_GET['group'],true);
+                }
+            }    
         }
         foreach($archivos as $key => $archivo)
         {
@@ -595,6 +625,22 @@ class SiteController extends Controller
                 {
                     $correos['group']['asunto']="RENOC Calidad ".$_POST['group'].self::reportTitle($startDate,$endingDate);
                     $correos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
+                    $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                }
+            }
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
+            {
+                if(isset($_POST['carrier']))
+                {
+                    $correos['carrier']['asunto']="RENOC Arbol 2N Proveedor - Carrier ".$_POST['carrier']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['carrier']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
+                    $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                }
+                if(isset($_POST['group']))
+                {
+                    $correos['group']['asunto']="RENOC Arbol 2N Proveedor - Grupo ".$_POST['group']." ".self::reportTitle($startDate,$endingDate);
+                    $correos['group']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }

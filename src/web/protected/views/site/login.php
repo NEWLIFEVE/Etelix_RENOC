@@ -41,9 +41,12 @@ $this->breadcrumbs=array(
 					<?php echo $form->label($model,'rememberMe'); ?>
 					<?php echo $form->error($model,'rememberMe'); ?>
 					<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'type'=>'success', 'label'=>'Ingresar >')); ?>
-					<?php echo $form->error($model,'username'); ?>
-					<?php echo $form->error($model,'password'); ?>
+					
 				</div>
+			</div>
+                        <div class="login">
+				<?php echo $form->error($model,'username'); ?>
+				<?php echo $form->error($model,'password'); ?>
 			</div>
 			<?php $this->endWidget(); ?>
 		</div>

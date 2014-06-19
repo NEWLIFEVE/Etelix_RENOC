@@ -147,7 +147,8 @@ class Reportes extends CApplicationComponent
      */
     public function RankingCompraVenta($starDate,$endingDate)
     {
-    	 
+
+        ini_set('max_execution_time', 1260);
         $reporte=new RankingCompraVenta();
         return $reporte->reporte($starDate,$endingDate);
     }
@@ -161,7 +162,7 @@ class Reportes extends CApplicationComponent
     */
     public function ArbolDestino($fecha,$tipo=true)
     {
-        ini_set('max_execution_time', 60);
+        ini_set('max_execution_time', 1060);
         $reporte=new ArbolDestino($fecha,$tipo);
         $variable=$reporte->reporte();
         return $variable;
@@ -177,11 +178,38 @@ class Reportes extends CApplicationComponent
      */
     public function ArbolTrafico($fecha,$tipo=true,$destino=true)
     {
-        ini_set('max_execution_time', 60);
+        ini_set('max_execution_time', 1060);
         $reporte=new ArbolTrafico($fecha,$tipo,$destino);
         $variable=$reporte->reporte();
         return $variable;
     }
+    
+    
+    
+    public function Arbol2NProveedor($startDate,$tipo=true,$endingDate,$operator, $groupOrCarrier)
+    {
+        ini_set('max_execution_time', 60);
+        if($endingDate==null)  $endingDate=date('Y-m-d');
+        if($groupOrCarrier==true){
+            $variable=null;
+            $modelGroup=Carrier::getCarrierForGroup(CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
+            foreach ($modelGroup as $key => $carrier) {
+                $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,$carrier->id,$operator,NULL);
+                $variable.=$reporte->reporte();
+            }
+            $summary=new Arbol2NProveedor($startDate,$tipo,$endingDate,$operator,$operator,"select id from carrier where id_carrier_groups=".CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
+            $variable.=$summary->summaryDestination();
+        }else{
+            $reporte=new Arbol2NProveedor($startDate,$tipo,$endingDate,  Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,  CarrierGroups::model()->find("id=:id",array(':id'=>Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id_carrier_groups) )->name,  NULL);
+            $variable=$reporte->reporte();
+            $summary=new Arbol2NProveedor($startDate,$tipo,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id,$operator,Carrier::model()->find("name=:nombre",array(':nombre'=>$operator))->id);
+            $variable.=$summary->summaryDestination();
+        }
+        return $variable;
+    }
+    
+    
+    
 
     /**
      * Genera el reporte de evolucion

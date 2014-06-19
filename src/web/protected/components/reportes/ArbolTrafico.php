@@ -43,6 +43,7 @@ class ArbolTrafico extends ArbolDestino
 	*/
 	public function reporte()
 	{
+             ini_set('max_execution_time', 1200);
 		$cuerpo="<div>
                   <table>";
         $sql="SELECT x.{$this->carrier} AS id, c.name AS {$this->titulo['sql']}, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin

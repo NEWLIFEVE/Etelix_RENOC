@@ -1,7 +1,4 @@
 <?php
-$yii=dirname(__FILE__).'/../../../yii/framework/yii.php';
-require_once($yii);
-
 //Definimos nuestro servidor de produccion 
 define('SERVER_NAME_PROD','renoc.sacet.com.ve');
 //Definimos nuestro servidor de preproduccion 
@@ -27,6 +24,8 @@ switch ($server)
 		defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
 		break;
 }
+$yii=dirname(__FILE__).'/../../../yii/framework/yii.php';
+require_once($yii);
 $main=require(dirname(__FILE__).'/protected/config/main.php');
 $db=require(dirname(__FILE__).'/protected/config/db.php');
 

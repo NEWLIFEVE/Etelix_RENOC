@@ -118,4 +118,7 @@ class Carrier extends CActiveRecord
 	{
 		return self::model()->findAll();
 	}
+        public static function getCarrierForGroup($idGroup){           
+            return self::model()->findAll("id_carrier_groups=:id_carrier_groups", array(':id_carrier_groups'=>$idGroup));
+        }
 }

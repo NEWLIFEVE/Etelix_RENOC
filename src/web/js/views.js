@@ -103,12 +103,12 @@ ajax.prototype.run=function()
     var self=this;
     $('#mail,#excel,#lista').on('click',function(e)
     {
-
+        console.log("siii ;)");
         var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
         //Reviso cuantos check han sido seleccionados
-        numero=$('input[type="checkbox"]').filter(function()
+        var numero=$('input[type="checkbox"]').filter(function()
         {
             return $(this).is(':checked');
         });
@@ -211,7 +211,9 @@ ajax.prototype.run=function()
         //Valido el reportes
         self.validarReporte();
         //mando a ejecutar las cosas
+        console.log("aja aja =D");
         self.ejecutarAcciones();
+        
         id=tipo=numero=valor=nombre=mensaje=null;
     });
 }
@@ -241,6 +243,7 @@ ajax.prototype.genExcel=function()
             case "lista[DC]":
             case "lista[Ev]":
             case "lista[calidad]":
+            case "lista[A2NP]":
                 reportes[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
                 break;
             case "startDate":
@@ -258,7 +261,7 @@ ajax.prototype.genExcel=function()
 
     for(var key in reportes)
     {
-        if(reportes[key].name=="lista[calidad]")
+        if(reportes[key].name=="lista[calidad]" || reportes[key].name=="lista[A2NP]")
         {
             for(var key2 in opciones)
             {
@@ -417,7 +420,10 @@ ajax.prototype.validarReporte=function()
 }
 ajax.prototype.ejecutarAcciones=function()
 {
+    console.log("aja, paso para metodo ejecutar acciones");
+    console.log(self);
     self=this;
+    console.log(this);
     if(self.error==0)
     {
     	
@@ -427,9 +433,12 @@ ajax.prototype.ejecutarAcciones=function()
         {
         	
             self.ruta=self.excel;
+            console.log("llego al caso excel");
+            
             self.getFormPost();
             self.genExcel();
             self.destruirCapa();
+            console.log("GENERO TODO");
         }
         else if(self.tipo=="mail")
         {
