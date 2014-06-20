@@ -934,8 +934,33 @@ div.errorMessage
 .botones
 {
     display: inline-block;
-    margin:0 5%;
+    margin:0 3%;
     width: 15%;
+}
+div#preview 
+{
+    background: #2ABBFF;
+    padding: 18px 3px 18px 3px;
+}
+div#preview:hover
+{
+    background: #77D1FC;
+}
+div#excel 
+{
+    background: rgb(104, 173, 104);
+}
+div#excel:hover
+{
+    background: rgb(33, 158, 33);
+}
+div#mail
+{
+    background: #DA4F43;
+}
+div#mail:hover
+{
+    background: black;
 }
 img.ver
 {
