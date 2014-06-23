@@ -47,7 +47,7 @@ class EnviarEmail extends CApplicationComponent
             }
             $mailer->CharSet='UTF-8';
             $mailer->Subject=Yii::t('', $asunto);
-            $mailer->AddAttachment($ruta); //Archivo adjunto
+            if($ruta!=null) $mailer->AddAttachment($ruta); //Archivo adjunto
             $message=$html;
             $mailer->Body=$message;
             if($mailer->Send())
