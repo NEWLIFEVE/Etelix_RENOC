@@ -270,12 +270,21 @@ ajax.prototype.genExcel=function()
         }
         else
         {
-            ventana[key]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=350px,height=90px');
-            ventana[key].document.write("<h2 style='color:#3CB371'>Su reporte se esta generando por favor espere</h2>");
-        
+        	
+            	  ventana[key]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=500,height=200');
+                  ventana[key].document.write("<html><head>" +
+                  		" <link href='http://getbootstrap.com/assets/css/docs.min.css' rel='stylesheet'>" +
+                  		"<script src='http://getbootstrap.com/assets/js/docs.min.js'></script>"+
+                  		"</head><body onload='window.close();'><div class='bs-callout bs-callout-info'>" +
+                  		"<h3 style='color:#3CB371'>Su reporte se esta generando, por favor espere <img src='/images/circular.gif'width='25px' height='25px'/></h3><h5>Al terminar la carga, podr&aacute; cerrar esta ventana o presionar <a href='#' onclick='window.close();'>AQUI</a> para cerrarla</h5></div></body></html>");
+               
+                  //cerrar ventana al realizar el excel
+                 //   ventana[key].close();
+
+                  
         }
     }
-//   ventana[key].close();
+
 }
 ajax.prototype.getFormPost=function()
 {
