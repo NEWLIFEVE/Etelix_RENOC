@@ -29,12 +29,12 @@ class EnviarEmail extends CApplicationComponent
             $mailer=Yii::createComponent('application.extensions.mailer.EMailer');
             $mailer=new PHPMailer();
             $mailer->IsSMTP();
-            $mailer->Host='mail.etelix.com';
-            $mailer->Port='475';
+            $mailer->Host=Yii::app()->params['host'];
+            $mailer->Port=Yii::app()->params['port'];
             $mailer->SMTPSecure='tls';
-            $mailer->Username='renoc@etelix.com';
+            $mailer->Username=Yii::app()->params['username'];
             $mailer->SMTPAuth=true;
-            $mailer->Password="$4c3t.renoc";
+            $mailer->Password=Yii::app()->params['password'];
             $mailer->SetFrom('renoc@etelix.com','RENOC');
             $mailer->IsHTML(true);
             $mailer->AddAddress($user);
@@ -47,7 +47,7 @@ class EnviarEmail extends CApplicationComponent
             }
             $mailer->CharSet='UTF-8';
             $mailer->Subject=Yii::t('', $asunto);
-            $mailer->AddAttachment($ruta); //Archivo adjunto
+            if($ruta!=null) $mailer->AddAttachment($ruta); //Archivo adjunto
             $message=$html;
             $mailer->Body=$message;
             if($mailer->Send())
