@@ -585,6 +585,48 @@ input.favorite
     width: 470px;
     z-index: 1031;
 }
+.fancybox 
+{
+    background-color: white;
+    color: #6E6E6E;
+    margin: -39.3% 12% auto;
+    padding: 23px 30px 43px 28px;
+    position: fixed;
+    text-align: left;
+    width: 990px;
+    z-index: 1031;
+    height: 522px;
+    overflow-y: scroll;
+}
+.emergingBackground
+{
+    background-color: rgba(0,0,0,0.5);
+    content: "";
+    height: 100%;
+    position: fixed;
+    text-align: center;
+    top: 0px;
+    width: 100%;
+    cursor: url('../images/exit.cur'), pointer;
+    z-index: 1030;
+}
+.imprimir
+{
+    color: white;
+    background: rgb(33, 158, 33);
+    position: fixed;
+    width: 83px;
+    opacity: 0.5;
+    margin: 35% 74.72%;
+}
+.imprimir:hover
+{
+    opacity: 1;
+}
+div.a_imprimir
+{
+    text-align: left;
+}
 .fail
 {
     color: #6E6E6E;
@@ -916,9 +958,9 @@ div.errorMessage
 }
 .parametros
 {
-    border-left: 10px solid rgb(104, 173, 104);
+    /*border-left: 10px solid rgb(104, 173, 104);*/
     border-right: 10px solid rgb(104, 173, 104);
-    height: 400px;
+    height: 421px;
     padding-left: 1%;
     padding-right: 1%;
     width: 56%;
@@ -937,22 +979,38 @@ div.errorMessage
     margin:0 3%;
     width: 15%;
 }
+.botones_especificos 
+{
+    margin: 3% 3%;
+    width: 15%;
+    margin-bottom: 5.8%;
+}
+article.calendario div#preview
+{
+    background: #FFA12A;
+    padding: 3.2% 0.5% 3% 0.5%;
+    height: 35px;
+    width: 58px;
+}
+
 div#preview 
 {
-    background: #2ABBFF;
-    padding: 18px 3px 18px 3px;
+    background: #FFA12A;
+    padding: 3% 0.5% 3% 0.5%;
+    height: 46px;
+    width: 72px;
 }
-div#preview:hover
+div#preview:hover,article.calendario div#preview:hover
 {
-    background: #77D1FC;
+    background: #F1B76E;
 }
 div#excel 
 {
-    background: rgb(104, 173, 104);
+    background: rgb(33, 158, 33);
 }
 div#excel:hover
 {
-    background: rgb(33, 158, 33);
+    background: rgb(104, 173, 104);
 }
 div#mail
 {
@@ -960,8 +1018,17 @@ div#mail
 }
 div#mail:hover
 {
-    background: black;
+    background: #EC8F87;
 }
+div#lista
+{
+    background: #493966;
+}
+div#lista:hover
+{
+    background: #7D6C9C;
+}
+
 img.ver
 {
     width: 100%;
@@ -1031,7 +1098,10 @@ img.oculta
 }
 #footer_especificos
 {
-    margin-top: 8em;
+    position: fixed;
+    width: 513px;
+    height: 77px;
+    margin: 0% 75%;
 }
 /*Estilos del autocompletar*/
 #ui-datepicker-div table.ui-datepicker-calendar
@@ -1110,11 +1180,12 @@ height: 61px;
 }
 .especificos_reportes
 {
-    height: 400px;
+    height: 421px;
     margin-left: 2%;
-    overflow-y: scroll;
     padding-right: 2%;
     width: 24%;
+    /*border-left: 10px solid rgb(104, 173, 104);*/
+    border-right: 10px solid rgb(104, 173, 104);
 }
 .choice
 {
@@ -1127,14 +1198,49 @@ height: 61px;
 {
     /*float: left;*/
     color: grey;
-    width: 49%;
-    margin-left: 1%;
+    width: 45%;
+    margin: 3% 1%;
     height: 6.8em;
 }
 .especificos_reportes div.choice
 {  
-    width: 105% !important;
+    width: 121%!important;
+    margin: 1% -13%;
+    height: 14%;
 }
+.especificos_reportes div.choice label h4:hover
+{
+    background: white!important;
+    color: grey;
+    border: solid #E6E6E6 1px!important;
+}
+.testcss
+{
+    background: rgb(104, 173, 104)!important;
+    color: white;
+    width: 75%;
+    border: solid rgb(104, 173, 104) 2px!important;
+}
+h3.indication 
+{
+    margin: 23% 0% auto!important;
+    color: gray!important;
+}
+
+.parametros .fecha,.parametros .carrier,.parametros .group
+{
+    display:none;
+}
+
+/*input[type="checkbox"]:checked ~ .especificos_reportes div.choice label h4{
+    background: red!important;
+    color: white;
+}*/
+.especificos_reportes div.choice input:target ~ .especificos_reportes div.choice label h4{
+    background: red!important;
+    color: white;
+}
+
 .choice label h4
 {
     background: #E6E6E6;
