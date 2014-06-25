@@ -45,8 +45,20 @@ class RankingCompraVenta extends Reportes
             $span=3;
         }
         $lastnames=self::getLastNameManagers();
+      
         /*Arrays ordenados*/
-        $sorted['sellers']=self::sortByList($lastnames,$this->_objetos[$last]['sellers'],'apellido');
+        //rutinarios
+        if(isset($_GET['endingDate']))
+        {
+        	$sorted['sellers']=self::sortByList($lastnames,$this->_objetos[$last]['sellers'],'apellido');	
+        }//especificos
+        else{
+        	$sorted['sellers']=self::sortByList($lastnames,$lastnames,'apellido');
+        }
+        
+       
+        
+        
         $sorted['buyers']=self::sortByList($lastnames,$this->_objetos[$last]['buyers'],'apellido');
         $sorted['consolidated']=self::sortByList($lastnames,$this->_objetos[$last]['consolidated'],'apellido');
         
@@ -573,10 +585,7 @@ class RankingCompraVenta extends Reportes
 
         	 return Balance::model()->findAllBySql($sql);
 	}  
-                        /*(SELECT * 
-                        FROM managers 
-                        WHERE record_date>='{$startDate}')    AND m.record_date>='{$startDate}'    AND cm.start_date>=m.record_date */
-
+                       
     /**
      * Obtiene el total de los managers en un periodo de tiempo
      * @access private
