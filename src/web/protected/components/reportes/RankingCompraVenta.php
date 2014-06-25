@@ -45,20 +45,9 @@ class RankingCompraVenta extends Reportes
             $span=3;
         }
         $lastnames=self::getLastNameManagers();
-      
         /*Arrays ordenados*/
         //rutinarios
-        if(isset($_GET['endingDate']))
-        {
-        	$sorted['sellers']=self::sortByList($lastnames,$this->_objetos[$last]['sellers'],'apellido');	
-        }//especificos
-        else{
-        	$sorted['sellers']=self::sortByList($lastnames,$lastnames,'apellido');
-        }
-        
-       
-        
-        
+        $sorted['sellers']=self::sortByList($lastnames,$this->_objetos[$last]['sellers'],'apellido');
         $sorted['buyers']=self::sortByList($lastnames,$this->_objetos[$last]['buyers'],'apellido');
         $sorted['consolidated']=self::sortByList($lastnames,$this->_objetos[$last]['consolidated'],'apellido');
         
@@ -66,7 +55,20 @@ class RankingCompraVenta extends Reportes
         $numSellers=count($this->_objetos[$last]['sellers']);
         $numBuyers=count($this->_objetos[$last]['buyers']);
         $numConsolidated=count($this->_objetos[$last]['consolidated']);
-
+        
+        //especificos
+        if(self::valDates($start,$end)['equal']==false)
+        {
+        	$sorted['sellers']=self::_getManagersMissing($sorted['sellers'],$lastnames);
+        	$sorted['buyers']=self::_getManagersMissing($sorted['buyers'],$lastnames);
+        	$sorted['consolidated']=self::_getManagersMissing($sorted['consolidated'],$lastnames);
+      
+        	 //Cuento el numero de managers por cada tipo
+	        $numSellers=count($sorted['sellers']);
+	        $numBuyers=count($sorted['buyers']);
+	        $numConsolidated=count($sorted['consolidated']);
+        }
+         
         $body="<table>";
         for($row=1; $row<$numSellers+$numBuyers+$numConsolidated+16; $row++)
         { 
@@ -531,6 +533,21 @@ class RankingCompraVenta extends Reportes
             $index+=1;
         }
     }
+    /**
+     * llena el array de managers con los managers faltantes en ese array
+     * @param unknown_type $start
+     * @param unknown_type $end
+     */
+    private function _getManagersMissing($managersInc,$lastnames)
+    {
+		foreach ($managersInc as $key => $manager)
+        {
+            $temp=array_search($manager, $lastnames);
+            unset($lastnames[$temp]);
+        }
+        return array_merge($managersInc,$lastnames);
+    }
+    
 
     /**
      * Obtiene los datos de los managers en un periodo de tiempo
@@ -544,32 +561,7 @@ class RankingCompraVenta extends Reportes
     {
     	    $manager="id_carrier_customer";
         	if($type==false) $manager="id_carrier_supplier";
-//        	$sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-//              	FROM
-//              	(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-//                   	FROM balance 
-//                   	WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-//                  	GROUP BY {$manager})b,
-//                   	managers m,
-//                   	carrier_managers cm
-//             	WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND (cm.start_date>='{$startDate}' AND (cm.end_date<='{$endingDate}' or cm.end_date is NULL  )  )
-//              	GROUP BY m.name, m.lastname
-//              	ORDER BY margin DESC";
 
-        	/*$sql=" SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
-	               FROM
-	               (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
-	                   	FROM balance 
-	                   	WHERE date_balance>='{$startDate}' AND date_balance<='{$endingDate}' AND id_carrier_supplier<>(SELECT id FROM carrier WHERE name='Unknown_Carrier') AND id_destination_int<>(SELECT id FROM destination_int WHERE name='Unknown_Destination')
-	                  	GROUP BY {$manager})b,
-	                   	managers  m,
-		                (SELECT id_managers, id_carrier,start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date
-						FROM carrier_managers
-						WHERE start_date>='{$startDate}' 
-						) cm
-	               WHERE m.id = cm.id_managers AND b.{$manager}= cm.id_carrier AND (cm.start_date>='{$startDate}' AND cm.end_date<='{$endingDate}') 
-	               GROUP BY m.name, m.lastname
-	               ORDER BY margin DESC";*/
                  $sql="  SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
                     FROM(SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                          FROM balance
