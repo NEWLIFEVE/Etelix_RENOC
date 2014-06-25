@@ -4,12 +4,23 @@
  */
 $this->layout=$this->getLayoutFile('menuContent');
 ?>
+
+
 <div class="rutinarios">
     <header>
+     <div style="height:25px;"></div>
+    <?php
+    foreach(Yii::app()->user->getFlashes() as $key => $message) {
+		echo '<div style="margin:25px 0px 0px 0px;"><div class="alert alert-warnig">
+        <button type="button" class="close" data-dismiss="alert">�</button>
+        ' . $message . "</div></div>";
+    }
+?>
         <h1>
             <a id="flecha-backward" href="/"><</a>
         </h1>
     </header>
+
     <section>
         <article class='titulo90'>
             RUTINARIOS
@@ -173,4 +184,3 @@ $this->layout=$this->getLayoutFile('menuContent');
 <script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
-

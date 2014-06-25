@@ -1,3 +1,4 @@
+
 src/web/protected/runtime/*
 src/web/protected/config/db.php
 src/web/assets/*
@@ -28,5 +29,40 @@ src/web/uploads/*.xls
 src/web/assets/
 protected/runtime/
 themes/classic/views/
+
+
+=======
+src/web/protected/runtime/*
+src/web/protected/config/db.php
+src/web/protected/config/gii.php
+src/web/assets/*
+
+#sublimetext
+/*.sublime-project
+*.sublime-workspace
+
+# netbeans
+nbproject/*
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# -- Sistemas Operativos ------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+src/web/uploads/*.xls
+
+#eclipse
+.buildpath
+.project
+.Settings/*
+
 
 

@@ -122,10 +122,90 @@ ajax.prototype.run=function()
             setTimeout(function()
             {
                 self.destruirCapa();
+                
             }, 2000);
             mensaje=null;
             self.setUno();
+            
+        }else{
+        	self.setCero();
+        	//si hay alguna opcion seleccionada verifico que la fecha para el reporte no sea mayor a la fecha actual
+        	var f = new Date();
+        	fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
+        	var fecha=Date.parse(Date());
+        	var seleccion1=Date.parse($('#startDate').val());
+        	console.log("IN: "+$('#startDate').val());
+        	console.log("fin: "+$('#endingDate').val());
+
+        	if(seleccion1>fecha)
+        	{
+        		mensaje="<h3>La fecha seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
+        		self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 3000);
+                mensaje=null;
+                self.setUno();
+        	}
+        	if(( ($('#endingDate').val()!="") || ($('#endingDate').val()!=undefined)) && (($('#startDate').val()!="") || ($('#startDate').val()!=undefined)) )
+        	{
+        		console.log("0");
+        		self.setCero();
+        		var f = new Date();
+        		fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
+        		var fecha=Date.parse(Date());
+    		  	var seleccion1=Date.parse($('#startDate').val());
+    		  	var seleccion2=Date.parse($('#endingDate').val());
+	        	if(seleccion1>seleccion2)
+	         	{
+	        		console.log("1");
+	        		 mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha fin seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+	         		 self.crearCapa(mensaje);
+	                 setTimeout(function()
+	                 {
+	                     self.destruirCapa();
+	                 }, 3000);
+	                 mensaje=null;
+	                 self.setUno();	
+	         	}else if(seleccion2<seleccion1)
+	         	{
+	         		console.log("2");
+	         		 mensaje="<h3>La fecha fin seleccionada no puede ser menor a la fecha de inicio seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+	         		 self.crearCapa(mensaje);
+	                 setTimeout(function()
+	                 {
+	                     self.destruirCapa();
+	                 }, 3000);
+	                 mensaje=null;
+	                 self.setUno();
+	         		
+	         	}else if(seleccion1>fecha)
+	        	{
+	         		console.log("3");
+	         		mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
+	        		self.crearCapa(mensaje);
+	                setTimeout(function()
+	                {
+	                    self.destruirCapa();
+	                }, 3000);
+	                mensaje=null;
+	                self.setUno();
+	        	}else if(seleccion2>fecha)
+	        	{
+	        		console.log("4");
+	        		mensaje="<h3>La fecha fin seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
+	        		self.crearCapa(mensaje);
+	                setTimeout(function()
+	                {
+	                    self.destruirCapa();
+	                }, 3000);
+	                mensaje=null;
+	                self.setUno();
+	        	}
+	        }
         }
+        
         //valido rerate
         self.validarRerate();
         //Valido el reportes
@@ -142,8 +222,10 @@ ajax.prototype.genExcel=function()
     var self=this,reportes=Array(),fechas=Array(), opciones=Array();
     for(var i=0, j=self.formulario.length-1;i<=j; i++)
     {
+    	
         switch(self.formulario[i].name)
         {
+     
             case "lista[compraventa]":
             case "lista[perdidas]":
             case "lista[AIR]":
@@ -188,13 +270,26 @@ ajax.prototype.genExcel=function()
         }
         else
         {
-            ventana[key]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=200px,height=100px');
+        	
+            	  ventana[key]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value,reportes[key].name,'width=500,height=200');
+                  ventana[key].document.write("<html><head>" +
+                  		" <link href='http://getbootstrap.com/assets/css/docs.min.css' rel='stylesheet'>" +
+                  		"<script src='http://getbootstrap.com/assets/js/docs.min.js'></script>"+
+                  		"</head><body onload='window.close();'><div class='bs-callout bs-callout-info'>" +
+                  		"<h3 style='color:#3CB371'>Su reporte se esta generando, por favor espere <img src='/images/circular.gif'width='25px' height='25px'/></h3><h5>Al terminar la carga, podr&aacute; cerrar esta ventana o presionar <a href='#' onclick='window.close();'>AQUI</a> para cerrarla</h5></div></body></html>");
+               
+                  //cerrar ventana al realizar el excel
+                 //   ventana[key].close();
+
+                  
         }
     }
+
 }
 ajax.prototype.getFormPost=function()
 {
     this.formulario=$("#formulario").serializeArray();
+   
 }
 ajax.prototype.enviar=function()
 {
@@ -253,6 +348,7 @@ ajax.prototype.setCero=function()
 }
 ajax.prototype.validarRerate=function()
 {
+
     self=this;
     if(self.error==0)
     {
@@ -280,9 +376,11 @@ ajax.prototype.validarRerate=function()
 }
 ajax.prototype.validarReporte=function()
 {
+	
     self=this;
     if(self.error==0)
     {
+    	
         //validad el reporte de calidad
         if($('#calidad:checked').val()=="true")    
         {
@@ -310,7 +408,7 @@ ajax.prototype.validarReporte=function()
         //valida los demas reportes
         if($('#compraventa:checked').val()=="true" || $('#AI10:checked').val()=="true" || $('#AI10R:checked').val()=="true")
         {
-            if($('#startDate').val()=="" || $('#startDate').val()==undefined)
+        	if($('#startDate').val()=="" || $('#startDate').val()==undefined )
             {
                 mensaje="<h3>Debe seleccionar al menos una fecha para generar el reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                 self.crearCapa(mensaje);
@@ -323,6 +421,7 @@ ajax.prototype.validarReporte=function()
             }
             else
             {
+            	
                 self.setCero();
             }
         }
@@ -336,10 +435,12 @@ ajax.prototype.ejecutarAcciones=function()
     console.log(this);
     if(self.error==0)
     {
+    	
         mensaje="<h2>Espere un momento por favor</h2><img src='/images/circular.gif'width='95px' height='95px'/>";
         self.crearCapa(mensaje);
         if(self.tipo=="excel")
         {
+        	
             self.ruta=self.excel;
             console.log("llego al caso excel");
             
@@ -356,9 +457,7 @@ ajax.prototype.ejecutarAcciones=function()
         }
         else if(self.tipo=="lista")
         {
-            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\
-                     class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\
-                     <p><label><b>Aceptar</b></label></div></div>";
+            mensaje="<h4>Se enviara un correo a toda la lista de RENOC.</h4><p>Si esta seguro presione Aceptar, de lo contrario cancelar</p><div id='cancelar'\n\class='cancelar'><p><label><b>Cancelar</b></label></div>&nbsp;<div id='confirma' class='confirma'>\n\<p><label><b>Aceptar</b></label></div></div>";
             self.crearCapa(mensaje);
             $('#cancelar, #confirma').on('click',function()
             {

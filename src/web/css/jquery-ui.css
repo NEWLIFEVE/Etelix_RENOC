@@ -1108,7 +1108,7 @@ body .ui-tooltip {
 .ui-icon-circle-plus { background-position: 0 -192px; }
 .ui-icon-circle-minus { background-position: -16px -192px; }
 .ui-icon-circle-close { background-position: -32px -192px; }
- { /* background-position: -48px -192px; */ }
+ /*{  background-position: -48px -192px;  }*/
 .ui-icon-circle-triangle-e { /* background-position: -64px -192px; */ }
 .ui-icon-circle-triangle-w { /* background-position: -80px -192px; */ }
 .ui-icon-circle-triangle-n { background-position: -96px -192px; }
