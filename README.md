@@ -2,6 +2,7 @@
 ============
 
 ##Sistema de Reportes para el NOC
+- Agregada validacion para reportes evolucion y distribucion comercial al momento de generar vista previa.
 - Agregada vista previa a los reportes tanto de especificos como de rutinarios.
 - Cambiada estructura de especificos, ahora solo se puede generar un reporte a la vez, y los parametros varian segun el tipo de reporte.
 - la vista previa solo aplica para generar un reporte a la vez, si se selecciona mas de uno, se emite un msj que indica que solo se puede seleccionar uno.
