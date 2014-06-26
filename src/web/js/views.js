@@ -104,7 +104,6 @@ ajax.prototype.run=function()
     var self=this;
     $('#mail,#excel,#lista,#preview').on('click',function(e)
     {
-        console.log("siii ;)");
         var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
         self.setCero();
         e.preventDefault();
@@ -228,16 +227,27 @@ ajax.prototype.run=function()
                 }, 2000);
                 mensaje=null;
                 self.setUno();
-            }else if(numero.length>=2 && this.id=='preview')
+            }else if(this.id=='preview')
             {
-                mensaje="<h3>La vista previa solo esta disponible para un reporte a la vez</h3><img src='/images/stop.png'width='25px' height='25px'/>";
-                self.crearCapa(mensaje);
-                setTimeout(function()
-                {
-                    self.destruirCapa();
-                }, 2000);
-                mensaje=null;
+                if(numero.length>=2){
+                    mensaje="<h3>La vista previa solo esta disponible para un reporte a la vez</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                    self.crearCapa(mensaje);
+                    setTimeout(function()
+                    {
+                        self.destruirCapa();
+                    }, 2000);
+                    mensaje=null;
                 self.setUno();
+                }else if($("input[type='checkbox'][name='lista[DC]']").prop("checked")==true || $("input[type='checkbox'][name='lista[Ev]']").prop("checked")==true){
+                    mensaje="<h3>La vista previa No esta disponible para este reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                    self.crearCapa(mensaje);
+                    setTimeout(function()
+                    {
+                        self.destruirCapa();
+                    }, 2000);
+                    mensaje=null;
+                    console.log("noooooooooooooooooooooooooooooooooooooooooooooooooooo");
+                }
             }
         }
         //valido rerate
