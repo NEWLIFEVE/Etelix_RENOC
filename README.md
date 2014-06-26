@@ -1,8 +1,14 @@
 Etelix_RENOC
-============
+
 
 Sistema de Reportes para el NOC
+
 Realese 1.3.20.2
+
+- Cambiada interfaz de especificos
+- Agregada vista previa a los reportes tanto de especificos como de rutinarios.
+- Cambiada estructura de especificos, ahora solo se puede generar un reporte a la vez, y los parametros varian segun el tipo de reporte.
+- la vista previa solo aplica para generar un reporte a la vez, si se selecciona mas de uno, se emite un msj que indica que solo se puede seleccionar uno.
 - Reparado costo por minutos para los carriers en el reporte Arbol 2N proveedor.
 Realese 1.3.20.1
 - Agregado totales por destinos en reporte arbol 2n proveedor 

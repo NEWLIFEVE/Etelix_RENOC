@@ -91,6 +91,7 @@ var ajax=function()
     this.formulario=null;
     this.mail="/site/mail";
     this.excel="/site/excel";
+    this.preview="/site/preview";
     this.mailLista="/site/maillista";
     this.ruta=null;
     this.error=0;
@@ -101,7 +102,7 @@ var ajax=function()
 ajax.prototype.run=function()
 {
     var self=this;
-    $('#mail,#excel,#lista').on('click',function(e)
+    $('#mail,#excel,#lista,#preview').on('click',function(e)
     {
         console.log("siii ;)");
         var id=tipo=numero=valor=nombre=mensaje=null, ventana={};
@@ -115,97 +116,130 @@ ajax.prototype.run=function()
         //asigno la ruta de reportes
         self.tipo=$(this).attr('id');
         //Valido que al menos un reporte esté selecionado
-        if(numero.length<=0)
-        {
-            mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
-            self.crearCapa(mensaje);
-            setTimeout(function()
-            {
-                self.destruirCapa();
-                
-            }, 2000);
-            mensaje=null;
-            self.setUno();
-            
-        }else{
-        	self.setCero();
-        	//si hay alguna opcion seleccionada verifico que la fecha para el reporte no sea mayor a la fecha actual
-        	var f = new Date();
-        	fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
-        	var fecha=Date.parse(Date());
-        	var seleccion1=Date.parse($('#startDate').val());
-        	console.log("IN: "+$('#startDate').val());
-        	console.log("fin: "+$('#endingDate').val());
+        console.log(numero.length);
+        
+        self.setCero();
+        //si hay alguna opcion seleccionada verifico que la fecha para el reporte no sea mayor a la fecha actual
+        var f = new Date(),
+        fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
+        var fecha=Date.parse(Date());
+        var seleccion1=Date.parse($('#startDate').val());
+        console.log("IN: "+$('#startDate').val());
+        console.log("fin: "+$('#endingDate').val());
 
-        	if(seleccion1>fecha)
-        	{
-        		mensaje="<h3>La fecha seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
-        		self.crearCapa(mensaje);
+        if(seleccion1>fecha)
+        {
+                mensaje="<h3>La fecha seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
                 setTimeout(function()
                 {
                     self.destruirCapa();
                 }, 3000);
                 mensaje=null;
                 self.setUno();
-        	}
-        	if(( ($('#endingDate').val()!="") || ($('#endingDate').val()!=undefined)) && (($('#startDate').val()!="") || ($('#startDate').val()!=undefined)) )
-        	{
-        		console.log("0");
-        		self.setCero();
-        		var f = new Date();
-        		fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
-        		var fecha=Date.parse(Date());
-    		  	var seleccion1=Date.parse($('#startDate').val());
-    		  	var seleccion2=Date.parse($('#endingDate').val());
-	        	if(seleccion1>seleccion2)
-	         	{
-	        		console.log("1");
-	        		 mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha fin seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
-	         		 self.crearCapa(mensaje);
-	                 setTimeout(function()
-	                 {
-	                     self.destruirCapa();
-	                 }, 3000);
-	                 mensaje=null;
-	                 self.setUno();	
-	         	}else if(seleccion2<seleccion1)
-	         	{
-	         		console.log("2");
-	         		 mensaje="<h3>La fecha fin seleccionada no puede ser menor a la fecha de inicio seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
-	         		 self.crearCapa(mensaje);
-	                 setTimeout(function()
-	                 {
-	                     self.destruirCapa();
-	                 }, 3000);
-	                 mensaje=null;
-	                 self.setUno();
-	         		
-	         	}else if(seleccion1>fecha)
-	        	{
-	         		console.log("3");
-	         		mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
-	        		self.crearCapa(mensaje);
-	                setTimeout(function()
-	                {
-	                    self.destruirCapa();
-	                }, 3000);
-	                mensaje=null;
-	                self.setUno();
-	        	}else if(seleccion2>fecha)
-	        	{
-	        		console.log("4");
-	        		mensaje="<h3>La fecha fin seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
-	        		self.crearCapa(mensaje);
-	                setTimeout(function()
-	                {
-	                    self.destruirCapa();
-	                }, 3000);
-	                mensaje=null;
-	                self.setUno();
-	        	}
-	        }
         }
-        
+        if(( ($('#endingDate').val()!="") || ($('#endingDate').val()!=undefined)) && (($('#startDate').val()!="") || ($('#startDate').val()!=undefined)) )
+        {
+                console.log("0");
+                self.setCero();
+                var f = new Date();
+                fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
+                var fecha=Date.parse(Date());
+                var seleccion1=Date.parse($('#startDate').val());
+                var seleccion2=Date.parse($('#endingDate').val());
+                if(seleccion1>seleccion2)
+                {
+                        console.log("1");
+                         mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha fin seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                         self.crearCapa(mensaje);
+                 setTimeout(function()
+                 {
+                     self.destruirCapa();
+                 }, 3000);
+                 mensaje=null;
+                 self.setUno();	
+                }else if(seleccion2<seleccion1)
+                {
+                        console.log("2");
+                         mensaje="<h3>La fecha fin seleccionada no puede ser menor a la fecha de inicio seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                         self.crearCapa(mensaje);
+                 setTimeout(function()
+                 {
+                     self.destruirCapa();
+                 }, 3000);
+                 mensaje=null;
+                 self.setUno();
+
+                }else if(seleccion1>fecha)
+                {
+                        console.log("3");
+                        mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                        self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 3000);
+                mensaje=null;
+                self.setUno();
+                }else if(seleccion2>fecha)
+                {
+                        console.log("4");
+                        mensaje="<h3>La fecha fin seleccionada no puede ser mayor a la fecha actual "+fecha2+" </h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                        self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 3000);
+                mensaje=null;
+                self.setUno();
+                }
+        }
+        if($(".titulo90").html()==("ESPECIFICOS"))
+        {
+            if(numero.length<=0)
+            {
+                mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }else if(numero.length<=1)
+            {
+                mensaje="<h3>Debe seleccionar los parametros del reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+        }else{
+            if(numero.length<=0)
+            {
+                mensaje="<h3>Debe seleccionar al menos un tipo de reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }else if(numero.length>=2 && this.id=='preview')
+            {
+                mensaje="<h3>La vista previa solo esta disponible para un reporte a la vez</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+        }
         //valido rerate
         self.validarRerate();
         //Valido el reportes
@@ -292,7 +326,7 @@ ajax.prototype.getFormPost=function()
    
 }
 ajax.prototype.enviar=function()
-{
+{ 
     var self=this, mensaje=null;
     var opciones=
     {
@@ -300,14 +334,20 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
+    console.log(self.ruta);
     this.envio=$.ajax(opciones).done(function(datos)
     {
-        mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
-        self.crearCapa(mensaje);
-        setTimeout(function()
+        if(self.ruta=="/site/preview")
         {
-            self.destruirCapa();
-        }, 3000);
+            $RENOC.UI.fancyBox(datos);
+        }else{
+            mensaje="<h2 class='exito'>"+datos+"</h2><img src='/images/si.png'width='95px' height='95px' class='si'/>";
+            self.crearCapa(mensaje);
+            setTimeout(function()
+            {
+                self.destruirCapa();
+            }, 3000);
+        }
     }).fail(function()
     {
         mensaje="<h2 class='fail'>Ups! Ocurrio un problema</h2><h5>Posiblemente no hay datos en la fecha seleccionada</h5><img src='/images/no.png'width='95px' height='95px'/>";
@@ -447,13 +487,19 @@ ajax.prototype.ejecutarAcciones=function()
             self.getFormPost();
             self.genExcel();
             self.destruirCapa();
-            console.log("GENERO TODO");
         }
         else if(self.tipo=="mail")
         {
             self.ruta=self.mail;
             self.getFormPost();
             self.enviar();
+        }
+        else if(self.tipo=="preview")
+        {
+            self.ruta=self.preview;
+            self.getFormPost();
+            self.enviar();
+            
         }
         else if(self.tipo=="lista")
         {
@@ -524,3 +570,28 @@ $(document).on('ready',function()
         
     });*/
 });
+/*provisional, mientras se empareja branch dev*/
+$(".especificos_reportes div.choice input").click(function()
+{
+    $(".especificos_reportes div.choice input").prop("checked", "");
+    $(this).prop("checked", "checked");
+});
+
+$(".especificos_reportes div.choice label h4").click(function()
+{
+    $(".especificos_reportes div.choice label h4").removeClass("testcss");
+    $(this).addClass("testcss");
+    console.log($(this).attr("id"));
+    var hide = [".parametros .fecha,.parametros .carrier,.parametros .group,h3.indication"];
+    switch ($(this).attr("id")) {
+        case "td5":
+            var show = [".parametros .fecha,.parametros .carrier,.parametros .group"];
+            $RENOC.UI.showHideElement(hide, show);
+            break;
+        default:
+            var show = [".parametros .fecha"];
+            $RENOC.UI.showHideElement(hide, show);
+            break
+    }
+});
+

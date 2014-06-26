@@ -676,6 +676,144 @@ class SiteController extends Controller
         }
         echo "Mensaje Enviado";
     }
+    
+    public function actionPreview()
+    {
+        $this->vaciarAdjuntos();
+        $this->letra=Log::preliminar($_POST['startDate']);
+        $startDate=$endingDate=$carrier=$preview=$title=null;
+        ini_set('max_execution_time', 1200);
+        ini_set('memory_limit', '512M');
+        if(isset($_POST['startDate']))
+        {
+            $startDate=(string)$_POST['startDate'];
+            if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
+            //Ranking Compra Venta
+            if(isset($_POST['lista']['compraventa']))
+            {
+                $title="<h1>Ranking Compra Venta</h1>";
+                $preview['compraventa']['cuerpo']=$title.Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
+            }
+            //Perdidas
+            if(isset($_POST['lista']['perdidas']))
+            {
+                $title="<h1>Perdidas</h1>";
+                $preview['perdidas']['cuerpo']=$title.Yii::app()->reportes->Perdidas($startDate);
+            }
+            // Alto Impacto Retail
+            if(isset($_POST['lista']['AIR']))
+            {
+                $title="<h1>Alto Impacto Retail</h1>";
+                $preview['AIR']['cuerpo']=$title.Yii::app()->reportes->AltoIMpactoRetail($startDate);
+            }
+            //Alto Impacto +10$ Completo
+            if(isset($_POST['lista']['AI10']))
+            {
+                $title="<h1>Alto Impacto +10$ Completo</h1>";
+                $preview['AI10']['cuerpo']=$title.Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
+            }
+            //Alto Impacto +10$ Resumen
+            if(isset($_POST['lista']['AI10R']))
+            {
+                $title="<h1>Alto Impacto +10$ Resumen</h1>";
+                $preview['AI10R']['cuerpo']=$title.Yii::app()->reportes->AltoImpacto($startDate,$endingDate,false);
+            }
+            //Alto Impacto +10$ por Vendedor
+            if(isset($_POST['lista']['AI10V']))
+            {
+                $title="<h1>Alto Impacto +10$ por Vendedor</h1>";
+                $preview['AI10V']['cuerpo']=$title.Yii::app()->reportes->AltoImpactoVendedor($startDate);
+            }
+            //Posicion Neta
+            if(isset($_POST['lista']['PN']))
+            {
+                $title="<h1>Posicion Neta</h1>";
+                $preview['PN']['cuerpo']=$title.Yii::app()->reportes->posicionNeta($startDate,$endingDate);
+            }
+            //Posicion Neta por vendedor
+            if(isset($_POST['lista']['PNV']))
+            {
+                $title="<h1>Posicion Neta por vendedor</h1>";
+                $preview['PNV']['cuerpo']=$title.Yii::app()->reportes->PosicionNetaVendedor($startDate);
+            }
+            //Arbol de Trafico Destinos Internal
+            if(isset($_POST['lista']['ADI']))
+            {
+                $title="<h1>Arbol de Trafico Destinos Internal</h1>";
+                $preview['ADI']['cuerpo']=$title.Yii::app()->reportes->ArbolDestino($startDate,false);
+            }
+            //Arbol de Trafico Destino External
+            if(isset($_POST['lista']['ADE']))
+            {
+                $title="<h1>Arbol de Trafico Destino External</h1>";
+                $preview['ADE']['cuerpo']=$title.Yii::app()->reportes->ArbolDestino($startDate,true);
+            }
+            //Arbol de Trafico Clientes Internal
+            if(isset($_POST['lista']['ACI']))
+            {
+                $title="<h1>Arbol de Trafico Clientes Internal</h1>";
+                $preview['ACI']['cuerpo']=$title.Yii::app()->reportes->ArbolTrafico($startDate,true,false);
+            }
+            //Arbol de Trafico Clientes External
+            if(isset($_POST['lista']['ACE']))
+            {
+                $title="<h1>Arbol de Trafico Clientes External</h1>";
+                $preview['ACE']['cuerpo']=$title.Yii::app()->reportes->ArbolTrafico($startDate,true,true);
+            }
+            //Arbol de Trafico Proveedores Internal
+            if(isset($_POST['lista']['API']))
+            {
+                $title="<h1>Arbol de Trafico Proveedores Internal</h1>";
+                $preview['API']['cuerpo']=$title.Yii::app()->reportes->ArbolTrafico($startDate,false,false);
+            }
+            //Arbol de Trafico Proveedores External
+            if(isset($_POST['lista']['APE']))
+            {
+                $title="<h1>Arbol de Trafico Proveedores External</h1>";
+                $preview['APE']['cuerpo']=$title.Yii::app()->reportes->ArbolTrafico($startDate,false,true);
+            }
+            //Distribucion Comercial
+            if(isset($_POST['lista']['DC']))
+            {
+                $title="<h1>Distribucion Comercial</h1>";
+                $preview['DC']['cuerpo']=$title.Yii::app()->reportes->DistribucionComercial($preview['DC']['asunto'].".xlsx");
+            }
+            if(isset($_POST['lista']['Ev']))
+            {
+                $title="<h1>Evolucion</h1>";
+                $preview['Ev']['cuerpo']=$title.Yii::app()->reportes->Evolucion($startDate,$preview['Ev']['asunto'].".xlsx");
+            }
+            if(isset($_POST['lista']['calidad']))
+            {
+                $title="<h1>Calidad</h1>";
+                if(isset($_POST['carrier']))
+                {
+                    $preview['carrier']['cuerpo']=$title.Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$_POST['carrier']))->id,true);
+                }
+                if(isset($_POST['group']))
+                {
+                    $preview['group']['cuerpo']=$title.Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
+                }
+            }
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
+            {
+                $title="<h1>Arbol 2N Proveedor</h1>";
+                if(isset($_POST['carrier']))
+                {
+                    $preview['carrier']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
+                }
+                if(isset($_POST['group']))
+                {
+                    $preview['group']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
+                }
+            }
+        }
+        foreach($preview as $key => $view)
+        {
+            echo $view['cuerpo'];
+        }
+    }
 
     /**
      * @access public
