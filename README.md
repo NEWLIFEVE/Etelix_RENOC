@@ -158,7 +158,7 @@
 
 ###Release 1.0.1
 - Envio de Reportes a correo electronico de usuario logueado
-- Envio de Reportes a lista de correo reno@etelix.com
+- Envio de Reportes a lista de correo renoc@etelix.com
 
 ###Release 1.0
 - Envio de reportes por correo
