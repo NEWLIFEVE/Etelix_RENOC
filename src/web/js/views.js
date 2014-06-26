@@ -237,16 +237,17 @@ ajax.prototype.run=function()
                         self.destruirCapa();
                     }, 2000);
                     mensaje=null;
-                self.setUno();
-                }else if($("input[type='checkbox'][name='lista[DC]']").prop("checked")==true || $("input[type='checkbox'][name='lista[Ev]']").prop("checked")==true){
-                    mensaje="<h3>La vista previa No esta disponible para este reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                    self.setUno();
+                }
+                if($("input[type='checkbox'][name='lista[DC]']").prop("checked")==true || $("input[type='checkbox'][name='lista[Ev]']").prop("checked")==true){
+                    var mensaje="<h3>La vista previa No esta disponible para este reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                     self.crearCapa(mensaje);
                     setTimeout(function()
                     {
                         self.destruirCapa();
                     }, 2000);
                     mensaje=null;
-                    console.log("noooooooooooooooooooooooooooooooooooooooooooooooooooo");
+                    self.setUno();
                 }
             }
         }
