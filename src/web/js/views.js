@@ -264,12 +264,11 @@ ajax.prototype.run=function()
 ajax.prototype.genExcel=function()
 {
     var self=this,reportes=Array(),fechas=Array(), opciones=Array();
-    for(var i=0, j=self.formulario.length-1;i<=j; i++)
+    var total=self.formulario.length-1;
+    for(var i=0, j=total;i<=j; i++)
     {
-    	
         switch(self.formulario[i].name)
         {
-     
             case "lista[compraventa]":
             case "lista[perdidas]":
             case "lista[AIR]":
@@ -471,7 +470,6 @@ ajax.prototype.validarReporte=function()
             }
             else
             {
-            	
                 self.setCero();
             }
         }
