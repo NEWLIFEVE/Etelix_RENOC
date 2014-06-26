@@ -16,7 +16,7 @@
  	{
  		//Crea los inputs usados para la fecha en especificos
  		var checkFecha=document.getElementsByName('lista[Fecha]');
- 		if(checkFecha!="undefined")
+ 		if(checkFecha.length!=0)
  		{
  			optionsDate={
  				elemento:'input',
@@ -39,7 +39,7 @@
  		}
  		//crea el input usado para carrier en la interfaz especificos
  		var checkCarrier=document.getElementsByName('lista[Carrier]');
- 		if(checkCarrier!="undefined")
+ 		if(checkCarrier.length!=0)
  		{
  			optionsCarrier={
  				elemento:'input',
@@ -57,7 +57,7 @@
  		}
  		//crea el input usado para grupos en la interfaz especificos
  		var checkGroup=document.getElementsByName('lista[Group]');
- 		if(checkGroup!="undefined")
+ 		if(checkGroup.length!=0)
  		{
  			optionsGroup={
  				elemento:'input',
