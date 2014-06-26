@@ -460,7 +460,6 @@ ajax.prototype.validarReporte=function()
             }
             else
             {
-            	
                 self.setCero();
             }
         }
