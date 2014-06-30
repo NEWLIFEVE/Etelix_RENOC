@@ -353,9 +353,8 @@ class SiteController extends Controller
             if(isset($_GET['lista']['compraventa']))
             {    	
                 $archivos['compraventa']['nombre']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
-                $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
-		    	
-		   }
+                $archivos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);	
+            }
             if(isset($_GET['lista']['perdidas']))
             {
                 $archivos['perdidas']['nombre']="RENOC".$this->letra." Perdidas".self::reportTitle($startDate,$endingDate);
@@ -792,23 +791,14 @@ class SiteController extends Controller
                     $preview['group']['cuerpo']=$title.Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
                 }
             }
-            //Arbol 2N Proveedor
-            if(isset($_POST['lista']['A2NP']))
+            foreach($preview as $key => $view)
             {
-                $title="<h1>Arbol 2N Proveedor</h1>";
-                if(isset($_POST['carrier']))
-                {
-                    $preview['carrier']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
-                }
-                if(isset($_POST['group']))
-                {
-                    $preview['group']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
-                }
+                echo $view['cuerpo'];
             }
         }
-        foreach($preview as $key => $view)
+        else
         {
-            echo $view['cuerpo'];
+            echo "Ocurrion un problema";
         }
     }
 
