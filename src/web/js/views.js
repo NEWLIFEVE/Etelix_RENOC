@@ -123,8 +123,6 @@ ajax.prototype.run=function()
         fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
         var fecha=Date.parse(Date());
         var seleccion1=Date.parse($('#startDate').val());
-        console.log("IN: "+$('#startDate').val());
-        console.log("fin: "+$('#endingDate').val());
 
         if(seleccion1>fecha)
         {
@@ -139,7 +137,6 @@ ajax.prototype.run=function()
         }
         if(( ($('#endingDate').val()!="") || ($('#endingDate').val()!=undefined)) && (($('#startDate').val()!="") || ($('#startDate').val()!=undefined)) )
         {
-                console.log("0");
                 self.setCero();
                 var f = new Date();
                 fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
@@ -148,7 +145,6 @@ ajax.prototype.run=function()
                 var seleccion2=Date.parse($('#endingDate').val());
                 if(seleccion1>seleccion2)
                 {
-                        console.log("1");
                          mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha fin seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                          self.crearCapa(mensaje);
                  setTimeout(function()
@@ -159,7 +155,6 @@ ajax.prototype.run=function()
                  self.setUno();	
                 }else if(seleccion2<seleccion1)
                 {
-                        console.log("2");
                          mensaje="<h3>La fecha fin seleccionada no puede ser menor a la fecha de inicio seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                          self.crearCapa(mensaje);
                  setTimeout(function()
@@ -256,7 +251,6 @@ ajax.prototype.run=function()
         //Valido el reportes
         self.validarReporte();
         //mando a ejecutar las cosas
-        console.log("aja aja =D");
         self.ejecutarAcciones();
         
         id=tipo=numero=valor=nombre=mensaje=null;
@@ -344,7 +338,7 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
-    console.log(self.ruta);
+    console.log(self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
         if(self.ruta=="/site/preview")
@@ -478,10 +472,7 @@ ajax.prototype.validarReporte=function()
 }
 ajax.prototype.ejecutarAcciones=function()
 {
-    console.log("aja, paso para metodo ejecutar acciones");
-    console.log(self);
     self=this;
-    console.log(this);
     if(self.error==0)
     {
     	
@@ -490,9 +481,7 @@ ajax.prototype.ejecutarAcciones=function()
         if(self.tipo=="excel")
         {
         	
-            self.ruta=self.excel;
-            console.log("llego al caso excel");
-            
+            self.ruta=self.excel;  
             self.getFormPost();
             self.genExcel();
             self.destruirCapa();
@@ -590,7 +579,6 @@ $(".especificos_reportes div.choice label h4").click(function()
 {
     $(".especificos_reportes div.choice label h4").removeClass("testcss");
     $(this).addClass("testcss");
-    console.log($(this).attr("id"));
     var hide = [".parametros .fecha,.parametros .carrier,.parametros .group,h3.indication"];
     switch ($(this).attr("id")) {
         case "td5":
