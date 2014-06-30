@@ -683,6 +683,7 @@ class SiteController extends Controller
     public function genExcel($nombre,$html,$salida=true)
     {
         $name=null;
+
         if(stripos($nombre,"Evolucion") || stripos($nombre,"Comercial"))
         {
             $name=$nombre.".xlsx";
