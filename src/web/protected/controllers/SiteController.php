@@ -171,7 +171,7 @@ class SiteController extends Controller
     {
         $this->vaciarAdjuntos();
         $startDate=$endingDate=$carrier=null;
-        $correos=null;
+        $correos=array();
         $user=UserIdentity::getEmail();
         ini_set('max_execution_time', 1200);
         ini_set('memory_limit', '512M');
@@ -322,17 +322,21 @@ class SiteController extends Controller
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }
-        }
-        foreach($correos as $key => $correo)
-        { 
-            //Esto es para que no descargue los archivos cuando se genere uno de estos reportes
-            if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
-            {
-                $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
+            foreach($correos as $key => $correo)
+            { 
+                //Esto es para que no descargue los archivos cuando se genere uno de estos reportes
+                if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
+                {
+                    $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
+                }
+                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
             }
-            Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
+            echo "Mensaje Enviado";
         }
-        echo "Mensaje Enviado";
+        else
+        {
+            echo "ocurrio un problema";
+        }
     }
 
     /**
@@ -341,13 +345,12 @@ class SiteController extends Controller
     public function actionExcel()
     {
         $this->vaciarAdjuntos();
-        $this->letra=Log::preliminar($_GET['startDate']);
         $startDate=$endingDate=$carrier=null;
         $archivos=array();
         if(isset($_GET['startDate']))
         {
-        	
             $startDate=(string)$_GET['startDate'];
+            $this->letra=Log::preliminar($_GET['startDate']);
             if(isset($_GET['endingDate'])) $endingDate=$_GET['endingDate'];
             if(isset($_GET['carrier'])) $carrier=$_GET['carrier'];
             if(isset($_GET['lista']['compraventa']))
@@ -472,13 +475,16 @@ class SiteController extends Controller
                     $archivos['A2NP']['nombre']="RENOC Arbol 2N Proveedor - Grupo ".$_GET['group']." ".self::reportTitle($startDate,$endingDate);
                     $archivos['A2NP']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_GET['group'],true);
                 }
-            }    
+            }
+            foreach($archivos as $key => $archivo)
+            {
+                $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
+            } 
         }
-        foreach($archivos as $key => $archivo)
+        else
         {
-            $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
+            echo "Oops algo pasó";
         }
-        
     }
 
     /**
@@ -489,14 +495,15 @@ class SiteController extends Controller
     public function actionMaillista()
     {
         $this->vaciarAdjuntos();
-        $this->letra=Log::preliminar($_POST['startDate']);
         $startDate=$endingDate=$carrier=null;
-        $correos=null;
-        $user="renoc@etelix.com";
+        $correos=array();
+        if(!YII_DEBUG) $user="renoc@etelix.com";
+        else $user="auto@etelix.com";
         ini_set('max_execution_time', 1200);
         ini_set('memory_limit', '512M');
         if(isset($_POST['startDate']))
         {
+            $this->letra=Log::preliminar($_POST['startDate']);
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
             //Ranking Compra Venta
@@ -641,48 +648,52 @@ class SiteController extends Controller
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }
+            foreach($correos as $key => $correo)
+            {
+                //esto es para evitar que cuando sea alguno de estos reportes no descargue el archivo
+                if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
+                {
+                    $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
+                }
+                if(stripos($correo['asunto'], "RETAIL"))
+                {
+                    $lista=array('CarlosBuona@etelix.com','auto@etelix.com');
+                    Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
+                }
+                elseif (stripos($correo['asunto'], "Calidad"))
+                {
+                    $userDif="ceo@etelix.com";
+                    $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com');
+                    if(stripos($correo['asunto'], "BSG")) $lista=array_merge($lista,array('txadmin@netuno.net'));
+                    Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
+                }
+                elseif(stripos($correo['asunto'], "Distribucion"))
+                {
+                    $lista=array('yuryethv@sacet.biz','mariannev@sacet.biz');
+                    Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
+                }
+                else
+                {
+                    Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
+                }
+            }
+            echo "Mensaje Enviado";
         }
-        foreach($correos as $key => $correo)
+        else
         {
-            //esto es para evitar que cuando sea alguno de estos reportes no descargue el archivo
-            if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
-            {
-                $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
-            }
-            if(stripos($correo['asunto'], "RETAIL"))
-            {
-                $lista=array('CarlosBuona@etelix.com','auto@etelix.com');
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
-            }
-            elseif (stripos($correo['asunto'], "Calidad"))
-            {
-                $userDif="ceo@etelix.com";
-                $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com');
-                if(stripos($correo['asunto'], "BSG")) $lista=array_merge($lista,array('txadmin@netuno.net'));
-                Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
-            }
-            elseif(stripos($correo['asunto'], "Distribucion"))
-            {
-                $lista=array('yuryethv@sacet.biz','mariannev@sacet.biz');
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
-            }
-            else
-            {
-                Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
-            }
-        }
-        echo "Mensaje Enviado";
+            echo "Oops algo fallo";
+        }   
     }
     
     public function actionPreview()
     {
         $this->vaciarAdjuntos();
-        $this->letra=Log::preliminar($_POST['startDate']);
         $startDate=$endingDate=$carrier=$preview=$title=null;
         ini_set('max_execution_time', 1200);
         ini_set('memory_limit', '512M');
         if(isset($_POST['startDate']))
         {
+            $this->letra=Log::preliminar($_POST['startDate']);
             $startDate=(string)$_POST['startDate'];
             if(isset($_POST['endingDate'])) $endingDate=$_POST['endingDate'];
             //Ranking Compra Venta
@@ -805,11 +816,16 @@ class SiteController extends Controller
                     $preview['group']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
                 }
             }
+            foreach($preview as $key => $view)
+            {
+                echo $view['cuerpo'];
+            }
         }
-        foreach($preview as $key => $view)
+        else
         {
-            echo $view['cuerpo'];
+            echo "Oops algo salió mal";
         }
+        
     }
 
     /**
