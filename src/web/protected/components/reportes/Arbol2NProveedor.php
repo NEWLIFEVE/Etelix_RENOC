@@ -70,7 +70,7 @@ class Arbol2NProveedor extends Reportes
                                               WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier=$this->carrier  AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
                                               GROUP BY {$this->destino}
                                               ORDER BY margin DESC) x, {$this->table} d
-                                             WHERE x.margin > 0 AND x.{$this->destino} = d.id";
+                                             WHERE x.margin<>0 AND x.{$this->destino} = d.id";
            $amountTotal=Balance::model()->findBySql($sqlamountTotal);
 
            $sqlDestinos="SELECT x.{$this->destino} AS id, d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
@@ -79,7 +79,7 @@ class Arbol2NProveedor extends Reportes
                                               WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier=$this->carrier  AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
                                               GROUP BY {$this->destino}
                                               ORDER BY margin DESC) x, {$this->table} d
-                                             WHERE x.margin > 0 AND x.{$this->destino} = d.id
+                                             WHERE x.margin<>0 AND x.{$this->destino} = d.id
                                              ORDER BY x.margin DESC";
 
            $destinos=Balance::model()->findAllBySql($sqlDestinos);
@@ -208,10 +208,10 @@ class Arbol2NProveedor extends Reportes
             $sql="SELECT x.{$this->destino} AS id, d.name AS destino, x.total_calls, x.complete_calls, x.minutes, x.asr, x.acd, x.pdd, x.cost, x.revenue, x.margin, (x.cost/x.minutes)*100 AS costmin, (x.revenue/x.minutes)*100 AS ratemin, ((x.revenue/x.minutes)*100)-((x.cost/x.minutes)*100) AS marginmin
 					  FROM(SELECT {$this->destino}, SUM(incomplete_calls+complete_calls) AS total_calls, SUM(complete_calls) AS complete_calls, SUM(minutes) AS minutes, CASE WHEN SUM(complete_calls)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(complete_calls)*100/SUM(incomplete_calls+complete_calls)) END AS asr, CASE WHEN SUM(minutes)=0 THEN 0 WHEN SUM(complete_calls)=0 THEN 0 ELSE (SUM(minutes)/SUM(complete_calls)) END AS acd, CASE WHEN SUM(pdd)=0 THEN 0 WHEN SUM(incomplete_calls+complete_calls)=0 THEN 0 ELSE (SUM(pdd)/SUM(incomplete_calls+complete_calls)) END AS pdd, SUM(cost) AS cost, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
      					   FROM balance
-     					   WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier IN({$this->summary})  AND id_carrier_supplier!= id_carrier_customer AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
+     					   WHERE date_balance>='$this->startDate' AND date_balance<='$this->endingDate' AND id_carrier_supplier IN({$this->summary}) AND {$this->destino}<>(SELECT id FROM {$this->table} WHERE name = 'Unknown_Destination') AND {$this->destino} IS NOT NULL
      					   GROUP BY {$this->destino}
      					   ORDER BY margin DESC) x, {$this->table} d
-					  WHERE x.margin > 0 AND x.{$this->destino} = d.id
+					  WHERE x.margin<>0 AND x.{$this->destino} = d.id
 					  ORDER BY x.margin DESC";
         
              $summary=Balance::model()->findAllBySql($sql);

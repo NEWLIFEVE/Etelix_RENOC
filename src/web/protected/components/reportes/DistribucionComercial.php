@@ -42,13 +42,11 @@ class DistribucionComercial extends Reportes
             $this->setDataToSheet($value,self::getData($value),$titles,$key);
         }
         $this->excel->setActiveSheetIndex(0);
-       
-		try{
-	        $this->writeFile($name);
-		}catch(Exception $e){
-			echo "Exception capturada: ". $e->getMessage(). "\n";
-		}
-	
+	try{
+        $this->writeFile($name);
+	}catch(Exception $e){
+		echo "Exception capturada: ", $e->getMessage(), "\n";
+	}
     }
 
     /**
@@ -263,7 +261,6 @@ class DistribucionComercial extends Reportes
               FROM carrier c, managers m, carrier_managers cm WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
               $order;
         return Managers::model()->findAllBySql($sql);
-		 
     }
 
     /**
@@ -296,7 +293,7 @@ class DistribucionComercial extends Reportes
         }
         else
         {
-            $colorFuente="FF584E4E";
+            $colorFuente="FF584E4E;";
         }
         
         if($j==1)

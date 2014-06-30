@@ -12,7 +12,7 @@ $this->layout=$this->getLayoutFile('menuContent');
     <?php
     foreach(Yii::app()->user->getFlashes() as $key => $message) {
 		echo '<div style="margin:25px 0px 0px 0px;"><div class="alert alert-warnig">
-        <button type="button" class="close" data-dismiss="alert">×</button>
+        <button type="button" class="close" data-dismiss="alert">ï¿½</button>
         ' . $message . "</div></div>";
     }
 ?>
@@ -31,16 +31,16 @@ $this->layout=$this->getLayoutFile('menuContent');
             </div>
             <footer>
                 <div id="excel" class="botones">
-                    <img src="/images/excel.png" class='ver'>
-                    <img src="/images/excel_hover.png" title='Exportar Reportes en Excel' class='oculta' id='excel'>
+                    <img src="/images/excel.png" title='Exportar Reportes en Excel' id='excel'>
                 </div>
                 <div id="lista" class="botones">
-                    <img src="/images/mailRenoc.png" class='ver'>
-                    <img src="/images/mailRenoc_hover.png" title='Enviar Reportes a Correo Electronico RENOC' class='oculta'>
+                    <img src="/images/mailRenoc.png" title='Enviar Reportes a Correo Electronico RENOC'>
                 </div>
                 <div id="mail" class="botones">
-                    <img src="/images/mail.png" class='ver'>
-                    <img src="/images/mail_hover.png" title='Enviar Reportes a su Correo Electronico' class='oculta'>
+                    <img src="/images/mail.png" title='Enviar Reportes a su Correo Electronico' >
+                </div>
+                <div id="preview" class="botones">
+                    <img src="/images/preview.png" title='Muestra una vista previa de Reportes ' >
                 </div>
             </footer>
         </article>
@@ -184,4 +184,3 @@ $this->layout=$this->getLayoutFile('menuContent');
 <script src="/js/jquery-ui.js"></script>
 <script src="<?php echo Yii::app()->request->baseUrl; ?>/js/views.js"/></script>
 <script src="http://malsup.github.io/jquery.blockUI.js"></script>
-

@@ -6,6 +6,11 @@
     clip: rect(1px, 1px, 1px, 1px);
     position: absolute;
 }
+.custom-checkbox-simple{
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute;
+}
 
 /*
  * Dejar espacio a la 'label' para posicionar el checkbox hecho con pseudoelementos

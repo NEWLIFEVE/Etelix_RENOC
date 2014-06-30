@@ -16,7 +16,7 @@
  	{
  		//Crea los inputs usados para la fecha en especificos
  		var checkFecha=document.getElementsByName('lista[Fecha]');
- 		if(checkFecha!="undefined")
+ 		if(checkFecha.length!=0)
  		{
  			optionsDate={
  				elemento:'input',
@@ -39,7 +39,7 @@
  		}
  		//crea el input usado para carrier en la interfaz especificos
  		var checkCarrier=document.getElementsByName('lista[Carrier]');
- 		if(checkCarrier!="undefined")
+ 		if(checkCarrier.length!=0)
  		{
  			optionsCarrier={
  				elemento:'input',
@@ -57,7 +57,7 @@
  		}
  		//crea el input usado para grupos en la interfaz especificos
  		var checkGroup=document.getElementsByName('lista[Group]');
- 		if(checkGroup!="undefined")
+ 		if(checkGroup.length!=0)
  		{
  			optionsGroup={
  				elemento:'input',
@@ -202,12 +202,76 @@
 		$(spot).fadeOut('slow');
 		$(spot).remove();
 	}
+        /**
+         * En lo que la data es cargada, elimina los div que conforman el msj cargando y genera un fancybox con la data (body)
+         * Carga la opcion de imprimir y la de cerrar el fancybox
+         * @param {type} body
+         * @returns {undefined}
+         */
+        function fancyBox(body)
+        {
+            $(".cargando").remove();
+            var background =$("<div class='emergingBackground'></div> <div class='fancybox'> <div class='imprimir'><img src='/images/print.png'class='ver'></div><div class='a_imprimir'>" + body + "</div> </div>").hide();
+            $("body").append(background);
+            background.slideDown('slow');
+            $('.imprimir').on('click', function() {
+                $RENOC.UI.imprimir(".a_imprimir");
+            });
+            $RENOC.UI.closeEmergingBackground();
+        }
+        /**
+         * Escucha el click para cerrar el fancybox
+         * @returns {undefined}
+         */
+        function closeEmergingBackground()
+        {
+            $('.emergingBackground').on('click', function()
+            {
+                $(".fancybox,.mensaje").fadeOut('slow');
+                $(".emergingBackground,.fancybox").remove();
+            });
+        }
+        /**
+         * Imprime la data que se encuentre en el div que se le pase
+         * @param {type} div
+         * @returns {undefined}
+         */
+        function imprimir(div)
+        {
+            var imp,
+            contenido = $(div).clone().html();                    //selecciona el objeto
+            imp = window.open(" RENOC ", "Formato de Impresion"); // titulo
+            imp.document.open();                                //abre la ventana
+            imp.document.write(contenido);                      //agrega el objeto
+            imp.document.close();
+            imp.print();                                        //Abre la opcion de imprimir
+            imp.close();                                        //cierra la ventana nueva
+        }
+        /**
+         * 
+         * @param {type} hide
+         * @param {type} show
+         * @returns {undefined}
+         */
+        function showHideElement(hide, show)
+        {
+            for (var i = 0, j = hide.length - 1; i <= j; i++) {
+                $(hide[i]).fadeOut('fast');
+            }
+            for (var x = 0, z = show.length - 1; x <= z; x++) {
+                $(show[x]).toggle('slide');
+            }
+        }
 
 	/**
 	 * retorna los metodos publicos
 	 */
 	return{
-		init:init
+		init:init,
+                fancyBox:fancyBox,
+                closeEmergingBackground:closeEmergingBackground,
+                imprimir:imprimir,
+                showHideElement:showHideElement
 	}
  })();
 

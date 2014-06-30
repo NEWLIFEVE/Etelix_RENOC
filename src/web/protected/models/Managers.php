@@ -139,5 +139,4 @@ class Managers extends CActiveRecord
 		$model=self::model()->findAll();
 		return $model;
 	}
-	
 }

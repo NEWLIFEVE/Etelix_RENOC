@@ -213,5 +213,4 @@ class Balance extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-
 }
