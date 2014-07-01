@@ -829,9 +829,12 @@ class SiteController extends Controller
         {
             $name=$nombre.".xls";
         }
+        
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+        
         if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
         {
-            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+//          $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
             $fp=fopen($ruta.$name,"w+");
             $cuerpo="
             <!DOCTYPE html>
