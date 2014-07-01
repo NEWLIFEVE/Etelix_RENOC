@@ -2,6 +2,11 @@
 ============
 
 ##Sistema de Reportes para el NOC
+
+###Release 1.3.21.1
+- Corregido error de ending_date en actionMail y actionLista.
+
+###Release 1.3.21
 - Agregada validacion para reportes evolucion y distribucion comercial al momento de generar vista previa.
 - Agregada vista previa a los reportes tanto de especificos como de rutinarios.
 - Cambiada estructura de especificos, ahora solo se puede generar un reporte a la vez, y los parametros varian segun el tipo de reporte.

@@ -24,6 +24,7 @@ class EnviarEmail extends CApplicationComponent
      */
     public function enviar($html, $user, $asunto, $ruta, $copia=null)
     {
+        
         if(isset($html) && isset($user))
         {
             $mailer=Yii::createComponent('application.extensions.mailer.EMailer');
