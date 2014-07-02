@@ -59,14 +59,14 @@ class RankingCompraVenta extends Reportes
         //especificos
         if(self::valDates($start,$end)['equal']==false)
         {
-        	$sorted['sellers']=self::_getManagersMissing($sorted['sellers'],$lastnames);
-        	$sorted['buyers']=self::_getManagersMissing($sorted['buyers'],$lastnames);
-        	$sorted['consolidated']=self::_getManagersMissing($sorted['consolidated'],$lastnames);
+            $sorted['sellers']=self::_getManagersMissing($sorted['sellers'],$lastnames);
+            $sorted['buyers']=self::_getManagersMissing($sorted['buyers'],$lastnames);
+            $sorted['consolidated']=self::_getManagersMissing($sorted['consolidated'],$lastnames);
       
-        	 //Cuento el numero de managers por cada tipo
-	        $numSellers=count($sorted['sellers']);
-	        $numBuyers=count($sorted['buyers']);
-	        $numConsolidated=count($sorted['consolidated']);
+             //Cuento el numero de managers por cada tipo
+            $numSellers=count($sorted['sellers']);
+            $numBuyers=count($sorted['buyers']);
+            $numConsolidated=count($sorted['consolidated']);
         }
          
         $body="<table>";
@@ -341,7 +341,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _loopData($start,$end)
     {
-    	
+        
         $lastnames=self::getLastNameManagers();
         //verifico las fechas
         $array=self::valDates($start,$end);
@@ -356,7 +356,7 @@ class RankingCompraVenta extends Reportes
         $index=0;
         while (self::isLower($startDateTemp,$endingDate))
         {
-        	
+            
             $arrayStartTemp=explode('-',$startDateTemp);
             $endingDateTemp=self::maxDate($arrayStartTemp[0]."-".$arrayStartTemp[1]."-".DateManagement::howManyDays($startDateTemp),$endingDate);
             //El titulo que va a llevar la seccion
@@ -541,7 +541,7 @@ class RankingCompraVenta extends Reportes
      */
     private function _getManagersMissing($managersInc,$lastnames)
     {
-		foreach ($managersInc as $key => $manager)
+        foreach ($managersInc as $key => $manager)
         {
             $temp=array_search($manager, $lastnames);
             unset($lastnames[$temp]);
@@ -560,8 +560,8 @@ class RankingCompraVenta extends Reportes
      */
     private function _getManagers($startDate,$endingDate,$type)
     {
-	    $manager="id_carrier_customer";
-    	if($type==false) $manager="id_carrier_supplier";
+        $manager="id_carrier_customer";
+        if($type==false) $manager="id_carrier_supplier";
         $sql="SELECT m.name AS nombre, m.lastname AS apellido, SUM(b.minutes) AS minutes, SUM(b.revenue) AS revenue, SUM(b.margin) AS margin
               FROM (SELECT {$manager}, SUM(minutes) AS minutes, SUM(revenue) AS revenue, CASE WHEN ABS(SUM(revenue-cost))<ABS(SUM(margin)) THEN SUM(revenue-cost) ELSE SUM(margin) END AS margin
                     FROM balance
@@ -574,8 +574,8 @@ class RankingCompraVenta extends Reportes
               WHERE m.id = cm.id_managers AND b.{$manager} = cm.id_carrier AND cm.end_date>='{$endingDate}'
               GROUP BY m.name, m.lastname
               ORDER BY margin DESC";
-    	return Balance::model()->findAllBySql($sql);
-	}  
+        return Balance::model()->findAllBySql($sql);
+    }  
                        
     /**
      * Obtiene el total de los managers en un periodo de tiempo

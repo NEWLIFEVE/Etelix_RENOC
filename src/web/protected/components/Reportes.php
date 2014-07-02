@@ -869,7 +869,7 @@ class Reportes extends CApplicationComponent
         return $array;
      }
  
-	/**
+    /**
      * Recibe un array con una lista y objeto CActiveRecord, un string con el nombre del atributo por el que se ordena,
      * devuelve un array con el atributo pasado como parametro del objeto, la lista es para agregar datos que el objeto no tenga.
      * @access protected
