@@ -37,15 +37,15 @@ class PosicionNeta extends Reportes
             $colu=7;
         }
 
-        /*
+        
         $sorted['carriers']=self::sort($this->_objetos[$last]['carriers'],'carrier');
         $carriers=count($this->_objetos[$last]['carriers']);
-        */
+        
 
         //Consulta.
-        $sorted['carriers']=self::sort($this->_getCarriersThirtyDays($start,$end),'name');
+        //$sorted['carriers']=self::sort($this->_getNameCarriers(DateManagement::calculateDate('-30',self::valDates($start,$end)['endingDate']),self::valDates($start,$end)['endingDate']),'name');
         //Se cuentan los registros de la Consulta
-        $carriers=count($this->_getCarriersThirtyDays($start,$end));
+        //$carriers=count($sorted['carriers']);
         
 
         $body="<table>";
@@ -157,21 +157,19 @@ class PosicionNeta extends Reportes
         return $body;
     }
 
-    /* Metodo encargardo de buscar los nombres vendedores en los 30 dias
-    */
-
-    private function _getCarriersThirtyDays($startDate,$endDate)
+    /**
+     * Metodo encargardo de buscar los nombres vendedores en los 30 dias
+     */
+    private function _getNameCarriers($startDate,$endDate)
     {
-      if(empty($endDate))
-      {
-        $endDate=$startDate;
-      }
-      $sql="SELECT c.name
-        FROM
-        carrier c,
-        balance b
-        WHERE b.date_balance>='".$startDate."' AND b.date_balance<='".$endDate."' AND b.id_carrier_customer=c.id
-        GROUP BY c.name";
+        if(empty($endDate))
+        {
+            $endDate=$startDate;
+        }
+        $sql="SELECT c.name
+              FROM carrier c, balance b
+              WHERE b.date_balance>='{$startDate}' AND b.date_balance<='{$endDate}' AND b.id_carrier_customer=c.id
+              GROUP BY c.name";
         return Carrier::model()->findAllBySql($sql);
     }
 
