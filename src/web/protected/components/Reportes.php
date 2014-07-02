@@ -984,7 +984,9 @@ class Reportes extends CApplicationComponent
         return false;
     }
 
-    /***/
+    /**
+     *
+     */
     public static function validIndex($del,$col,$mul)
     {
         $j=$mul;
@@ -1056,6 +1058,7 @@ class Reportes extends CApplicationComponent
                 return "<font style='color:red;'>&#9660;</font>";
             }
         }
+        
     }
 
     /**
