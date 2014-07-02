@@ -389,6 +389,7 @@ class SiteController extends Controller
             } 
             if(isset($_GET['lista']['PN']))
             {
+                $probando=true;
                 $archivos['PN']['nombre']="RENOC".$this->letra." Posicion Neta".self::reportTitle($startDate,$endingDate);
                 $archivos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate,$endingDate);
             }
@@ -438,6 +439,7 @@ class SiteController extends Controller
             {
                 ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '512M');
+                $probando=false;
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
                 $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx");
             }
@@ -477,7 +479,10 @@ class SiteController extends Controller
             }
             foreach($archivos as $key => $archivo)
             {
-                $this->genExcel($archivo['nombre'],$archivo['cuerpo']);
+               //if(isset($probando))
+                   // $this->genExcelDistribucion($archivo['nombre'],$archivo['cuerpo']);
+               //else         
+                    $this->genExcel($archivo['nombre'],$archivo['cuerpo'],$probando);
             } 
         }
         else
@@ -821,8 +826,9 @@ class SiteController extends Controller
     /**
      * @access public
      */
-    public function genExcel($nombre,$html,$salida=true)
+    public function genExcel($nombre,$html,$probando,$salida=true)
     {
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
         $name=null;
         if(stripos($nombre,"Evolucion") || stripos($nombre,"Comercial"))
         {
@@ -832,9 +838,10 @@ class SiteController extends Controller
         {
             $name=$nombre.".xls";
         }
-        if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
+        
+         //if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
+        if($probando==true)
         {
-            $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
             $fp=fopen($ruta.$name,"w+");
             $cuerpo="
             <!DOCTYPE html>
@@ -849,6 +856,7 @@ class SiteController extends Controller
             </html>";
             fwrite($fp,$cuerpo);
         }
+        
         if($salida)
         {
             header("Content-Disposition: attachment; filename=" .$name);    
@@ -916,5 +924,43 @@ class SiteController extends Controller
             return Reportes::reportTitle($start,$end);
         }
     }
+    //====================================================
+
+    /*
+    public function genExcelDistribucion($nombre,$html,$salida=true)
+    {
+        $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
+        $name=null;
+        if(stripos($nombre,"Evolucion") || stripos($nombre,"Comercial"))
+        {
+            $name=$nombre.".xlsx";
+        }
+        else
+        {
+            $name=$nombre.".xls";
+        }
+        if($salida)
+        {
+            header("Content-Disposition: attachment; filename=" .$name);    
+            header("Content-Type: application/force-download");
+            header("Content-Type: application/octet-stream");
+            header("Content-Type: application/download");
+            header("Content-Description: File Transfer");             
+            header("Content-Length: " . filesize($ruta.$name));
+            flush(); // this doesn't really matter.
+
+            $fp = fopen($ruta.$name, "r"); 
+            while (!feof($fp))
+            {
+                echo fread($fp, 65536); 
+                flush(); // this is essential for large downloads
+            }  
+            fclose($fp);
+        }
+    }
+    */
+
+
+
 }
 ?>
