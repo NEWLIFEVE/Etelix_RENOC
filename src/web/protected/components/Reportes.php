@@ -984,9 +984,7 @@ class Reportes extends CApplicationComponent
         return false;
     }
 
-    /**
-     *
-     */
+    /***/
     public static function validIndex($del,$col,$mul)
     {
         $j=$mul;
@@ -1030,7 +1028,7 @@ class Reportes extends CApplicationComponent
      * @param int $actual es el valor actual a revisar
      * @return string
      */
-    protected function _upOrDown($previous,$actual)
+    protected function  _upOrDown($previous,$actual)
     {
         if($previous!=null || $previous!="")
         {
@@ -1058,7 +1056,6 @@ class Reportes extends CApplicationComponent
                 return "<font style='color:red;'>&#9660;</font>";
             }
         }
-        
     }
 
     /**

@@ -37,8 +37,16 @@ class PosicionNeta extends Reportes
             $colu=7;
         }
 
+        /*
         $sorted['carriers']=self::sort($this->_objetos[$last]['carriers'],'carrier');
         $carriers=count($this->_objetos[$last]['carriers']);
+        */
+
+        //Consulta.
+        $sorted['carriers']=self::sort($this->_getCarriersThirtyDays($start,$end),'name');
+        //Se cuentan los registros de la Consulta
+        $carriers=count($this->_getCarriersThirtyDays($start,$end));
+        
 
         $body="<table>";
         for($row=1;$row<=$carriers+4;$row++)
@@ -122,6 +130,7 @@ class PosicionNeta extends Reportes
                 if($row>2 && $row<=$carriers+2 && self::validColumn(3,$col,$num,$span))
                 {
                     $body.=$this->_getRow(self::validIndex(3,$col,$span),'carriers','carrier',$sorted['carriers'][$row-3],self::colorEstilo($row-2));
+
                     if(!$this->equal && $last>(self::validIndex(3,$col,$span))) $body.="<td></td>";
                 }
                 //data de los meses anteriores
@@ -146,6 +155,24 @@ class PosicionNeta extends Reportes
 
         $body.="</table>";
         return $body;
+    }
+
+    /* Metodo encargardo de buscar los nombres vendedores en los 30 dias
+    */
+
+    private function _getCarriersThirtyDays($startDate,$endDate)
+    {
+      if(empty($endDate))
+      {
+        $endDate=$startDate;
+      }
+      $sql="SELECT c.name
+        FROM
+        carrier c,
+        balance b
+        WHERE b.date_balance>='".$startDate."' AND b.date_balance<='".$endDate."' AND b.id_carrier_customer=c.id
+        GROUP BY c.name";
+        return Carrier::model()->findAllBySql($sql);
     }
 
     /**
@@ -249,12 +276,11 @@ class PosicionNeta extends Reportes
                GROUP BY b.carrier";
         return Balance::model()->findBySql($sql);
     }
-
     /**
      * @access private
      */
     private function _loopData($start,$end)
-    {
+    {   
         $startDateTemp=$startDate=self::valDates($start,$end)['startDate'];
         $endingDateTemp=$endingDate=self::valDates($start,$end)['endingDate'];
         $this->equal=self::valDates($start,$end)['equal'];
@@ -381,7 +407,9 @@ class PosicionNeta extends Reportes
     private function _getRow($index,$index2,$attribute,$phrase,$style)
     {
         $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=$c11=$c12=$c13=$c14=$c15=$c16=null;
-        foreach ($this->_objetos[$index][$index2] as $key => $value)
+        //oreach ($this->_objetos[$index][$index2] as $key => $value)
+        $posicion_neta=null;
+        foreach ($this->_objetos[$index][$index2] as $key => $value) 
         {
             if($value->$attribute==$phrase['attribute'])
             {
@@ -393,7 +421,15 @@ class PosicionNeta extends Reportes
                 $c6="<td style='".$style."'>".Yii::app()->format->format_decimal($value->cmargin)."</td>";
                 $c7="<td style='".$style."'>".Yii::app()->format->format_decimal($value->margen_total)."</td>";
                 $c8="<td style='".$style."'>".Yii::app()->format->format_decimal($value->posicion_neta)."</td>";
-                $posicion_neta=$value->posicion_neta;
+                //$posicion_neta=$value->posicion_neta;
+                if(isset($value->posicion_neta))
+                {
+                  $posicion_neta=$value->posicion_neta;                 
+                }else
+                {
+                  $posicion_neta=null;
+                }
+
             }
             
         }
@@ -423,7 +459,11 @@ class PosicionNeta extends Reportes
                     $c13="<td style='".$style."'>".Yii::app()->format->format_decimal($accumulated->posicion_neta)."</td>";
                 }
             }
-            $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Forecast"][$phrase['attribute']])."</td>";
+            if(isset($this->_objetos[$index][$index2."Forecast"][$phrase['attribute']]))
+            {
+              $c14="<td style='".$style."'>".Yii::app()->format->format_decimal($this->_objetos[$index][$index2."Forecast"][$phrase['attribute']])."</td>";
+
+            }
             foreach ($this->_objetos[$index][$index2.'PreviousMonth'] as $key => $PreviousMonth)
             {
                 if($PreviousMonth->$attribute==$phrase['attribute'])
@@ -465,8 +505,13 @@ class PosicionNeta extends Reportes
     private function _getRowMonths($index,$phrase,$style,$attribute=null)
     {
         $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
-        $posicion_neta=$third=$fourth=$fifth=$sixth=null;        
-        $posicion_neta=$this->_objetos[0][$index.'Forecast'][$phrase];
+        $posicion_neta=$third=$fourth=$fifth=$sixth=null; 
+        
+        if(isset($this->_objetos[0][$index.'Forecast'][$phrase]))
+          $posicion_neta=$this->_objetos[0][$index.'Forecast'][$phrase];
+        else
+          $posicion_neta=null;
+        
         foreach ($this->_objetos[0][$index.'ThirdMonth'] as $key => $value)
         {
             if($value->carrier == $phrase)
@@ -545,14 +590,22 @@ class PosicionNeta extends Reportes
         if($c16==null && $this->equal) $c16="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[$index]['totalCarriersPreviousMonth']->posicion_neta)."</td>";
         return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10.$c11.$c12.$c13.$c14.$c15.$c16;
     }
-
     /**
      *
      */
     private function _getRowTotalMonth($style)
     {
         $c1=$c2=$c3=$c4=$c5=$c6=$c7=$c8=$c9=$c10=null;
+        
+        
+        if(isset($this->_objetos[0]['totalCarriersForecast']))
+          $forecast=$this->_objetos[0]['totalCarriersForecast'];
+        else 
+           $forecast=null; 
+         
+
         $forecast=$this->_objetos[0]['totalCarriersForecast'];
+         
         if($c1==null) $c1="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersThirdMonth']->posicion_neta,$forecast)."</td>";
         if($c2==null) $c2="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersThirdMonth']->posicion_neta)."</td>";
         if($c3==null) $c3="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersFourthMonth']->posicion_neta,$forecast)."</td>";
