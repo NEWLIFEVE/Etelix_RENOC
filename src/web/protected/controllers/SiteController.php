@@ -656,7 +656,7 @@ class SiteController extends Controller
                 }
                 if(stripos($correo['asunto'], "RETAIL"))
                 {
-                    $lista=array('CarlosBuona@etelix.com','auto@etelix.com');
+                    $lista=array('CarlosBuona@etelix.com');
                     Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
                 }
                 elseif (stripos($correo['asunto'], "Calidad"))
