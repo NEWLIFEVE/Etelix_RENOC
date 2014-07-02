@@ -36,17 +36,17 @@ class PosicionNeta extends Reportes
             $span=16;
             $colu=7;
         }
-
-        /*
+        
         $sorted['carriers']=self::sort($this->_objetos[$last]['carriers'],'carrier');
         $carriers=count($this->_objetos[$last]['carriers']);
-        */
-
-        //Consulta.
-        $sorted['carriers']=self::sort($this->_getCarriersThirtyDays($start,$end),'name');
-        //Se cuentan los registros de la Consulta
-        $carriers=count($this->_getCarriersThirtyDays($start,$end));
         
+        if(self::valDates($start,$end)['equal']==true)
+        {
+          //Consulta.
+          $sorted['carriers']=self::sort($this->_getCarriersThirtyDays($start,$end),'name');
+          //Se cuentan los registros de la Consulta
+          $carriers=count($this->_getCarriersThirtyDays($start,$end));
+        }
 
         $body="<table>";
         for($row=1;$row<=$carriers+4;$row++)
@@ -354,7 +354,6 @@ class PosicionNeta extends Reportes
             $index+=1;
         }
     }
-
     /**
      *
      */
