@@ -37,18 +37,14 @@ class PosicionNeta extends Reportes
             $colu=7;
         }
 
-
-        
         $sorted['carriers']=self::sort($this->_objetos[$last]['carriers'],'carrier');
-        $carriers=count($this->_objetos[$last]['carriers']);
-        
+
         if(self::valDates($start,$end)['equal']==true)
         {
-            //Consulta.
-            //$sorted['carriers']=self::sort($this->_getNameCarriers(DateManagement::calculateDate('-30',self::valDates($start,$end)['endingDate']),self::valDates($start,$end)['endingDate']),'name');
-            //Se cuentan los registros de la Consulta
-            //$carriers=count($sorted['carriers']);
+            $faltantes=self::sort($this->_getNameCarriers(DateManagement::calculateDate('-30',self::valDates($start,$end)['endingDate']),self::valDates($start,$end)['endingDate']),'name');
+            $sorted['carriers']=self::_getCarriersMissing($sorted['carriers'],$faltantes);
         }
+        $carriers=count($sorted['carriers']);
 
         $body="<table>";
         for($row=1;$row<=$carriers+4;$row++)
@@ -164,14 +160,17 @@ class PosicionNeta extends Reportes
      */
     private function _getNameCarriers($startDate,$endDate)
     {
-        if(empty($endDate))
-        {
-            $endDate=$startDate;
-        }
-        $sql="SELECT c.name
-              FROM carrier c, balance b
-              WHERE b.date_balance>='{$startDate}' AND b.date_balance<='{$endDate}' AND b.id_carrier_customer=c.id
-              GROUP BY c.name";
+        $sql="SELECT c.name, b.id
+              FROM (SELECT id_carrier_customer AS id
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}'
+                    GROUP BY id_carrier_customer
+                    UNION
+                    SELECT id_carrier_supplier AS id
+                    FROM balance
+                    WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}'
+                    GROUP BY id_carrier_supplier) b, carrier c
+              WHERE b.id=c.id";
         return Carrier::model()->findAllBySql($sql);
     }
 
@@ -616,6 +615,21 @@ class PosicionNeta extends Reportes
         if($c9==null) $c9="<td style='".$this->_head[$style]."'>".$this->_upOrDown($this->_objetos[0]['totalCarriersSeventhMonth']->posicion_neta,$forecast)."</td>";
         if($c10==null) $c10="<td style='".$this->_head[$style]."'>".Yii::app()->format->format_decimal($this->_objetos[0]['totalCarriersSeventhMonth']->posicion_neta)."</td>";
         return $c1.$c2.$c3.$c4.$c5.$c6.$c7.$c8.$c9.$c10;
+    }
+
+    /**
+     * llena el array de carriers con los carriers faltantes en ese array
+     * @param unknown_type $start
+     * @param unknown_type $end
+     */
+    private function _getCarriersMissing($managersInc,$lastnames)
+    {
+        foreach ($managersInc as $key => $manager)
+        {
+            $temp=array_search($manager, $lastnames);
+            unset($lastnames[$temp]);
+        }
+        return array_merge($managersInc,$lastnames);
     }
 }
 ?>
