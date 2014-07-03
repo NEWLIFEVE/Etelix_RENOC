@@ -454,7 +454,7 @@ class SiteController extends Controller
                 ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '512M');
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
-                $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx");
+                $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx",$_GET['startDate']);
             }
             if(isset($_GET['lista']['Ev']))
             {
@@ -850,7 +850,7 @@ class SiteController extends Controller
         {
             $name=$nombre.".xls";
         }
-         //if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
+        // if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
         if($probando==true)
         {
             $fp=fopen($ruta.$name,"w+");

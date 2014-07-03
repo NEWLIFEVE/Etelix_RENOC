@@ -14,7 +14,6 @@ class PosicionNeta extends Reportes
             'styleFooterTotal'=>'text-align:center;background-color:#615E5E; color:#FFFFFF;'
             );
     }
-
     /**
      * @param $fecha date fecha que va a ser consultada
      * @return $cuerpo string con el cuerpo de la tabla

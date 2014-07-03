@@ -123,10 +123,10 @@ class Reportes extends CApplicationComponent
         return $variable;
     }
 
-    public function DistribucionComercial($nombre)
+    public function DistribucionComercial($nombre,$fecha)
     {
         $reporte=new DistribucionComercial();
-        $reporte->genExcel($nombre);
+        $reporte->genExcel($nombre,$fecha);
         return "Revisar Archivo Adjunto";
     }
 
