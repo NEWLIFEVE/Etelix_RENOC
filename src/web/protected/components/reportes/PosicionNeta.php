@@ -170,7 +170,7 @@ class PosicionNeta extends Reportes
                     FROM balance
                     WHERE date_balance>='{$startDate}' AND date_balance<='{$endDate}'
                     GROUP BY id_carrier_supplier) b, carrier c
-              WHERE b.id=c.id";
+              WHERE b.id=c.id AND c.name<>'Unknown_Carrier'";
         return Carrier::model()->findAllBySql($sql);
     }
 
