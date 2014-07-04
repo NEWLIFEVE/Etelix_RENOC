@@ -20,7 +20,7 @@ class DistribucionComercial extends Reportes
         $this->excel->getProperties()->setCreator("RENOC")->setLastModifiedBy("RENOC")->setTitle("RENOC Distribucion Comercial")->setSubject("RENOC Distribucion Comercial")->setDescription("Reportes de Distribucion Comercial")->setKeywords("RENOC Reportes Distribucion Comercial")->setCategory("Distribucion Comercial Reportes");
     }
 
-    public function genExcel($name)
+    public function genExcel($name,$startDate)
     {    
         $titles=array(
             'A'=>'Cargo',
@@ -28,21 +28,22 @@ class DistribucionComercial extends Reportes
             'C'=>'Posicion',
             'D'=>'Operador',
             'E'=>'Compañia',
-            'F'=>'Termino Pago',
-            'G'=>'Monetizable',
-            'H'=>'Dias de Disputa',
-            'I'=>'Limite de Credito',
-            'J'=>'Limite de Compra',
-            'K'=>'Unidad de Produccion',
-            'L'=>'Estado'
+            'F'=>'Termino Pago Vendedor',
+            'G'=>'Termino Pago Cliente',
+            'H'=>'Monetizable',
+            'I'=>'Dias de Disputa',
+            'J'=>'Limite de Credito',
+            'K'=>'Limite de Compra',
+            'L'=>'Unidad de Producción',
+            'M'=>'Estado',
             );
-        $hojas=array('Operador','Compañia','Monetizable','Termino de Pago','Unidad de Producción','Vendedor','Estado');
+        $hojas=array('Operador','Company','Monetizable','payment_term','production_unit','seller','status');
         foreach ($hojas as $key => $value)
         {
-            $this->setDataToSheet($value,self::getData($value),$titles,$key);
+            $this->setDataToSheet($value,self::getData($startDate,$value),$titles,$key);
         }
         $this->excel->setActiveSheetIndex(0);
-	try{
+	   try{
         $this->writeFile($name);
 	}catch(Exception $e){
 		echo "Exception capturada: ", $e->getMessage(), "\n";
@@ -63,22 +64,22 @@ class DistribucionComercial extends Reportes
         switch($name)
         {
             case 'Operador':
-                $order="operador";
+                $order="carrier";
                 break;
             case 'Compañia':
-                $order="company";
+                $order="company"; // =
                 break;
             case 'Monetizable':
                 $order="monetizable";
                 break;
             case 'Termino de Pago':
-                $order="termino_pago";
+                $order="payment_terms";
                 break;
             case 'Unidad de Producción':
                 $order="production_unit";
                 break;
             case 'Vendedor':
-                $order="vendedor";
+                $order="seller";
                 break;
             case 'Estado':
                 $order="status";
@@ -133,6 +134,7 @@ class DistribucionComercial extends Reportes
         $this->excel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
         $this->excel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
         $this->excel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+        $this->excel->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
         //cargo los datos en las celdas
         $registro=array();
         $registro['posicion']=1;
@@ -141,13 +143,16 @@ class DistribucionComercial extends Reportes
         {
             $com=$key-1;
             $registro['cargo']=$vendedor->position;
-            $registro['operador']=$vendedor->operador;
-            $registro['company']=$vendedor->company;
-            $registro['vendedor']=$vendedor->vendedor;
+            $registro['carrier']=$vendedor->carrier;
+            $registro['company']=$vendedor->company; // =
+            $registro['seller']=$vendedor->seller;
             $registro['monetizable']=$vendedor->monetizable;
-            $registro['termino_pago']="(".$vendedor->termino_pago.")";
+            $registro['vendor_payment_term']="(".$vendedor->vendor_payment_term.")";
+            $registro['customer_payment_term']="(".$vendedor->customer_payment_term.")";
             $registro['production_unit']=$vendedor->production_unit;
             $registro['status']=$vendedor->status;
+
+            /*
             if($key>0)
             {
                 if($data[$com]->$order==$vendedor->$order)
@@ -159,6 +164,7 @@ class DistribucionComercial extends Reportes
                     $registro['posicion']=1;
                     $registro['estilo']+=1;
                 }
+            
                 /*if($data[$com]->vendedor==$vendedor->vendedor)
                 {
                     $registro['vendedor']="";
@@ -183,29 +189,27 @@ class DistribucionComercial extends Reportes
                 if($data[$com]->production_unit==$vendedor->production_unit)
                 {
                     $registro['production_unit']="";
-                }*/
-            }
+                }
+                }
+                */
             $row=$key+2;
             $this->excel->getActiveSheet()->setCellValue("A".$row,$registro['cargo']);
-            $this->excel->getActiveSheet()->setCellValue("B".$row,$registro['vendedor']);
+            $this->excel->getActiveSheet()->setCellValue("B".$row,$registro['seller']);
             $this->excel->getActiveSheet()->setCellValue("C".$row,$registro['posicion']);
-            $this->excel->getActiveSheet()->setCellValue("D".$row,$registro['operador']);
-            $this->excel->getActiveSheet()->setCellValue("E".$row,$registro['company']);
-            $this->excel->getActiveSheet()->setCellValue("F".$row,$registro['termino_pago']);
-            $this->excel->getActiveSheet()->setCellValue("G".$row,$registro['monetizable']);
-            $this->excel->getActiveSheet()->setCellValue("H".$row,$vendedor->dias_disputa);
-            $this->excel->getActiveSheet()->setCellValue("I".$row,$vendedor->limite_credito);
-            $this->excel->getActiveSheet()->setCellValue("J".$row,$vendedor->limite_compra);
-            $this->excel->getActiveSheet()->setCellValue("K".$row,$registro['production_unit']);
-            $this->excel->getActiveSheet()->setCellValue("L".$row,$registro['status']);
+            $this->excel->getActiveSheet()->setCellValue("D".$row,$registro['carrier']);
+            $this->excel->getActiveSheet()->setCellValue("E".$row,$registro['company']); // =
+            $this->excel->getActiveSheet()->setCellValue("F".$row,$registro['vendor_payment_term']);
+            $this->excel->getActiveSheet()->setCellValue("G".$row,$registro['customer_payment_term']);
+            $this->excel->getActiveSheet()->setCellValue("H".$row,$registro['monetizable']);
+            $this->excel->getActiveSheet()->setCellValue("I".$row,$vendedor->days_dispute);
+            $this->excel->getActiveSheet()->setCellValue("J".$row,$vendedor->credit_limit);
+            $this->excel->getActiveSheet()->setCellValue("K".$row,$vendedor->purchase_limit);
+            $this->excel->getActiveSheet()->setCellValue("L".$row,$registro['production_unit']);
+            $this->excel->getActiveSheet()->setCellValue("M".$row,$registro['status']);
             //Aplico el estilo
-            $this->excel->getActiveSheet()->getStyle("A".$row.":L".$row)->applyFromArray(self::color($registro['estilo']));                
-
-            
-        }
-        
-    }
-
+            $this->excel->getActiveSheet()->getStyle("A".$row.":M".$row)->applyFromArray(self::color($registro['estilo']));                 
+        //}
+    }}
     /**
      * Escribe el excel en la ruta asignada
      * @access private
@@ -217,7 +221,6 @@ class DistribucionComercial extends Reportes
         $writer=PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
         $writer->save($ruta.$name);
     }
-
     /**
      * Metodo encargado de traer los datos
      * @access private
@@ -227,32 +230,33 @@ class DistribucionComercial extends Reportes
      * @param string $type es el tipo de orden que se le dará a los datos
      * @return array $managers es el arreglo con todos los objetos  
      */
-    private static function getData($type="Operador")
+    private static function getData($startDate,$type="Operador")
     {
         switch($type)
         {
             case 'Operador':
-                $order="ORDER BY operador ASC, vendedor ASC, id_tp ASC";
+                $order="ORDER BY carrier ASC, seller ASC, id_tp ASC";
                 break;
             case 'Compañia':
-                $order="ORDER BY company ASC,vendedor ASC, id_tp ASC";
+                $order="ORDER BY company ASC, seller ASC, id_tp ASC"; // =
                 break;
             case 'Monetizable':
-                $order="ORDER BY id_mon ASC,vendedor ASC, id_tp ASC";
+                $order="ORDER BY id_mon ASC, seller ASC, id_tp ASC";
                 break;
             case 'Termino de Pago':
-                $order="ORDER BY id_tp ASC,vendedor ASC, id_mon ASC";
+                $order="ORDER BY id_tp ASC, seller ASC, id_mon ASC";
                 break;
             case 'Unidad de Producción':
-                $order="ORDER BY production_unit ASC,vendedor ASC, id_tp ASC";
+                $order="ORDER BY production_unit ASC, seller ASC, id_tp ASC";
                 break;
             case 'Vendedor':
-                $order="ORDER BY vendedor ASC, operador ASC";
+                $order="ORDER BY seller ASC, carrier ASC";
                 break;
             case 'Estado':
-                $order="ORDER BY status ASC, vendedor ASC, operador ASC";
+                $order="ORDER BY status ASC, seller ASC, operador ASC";
                 break;
         }
+        /*
         $sql="SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, y.name AS company, z.name AS monetizable, tp.name AS termino_pago, d.days AS dias_disputa, cl.amount AS limite_credito, pl.amount AS limite_compra, z.id AS id_mon, tp.id AS id_tp, CASE WHEN x.up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit, CASE WHEN c.status=1 THEN 'Activo' WHEN c.status=0 THEN 'Inactivo' WHEN c.status IS NULL THEN 'Sin Asignar' END AS status
               FROM carrier c, managers m, carrier_managers cm, company y, contrato x, termino_pago tp, contrato_termino_pago ctp, monetizable z, contrato_monetizable cz, days_dispute_history d, credit_limit cl, purchase_limit pl 
               WHERE m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date AND x.id_carrier=c.id AND x.end_date IS NULL AND x.id_company=y.id AND x.id=ctp.id_contrato AND ctp.end_date IS NULL AND ctp.id_termino_pago=tp.id AND x.id=cz.id_contrato AND cz.end_date IS NULL AND cz.id_monetizable=z.id AND x.id=d.id_contrato AND d.end_date IS NULL AND x.id=cl.id_contrato AND cl.end_date IS NULL AND x.id=pl.id_contrato AND pl.end_date IS NULL
@@ -260,6 +264,84 @@ class DistribucionComercial extends Reportes
               SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, 'Sin Asignar' AS company, 'Sin Asignar' AS monetizable, 'Sin Asignar' AS termino_pago, -1 AS dias_disputa, -1 AS limite_credito, -1 AS limite_compra, 100 AS id_mon, 100 AS id_tp, 'Sin Asignar' AS production_unit, 'Sin Asignar' AS status
               FROM carrier c, managers m, carrier_managers cm WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
               $order;
+        */
+              $sql="SELECT m.name||' '||m.lastname AS seller,
+              m.position,
+              c.name AS carrier,
+              com.name AS company,
+              mon.name AS monetizable,
+              tpc.name AS customer_payment_term,
+              tps.name AS vendor_payment_term,
+              ddh.days AS days_dispute,
+              cl.amount AS credit_limit,
+              pl.amount AS purchase_limit,
+              mon.id AS id_mon, 
+              tpc.id AS id_tp, 
+              CASE WHEN con.up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit, 
+              CASE WHEN c.status=1 THEN 'Activo' WHEN c.status=0 THEN 'Inactivo' WHEN c.status IS NULL THEN 'Sin Asignar' END AS status
+              FROM managers m,
+              carrier c,
+              /*Relacion de carrier managers*/
+              (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_managers
+                  FROM carrier_managers
+                  WHERE start_date<= '{$startDate}'  ) cm, company com,
+                /*Relacion de carrier contrato*/
+                (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
+                  FROM contrato
+                  WHERE sign_date<='{$startDate}') con,
+                monetizable mon,
+                /*Relacion de contrato y monetizable*/
+                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_monetizable
+                  FROM contrato_monetizable
+                  WHERE start_date<='{$startDate}') con_mon,
+                termino_pago tpc,
+                /*Relacion de contrato y termino de pago*/
+                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago
+                  FROM contrato_termino_pago
+                  WHERE start_date<='{$startDate}') ctp,
+                termino_pago tps,
+                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago_supplier, month_break, first_day, id_fact_period
+                  FROM contrato_termino_pago_supplier
+                  WHERE start_date<='{$startDate}') ctps,
+                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, days
+                  FROM days_dispute_history
+                  WHERE start_date<='{$startDate}') ddh,
+                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, amount
+                  FROM credit_limit
+                  WHERE start_date<='{$startDate}') cl,
+                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, amount
+                  FROM purchase_limit
+                  WHERE start_date<='{$startDate}') pl
+                /*Relacion de carrier con manager*/
+                WHERE c.id=cm.id_carrier
+                     AND cm.id_managers=m.id
+                     AND cm.end_date>='{$startDate}'
+                /*Relacion de carrier con contrato y compañia*/
+                    AND c.id=con.id_carrier
+                    AND con.id_company=com.id
+                    AND con.end_date>='{$startDate}'
+                /*Relacion de contrato con monetizable*/
+                    AND con.id=con_mon.id_contrato
+                    AND con_mon.id_monetizable=mon.id
+                    AND con_mon.end_date>='{$startDate}'
+                /*Relacion de contrato con termino de pago cliente*/
+                    AND con.id=ctp.id_contrato
+                    AND ctp.id_termino_pago=tpc.id
+                    AND ctp.end_date>='{$startDate}'
+                /*Relacion de contrato con termino de pago proveedor*/
+                    AND con.id=ctps.id_contrato
+                    AND ctps.id_termino_pago_supplier=tps.id
+                    AND ctps.end_date>='{$startDate}'
+                /*Relacion de contrato con dias de disputas*/
+                    AND con.id=ddh.id_contrato
+                    AND ddh.end_date>='{$startDate}'
+                /*Relacion de contrato con limite de credito */
+                    AND con.id=cl.id_contrato
+                    AND cl.end_date>='{$startDate}'
+                /*Relacion de contrado con limite de compra*/
+                    AND con.id=pl.id_contrato
+                    AND pl.end_date>='{$startDate}'";    
+
         return Managers::model()->findAllBySql($sql);
     }
 
