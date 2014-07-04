@@ -305,7 +305,12 @@ ajax.prototype.genExcel=function()
         {
             for(var key2 in opciones)
             {
-                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=200px,height=100px');
+                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=500,height=200');
+                ventana[key2].document.write("<html><head>" +
+                  		" <link href='http://getbootstrap.com/assets/css/docs.min.css' rel='stylesheet'>" +
+                  		"<script src='http://getbootstrap.com/assets/js/docs.min.js'></script>"+
+                  		"</head><body onload='window.close();'><div class='bs-callout bs-callout-info'>" +
+                  		"<h3 style='color:#3CB371'>Su reporte se esta generando, por favor espere <img src='/images/circular.gif'width='25px' height='25px'/></h3><h5>Al terminar la carga, podr&aacute; cerrar esta ventana o presionar <a href='#' onclick='window.close();'>AQUI</a> para cerrarla</h5></div></body></html>");
             }
         }
         else
