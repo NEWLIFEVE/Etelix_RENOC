@@ -631,6 +631,7 @@ class SiteController extends Controller
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
                 }
             }
+            
             //Arbol 2N Proveedor
             if(isset($_POST['lista']['A2NP']))
             {
@@ -918,4 +919,3 @@ class SiteController extends Controller
     }
 }
 ?>
->>>>>>> 9f4caedceab396b23dc17783b8f278785fb150f6

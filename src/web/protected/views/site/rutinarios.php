@@ -175,6 +175,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                             </h4>
                         </label>
                     </div>
+                    
                     <input name="startDate" type="hidden"  id="startDate" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
         echo $nuevafecha=date('Y-m-d',$nuevafecha);?>"/>
             </form>

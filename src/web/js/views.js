@@ -280,6 +280,8 @@ ajax.prototype.genExcel=function()
             case "lista[APE]":
             case "lista[DC]":
             case "lista[Ev]":
+            case "lista[RCC]":
+            case "lista[RN]":
             case "lista[calidad]":
             case "lista[A2NP]":
                 reportes[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
