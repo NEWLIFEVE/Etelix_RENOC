@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
 * @var $this SiteController
@@ -934,6 +935,8 @@ class SiteController extends Controller
 }
 ?>
 =======
+=======
+>>>>>>> cc0d0f33b43e44ec06cd0e6a26fcdb5c89d0ed33
 <?php
 /**
 * @var $this SiteController
@@ -1872,4 +1875,7 @@ class SiteController extends Controller
     }
 }
 ?>
+<<<<<<< HEAD
 >>>>>>> fe72638d4fdb6b330d09108c08430bbbcd57e375
+=======
+>>>>>>> cc0d0f33b43e44ec06cd0e6a26fcdb5c89d0ed33
