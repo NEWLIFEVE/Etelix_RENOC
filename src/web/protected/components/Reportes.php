@@ -129,7 +129,6 @@ class Reportes extends CApplicationComponent
         $reporte->genExcel($nombre,$fecha);
         return "Revisar Archivo Adjunto";
     }
-
     /**
      *
      */
@@ -207,9 +206,6 @@ class Reportes extends CApplicationComponent
         }
         return $variable;
     }
-    
-    
-    
 
     /**
      * Genera el reporte de evolucion
@@ -221,8 +217,7 @@ class Reportes extends CApplicationComponent
         $reporte=new Evolucion($fecha);
         $reporte->genExcel($nombre);
         return "Revisar archivo adjunto";
-    }
-    
+    } 
     /**
      * Metodo encargado de pintar las filas de los reportes
      * @access public

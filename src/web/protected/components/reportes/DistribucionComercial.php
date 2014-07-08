@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /**
 * @package reportes
@@ -256,91 +257,132 @@ class DistribucionComercial extends Reportes
                 $order="ORDER BY status ASC, seller ASC, operador ASC";
                 break;
         }
-        /*
-        $sql="SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, y.name AS company, z.name AS monetizable, tp.name AS termino_pago, d.days AS dias_disputa, cl.amount AS limite_credito, pl.amount AS limite_compra, z.id AS id_mon, tp.id AS id_tp, CASE WHEN x.up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit, CASE WHEN c.status=1 THEN 'Activo' WHEN c.status=0 THEN 'Inactivo' WHEN c.status IS NULL THEN 'Sin Asignar' END AS status
-              FROM carrier c, managers m, carrier_managers cm, company y, contrato x, termino_pago tp, contrato_termino_pago ctp, monetizable z, contrato_monetizable cz, days_dispute_history d, credit_limit cl, purchase_limit pl 
-              WHERE m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date AND x.id_carrier=c.id AND x.end_date IS NULL AND x.id_company=y.id AND x.id=ctp.id_contrato AND ctp.end_date IS NULL AND ctp.id_termino_pago=tp.id AND x.id=cz.id_contrato AND cz.end_date IS NULL AND cz.id_monetizable=z.id AND x.id=d.id_contrato AND d.end_date IS NULL AND x.id=cl.id_contrato AND cl.end_date IS NULL AND x.id=pl.id_contrato AND pl.end_date IS NULL
-              UNION
-              SELECT m.name||' '||m.lastname AS vendedor, c.name AS operador, m.position, 'Sin Asignar' AS company, 'Sin Asignar' AS monetizable, 'Sin Asignar' AS termino_pago, -1 AS dias_disputa, -1 AS limite_credito, -1 AS limite_compra, 100 AS id_mon, 100 AS id_tp, 'Sin Asignar' AS production_unit, 'Sin Asignar' AS status
-              FROM carrier c, managers m, carrier_managers cm WHERE c.id NOT IN (SELECT DISTINCT(id_carrier) FROM contrato) AND m.id=cm.id_managers AND c.id=cm.id_carrier AND cm.end_date IS NULL AND cm.start_date<=current_date ".
-              $order;
-        */
-              $sql="SELECT m.name||' '||m.lastname AS seller,
-              m.position,
-              c.name AS carrier,
-              com.name AS company,
-              mon.name AS monetizable,
-              tpc.name AS customer_payment_term,
-              tps.name AS vendor_payment_term,
-              ddh.days AS days_dispute,
-              cl.amount AS credit_limit,
-              pl.amount AS purchase_limit,
-              mon.id AS id_mon, 
-              tpc.id AS id_tp, 
-              CASE WHEN con.up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit, 
-              CASE WHEN c.status=1 THEN 'Activo' WHEN c.status=0 THEN 'Inactivo' WHEN c.status IS NULL THEN 'Sin Asignar' END AS status
-              FROM managers m,
-              carrier c,
-              /*Relacion de carrier managers*/
-              (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_managers
-                  FROM carrier_managers
-                  WHERE start_date<= '{$startDate}'  ) cm, company com,
-                /*Relacion de carrier contrato*/
-                (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
-                  FROM contrato
-                  WHERE sign_date<='{$startDate}') con,
-                monetizable mon,
-                /*Relacion de contrato y monetizable*/
-                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_monetizable
-                  FROM contrato_monetizable
-                  WHERE start_date<='{$startDate}') con_mon,
-                termino_pago tpc,
-                /*Relacion de contrato y termino de pago*/
-                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago
-                  FROM contrato_termino_pago
-                  WHERE start_date<='{$startDate}') ctp,
-                termino_pago tps,
-                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago_supplier, month_break, first_day, id_fact_period
-                  FROM contrato_termino_pago_supplier
-                  WHERE start_date<='{$startDate}') ctps,
-                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, days
-                  FROM days_dispute_history
-                  WHERE start_date<='{$startDate}') ddh,
-                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, amount
-                  FROM credit_limit
-                  WHERE start_date<='{$startDate}') cl,
-                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, amount
-                  FROM purchase_limit
-                  WHERE start_date<='{$startDate}') pl
-                /*Relacion de carrier con manager*/
-                WHERE c.id=cm.id_carrier
-                     AND cm.id_managers=m.id
-                     AND cm.end_date>='{$startDate}'
-                /*Relacion de carrier con contrato y compañia*/
-                    AND c.id=con.id_carrier
-                    AND con.id_company=com.id
-                    AND con.end_date>='{$startDate}'
-                /*Relacion de contrato con monetizable*/
-                    AND con.id=con_mon.id_contrato
-                    AND con_mon.id_monetizable=mon.id
-                    AND con_mon.end_date>='{$startDate}'
-                /*Relacion de contrato con termino de pago cliente*/
-                    AND con.id=ctp.id_contrato
-                    AND ctp.id_termino_pago=tpc.id
-                    AND ctp.end_date>='{$startDate}'
-                /*Relacion de contrato con termino de pago proveedor*/
-                    AND con.id=ctps.id_contrato
-                    AND ctps.id_termino_pago_supplier=tps.id
-                    AND ctps.end_date>='{$startDate}'
-                /*Relacion de contrato con dias de disputas*/
-                    AND con.id=ddh.id_contrato
-                    AND ddh.end_date>='{$startDate}'
-                /*Relacion de contrato con limite de credito */
-                    AND con.id=cl.id_contrato
-                    AND cl.end_date>='{$startDate}'
-                /*Relacion de contrado con limite de compra*/
-                    AND con.id=pl.id_contrato
-                    AND pl.end_date>='{$startDate}'";    
+
+        $sql="SELECT seller,
+                     position,
+                     carrier,
+                     company,
+                     CASE WHEN (SELECT name
+                                FROM monetizable,
+                                     (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_monetizable
+                                      FROM contrato_monetizable
+                                      WHERE start_date<'{$startDate}') contrato_monetizable
+                                WHERE contrato_id=contrato_monetizable.id_contrato AND contrato_monetizable.id_monetizable=monetizable.id) IS NULL THEN 'Sin Asignar'
+                     ELSE (SELECT name
+                           FROM monetizable,
+                                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_monetizable
+                                 FROM contrato_monetizable
+                                 WHERE start_date<'{$startDate}') contrato_monetizable
+                           WHERE contrato_id=contrato_monetizable.id_contrato AND contrato_monetizable.id_monetizable=monetizable.id) END AS monetizable,
+                     CASE WHEN (SELECT name
+                                FROM termino_pago,
+                                     (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago
+                                      FROM contrato_termino_pago
+                                      WHERE start_date<'{$startDate}') ctp
+                                WHERE ctp.id_contrato=contrato_id  AND ctp.id_termino_pago=termino_pago.id AND ctp.end_date>'{$startDate}') IS NULL THEN 'Sin Asignar'
+                     ELSE (SELECT name
+                           FROM termino_pago,
+                                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago
+                                 FROM contrato_termino_pago
+                                 WHERE start_date<'{$startDate}') ctp
+                           WHERE ctp.id_contrato=contrato_id  AND ctp.id_termino_pago=termino_pago.id AND ctp.end_date>'{$startDate}') END AS customer_payment_term,
+                     CASE WHEN (SELECT name
+                                FROM termino_pago,
+                                     (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago_supplier
+                                      FROM contrato_termino_pago_supplier
+                                      WHERE start_date<'{$startDate}') ctp
+                                WHERE ctp.id_contrato=contrato_id  AND ctp.id_termino_pago_supplier=termino_pago.id AND ctp.end_date>'{$startDate}') IS NULL THEN 'Sin Asignar'
+                     ELSE (SELECT name
+                           FROM termino_pago,
+                                (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago_supplier
+                                 FROM contrato_termino_pago_supplier
+                                 WHERE start_date<'{$startDate}') ctp
+                           WHERE ctp.id_contrato=contrato_id  AND ctp.id_termino_pago_supplier=termino_pago.id AND ctp.end_date>'{$startDate}') END AS vendor_payment_term,
+                     (SELECT days
+                      FROM (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, days
+                            FROM days_dispute_history
+                            WHERE start_date<'{$startDate}') ddh
+                      WHERE ddh.id_contrato=contrato_id AND ddh.end_date>='{$startDate}') AS days_dispute,
+                     (SELECT amount
+                      FROM (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, amount
+                            FROM credit_limit
+                            WHERE start_date<'{$startDate}') cl
+                      WHERE cl.id_contrato=contrato_id AND cl.end_date>'{$startDate}') AS credit_limit,
+                     (SELECT amount
+                      FROM (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, amount
+                            FROM purchase_limit
+                            WHERE start_date<'{$startDate}') pl
+                      WHERE pl.id_contrato=contrato_id AND pl.end_date>'{$startDate}') AS purchase_limit,
+                     (SELECT monetizable.id
+                      FROM monetizable,
+                           (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_monetizable
+                            FROM contrato_monetizable
+                            WHERE start_date<'{$startDate}') contrato_monetizable
+                      WHERE contrato_id=contrato_monetizable.id_contrato AND contrato_monetizable.id_monetizable=monetizable.id) AS id_mon, 
+                            (SELECT termino_pago.id
+                             FROM termino_pago,
+                                  (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_contrato, id_termino_pago
+                                   FROM contrato_termino_pago
+                                   WHERE start_date<'{$startDate}') ctp
+                             WHERE ctp.id_contrato=contrato_id  AND ctp.id_termino_pago=termino_pago.id AND ctp.end_date>'{$startDate}') AS id_tp, 
+                     CASE WHEN up=1 THEN 'Presidencia' ELSE 'Ventas' END AS production_unit, 
+                     CASE WHEN status=1 THEN 'Activo' WHEN status=0 THEN 'Inactivo' WHEN status IS NULL THEN 'Sin Asignar' END AS status
+             FROM (SELECT id AS id,
+                          name AS carrier,
+                          CASE WHEN (SELECT name
+                                     FROM managers, 
+                                          (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_managers
+                                           FROM carrier_managers
+                                           WHERE start_date<'{$startDate}') carrier_manager
+                                     WHERE c.id=id_carrier AND id_managers=managers.id AND end_date>'{$startDate}') IS NULL THEN 'Sin Asignar' 
+                               ELSE (SELECT name
+                                     FROM managers, 
+                                          (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_managers
+                                           FROM carrier_managers
+                                           WHERE start_date<'{$startDate}') carrier_manager
+                                     WHERE c.id=id_carrier AND id_managers=managers.id AND end_date>'{$startDate}') END AS seller,
+                          CASE WHEN (SELECT position
+                                     FROM managers,
+                                          (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_managers
+                                           FROM carrier_managers
+                                           WHERE start_date<'{$startDate}') carrier_manager
+                                     WHERE c.id=id_carrier AND id_managers=managers.id AND end_date>'{$startDate}') IS NULL THEN 'Sin Asignar'
+                               ELSE (SELECT position
+                                     FROM managers,
+                                          (SELECT id, start_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_managers
+                                           FROM carrier_managers
+                                           WHERE start_date<'{$startDate}') carrier_manager
+                                     WHERE c.id=id_carrier AND id_managers=managers.id AND end_date>'{$startDate}') END AS position,
+                          (SELECT id
+                           FROM (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
+                                 FROM contrato
+                                 WHERE sign_date<'{$startDate}') contrato
+                           WHERE contrato.end_date>'{$startDate}' AND contrato.id_carrier=c.id) AS contrato_id,
+                          (SELECT id_carrier
+                           FROM (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
+                                 FROM contrato
+                                 WHERE sign_date<'{$startDate}') contrato
+                           WHERE contrato.end_date>'{$startDate}' AND contrato.id_carrier=c.id) AS carrier_contrato,
+                          CASE WHEN (SELECT company.name
+                                     FROM company,
+                                          (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
+                                           FROM contrato
+                                           WHERE sign_date<'{$startDate}') contrato
+                                     WHERE contrato.id_company=company.id AND contrato.end_date>'{$startDate}' AND contrato.id_carrier=c.id) IS NULL THEN 'Sin Contrato'
+                               ELSE (SELECT company.name
+                                     FROM company,
+                                          (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
+                                           FROM contrato
+                                           WHERE sign_date<'{$startDate}') contrato
+                                     WHERE contrato.id_company=company.id AND contrato.end_date>'{$startDate}' AND contrato.id_carrier=c.id) END AS company,
+                          status AS status,
+                          (SELECT up
+                           FROM (SELECT id, sign_date, production_date, CASE WHEN end_date IS NULL THEN current_date ELSE end_date END AS end_date, id_carrier, id_company, up, bank_fee
+                                 FROM contrato
+                                 WHERE sign_date<'{$startDate}') contrato
+                           WHERE contrato.end_date>'{$startDate}' AND contrato.id_carrier=c.id) AS up
+                   FROM carrier c
+                   WHERE name <> 'Unknown_Carrier') carriers";    
 
         return Managers::model()->findAllBySql($sql);
     }
