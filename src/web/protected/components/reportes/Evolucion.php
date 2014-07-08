@@ -8,7 +8,6 @@ class Evolucion extends Reportes
     {
         $this->fecha=$fecha;
     }
-   
     /**
      * realiza la consulta de base de datos
      * @access  public
@@ -48,7 +47,6 @@ class Evolucion extends Reportes
         $model=Balance::model()->findAllBySql($sql);
         return $model;
     }
-
     /**
      * realiza la consulta de base de datos
      * @access  public
@@ -74,7 +72,6 @@ class Evolucion extends Reportes
         $model=Balance::model()->findAllBySql($sql);
         return $model;
     }
-
     /**
      *
      */
@@ -158,7 +155,6 @@ class Evolucion extends Reportes
                 $objPHPExcel->getActiveSheet()->getStyle('A1:C1')->applyFromArray($estilos);
             }
         }
-
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
         $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;

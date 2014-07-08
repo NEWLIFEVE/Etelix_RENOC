@@ -458,15 +458,15 @@ class SiteController extends Controller
             }
             if(isset($_GET['lista']['Ev']))
             {
-                $probando=false;
+                $probando=true;
                 ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '300M');
                 $archivos['Ev']['nombre']="RENOC".$this->letra." Evolucion".self::reportTitle($startDate,$endingDate);
-                $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$archivos['Ev']['nombre'].".xlsx");
+                $archivos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$archivos['Ev']['nombre'].".xlsx");   
             }
             if(isset($_GET['lista']['calidad']))
             {
-                //Preguntar aqui
+                $probando=false;
                 if(isset($_GET['carrier']))
                 {
                     $archivos['carrier']['nombre']="RENOC Calidad ".$_GET['carrier'].self::reportTitle($startDate,$endingDate);
@@ -495,7 +495,7 @@ class SiteController extends Controller
             }
             foreach($archivos as $key => $archivo)
             {    
-                $this->genExcel($archivo['nombre'],$archivo['cuerpo'],$probando);
+                $this->genExcel($archivo['nombre'],$archivo['cuerpo'],$probando); 
             } 
         }
         else
@@ -832,8 +832,7 @@ class SiteController extends Controller
         else
         {
             echo "Oops algo salió mal";
-        }
-        
+        }  
     }
     /**
      * @access public
@@ -849,8 +848,7 @@ class SiteController extends Controller
         else
         {
             $name=$nombre.".xls";
-        }
-        // if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
+        } 
         if($probando==true)
         {
             $fp=fopen($ruta.$name,"w+");
@@ -876,7 +874,6 @@ class SiteController extends Controller
             header("Content-Description: File Transfer");             
             header("Content-Length: " . filesize($ruta.$name));
             flush(); // this doesn't really matter.
-
             $fp = fopen($ruta.$name, "r"); 
             while (!feof($fp))
             {
@@ -886,7 +883,6 @@ class SiteController extends Controller
             fclose($fp);
         }
     }
-
     /**
      * @access public
      */
