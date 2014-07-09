@@ -2,6 +2,7 @@
 ============
 
 ##Sistema de Reportes para el NOC
+- Agregada validacion en vista especificos para que en los reportes calidad y arbol 2n proveedor, emita un msj recordando que solo debe llenar uno de los input carrier o grupo.
 - Agregada validacion para reportes evolucion y distribucion comercial al momento de generar vista previa.
 - Agregada vista previa a los reportes tanto de especificos como de rutinarios.
 - Cambiada estructura de especificos, ahora solo se puede generar un reporte a la vez, y los parametros varian segun el tipo de reporte.

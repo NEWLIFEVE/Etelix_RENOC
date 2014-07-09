@@ -216,6 +216,19 @@ ajax.prototype.run=function()
                 mensaje=null;
                 self.setUno();
             }
+            else if($("input#carrier").val()=="undefined" && $("input#group").val()=="undefined")
+            {
+                mensaje="<h3>Debe seleccionar solo un parametro entre carrier o grupo</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+            
+            
         }else{
             if(numero.length<=0)
             {
@@ -256,7 +269,7 @@ ajax.prototype.run=function()
         //Valido el reportes
         self.validarReporte();
         //mando a ejecutar las cosas
-        console.log("aja aja =D");
+//        console.log("aja aja =D");
         self.ejecutarAcciones();
         
         id=tipo=numero=valor=nombre=mensaje=null;
@@ -478,7 +491,7 @@ ajax.prototype.validarReporte=function()
 }
 ajax.prototype.ejecutarAcciones=function()
 {
-    console.log("aja, paso para metodo ejecutar acciones");
+//    console.log("aja, paso para metodo ejecutar acciones");
     console.log(self);
     self=this;
     console.log(this);
@@ -538,10 +551,10 @@ ajax.prototype.ejecutarAcciones=function()
 */
 function marcar(source)
 {
-    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
+    var checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
     if(checkboxes.length>0)
     {
-        for(i=0,j=checkboxes.length-1; i<=j; i++) //recoremos todos los controles
+        for(i=0,j=checkboxes.length-1; i<=j; i++) //recorremos todos los controles
         {
             if(checkboxes[i].type=="checkbox") //solo si es un checkbox entramos
             {
@@ -590,7 +603,7 @@ $(".especificos_reportes div.choice label h4").click(function()
 {
     $(".especificos_reportes div.choice label h4").removeClass("testcss");
     $(this).addClass("testcss");
-    console.log($(this).attr("id"));
+//    console.log($(this).attr("id"));
     var hide = [".parametros .fecha,.parametros .carrier,.parametros .group,h3.indication"];
     switch ($(this).attr("id")) {
         case "td5":
