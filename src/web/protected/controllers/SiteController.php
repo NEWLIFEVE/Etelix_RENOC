@@ -820,9 +820,19 @@ class SiteController extends Controller
                     $preview['group']['cuerpo']=$title.Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
                 }
             }
-            foreach($preview as $key => $view)
+            
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
             {
-                echo $view['cuerpo'];
+                $title="<h1>Arbol 2N Proveedor</h1>";
+                if(isset($_POST['carrier']))
+                {
+                    $preview['A2NP']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_POST['carrier'], false);
+                }
+                if(isset($_POST['group']))
+                {
+                    $preview['A2NP']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_POST['group'],true);
+                }
             }
             foreach($preview as $key => $view)
             {

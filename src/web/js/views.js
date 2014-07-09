@@ -200,7 +200,8 @@ ajax.prototype.run=function()
                 }, 2000);
                 mensaje=null;
                 self.setUno();
-            }else if(numero.length<=1)
+            }
+            else if(numero.length<=1)
             {
                 mensaje="<h3>Debe seleccionar los parametros del reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                 self.crearCapa(mensaje);
@@ -211,8 +212,22 @@ ajax.prototype.run=function()
                 mensaje=null;
                 self.setUno();
             }
-            else if($("input#carrier").val()=="undefined" && $("input#group").val()=="undefined")
+
+            else if($("input[type='checkbox'][name='lista[Carrier]']").prop("checked")!=true && $("input[type='checkbox'][name='lista[Group]']").prop("checked")!=true)
             {
+                mensaje="<h3>Falto seleccionar un parametro entre carrier o grupo</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+            else if($("input#carrier").val()!=undefined && $("input#group").val()!=undefined)
+            {
+                console.log($("input#carrier").val());
+                console.log($("input#group").val());
                 mensaje="<h3>Debe seleccionar solo un parametro entre carrier o grupo</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                 self.crearCapa(mensaje);
                 setTimeout(function()
@@ -222,6 +237,7 @@ ajax.prototype.run=function()
                 mensaje=null;
                 self.setUno();
             }
+            
         }else{
             if(numero.length<=0)
             {
