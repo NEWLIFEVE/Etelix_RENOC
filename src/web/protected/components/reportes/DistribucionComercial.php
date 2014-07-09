@@ -43,12 +43,16 @@ class DistribucionComercial extends Reportes
             $this->setDataToSheet($value,self::getData($startDate,$value),$titles,$key);
         }
         $this->excel->setActiveSheetIndex(0);
-	   try{
-        $this->writeFile($name);
-	}catch(Exception $e){
-		echo "Exception capturada: ", $e->getMessage(), "\n";
-	}
+        try
+        {
+            $this->writeFile($name);
+        }
+        catch(Exception $e)
+        {
+            echo "Exception capturada: ", $e->getMessage(), "\n";
+        }
     }
+
     /**
      * Introduce los datos recibidos en la hoja excel con los nombres indicados
      * @access private
@@ -150,8 +154,6 @@ class DistribucionComercial extends Reportes
             $registro['customer_payment_term']="(".$vendedor->customer_payment_term.")";
             $registro['production_unit']=$vendedor->production_unit;
             $registro['status']=$vendedor->status;
-
-            /*
             if($key>0)
             {
                 if($data[$com]->$order==$vendedor->$order)
@@ -188,9 +190,9 @@ class DistribucionComercial extends Reportes
                 if($data[$com]->production_unit==$vendedor->production_unit)
                 {
                     $registro['production_unit']="";
-                }
-                }
-                */
+                }*/
+            }
+                
             $row=$key+2;
             $this->excel->getActiveSheet()->setCellValue("A".$row,$registro['cargo']);
             $this->excel->getActiveSheet()->setCellValue("B".$row,$registro['seller']);
@@ -206,9 +208,10 @@ class DistribucionComercial extends Reportes
             $this->excel->getActiveSheet()->setCellValue("L".$row,$registro['production_unit']);
             $this->excel->getActiveSheet()->setCellValue("M".$row,$registro['status']);
             //Aplico el estilo
-            $this->excel->getActiveSheet()->getStyle("A".$row.":M".$row)->applyFromArray(self::color($registro['estilo']));                 
-        //}
-    }}
+            $this->excel->getActiveSheet()->getStyle("A".$row.":M".$row)->applyFromArray(self::color($registro['estilo']));
+        }
+    }
+
     /**
      * Escribe el excel en la ruta asignada
      * @access private
