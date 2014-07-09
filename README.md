@@ -2,7 +2,13 @@
 ============
 
 ##Sistema de Reportes para el NOC
+
 - Agregada validacion en vista especificos para que en los reportes calidad y arbol 2n proveedor, emita un msj recordando que solo debe llenar uno de los input carrier o grupo.
+
+###Release 1.3.21.1
+- Corregido error de ending_date en actionMail y actionLista.
+
+###Release 1.3.21
 - Agregada validacion para reportes evolucion y distribucion comercial al momento de generar vista previa.
 - Agregada vista previa a los reportes tanto de especificos como de rutinarios.
 - Cambiada estructura de especificos, ahora solo se puede generar un reporte a la vez, y los parametros varian segun el tipo de reporte.
@@ -160,7 +166,7 @@
 
 ###Release 1.0.1
 - Envio de Reportes a correo electronico de usuario logueado
-- Envio de Reportes a lista de correo reno@etelix.com
+- Envio de Reportes a lista de correo renoc@etelix.com
 
 ###Release 1.0
 - Envio de reportes por correo

@@ -123,10 +123,10 @@ class Reportes extends CApplicationComponent
         return $variable;
     }
 
-    public function DistribucionComercial($nombre)
+    public function DistribucionComercial($nombre,$fecha)
     {
         $reporte=new DistribucionComercial();
-        $reporte->genExcel($nombre);
+        $reporte->genExcel($nombre,$fecha);
         return "Revisar Archivo Adjunto";
     }
 
@@ -1030,7 +1030,7 @@ class Reportes extends CApplicationComponent
      * @param int $actual es el valor actual a revisar
      * @return string
      */
-    protected function _upOrDown($previous,$actual)
+    protected function  _upOrDown($previous,$actual)
     {
         if($previous!=null || $previous!="")
         {

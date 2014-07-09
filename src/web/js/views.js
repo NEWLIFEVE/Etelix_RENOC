@@ -123,8 +123,6 @@ ajax.prototype.run=function()
         fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
         var fecha=Date.parse(Date());
         var seleccion1=Date.parse($('#startDate').val());
-        console.log("IN: "+$('#startDate').val());
-        console.log("fin: "+$('#endingDate').val());
 
         if(seleccion1>fecha)
         {
@@ -139,7 +137,6 @@ ajax.prototype.run=function()
         }
         if(( ($('#endingDate').val()!="") || ($('#endingDate').val()!=undefined)) && (($('#startDate').val()!="") || ($('#startDate').val()!=undefined)) )
         {
-                console.log("0");
                 self.setCero();
                 var f = new Date();
                 fecha2=( f.getDate()+ "-" + (f.getMonth()+1) + "-" +f.getFullYear() );
@@ -148,7 +145,6 @@ ajax.prototype.run=function()
                 var seleccion2=Date.parse($('#endingDate').val());
                 if(seleccion1>seleccion2)
                 {
-                        console.log("1");
                          mensaje="<h3>La fecha de inicio seleccionada no puede ser mayor a la fecha fin seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                          self.crearCapa(mensaje);
                  setTimeout(function()
@@ -159,7 +155,6 @@ ajax.prototype.run=function()
                  self.setUno();	
                 }else if(seleccion2<seleccion1)
                 {
-                        console.log("2");
                          mensaje="<h3>La fecha fin seleccionada no puede ser menor a la fecha de inicio seleccionada</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                          self.crearCapa(mensaje);
                  setTimeout(function()
@@ -227,8 +222,6 @@ ajax.prototype.run=function()
                 mensaje=null;
                 self.setUno();
             }
-            
-            
         }else{
             if(numero.length<=0)
             {
@@ -269,7 +262,6 @@ ajax.prototype.run=function()
         //Valido el reportes
         self.validarReporte();
         //mando a ejecutar las cosas
-//        console.log("aja aja =D");
         self.ejecutarAcciones();
         
         id=tipo=numero=valor=nombre=mensaje=null;
@@ -299,6 +291,8 @@ ajax.prototype.genExcel=function()
             case "lista[APE]":
             case "lista[DC]":
             case "lista[Ev]":
+            case "lista[RCC]":
+            case "lista[RN]":
             case "lista[calidad]":
             case "lista[A2NP]":
                 reportes[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
@@ -322,7 +316,12 @@ ajax.prototype.genExcel=function()
         {
             for(var key2 in opciones)
             {
-                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=200px,height=100px');
+                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=500,height=200');
+                ventana[key2].document.write("<html><head>" +
+                  		" <link href='http://getbootstrap.com/assets/css/docs.min.css' rel='stylesheet'>" +
+                  		"<script src='http://getbootstrap.com/assets/js/docs.min.js'></script>"+
+                  		"</head><body onload='window.close();'><div class='bs-callout bs-callout-info'>" +
+                  		"<h3 style='color:#3CB371'>Su reporte se esta generando, por favor espere <img src='/images/circular.gif'width='25px' height='25px'/></h3><h5>Al terminar la carga, podr&aacute; cerrar esta ventana o presionar <a href='#' onclick='window.close();'>AQUI</a> para cerrarla</h5></div></body></html>");
             }
         }
         else
@@ -357,7 +356,7 @@ ajax.prototype.enviar=function()
         data:self.formulario,
         type:'POST'
     };
-    console.log(self.ruta);
+    console.log(self.formulario);
     this.envio=$.ajax(opciones).done(function(datos)
     {
         if(self.ruta=="/site/preview")
@@ -491,10 +490,7 @@ ajax.prototype.validarReporte=function()
 }
 ajax.prototype.ejecutarAcciones=function()
 {
-//    console.log("aja, paso para metodo ejecutar acciones");
-    console.log(self);
     self=this;
-    console.log(this);
     if(self.error==0)
     {
     	
@@ -503,9 +499,7 @@ ajax.prototype.ejecutarAcciones=function()
         if(self.tipo=="excel")
         {
         	
-            self.ruta=self.excel;
-            console.log("llego al caso excel");
-            
+            self.ruta=self.excel;  
             self.getFormPost();
             self.genExcel();
             self.destruirCapa();
@@ -603,7 +597,6 @@ $(".especificos_reportes div.choice label h4").click(function()
 {
     $(".especificos_reportes div.choice label h4").removeClass("testcss");
     $(this).addClass("testcss");
-//    console.log($(this).attr("id"));
     var hide = [".parametros .fecha,.parametros .carrier,.parametros .group,h3.indication"];
     switch ($(this).attr("id")) {
         case "td5":

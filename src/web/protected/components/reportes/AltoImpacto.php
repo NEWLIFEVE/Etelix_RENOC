@@ -1525,7 +1525,7 @@ class AltoImpacto extends Reportes
                     if(strstr($index2, 'customersWithMore')!=false) $this->totalAverageCustomerMore+=$average->margin;
                     if(strstr($index2, 'customersWithLess')!=false) $this->totalAverageCustomerLess+=$average->margin;
                     if(strstr($index2, 'providersWithMore')!=false) $this->totalAverageSupplierMore+=$average->margin;
-                    if(strstr($index2, 'providersWithLess')!=false) $this->totalAverageCustomerLess+=$average->margin;
+                    if(strstr($index2, 'providersWithLess')!=false) $this->totalAverageSupplierLess+=$average->margin;
                 }
             }
             foreach ($this->_objetos[$index][$otro.'Accumulated'] as $key => $accumulated)
