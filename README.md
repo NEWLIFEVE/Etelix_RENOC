@@ -3,6 +3,8 @@
 
 ##Sistema de Reportes para el NOC
 
+- Agregada validacion en vista especificos para que en los reportes calidad y arbol 2n proveedor, emita un msj recordando que solo debe llenar uno de los input carrier o grupo.
+
 ###Release 1.3.21.1
 - Corregido error de ending_date en actionMail y actionLista.
 

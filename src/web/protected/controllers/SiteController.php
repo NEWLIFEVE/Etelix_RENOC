@@ -454,7 +454,7 @@ class SiteController extends Controller
                 ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '512M');
                 $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
-                $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx",$_GET['startDate']);
+                $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx",$_GET['startDate'],$startDate);
             }
             if(isset($_GET['lista']['Ev']))
             {
@@ -801,7 +801,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['DC']))
             {
                 $title="<h1>Distribucion Comercial</h1>";
-                $preview['DC']['cuerpo']=$title.Yii::app()->reportes->DistribucionComercial($preview['DC']['asunto'].".xlsx");
+                $preview['DC']['cuerpo']=$title.Yii::app()->reportes->DistribucionComercial($preview['DC']['asunto'].".xlsx",$startDate);
             }
             if(isset($_POST['lista']['Ev']))
             {
@@ -820,9 +820,19 @@ class SiteController extends Controller
                     $preview['group']['cuerpo']=$title.Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
                 }
             }
-            foreach($preview as $key => $view)
+            
+            //Arbol 2N Proveedor
+            if(isset($_POST['lista']['A2NP']))
             {
-                echo $view['cuerpo'];
+                $title="<h1>Arbol 2N Proveedor</h1>";
+                if(isset($_POST['carrier']))
+                {
+                    $preview['A2NP']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_POST['carrier'], false);
+                }
+                if(isset($_POST['group']))
+                {
+                    $preview['A2NP']['cuerpo']=$title.Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate, $_POST['group'],true);
+                }
             }
             foreach($preview as $key => $view)
             {
