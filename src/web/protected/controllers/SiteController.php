@@ -282,7 +282,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['DC']))
             {
                 $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial";
-                $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx");
+                $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx",$startDate);
                 $correos['DC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['DC']['asunto'].".xlsx";
             }
             if(isset($_POST['lista']['Ev']))
@@ -625,7 +625,7 @@ class SiteController extends Controller
             if(isset($_POST['lista']['DC']))
             {
                 $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial";
-                $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx");
+                $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx",$startDate);
                 $correos['DC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['DC']['asunto'].".xlsx";
             }
             if(isset($_POST['lista']['Ev']))
