@@ -281,7 +281,7 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_POST['lista']['DC']))
             {
-                $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial";
+                $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial".self::reportTitle($startDate,$endingDate);
                 $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx",$startDate);
                 $correos['DC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['DC']['asunto'].".xlsx";
             }
@@ -453,7 +453,7 @@ class SiteController extends Controller
                 $probando=false;
                 ini_set('max_execution_time', 1300);
                 ini_set('memory_limit', '512M');
-                $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial";
+                $archivos['DC']['nombre']="RENOC".$this->letra." Distribucion Comercial".self::reportTitle($startDate,$endingDate);
                 $archivos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($archivos['DC']['nombre'].".xlsx",$_GET['startDate'],$startDate);
             }
             if(isset($_GET['lista']['Ev']))
@@ -624,7 +624,7 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_POST['lista']['DC']))
             {
-                $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial";
+                $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial".self::reportTitle($startDate,$endingDate);
                 $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx",$startDate);
                 $correos['DC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['DC']['asunto'].".xlsx";
             }
@@ -800,7 +800,7 @@ class SiteController extends Controller
             //Distribucion Comercial
             if(isset($_POST['lista']['DC']))
             {
-                $title="<h1>Distribucion Comercial</h1>";
+                $title="<h1>Distribucion Comercial</h1>".self::reportTitle($startDate,$endingDate);
                 $preview['DC']['cuerpo']=$title.Yii::app()->reportes->DistribucionComercial($preview['DC']['asunto'].".xlsx",$startDate);
             }
             if(isset($_POST['lista']['Ev']))

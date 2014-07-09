@@ -76,7 +76,7 @@ class DistribucionComercial extends Reportes
                 $order="monetizable";
                 break;
             case 'Termino de Pago':
-                $order="payment_terms";
+                $order="customer_payment_term";
                 break;
             case 'Unidad de Producción':
                 $order="production_unit";
@@ -123,7 +123,7 @@ class DistribucionComercial extends Reportes
                 )
             );
         //Asigno colores a la primra fila
-        $this->excel->getActiveSheet()->getStyle('A1:L1')->applyFromArray($estilosCabecera);
+        $this->excel->getActiveSheet()->getStyle('A1:M1')->applyFromArray($estilosCabecera);
         //Habilito un  auto tamaño en las columnas
         $this->excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $this->excel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
