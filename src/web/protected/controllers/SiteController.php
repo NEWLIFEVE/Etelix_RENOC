@@ -344,11 +344,7 @@ class SiteController extends Controller
             }
             foreach($correos as $key => $correo)
             { 
-                //Esto es para que no descargue los archivos cuando se genere uno de estos reportes
-                if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
-                {
-                    $this->genExcel($correo['asunto'],$correo['cuerpo'],$correo['set'],false);
-                }
+                $this->genExcel($correo['asunto'],$correo['cuerpo'],$correo['set'],false);
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
             }
             echo "Mensaje Enviado";
@@ -710,32 +706,28 @@ class SiteController extends Controller
             }
             foreach($correos as $key => $correo)
             {
+                $list=$user;
+                $lista=null;
                 //esto es para evitar que cuando sea alguno de estos reportes no descargue el archivo
-                if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
+                $this->genExcel($correo['asunto'],$correo['cuerpo'],$correo['set'],false);
+                if(!YII_DEBUG)
                 {
-                    $this->genExcel($correo['asunto'],$correo['cuerpo'],$correo['set'],false);
+                    if(stripos($correo['asunto'], "RETAIL"))
+                    {
+                        $lista=array('CarlosBuona@etelix.com');
+                    }
+                    elseif (stripos($correo['asunto'], "Calidad"))
+                    {
+                        $list="ceo@etelix.com";
+                        $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com');
+                        if(stripos($correo['asunto'], "BSG")) $lista=array_merge($lista,array('txadmin@netuno.net'));
+                    }
+                    elseif (stripos($correo['asunto'], "Distribucion"))
+                    {
+                        $lista=array('yuryethv@sacet.biz','mariannev@sacet.biz');
+                    }
                 }
-                if(stripos($correo['asunto'], "RETAIL"))
-                {
-                    $lista=array('CarlosBuona@etelix.com');
-                    Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
-                }
-                elseif (stripos($correo['asunto'], "Calidad"))
-                {
-                    $userDif="ceo@etelix.com";
-                    $lista=array('alvaroquitana@etelix.com','eykiss@etelix.com');
-                    if(stripos($correo['asunto'], "BSG")) $lista=array_merge($lista,array('txadmin@netuno.net'));
-                    Yii::app()->mail->enviar($correo['cuerpo'], $userDif, $correo['asunto'],$correo['ruta'],$lista);
-                }
-                elseif(stripos($correo['asunto'], "Distribucion"))
-                {
-                    $lista=array('yuryethv@sacet.biz','mariannev@sacet.biz');
-                    Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta'],$lista);
-                }
-                else
-                {
-                    Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
-                }
+                Yii::app()->mail->enviar($correo['cuerpo'], $list, $correo['asunto'],$correo['ruta'],$lista);
             }
             echo "Mensaje Enviado";
         }
