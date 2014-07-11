@@ -3,6 +3,7 @@
 
 ##Sistema de Reportes para el NOC
 
+###Release 1.3.22
 - Corregido reporte Distribucion comercial, ahora funciona con la fecha consultada
 - Corregido reporte de Posición Neta, ahora muestra todo los carriers que generaron trafico en los ultimos 30 dias.
 - Agregada validacion en vista especificos para que en los reportes calidad y arbol 2n proveedor, emita un msj recordando que solo debe llenar uno de los input carrier o grupo.
