@@ -174,7 +174,7 @@ class SiteController extends Controller
         $correos=array();
         $user=UserIdentity::getEmail();
         ini_set('max_execution_time', 1200);
-        ini_set('memory_limit', '512M');
+        ini_set('memory_limit', -1);
         if(isset($_POST['startDate']))
         {
             $this->letra=Log::preliminar($_POST['startDate']);
@@ -186,6 +186,7 @@ class SiteController extends Controller
                 $correos['compraventa']['asunto']="RENOC".$this->letra." Ranking CompraVenta".self::reportTitle($startDate,$endingDate);
                 $correos['compraventa']['cuerpo']=Yii::app()->reportes->RankingCompraVenta($startDate,$endingDate);
                 $correos['compraventa']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['compraventa']['asunto'].".xls";
+                $correos['compraventa']['set']=true;
             }
             //Perdidas
             if(isset($_POST['lista']['perdidas']))
@@ -193,6 +194,7 @@ class SiteController extends Controller
                 $correos['perdidas']['asunto']="RENOC".$this->letra." Perdidas".self::reportTitle($startDate,$endingDate);
                 $correos['perdidas']['cuerpo']=Yii::app()->reportes->Perdidas($startDate);
                 $correos['perdidas']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['perdidas']['asunto'].".xls";
+                $correos['perdidas']['set']=true;
             }
             // Alto Impacto Retail
             if(isset($_POST['lista']['AIR']))
@@ -200,6 +202,7 @@ class SiteController extends Controller
                 $correos['AIR']['asunto']="RENOC".$this->letra." Alto Impacto RETAIL (+1$)".self::reportTitle($startDate,$endingDate);
                 $correos['AIR']['cuerpo']=Yii::app()->reportes->AltoIMpactoRetail($startDate);
                 $correos['AIR']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AIR']['asunto'].".xls";
+                $correos['AIR']['set']=true;
             }
             //Alto Impacto +10$ Completo
             if(isset($_POST['lista']['AI10']))
@@ -207,6 +210,7 @@ class SiteController extends Controller
                 $correos['AI10']['asunto']="RENOC".$this->letra." Alto Impacto (+10$)".self::reportTitle($startDate,$endingDate);
                 $correos['AI10']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,true);
                 $correos['AI10']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10']['asunto'].".xls";
+                $correos['AI10']['set']=true;
             }
             //Alto Impacto +10$ Resumido
             if(isset($_POST['lista']['AI10R']))
@@ -214,6 +218,7 @@ class SiteController extends Controller
                 $correos['AI10R']['asunto']="RENOC".$this->letra." Alto Impacto Resumido (+10$)".self::reportTitle($startDate,$endingDate);
                 $correos['AI10R']['cuerpo']=Yii::app()->reportes->AltoImpacto($startDate,$endingDate,false);
                 $correos['AI10R']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10R']['asunto'].".xls";
+                $correos['AI10R']['set']=true;
             }
             //Alto Impacto +10$ por Vendedor
             if(isset($_POST['lista']['AI10V']))
@@ -221,6 +226,7 @@ class SiteController extends Controller
                 $correos['AI10V']['asunto']="RENOC".$this->letra." Alto Impacto (+10$) por Vendedor".self::reportTitle($startDate,$endingDate);
                 $correos['AI10V']['cuerpo']=Yii::app()->reportes->AltoImpactoVendedor($startDate);
                 $correos['AI10V']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['AI10V']['asunto'].".xls";
+                $correos['AI10V']['set']=true;
             }
             //Posicion Neta
             if(isset($_POST['lista']['PN']))
@@ -228,6 +234,7 @@ class SiteController extends Controller
                 $correos['PN']['asunto']="RENOC".$this->letra." Posicion Neta".self::reportTitle($startDate,$endingDate);
                 $correos['PN']['cuerpo']=Yii::app()->reportes->posicionNeta($startDate,$endingDate);
                 $correos['PN']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['PN']['asunto'].".xls";
+                $correos['PN']['set']=true;
             }
             //Posicion Neta por vendedor
             if(isset($_POST['lista']['PNV']))
@@ -235,6 +242,7 @@ class SiteController extends Controller
                 $correos['PNV']['asunto']="RENOC".$this->letra." Posicion Neta por Vendedor".self::reportTitle($startDate,$endingDate);
                 $correos['PNV']['cuerpo']=Yii::app()->reportes->posicionNetaVendedor($startDate);
                 $correos['PNV']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['PNV']['asunto'].".xls";
+                $correos['PNV']['set']=true;
             }
             //Arbol de Trafico Destinos Internal
             if(isset($_POST['lista']['ADI']))
@@ -242,6 +250,7 @@ class SiteController extends Controller
                 $correos['ADI']['asunto']="RENOC".$this->letra." Arbol Destinos Internal".self::reportTitle($startDate,$endingDate);
                 $correos['ADI']['cuerpo']=Yii::app()->reportes->ArbolDestino($startDate,false);
                 $correos['ADI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['ADI']['asunto'].".xls";
+                $correos['ADI']['set']=true;
             }
             //Arbol de Trafico Destino External
             if(isset($_POST['lista']['ADE']))
@@ -249,6 +258,7 @@ class SiteController extends Controller
                 $correos['ADE']['asunto']="RENOC".$this->letra." Arbol Destinos External".self::reportTitle($startDate,$endingDate);
                 $correos['ADE']['cuerpo']=Yii::app()->reportes->ArbolDestino($startDate,true);
                 $correos['ADE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['ADE']['asunto'].".xls";
+                $correos['ADE']['set']=true;
             }
             //Arbol de Trafico Clientes Internal
             if(isset($_POST['lista']['ACI']))
@@ -256,6 +266,7 @@ class SiteController extends Controller
                 $correos['ACI']['asunto']="RENOC".$this->letra." Arbol Clientes Internal".self::reportTitle($startDate,$endingDate);
                 $correos['ACI']['cuerpo']=Yii::app()->reportes->ArbolTrafico($startDate,true,false);
                 $correos['ACI']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['ACI']['asunto'].".xls";
+                $correos['ACI']['set']=true;
             }
             //Arbol de Trafico Clientes External
             if(isset($_POST['lista']['ACE']))
@@ -263,6 +274,7 @@ class SiteController extends Controller
                 $correos['ACE']['asunto']="RENOC".$this->letra." Arbol Clientes External".self::reportTitle($startDate,$endingDate);
                 $correos['ACE']['cuerpo']=Yii::app()->reportes->ArbolTrafico($startDate,true,true);
                 $correos['ACE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR."RENOC".$this->letra." Arbol Clientes External al ".str_replace("-","",$startDate).".xls";
+                $correos['ACE']['set']=true;
             }
             //Arbol de Trafico Proveedores Internal
             if(isset($_POST['lista']['API']))
@@ -270,6 +282,7 @@ class SiteController extends Controller
                 $correos['API']['asunto']="RENOC".$this->letra." Arbol Proveedores Internal".self::reportTitle($startDate,$endingDate);
                 $correos['API']['cuerpo']=Yii::app()->reportes->ArbolTrafico($startDate,false,false);
                 $correos['API']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['API']['asunto'].".xls";
+                $correos['API']['set']=true;
             }
             //Arbol de Trafico Proveedores External
             if(isset($_POST['lista']['APE']))
@@ -277,6 +290,7 @@ class SiteController extends Controller
                 $correos['APE']['asunto']="RENOC".$this->letra." Arbol Proveedores External".self::reportTitle($startDate,$endingDate);
                 $correos['APE']['cuerpo']=Yii::app()->reportes->ArbolTrafico($startDate,false,true);
                 $correos['APE']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['APE']['asunto'].".xls";
+                $correos['APE']['set']=true;
             }
             //Distribucion Comercial
             if(isset($_POST['lista']['DC']))
@@ -284,12 +298,14 @@ class SiteController extends Controller
                 $correos['DC']['asunto']="RENOC".$this->letra." Distribucion Comercial".self::reportTitle($startDate,$endingDate);
                 $correos['DC']['cuerpo']=Yii::app()->reportes->DistribucionComercial($correos['DC']['asunto'].".xlsx",$startDate);
                 $correos['DC']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['DC']['asunto'].".xlsx";
+                $correos['DC']['set']=false;
             }
             if(isset($_POST['lista']['Ev']))
             {
                 $correos['Ev']['asunto']="RENOC".$this->letra." Evolucion".self::reportTitle($startDate,$endingDate);
                 $correos['Ev']['cuerpo']=Yii::app()->reportes->Evolucion($startDate,$correos['Ev']['asunto'].".xlsx");
                 $correos['Ev']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['Ev']['asunto'].".xlsx";
+                $correos['Ev']['set']=false;
             }
             if(isset($_POST['lista']['calidad']))
             {
@@ -298,12 +314,14 @@ class SiteController extends Controller
                     $correos['carrier']['asunto']="RENOC Calidad ".$_POST['carrier'].self::reportTitle($startDate,$endingDate);
                     $correos['carrier']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,Carrier::model()->find("name=:nombre",array(':nombre'=>$_POST['carrier']))->id,true);
                     $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                    $correos['carrier']['set']=true;
                 }
                 if(isset($_POST['group']))
                 {
                     $correos['group']['asunto']="RENOC Calidad ".$_POST['group'].self::reportTitle($startDate,$endingDate);
                     $correos['group']['cuerpo']=Yii::app()->reportes->Calidad($startDate,$endingDate,CarrierGroups::model()->find("name=:nombre",array(':nombre'=>$_POST['group']))->id,false);
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                    $correos['group']['set']=true;
                 }
             }
             //Arbol 2N Proveedor
@@ -314,12 +332,14 @@ class SiteController extends Controller
                     $correos['carrier']['asunto']="RENOC Arbol 2N Proveedor - Carrier ".$_POST['carrier']." ".self::reportTitle($startDate,$endingDate);
                     $correos['carrier']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['carrier'],false);
                     $correos['carrier']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['carrier']['asunto'].".xls";
+                    $correos['group']['set']=true;
                 }
                 if(isset($_POST['group']))
                 {
                     $correos['group']['asunto']="RENOC Arbol 2N Proveedor - Grupo ".$_POST['group']." ".self::reportTitle($startDate,$endingDate);
                     $correos['group']['cuerpo']=Yii::app()->reportes->Arbol2NProveedor($startDate,false,$endingDate,  $_POST['group'],true);
                     $correos['group']['ruta']=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR.$correos['group']['asunto'].".xls";
+                    $correos['group']['set']=true;
                 }
             }
             foreach($correos as $key => $correo)
@@ -327,7 +347,7 @@ class SiteController extends Controller
                 //Esto es para que no descargue los archivos cuando se genere uno de estos reportes
                 if(stripos($correo['asunto'],"Evolucion")==false && stripos($correo['asunto'],"Comercial")==false)
                 {
-                    $this->genExcel($correo['asunto'],$correo['cuerpo'],false);
+                    $this->genExcel($correo['asunto'],$correo['cuerpo'],$correo['set'],false);
                 }
                 Yii::app()->mail->enviar($correo['cuerpo'], $user, $correo['asunto'],$correo['ruta']);
             }
@@ -848,7 +868,7 @@ class SiteController extends Controller
     /**
      * @access public
      */
-    public function genExcel($nombre,$html,$probando,$salida=true)
+    public function genExcel($nombre,$html,$set,$salida=true)
     {
         $ruta=Yii::getPathOfAlias('webroot.adjuntos').DIRECTORY_SEPARATOR;
         $name=null;
@@ -860,8 +880,7 @@ class SiteController extends Controller
         {
             $name=$nombre.".xls";
         }
-        // if(stripos($nombre,"Evolucion")===false || stripos($nombre,"Comercial")===false)
-        if($probando==true)
+        if($set)
         {
             $fp=fopen($ruta.$name,"w+");
             $cuerpo="
