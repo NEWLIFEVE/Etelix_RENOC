@@ -61,6 +61,7 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
+
         'errorHandler'=>array(
             // use 'site/error' action to display errors
             'errorAction'=>'site/error',

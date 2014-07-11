@@ -99,7 +99,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="PN" class="custom-checkbox" name="lista[PN]">
                         <label for="PN">
                             <h4 id="td2">
-                                Posicion Neta
+                                Posición Neta
                             </h4>
                         </label>
                     </div>
@@ -107,7 +107,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="PNV" class="custom-checkbox" name="lista[PNV]">
                         <label for="PNV">
                             <h4 id="td2">
-                                Posicion Neta por Vendedor
+                                Posición Neta por Vendedor
                             </h4>
                         </label>
                     </div>
@@ -163,7 +163,7 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="DC" class="custom-checkbox" name="lista[DC]">
                         <label for="DC">
                             <h4 id="td4">
-                                Distribucion Comercial
+                                Distribución Comercial
                             </h4>
                         </label>
                     </div>
@@ -171,10 +171,11 @@ $this->layout=$this->getLayoutFile('menuContent');
                         <input type="checkbox" value="true" id="Ev" class="custom-checkbox" name="lista[Ev]">
                         <label for="Ev">
                             <h4 id="td4">
-                                Evolucion
+                                Evolución
                             </h4>
                         </label>
                     </div>
+                    
                     <input name="startDate" type="hidden"  id="startDate" value="<?php $nuevafecha=strtotime('-1 day',strtotime(date('Y-m-d')));
         echo $nuevafecha=date('Y-m-d',$nuevafecha);?>"/>
             </form>

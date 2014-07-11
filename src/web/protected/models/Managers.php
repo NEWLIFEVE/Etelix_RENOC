@@ -16,6 +16,7 @@
  */
 class Managers extends CActiveRecord
 {
+	/*
 	public $vendedor;
 	public $operador;
 	public $company;
@@ -26,6 +27,20 @@ class Managers extends CActiveRecord
 	public $limite_compra;
 	public $production_unit;
 	public $status;
+	*/
+	
+	public $seller;
+	public $carrier;
+	public $company;
+	public $vendor_payment_term;
+	public $customer_payment_term;
+	public $monetizable;
+	public $days_dispute;
+	public $credit_limit;
+	public $purchase_limit;
+	public $production_unit;
+	public $status;
+	
 
 	/**
 	 * Returns the static model of the specified AR class.

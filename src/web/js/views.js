@@ -200,7 +200,8 @@ ajax.prototype.run=function()
                 }, 2000);
                 mensaje=null;
                 self.setUno();
-            }else if(numero.length<=1)
+            }
+            else if(numero.length<=1)
             {
                 mensaje="<h3>Debe seleccionar los parametros del reporte</h3><img src='/images/stop.png'width='25px' height='25px'/>";
                 self.crearCapa(mensaje);
@@ -211,6 +212,32 @@ ajax.prototype.run=function()
                 mensaje=null;
                 self.setUno();
             }
+
+            else if($("input[type='checkbox'][name='lista[Carrier]']").prop("checked")!=true && $("input[type='checkbox'][name='lista[Group]']").prop("checked")!=true)
+            {
+                mensaje="<h3>Falto seleccionar un parametro entre carrier o grupo</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+            else if($("input#carrier").val()!=undefined && $("input#group").val()!=undefined)
+            {
+                console.log($("input#carrier").val());
+                console.log($("input#group").val());
+                mensaje="<h3>Debe seleccionar solo un parametro entre carrier o grupo</h3><img src='/images/stop.png'width='25px' height='25px'/>";
+                self.crearCapa(mensaje);
+                setTimeout(function()
+                {
+                    self.destruirCapa();
+                }, 2000);
+                mensaje=null;
+                self.setUno();
+            }
+            
         }else{
             if(numero.length<=0)
             {
@@ -280,6 +307,8 @@ ajax.prototype.genExcel=function()
             case "lista[APE]":
             case "lista[DC]":
             case "lista[Ev]":
+            case "lista[RCC]":
+            case "lista[RN]":
             case "lista[calidad]":
             case "lista[A2NP]":
                 reportes[self.formulario[i].name]={name:self.formulario[i].name,value:self.formulario[i].value};
@@ -303,7 +332,12 @@ ajax.prototype.genExcel=function()
         {
             for(var key2 in opciones)
             {
-                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=200px,height=100px');
+                ventana[key2]=window.open(self.ruta+"?"+fechas['startDate'].name+"="+fechas['startDate'].value+"&"+fechas['endingDate'].name+"="+fechas['endingDate'].value+"&"+reportes[key].name+"="+reportes[key].value+"&"+opciones[key2].name+"="+opciones[key2].value,opciones[key2].name,'width=500,height=200');
+                ventana[key2].document.write("<html><head>" +
+                  		" <link href='http://getbootstrap.com/assets/css/docs.min.css' rel='stylesheet'>" +
+                  		"<script src='http://getbootstrap.com/assets/js/docs.min.js'></script>"+
+                  		"</head><body onload='window.close();'><div class='bs-callout bs-callout-info'>" +
+                  		"<h3 style='color:#3CB371'>Su reporte se esta generando, por favor espere <img src='/images/circular.gif'width='25px' height='25px'/></h3><h5>Al terminar la carga, podr&aacute; cerrar esta ventana o presionar <a href='#' onclick='window.close();'>AQUI</a> para cerrarla</h5></div></body></html>");
             }
         }
         else
@@ -527,10 +561,10 @@ ajax.prototype.ejecutarAcciones=function()
 */
 function marcar(source)
 {
-    checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
+    var checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
     if(checkboxes.length>0)
     {
-        for(i=0,j=checkboxes.length-1; i<=j; i++) //recoremos todos los controles
+        for(i=0,j=checkboxes.length-1; i<=j; i++) //recorremos todos los controles
         {
             if(checkboxes[i].type=="checkbox") //solo si es un checkbox entramos
             {

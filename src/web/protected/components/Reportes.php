@@ -123,13 +123,12 @@ class Reportes extends CApplicationComponent
         return $variable;
     }
 
-    public function DistribucionComercial($nombre)
+    public function DistribucionComercial($nombre,$fecha)
     {
         $reporte=new DistribucionComercial();
-        $reporte->genExcel($nombre);
+        $reporte->genExcel($nombre,$fecha);
         return "Revisar Archivo Adjunto";
     }
-
     /**
      *
      */
@@ -207,9 +206,6 @@ class Reportes extends CApplicationComponent
         }
         return $variable;
     }
-    
-    
-    
 
     /**
      * Genera el reporte de evolucion
@@ -221,8 +217,7 @@ class Reportes extends CApplicationComponent
         $reporte=new Evolucion($fecha);
         $reporte->genExcel($nombre);
         return "Revisar archivo adjunto";
-    }
-    
+    } 
     /**
      * Metodo encargado de pintar las filas de los reportes
      * @access public
@@ -1030,7 +1025,7 @@ class Reportes extends CApplicationComponent
      * @param int $actual es el valor actual a revisar
      * @return string
      */
-    protected function _upOrDown($previous,$actual)
+    protected function  _upOrDown($previous,$actual)
     {
         if($previous!=null || $previous!="")
         {
